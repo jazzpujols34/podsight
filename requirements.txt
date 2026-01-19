@@ -1,0 +1,15 @@
+# Core dependencies
+requests>=2.28.0
+feedparser>=6.0.0
+tqdm>=4.64.0
+
+# Whisper options (install one)
+# Option 1: faster-whisper (recommended - 4x faster)
+faster-whisper>=0.10.0
+
+# Option 2: openai-whisper (fallback)
+# openai-whisper>=20231117
+
+# GCP deployment
+google-cloud-storage>=2.10.0
+google-cloud-speech>=2.20.0
