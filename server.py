@@ -3,6 +3,7 @@
 Simple HTTP API server for Gooaye transcript database.
 
 Endpoints:
+    GET /                     - Serves the web UI
     GET /episode/{ep_number}  - Returns transcript + summary as JSON
     GET /latest               - Returns the most recent episode number and summary
     GET /search?q={query}     - Returns search results as JSON
@@ -23,9 +24,14 @@ from typing import Optional
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from config import DATA_DIR, TRANSCRIPT_DIR, EPISODES_FILE
+
+# UI directory
+UI_DIR = Path(__file__).parent / "ui"
 
 SUMMARY_DIR = DATA_DIR / "summaries"
 
@@ -181,9 +187,33 @@ def search_transcripts(
 
 # --- API Endpoints ---
 
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 async def root():
-    """API root - shows available endpoints."""
+    """Serve the web UI."""
+    index_file = UI_DIR / "index.html"
+    if index_file.exists():
+        return FileResponse(index_file)
+
+    # Fallback to API info if UI not found
+    return HTMLResponse(content="""
+    <html>
+        <head><title>Gooaye API</title></head>
+        <body style="font-family: sans-serif; padding: 2rem;">
+            <h1>Gooaye Transcript API</h1>
+            <p>UI not found. Available endpoints:</p>
+            <ul>
+                <li><a href="/api">/api</a> - API info</li>
+                <li><a href="/docs">/docs</a> - API documentation</li>
+                <li><a href="/episodes">/episodes</a> - List episodes</li>
+            </ul>
+        </body>
+    </html>
+    """)
+
+
+@app.get("/api")
+async def api_info():
+    """API info - shows available endpoints."""
     return {
         "name": "Gooaye Transcript API",
         "version": "1.0.0",
@@ -191,6 +221,7 @@ async def root():
             "/episode/{ep_number}": "Get transcript and summary for an episode",
             "/latest": "Get the most recent episode",
             "/search?q={query}": "Search transcripts",
+            "/episodes": "List all episodes",
         }
     }
 

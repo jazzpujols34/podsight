@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>股癌 Pipeline Dashboard</title>
+    <style>
+        :root {
+            --bg-primary: #0f0f0f;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #252525;
+            --bg-hover: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --text-muted: #666666;
+            --accent: #f59e0b;
+            --accent-hover: #fbbf24;
+            --success: #22c55e;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --border: #333333;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent) 0%, #ea580c 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--text-primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-tertiary);
+            border-radius: 9999px;
+            font-size: 0.875rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Main Layout */
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1200px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--shadow);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-value.accent {
+            color: var(--accent);
+        }
+
+        /* Pipeline Controls */
+        .pipeline-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent) 0%, #ea580c 100%);
+            color: var(--bg-primary);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-hover);
+            border-color: var(--accent);
+        }
+
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            justify-content: center;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Step indicators */
+        .pipeline-steps {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .step {
+            flex: 1;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .step:hover {
+            background: var(--bg-hover);
+        }
+
+        .step.active {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(234, 88, 12, 0.2) 100%);
+            border: 1px solid var(--accent);
+        }
+
+        .step.completed {
+            background: rgba(34, 197, 94, 0.1);
+        }
+
+        .step-number {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .step.completed .step-number {
+            background: var(--success);
+            color: var(--bg-primary);
+        }
+
+        .step.active .step-number {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        .step-label {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+        }
+
+        /* Episode List */
+        .episode-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .episode-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .episode-item:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .episode-item:last-child {
+            border-bottom: none;
+        }
+
+        .episode-number {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--accent);
+            min-width: 60px;
+        }
+
+        .episode-title {
+            flex: 1;
+            font-size: 0.9375rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .episode-badges {
+            display: flex;
+            gap: 0.375rem;
+        }
+
+        .badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .badge-transcript {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--success);
+        }
+
+        .badge-summary {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--accent);
+        }
+
+        /* Search */
+        .search-container {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        /* Search Results */
+        .search-results {
+            margin-top: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .search-result {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+
+        .search-result:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .search-result-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .search-result-ep {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .search-result-time {
+            color: var(--text-muted);
+            font-size: 0.8125rem;
+            font-family: monospace;
+        }
+
+        .search-result-text {
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+            line-height: 1.5;
+        }
+
+        .search-result-text mark {
+            background: rgba(245, 158, 11, 0.3);
+            color: var(--accent);
+            padding: 0.125rem 0.25rem;
+            border-radius: 3px;
+        }
+
+        /* Episode Viewer */
+        .viewer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .viewer-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .viewer-ep {
+            color: var(--accent);
+            font-size: 0.875rem;
+        }
+
+        .viewer-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        .tab {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-family: inherit;
+        }
+
+        .tab:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .tab.active {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        .viewer-content {
+            max-height: 600px;
+            overflow-y: auto;
+            font-size: 0.9375rem;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            color: var(--text-secondary);
+        }
+
+        .viewer-content .timestamp {
+            color: var(--accent);
+            font-family: monospace;
+            font-size: 0.8125rem;
+        }
+
+        /* Terminal Output */
+        .terminal {
+            background: #0d0d0d;
+            border-radius: 10px;
+            padding: 1rem;
+            font-family: 'SF Mono', 'Monaco', 'Menlo', monospace;
+            font-size: 0.8125rem;
+            line-height: 1.6;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .terminal-line {
+            color: var(--text-secondary);
+        }
+
+        .terminal-line.success {
+            color: var(--success);
+        }
+
+        .terminal-line.error {
+            color: var(--error);
+        }
+
+        .terminal-line.info {
+            color: var(--accent);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🎙️</div>
+                <h1>股癌 Pipeline</h1>
+            </div>
+            <div class="status-badge">
+                <div class="status-dot" id="serverStatus"></div>
+                <span id="serverStatusText">連線中...</span>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="content-area">
+            <!-- Stats -->
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-label">總集數</div>
+                    <div class="stat-value" id="totalEpisodes">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">已轉錄</div>
+                    <div class="stat-value accent" id="transcribedCount">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">已摘要</div>
+                    <div class="stat-value" id="summarizedCount">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">最新集數</div>
+                    <div class="stat-value" id="latestEpisode">-</div>
+                </div>
+            </div>
+
+            <!-- Pipeline Controls -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span>⚡</span> Pipeline 控制台
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="pipeline-controls">
+                        <button class="btn btn-primary" id="runFullPipeline" onclick="runPipeline('all')">
+                            <span>▶️</span> 執行完整 Pipeline
+                        </button>
+                        <button class="btn btn-secondary" onclick="runPipeline('check')">
+                            <span>🔍</span> 檢查新集數
+                        </button>
+                        <button class="btn btn-secondary" onclick="refreshData()">
+                            <span>🔄</span> 重新整理
+                        </button>
+                    </div>
+
+                    <div class="pipeline-steps">
+                        <div class="step" onclick="runPipeline(1)" id="step1">
+                            <div class="step-number">1</div>
+                            <div class="step-label">解析 RSS</div>
+                        </div>
+                        <div class="step" onclick="runPipeline(2)" id="step2">
+                            <div class="step-number">2</div>
+                            <div class="step-label">下載音訊</div>
+                        </div>
+                        <div class="step" onclick="runPipeline(3)" id="step3">
+                            <div class="step-number">3</div>
+                            <div class="step-label">語音轉錄</div>
+                        </div>
+                        <div class="step" onclick="runPipeline(4)" id="step4">
+                            <div class="step-number">4</div>
+                            <div class="step-label">AI 摘要</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Terminal Output -->
+            <div class="card" style="margin-top: 1.5rem;" id="terminalCard" style="display: none;">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span>💻</span> 執行輸出
+                    </h2>
+                    <button class="btn btn-secondary btn-icon" onclick="clearTerminal()">✕</button>
+                </div>
+                <div class="card-body">
+                    <div class="terminal" id="terminal">
+                        <div class="terminal-line info">準備就緒，點擊上方按鈕開始執行...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Episode Viewer -->
+            <div class="card" style="margin-top: 1.5rem;" id="viewerCard">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span>📄</span> 內容檢視
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div id="viewerEmpty" class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <p>點擊右側集數查看內容</p>
+                    </div>
+                    <div id="viewerContent" style="display: none;">
+                        <div class="viewer-header">
+                            <div>
+                                <div class="viewer-ep" id="viewerEp"></div>
+                                <div class="viewer-title" id="viewerTitle"></div>
+                            </div>
+                        </div>
+                        <div class="viewer-tabs">
+                            <button class="tab active" onclick="showTab('transcript')">📝 逐字稿</button>
+                            <button class="tab" onclick="showTab('summary')">📊 摘要</button>
+                        </div>
+                        <div class="viewer-content" id="viewerText"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <!-- Search -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span>🔍</span> 搜尋
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="search-container">
+                        <span class="search-icon">🔎</span>
+                        <input type="text" class="search-input" id="searchInput"
+                               placeholder="搜尋關鍵字..."
+                               onkeyup="handleSearch(event)">
+                    </div>
+                    <div class="search-results" id="searchResults"></div>
+                </div>
+            </div>
+
+            <!-- Episode List -->
+            <div class="card" style="margin-top: 1.5rem;">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span>📚</span> 集數列表
+                    </h2>
+                </div>
+                <div class="episode-list" id="episodeList">
+                    <div class="empty-state">
+                        <div class="spinner"></div>
+                        <p style="margin-top: 1rem;">載入中...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const API_BASE = window.location.origin;
+        let currentEpisode = null;
+        let currentTab = 'transcript';
+        let episodesData = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            checkServerStatus();
+            loadEpisodes();
+            setInterval(checkServerStatus, 30000);
+        });
+
+        // Check server status
+        async function checkServerStatus() {
+            const dot = document.getElementById('serverStatus');
+            const text = document.getElementById('serverStatusText');
+            try {
+                const res = await fetch(`${API_BASE}/`);
+                if (res.ok) {
+                    dot.style.background = 'var(--success)';
+                    text.textContent = 'API 已連線';
+                } else {
+                    throw new Error();
+                }
+            } catch {
+                dot.style.background = 'var(--error)';
+                text.textContent = 'API 離線';
+            }
+        }
+
+        // Load episodes
+        async function loadEpisodes() {
+            try {
+                const res = await fetch(`${API_BASE}/episodes?limit=100`);
+                const data = await res.json();
+                episodesData = data.episodes || [];
+                renderEpisodeList();
+                updateStats(data);
+            } catch (err) {
+                document.getElementById('episodeList').innerHTML = `
+                    <div class="empty-state">
+                        <p>無法載入集數列表</p>
+                        <button class="btn btn-secondary" style="margin-top: 1rem;" onclick="loadEpisodes()">重試</button>
+                    </div>
+                `;
+            }
+        }
+
+        // Update stats
+        async function updateStats(data) {
+            const total = data.total || 0;
+            const transcribed = episodesData.filter(e => e.has_transcript).length;
+            const summarized = episodesData.filter(e => e.has_summary).length;
+
+            document.getElementById('totalEpisodes').textContent = total;
+            document.getElementById('transcribedCount').textContent = transcribed;
+            document.getElementById('summarizedCount').textContent = summarized;
+
+            // Get latest episode
+            try {
+                const latest = await fetch(`${API_BASE}/latest`);
+                const latestData = await latest.json();
+                document.getElementById('latestEpisode').textContent = `EP${latestData.episode_number}`;
+            } catch {
+                document.getElementById('latestEpisode').textContent = '-';
+            }
+        }
+
+        // Render episode list
+        function renderEpisodeList() {
+            const list = document.getElementById('episodeList');
+            if (!episodesData.length) {
+                list.innerHTML = `<div class="empty-state"><p>尚無集數資料</p></div>`;
+                return;
+            }
+
+            list.innerHTML = episodesData.map(ep => `
+                <div class="episode-item" onclick="loadEpisode(${ep.episode_number})">
+                    <span class="episode-number">EP${ep.episode_number}</span>
+                    <div class="episode-badges">
+                        ${ep.has_transcript ? '<span class="badge badge-transcript">逐字稿</span>' : ''}
+                        ${ep.has_summary ? '<span class="badge badge-summary">摘要</span>' : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load episode content
+        async function loadEpisode(epNum) {
+            try {
+                document.getElementById('viewerEmpty').style.display = 'none';
+                document.getElementById('viewerContent').style.display = 'block';
+                document.getElementById('viewerText').innerHTML = '<div class="spinner"></div>';
+
+                const res = await fetch(`${API_BASE}/episode/${epNum}`);
+                const data = await res.json();
+
+                currentEpisode = data;
+                document.getElementById('viewerEp').textContent = `EP${data.episode_number}`;
+                document.getElementById('viewerTitle').textContent = data.title || '(無標題)';
+
+                showTab(currentTab);
+            } catch (err) {
+                document.getElementById('viewerText').innerHTML = '<p class="error">載入失敗</p>';
+            }
+        }
+
+        // Show tab
+        function showTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event?.target?.classList?.add('active') ||
+                document.querySelector(`.tab:${tab === 'transcript' ? 'first' : 'last'}-child`)?.classList.add('active');
+
+            if (!currentEpisode) return;
+
+            const content = tab === 'transcript' ? currentEpisode.transcript : currentEpisode.summary;
+            const viewer = document.getElementById('viewerText');
+
+            if (!content) {
+                viewer.innerHTML = `<div class="empty-state"><p>尚無${tab === 'transcript' ? '逐字稿' : '摘要'}</p></div>`;
+                return;
+            }
+
+            // Format content with timestamps highlighted
+            viewer.innerHTML = content.replace(/\[(\d+:\d+)\]/g, '<span class="timestamp">[$1]</span>');
+        }
+
+        // Search
+        let searchTimeout;
+        function handleSearch(event) {
+            clearTimeout(searchTimeout);
+            const query = event.target.value.trim();
+
+            if (event.key === 'Enter' && query) {
+                performSearch(query);
+            } else if (query.length >= 2) {
+                searchTimeout = setTimeout(() => performSearch(query), 300);
+            } else {
+                document.getElementById('searchResults').innerHTML = '';
+            }
+        }
+
+        async function performSearch(query) {
+            const results = document.getElementById('searchResults');
+            results.innerHTML = '<div class="spinner"></div>';
+
+            try {
+                const res = await fetch(`${API_BASE}/search?q=${encodeURIComponent(query)}&limit=20`);
+                const data = await res.json();
+
+                if (!data.results?.length) {
+                    results.innerHTML = `<div class="empty-state"><p>找不到「${query}」</p></div>`;
+                    return;
+                }
+
+                results.innerHTML = data.results.map(r => `
+                    <div class="search-result" onclick="loadEpisode(${r.episode})">
+                        <div class="search-result-header">
+                            <span class="search-result-ep">EP${r.episode}</span>
+                            ${r.timestamp ? `<span class="search-result-time">[${r.timestamp}]</span>` : ''}
+                        </div>
+                        <div class="search-result-text">${highlightMatch(r.text, query)}</div>
+                    </div>
+                `).join('');
+            } catch {
+                results.innerHTML = `<div class="empty-state"><p>搜尋失敗</p></div>`;
+            }
+        }
+
+        function highlightMatch(text, query) {
+            const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            return text.replace(new RegExp(escaped, 'gi'), '<mark>$&</mark>');
+        }
+
+        // Pipeline execution
+        async function runPipeline(step) {
+            const terminal = document.getElementById('terminal');
+            document.getElementById('terminalCard').style.display = 'block';
+
+            const stepName = {
+                'all': '完整 Pipeline',
+                'check': '檢查新集數',
+                1: '解析 RSS',
+                2: '下載音訊',
+                3: '語音轉錄',
+                4: 'AI 摘要'
+            }[step];
+
+            addTerminalLine(`開始執行: ${stepName}`, 'info');
+            addTerminalLine('請在終端機中執行以下命令:', 'info');
+
+            let command;
+            if (step === 'all') {
+                command = 'python run_pipeline.py';
+            } else if (step === 'check') {
+                command = 'python auto_check_new_episodes.py';
+            } else {
+                command = `python run_pipeline.py --step ${step}`;
+            }
+
+            addTerminalLine(`$ ${command}`, 'success');
+            addTerminalLine('', '');
+            addTerminalLine('提示: 由於 Pipeline 需要較長時間執行，', '');
+            addTerminalLine('建議直接在終端機中執行以監控進度。', '');
+
+            // Highlight the active step
+            if (typeof step === 'number') {
+                document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+                document.getElementById(`step${step}`).classList.add('active');
+            }
+        }
+
+        function addTerminalLine(text, type = '') {
+            const terminal = document.getElementById('terminal');
+            const line = document.createElement('div');
+            line.className = `terminal-line ${type}`;
+            line.textContent = text;
+            terminal.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function clearTerminal() {
+            document.getElementById('terminal').innerHTML =
+                '<div class="terminal-line info">準備就緒，點擊上方按鈕開始執行...</div>';
+        }
+
+        function refreshData() {
+            loadEpisodes();
+            addTerminalLine('資料已重新整理', 'success');
+        }
+    </script>
+</body>
+</html>

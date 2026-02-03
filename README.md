@@ -141,9 +141,30 @@ python auto_check_new_episodes.py --notify
 
 Set up automatic scheduling with cron/launchd - see `cron_setup.md` for details.
 
+## 🖥️ Web Dashboard UI
+
+Launch a beautiful web UI to manage the pipeline:
+
+```bash
+# Start UI (opens browser automatically)
+python run_ui.py
+
+# Custom port
+python run_ui.py --port 8080
+
+# Don't auto-open browser
+python run_ui.py --no-browser
+```
+
+The dashboard provides:
+- Pipeline status overview (episodes, transcripts, summaries)
+- One-click pipeline execution
+- Episode browser with transcript/summary viewer
+- Full-text search across all transcripts
+
 ## 🌐 HTTP API Server
 
-Start a FastAPI server to query transcripts via HTTP:
+The API server (also serves the web UI):
 
 ```bash
 # Start server (default port 8000)
@@ -157,6 +178,7 @@ python server.py --reload
 ```
 
 **Endpoints:**
+- `GET /` - Web dashboard UI
 - `GET /episode/{ep_number}` - Get transcript + summary
 - `GET /latest` - Get most recent episode
 - `GET /search?q={query}` - Search transcripts
