@@ -10,6 +10,15 @@ faster-whisper>=0.10.0
 # Option 2: openai-whisper (fallback)
 # openai-whisper>=20231117
 
+# AI Summarization (install one or both)
+anthropic>=0.18.0
+openai>=1.12.0
+
+# HTTP API Server
+fastapi>=0.109.0
+uvicorn>=0.27.0
+pydantic>=2.5.0
+
 # GCP deployment
 google-cloud-storage>=2.10.0
 google-cloud-speech>=2.20.0

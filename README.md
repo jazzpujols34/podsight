@@ -10,19 +10,26 @@ Create transcripts for building a "Mini MK" chatbot that thinks and responds lik
 
 ```
 gooaye_pipeline/
-├── config.py              # Configuration settings
-├── 01_parse_rss.py        # Step 1: Parse RSS feed → episode list
-├── 02_download_audio.py   # Step 2: Download MP3 files
-├── 03_transcribe.py       # Step 3: Whisper transcription
-├── run_pipeline.py        # Run all steps
-├── requirements.txt       # Python dependencies
+├── config.py                   # Configuration settings
+├── 01_parse_rss.py             # Step 1: Parse RSS feed → episode list
+├── 02_download_audio.py        # Step 2: Download MP3 files
+├── 03_transcribe.py            # Step 3: Whisper transcription
+├── 04_summarize.py             # Step 4: AI-powered summarization
+├── run_pipeline.py             # Run all steps
+├── auto_check_new_episodes.py  # Auto-detect & process new episodes
+├── search.py                   # Search tool for transcripts
+├── server.py                   # FastAPI HTTP endpoint
+├── cron_setup.md               # Cron/launchd scheduling guide
+├── requirements.txt            # Python dependencies
 ├── data/
-│   ├── episodes.json      # Episode metadata
-│   ├── audio/             # Downloaded MP3 files (EP0001.mp3, ...)
-│   └── transcripts/       # Output transcripts (EP0001.txt, ...)
+│   ├── episodes.json           # Episode metadata
+│   ├── audio/                  # Downloaded MP3 files (EP0001.mp3, ...)
+│   ├── transcripts/            # Output transcripts (EP0001.txt, ...)
+│   ├── summaries/              # AI-generated summaries (EP0001_summary.txt)
+│   └── notifications/          # New episode notifications
 └── gcp/
-    ├── Dockerfile         # For cloud deployment
-    └── DEPLOYMENT.md      # GCP setup guide
+    ├── Dockerfile              # For cloud deployment
+    └── DEPLOYMENT.md           # GCP setup guide
 ```
 
 ## 🚀 Quick Start
@@ -65,9 +72,10 @@ pip install -r requirements.txt
 python run_pipeline.py
 
 # Or run steps individually:
-python 01_parse_rss.py    # Get episode list (~30 seconds)
+python 01_parse_rss.py       # Get episode list (~30 seconds)
 python 02_download_audio.py  # Download audio (~2-3 hours for 624 eps)
-python 03_transcribe.py   # Transcribe (~20-40 hours)
+python 03_transcribe.py      # Transcribe (~20-40 hours)
+python 04_summarize.py       # Generate AI summaries (requires API key)
 ```
 
 ### Process Specific Episodes
@@ -95,6 +103,67 @@ Each episode generates:
 - `EP0621.txt` - Human-readable transcript with timestamps
 - `EP0621.json` - Machine-readable segments for RAG pipeline
 
+## 🔍 Search Tool
+
+Search through transcripts to find specific content:
+
+```bash
+# Basic search
+python search.py "台積電"
+
+# Search specific episode range
+python search.py "台積電" --ep 620-630
+
+# Search summaries only
+python search.py "台積電" --summary
+
+# Limit results
+python search.py "台積電" --limit 50
+
+# Output as JSON
+python search.py "台積電" --json
+```
+
+## 🔄 Auto-Check New Episodes
+
+Automatically detect and process new episodes:
+
+```bash
+# Check for new episodes and process them
+python auto_check_new_episodes.py
+
+# Dry run (check only, don't process)
+python auto_check_new_episodes.py --dry-run
+
+# With macOS desktop notification
+python auto_check_new_episodes.py --notify
+```
+
+Set up automatic scheduling with cron/launchd - see `cron_setup.md` for details.
+
+## 🌐 HTTP API Server
+
+Start a FastAPI server to query transcripts via HTTP:
+
+```bash
+# Start server (default port 8000)
+python server.py
+
+# Custom port
+python server.py --port 8080
+
+# Development mode with auto-reload
+python server.py --reload
+```
+
+**Endpoints:**
+- `GET /episode/{ep_number}` - Get transcript + summary
+- `GET /latest` - Get most recent episode
+- `GET /search?q={query}` - Search transcripts
+- `GET /episodes` - List all available episodes
+
+API documentation available at `http://localhost:8000/docs`
+
 ## ⚙️ Configuration
 
 Edit `config.py` to customize:
@@ -111,6 +180,25 @@ WHISPER_DEVICE = "cuda"  # NVIDIA GPU
 
 # Parallel downloads
 DOWNLOAD_WORKERS = 4
+```
+
+### AI Summarization
+
+Step 4 requires an API key. Set environment variable:
+
+```bash
+# For Claude (default)
+export ANTHROPIC_API_KEY=your_key_here
+
+# For OpenAI
+export OPENAI_API_KEY=your_key_here
+```
+
+Customize the provider and model:
+
+```bash
+python 04_summarize.py --provider openai --model gpt-4o
+python 04_summarize.py --provider anthropic --model claude-sonnet-4-20250514
 ```
 
 ## ☁️ Cloud Deployment (GCP)

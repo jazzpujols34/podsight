@@ -7,6 +7,7 @@ Usage:
     python run_pipeline.py --step 1  # Run only step 1 (parse RSS)
     python run_pipeline.py --step 2  # Run only step 2 (download)
     python run_pipeline.py --step 3  # Run only step 3 (transcribe)
+    python run_pipeline.py --step 4  # Run only step 4 (summarize)
     python run_pipeline.py --from 295 --to 624  # Process EP295-EP624 only
 """
 
@@ -33,7 +34,7 @@ def run_step(step_num: int, script_name: str):
 
 def main():
     parser = argparse.ArgumentParser(description="Gooaye transcription pipeline")
-    parser.add_argument('--step', type=int, choices=[1, 2, 3], 
+    parser.add_argument('--step', type=int, choices=[1, 2, 3, 4],
                         help="Run only specific step")
     parser.add_argument('--from', dest='ep_start', type=int,
                         help="Start from episode number")
@@ -64,6 +65,7 @@ def main():
         (1, "01_parse_rss.py"),
         (2, "02_download_audio.py"),
         (3, "03_transcribe.py"),
+        (4, "04_summarize.py"),
     ]
     
     if args.step:
@@ -80,6 +82,7 @@ def main():
         print("  1. Parse RSS feed to get episode list")
         print("  2. Download all audio files")
         print("  3. Transcribe with Whisper")
+        print("  4. Summarize transcripts with AI (requires API key)")
         print("\nEstimated time: 20-50 hours depending on hardware")
         print("\nPress Ctrl+C to cancel, or Enter to continue...")
         
