@@ -18,17 +18,18 @@ for d in [DATA_DIR, AUDIO_DIR, TRANSCRIPT_DIR]:
     d.mkdir(parents=True, exist_ok=True)
 
 # Whisper settings
-WHISPER_MODEL = "base"  # Testing with base model first (faster), can upgrade to large-v3 later
-WHISPER_LANGUAGE = "zh"  # Chinese
+WHISPER_MODEL = "whisper-large-v3"  # Groq model (best quality)
+WHISPER_LANGUAGE = "zh"  # Chinese (Whisper outputs Simplified, convert to Traditional after)
 WHISPER_DEVICE = "cpu"  # "cuda" for GPU, "cpu" for CPU (mps not supported by ctranslate2)
+WHISPER_PROVIDER = "groq"  # "groq" for cloud API, "local" for faster-whisper
 
 # Download settings
 DOWNLOAD_WORKERS = 4  # Parallel downloads
 DOWNLOAD_RETRY = 3
 
 # Episode filtering (set to None to process all)
-EPISODE_START = 625  # Test with EP620-624
-EPISODE_END = 626    # 5 episodes total
+EPISODE_START = 615  # Last ~3 months (starting point)
+EPISODE_END = None   # No upper limit - always include new episodes
 
 # Output format
 TIMESTAMP_FORMAT = "[{minutes:02d}:{seconds:02d}]"  # Matches SpotScribe format

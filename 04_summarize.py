@@ -23,9 +23,10 @@ SUMMARY_DIR = DATA_DIR / "summaries"
 SUMMARY_DIR.mkdir(parents=True, exist_ok=True)
 
 # Default settings
-DEFAULT_PROVIDER = "anthropic"
+DEFAULT_PROVIDER = "gemini"
 DEFAULT_ANTHROPIC_MODEL = "claude-sonnet-4-20250514"
 DEFAULT_OPENAI_MODEL = "gpt-4o"
+DEFAULT_GEMINI_MODEL = "gemini-3-flash-preview"
 
 SUMMARY_PROMPT = """Summarize this 股癌 podcast episode in Traditional Chinese. Include:
 - 一句話總結
@@ -120,6 +121,43 @@ def summarize_with_openai(transcript: str, model: str) -> str:
     return response.choices[0].message.content
 
 
+def summarize_with_gemini(transcript: str, model: str) -> str:
+    """Generate summary using Google Gemini API (new SDK)."""
+    try:
+        from google import genai
+        from google.genai import types
+    except ImportError:
+        raise ImportError("Please install google-genai: pip install google-genai")
+
+    api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+    if not api_key:
+        raise ValueError("GEMINI_API_KEY or GOOGLE_API_KEY environment variable not set")
+
+    client = genai.Client(api_key=api_key)
+
+    contents = [
+        types.Content(
+            role="user",
+            parts=[
+                types.Part.from_text(text=SUMMARY_PROMPT.format(transcript=transcript))
+            ]
+        ),
+    ]
+
+    generate_content_config = types.GenerateContentConfig(
+        temperature=0.7,
+        max_output_tokens=2048,
+    )
+
+    response = client.models.generate_content(
+        model=model,
+        contents=contents,
+        config=generate_content_config,
+    )
+
+    return response.text
+
+
 def summarize_transcript(transcript_path: Path, provider: str, model: str) -> str:
     """Generate summary for a transcript file."""
     transcript = transcript_path.read_text(encoding="utf-8")
@@ -133,6 +171,8 @@ def summarize_transcript(transcript_path: Path, provider: str, model: str) -> st
         return summarize_with_anthropic(transcript, model)
     elif provider == "openai":
         return summarize_with_openai(transcript, model)
+    elif provider == "gemini":
+        return summarize_with_gemini(transcript, model)
     else:
         raise ValueError(f"Unknown provider: {provider}")
 
@@ -149,7 +189,7 @@ def parse_episode_range(range_str: str) -> tuple[int | None, int | None]:
 
 def main():
     parser = argparse.ArgumentParser(description="Summarize Gooaye transcripts")
-    parser.add_argument('--provider', choices=['anthropic', 'openai'],
+    parser.add_argument('--provider', choices=['anthropic', 'openai', 'gemini'],
                         default=DEFAULT_PROVIDER,
                         help=f"API provider (default: {DEFAULT_PROVIDER})")
     parser.add_argument('--model', type=str, default=None,
@@ -162,7 +202,12 @@ def main():
 
     # Set default model based on provider
     if args.model is None:
-        args.model = DEFAULT_ANTHROPIC_MODEL if args.provider == "anthropic" else DEFAULT_OPENAI_MODEL
+        if args.provider == "anthropic":
+            args.model = DEFAULT_ANTHROPIC_MODEL
+        elif args.provider == "openai":
+            args.model = DEFAULT_OPENAI_MODEL
+        else:
+            args.model = DEFAULT_GEMINI_MODEL
 
     # Parse episode range
     ep_start, ep_end = None, None

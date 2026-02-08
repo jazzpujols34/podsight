@@ -7,6 +7,8 @@ Endpoints:
     GET /episode/{ep_number}  - Returns transcript + summary as JSON
     GET /latest               - Returns the most recent episode number and summary
     GET /search?q={query}     - Returns search results as JSON
+    POST /run/{step}          - Execute a pipeline step
+    GET /run/status           - Get current execution status
 
 Usage:
     python server.py              # Start on default port 8000
@@ -19,19 +21,35 @@ Requirements:
 import argparse
 import json
 import re
+import subprocess
+import sys
+import threading
+import time
 from pathlib import Path
 from typing import Optional
+from datetime import datetime
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse
-from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from config import DATA_DIR, TRANSCRIPT_DIR, EPISODES_FILE
 
 # UI directory
 UI_DIR = Path(__file__).parent / "ui"
+SCRIPT_DIR = Path(__file__).parent
+
+# Global state for pipeline execution
+pipeline_state = {
+    "running": False,
+    "current_step": None,
+    "output": [],
+    "started_at": None,
+    "finished_at": None,
+    "exit_code": None,
+    "process": None
+}
 
 SUMMARY_DIR = DATA_DIR / "summaries"
 
@@ -334,6 +352,195 @@ async def list_episodes(
         "limit": limit,
         "episodes": paginated
     }
+
+
+# --- Pipeline Execution Endpoints ---
+
+STEP_SCRIPTS = {
+    1: "01_parse_rss.py",
+    2: "02_download_audio.py",
+    3: "03_transcribe.py",
+    4: "04_summarize.py",
+}
+
+STEP_NAMES = {
+    1: "解析 RSS",
+    2: "下載音訊",
+    3: "語音轉錄",
+    4: "AI 摘要",
+    "check": "檢查新集數",
+    "all": "完整 Pipeline",
+}
+
+
+def run_script_async(step: str | int):
+    """Run a pipeline script in background and capture output."""
+    global pipeline_state
+
+    pipeline_state["running"] = True
+    pipeline_state["current_step"] = step
+    pipeline_state["output"] = []
+    pipeline_state["started_at"] = datetime.now().isoformat()
+    pipeline_state["finished_at"] = None
+    pipeline_state["exit_code"] = None
+
+    def add_output(line: str, level: str = "info"):
+        pipeline_state["output"].append({
+            "time": datetime.now().strftime("%H:%M:%S"),
+            "level": level,
+            "text": line
+        })
+        # Keep only last 500 lines
+        if len(pipeline_state["output"]) > 500:
+            pipeline_state["output"] = pipeline_state["output"][-500:]
+
+    try:
+        # Determine which script to run
+        if step == "check":
+            script = SCRIPT_DIR / "auto_check_new_episodes.py"
+            add_output(f"開始執行: 檢查新集數", "info")
+        elif step == "all":
+            # Run all steps sequentially
+            add_output("開始執行: 完整 Pipeline", "info")
+            for s in [1, 2, 3, 4]:
+                if not pipeline_state["running"]:
+                    break
+                script = SCRIPT_DIR / STEP_SCRIPTS[s]
+                add_output(f"\n{'='*40}", "info")
+                add_output(f"Step {s}: {STEP_NAMES[s]}", "info")
+                add_output(f"{'='*40}", "info")
+
+                process = subprocess.Popen(
+                    [sys.executable, str(script)],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    text=True,
+                    bufsize=1,
+                    cwd=str(SCRIPT_DIR)
+                )
+                pipeline_state["process"] = process
+
+                for line in process.stdout:
+                    add_output(line.rstrip())
+
+                process.wait()
+                if process.returncode != 0:
+                    add_output(f"Step {s} 失敗 (exit code: {process.returncode})", "error")
+                    pipeline_state["exit_code"] = process.returncode
+                    break
+                else:
+                    add_output(f"Step {s} 完成!", "success")
+
+            pipeline_state["finished_at"] = datetime.now().isoformat()
+            pipeline_state["running"] = False
+            if pipeline_state["exit_code"] is None:
+                pipeline_state["exit_code"] = 0
+                add_output("\n完整 Pipeline 執行完成!", "success")
+            return
+
+        else:
+            script = SCRIPT_DIR / STEP_SCRIPTS[int(step)]
+            add_output(f"開始執行: Step {step} - {STEP_NAMES[int(step)]}", "info")
+
+        # Run single script
+        process = subprocess.Popen(
+            [sys.executable, str(script)],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            bufsize=1,
+            cwd=str(SCRIPT_DIR)
+        )
+        pipeline_state["process"] = process
+
+        for line in process.stdout:
+            add_output(line.rstrip())
+
+        process.wait()
+        pipeline_state["exit_code"] = process.returncode
+
+        if process.returncode == 0:
+            add_output("\n執行完成!", "success")
+        else:
+            add_output(f"\n執行失敗 (exit code: {process.returncode})", "error")
+
+    except Exception as e:
+        add_output(f"錯誤: {str(e)}", "error")
+        pipeline_state["exit_code"] = -1
+
+    finally:
+        pipeline_state["finished_at"] = datetime.now().isoformat()
+        pipeline_state["running"] = False
+        pipeline_state["process"] = None
+
+
+@app.post("/run/{step}")
+async def run_pipeline_step(step: str, background_tasks: BackgroundTasks):
+    """
+    Start a pipeline step execution.
+
+    - **step**: Step number (1-4), 'all' for full pipeline, or 'check' for new episode check
+    """
+    global pipeline_state
+
+    if pipeline_state["running"]:
+        raise HTTPException(
+            status_code=409,
+            detail=f"Pipeline 正在執行中: {STEP_NAMES.get(pipeline_state['current_step'], pipeline_state['current_step'])}"
+        )
+
+    # Validate step
+    if step not in ["all", "check", "1", "2", "3", "4"]:
+        raise HTTPException(status_code=400, detail=f"Invalid step: {step}")
+
+    # Convert to int if numeric
+    step_key = int(step) if step.isdigit() else step
+
+    # Start execution in background
+    thread = threading.Thread(target=run_script_async, args=(step_key,))
+    thread.daemon = True
+    thread.start()
+
+    return {
+        "status": "started",
+        "step": step_key,
+        "name": STEP_NAMES.get(step_key, str(step_key))
+    }
+
+
+@app.get("/run/status")
+async def get_pipeline_status():
+    """Get current pipeline execution status and output."""
+    return {
+        "running": pipeline_state["running"],
+        "current_step": pipeline_state["current_step"],
+        "step_name": STEP_NAMES.get(pipeline_state["current_step"], str(pipeline_state["current_step"])) if pipeline_state["current_step"] else None,
+        "started_at": pipeline_state["started_at"],
+        "finished_at": pipeline_state["finished_at"],
+        "exit_code": pipeline_state["exit_code"],
+        "output": pipeline_state["output"],
+        "output_count": len(pipeline_state["output"])
+    }
+
+
+@app.post("/run/stop")
+async def stop_pipeline():
+    """Stop the currently running pipeline."""
+    global pipeline_state
+
+    if not pipeline_state["running"]:
+        raise HTTPException(status_code=400, detail="No pipeline is running")
+
+    if pipeline_state["process"]:
+        pipeline_state["process"].terminate()
+        pipeline_state["output"].append({
+            "time": datetime.now().strftime("%H:%M:%S"),
+            "level": "warning",
+            "text": "Pipeline 已被使用者停止"
+        })
+
+    pipeline_state["running"] = False
+    return {"status": "stopped"}
 
 
 def main():

@@ -30,9 +30,6 @@ from config import (
     RSS_URL, DATA_DIR, EPISODES_FILE, AUDIO_DIR, TRANSCRIPT_DIR
 )
 
-# Import RSS parsing logic
-from import_rss import parse_rss_feed, extract_episode_number
-
 # Directories
 NOTIFICATION_DIR = DATA_DIR / "notifications"
 SUMMARY_DIR = DATA_DIR / "summaries"
@@ -227,46 +224,44 @@ def main():
     print(f"\nComplete: {success_count}/{len(new_episodes)} episodes processed successfully")
 
 
-# Import helper - fallback if run standalone
-try:
-    from import_rss import parse_rss_feed, extract_episode_number
-except ImportError:
-    # Inline the RSS parsing logic
-    import feedparser
-    import ssl
-    import re
+# RSS parsing logic (inline to avoid import issues)
+import feedparser
+import ssl
+import re
 
-    ssl._create_default_https_context = ssl._create_unverified_context
+ssl._create_default_https_context = ssl._create_unverified_context
 
-    def extract_episode_number(title: str) -> int | None:
-        match = re.search(r'EP\.?(\d+)', title, re.IGNORECASE)
-        return int(match.group(1)) if match else None
 
-    def parse_rss_feed() -> list[dict]:
-        feed = feedparser.parse(RSS_URL)
-        episodes = []
-        for entry in feed.entries:
-            audio_url = None
-            for link in entry.get('links', []):
-                if link.get('type', '').startswith('audio/'):
-                    audio_url = link.get('href')
-                    break
-            for enc in entry.get('enclosures', []):
-                if enc.get('type', '').startswith('audio/'):
-                    audio_url = audio_url or enc.get('href') or enc.get('url')
-                    break
+def extract_episode_number(title: str) -> int | None:
+    match = re.search(r'EP\.?(\d+)', title, re.IGNORECASE)
+    return int(match.group(1)) if match else None
 
-            episode = {
-                'title': entry.get('title', ''),
-                'episode_number': extract_episode_number(entry.get('title', '')),
-                'published': entry.get('published', ''),
-                'audio_url': audio_url,
-                'duration_str': entry.get('itunes_duration', ''),
-                'guid': entry.get('id', ''),
-                'summary': entry.get('summary', '')[:500] if entry.get('summary') else '',
-            }
-            episodes.append(episode)
-        return episodes
+
+def parse_rss_feed() -> list[dict]:
+    feed = feedparser.parse(RSS_URL)
+    episodes = []
+    for entry in feed.entries:
+        audio_url = None
+        for link in entry.get('links', []):
+            if link.get('type', '').startswith('audio/'):
+                audio_url = link.get('href')
+                break
+        for enc in entry.get('enclosures', []):
+            if enc.get('type', '').startswith('audio/'):
+                audio_url = audio_url or enc.get('href') or enc.get('url')
+                break
+
+        episode = {
+            'title': entry.get('title', ''),
+            'episode_number': extract_episode_number(entry.get('title', '')),
+            'published': entry.get('published', ''),
+            'audio_url': audio_url,
+            'duration_str': entry.get('itunes_duration', ''),
+            'guid': entry.get('id', ''),
+            'summary': entry.get('summary', '')[:500] if entry.get('summary') else '',
+        }
+        episodes.append(episode)
+    return episodes
 
 
 if __name__ == "__main__":

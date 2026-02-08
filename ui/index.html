@@ -658,6 +658,9 @@
                         <button class="btn btn-secondary" onclick="refreshData()">
                             <span>🔄</span> 重新整理
                         </button>
+                        <button class="btn btn-secondary" id="stopBtn" onclick="stopPipeline()" style="display: none; background: var(--error);">
+                            <span>⏹️</span> 停止執行
+                        </button>
                     </div>
 
                     <div class="pipeline-steps">
@@ -771,6 +774,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             checkServerStatus();
             loadEpisodes();
+            checkRunningPipeline();
             setInterval(checkServerStatus, 30000);
         });
 
@@ -938,6 +942,9 @@
         }
 
         // Pipeline execution
+        let statusPollingInterval = null;
+        let lastOutputCount = 0;
+
         async function runPipeline(step) {
             const terminal = document.getElementById('terminal');
             document.getElementById('terminalCard').style.display = 'block';
@@ -951,27 +958,115 @@
                 4: 'AI 摘要'
             }[step];
 
-            addTerminalLine(`開始執行: ${stepName}`, 'info');
-            addTerminalLine('請在終端機中執行以下命令:', 'info');
-
-            let command;
-            if (step === 'all') {
-                command = 'python run_pipeline.py';
-            } else if (step === 'check') {
-                command = 'python auto_check_new_episodes.py';
-            } else {
-                command = `python run_pipeline.py --step ${step}`;
-            }
-
-            addTerminalLine(`$ ${command}`, 'success');
-            addTerminalLine('', '');
-            addTerminalLine('提示: 由於 Pipeline 需要較長時間執行，', '');
-            addTerminalLine('建議直接在終端機中執行以監控進度。', '');
+            // Clear terminal
+            terminal.innerHTML = '';
+            addTerminalLine(`啟動 ${stepName}...`, 'info');
 
             // Highlight the active step
             if (typeof step === 'number') {
-                document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+                document.querySelectorAll('.step').forEach(s => s.classList.remove('active', 'completed'));
                 document.getElementById(`step${step}`).classList.add('active');
+            }
+
+            // Disable buttons while running
+            setButtonsDisabled(true);
+
+            try {
+                const res = await fetch(`${API_BASE}/run/${step}`, { method: 'POST' });
+                const data = await res.json();
+
+                if (!res.ok) {
+                    addTerminalLine(`錯誤: ${data.detail}`, 'error');
+                    setButtonsDisabled(false);
+                    return;
+                }
+
+                addTerminalLine(`Pipeline 已啟動: ${data.name}`, 'success');
+                addTerminalLine('', '');
+
+                // Start polling for output
+                lastOutputCount = 0;
+                startStatusPolling();
+
+            } catch (err) {
+                addTerminalLine(`啟動失敗: ${err.message}`, 'error');
+                setButtonsDisabled(false);
+            }
+        }
+
+        function startStatusPolling() {
+            if (statusPollingInterval) {
+                clearInterval(statusPollingInterval);
+            }
+
+            statusPollingInterval = setInterval(async () => {
+                try {
+                    const res = await fetch(`${API_BASE}/run/status`);
+                    const data = await res.json();
+
+                    // Add new output lines
+                    if (data.output && data.output.length > lastOutputCount) {
+                        const newLines = data.output.slice(lastOutputCount);
+                        newLines.forEach(line => {
+                            addTerminalLine(line.text, line.level);
+                        });
+                        lastOutputCount = data.output.length;
+                    }
+
+                    // Update step indicators
+                    if (data.current_step && typeof data.current_step === 'number') {
+                        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+                        const stepEl = document.getElementById(`step${data.current_step}`);
+                        if (stepEl) stepEl.classList.add('active');
+                    }
+
+                    // Check if finished
+                    if (!data.running) {
+                        clearInterval(statusPollingInterval);
+                        statusPollingInterval = null;
+                        setButtonsDisabled(false);
+
+                        // Mark completed steps
+                        if (data.exit_code === 0) {
+                            document.querySelectorAll('.step').forEach(s => {
+                                s.classList.remove('active');
+                                s.classList.add('completed');
+                            });
+                        }
+
+                        // Refresh episode list
+                        loadEpisodes();
+                    }
+                } catch (err) {
+                    console.error('Status polling error:', err);
+                }
+            }, 1000);
+        }
+
+        async function stopPipeline() {
+            try {
+                const res = await fetch(`${API_BASE}/run/stop`, { method: 'POST' });
+                if (res.ok) {
+                    addTerminalLine('正在停止...', 'warning');
+                }
+            } catch (err) {
+                addTerminalLine(`停止失敗: ${err.message}`, 'error');
+            }
+        }
+
+        function setButtonsDisabled(disabled) {
+            document.querySelectorAll('.pipeline-controls .btn').forEach(btn => {
+                btn.disabled = disabled;
+            });
+            document.querySelectorAll('.step').forEach(step => {
+                step.style.pointerEvents = disabled ? 'none' : 'auto';
+                step.style.opacity = disabled ? '0.5' : '1';
+            });
+
+            // Show/hide stop button
+            const stopBtn = document.getElementById('stopBtn');
+            if (stopBtn) {
+                stopBtn.style.display = disabled ? 'inline-flex' : 'none';
             }
         }
 
@@ -992,6 +1087,23 @@
         function refreshData() {
             loadEpisodes();
             addTerminalLine('資料已重新整理', 'success');
+        }
+
+        // Check for running pipeline on load
+        async function checkRunningPipeline() {
+            try {
+                const res = await fetch(`${API_BASE}/run/status`);
+                const data = await res.json();
+                if (data.running) {
+                    document.getElementById('terminalCard').style.display = 'block';
+                    addTerminalLine('偵測到正在執行的 Pipeline...', 'info');
+                    lastOutputCount = 0;
+                    setButtonsDisabled(true);
+                    startStatusPolling();
+                }
+            } catch (err) {
+                // Ignore
+            }
         }
     </script>
 </body>
