@@ -17,8 +17,13 @@ Usage:
     python server.py --port 8080  # Start on port 8080
 
 Requirements:
-    pip install fastapi uvicorn pyyaml
+    pip install fastapi uvicorn pyyaml python-dotenv
 """
+
+# Load .env file first (for API keys)
+from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv(Path(__file__).parent / ".env")
 
 import argparse
 import json
