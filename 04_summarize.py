@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """
-Step 4: Summarize transcripts using Claude or OpenAI API.
+Step 4: Summarize transcripts using Claude, OpenAI, or Gemini API.
 
-For each transcript in data/transcripts/*.txt that doesn't have a corresponding
-summary in data/summaries/, generates a summary in Traditional Chinese.
+For each transcript in data/{podcast}/transcripts/*.txt that doesn't have a corresponding
+summary in data/{podcast}/summaries/, generates a summary in Traditional Chinese.
+
+Supports multiple podcasts via PODCAST environment variable.
 
 Usage:
     python 04_summarize.py                    # Process all missing summaries
@@ -16,11 +18,13 @@ import argparse
 import os
 import re
 from pathlib import Path
-from config import DATA_DIR, TRANSCRIPT_DIR
+from config import get_podcast_config
 
-# Directories
-SUMMARY_DIR = DATA_DIR / "summaries"
-SUMMARY_DIR.mkdir(parents=True, exist_ok=True)
+# Get podcast config (from env or default)
+podcast = get_podcast_config()
+
+# Ensure summary directory exists
+podcast.summary_dir.mkdir(parents=True, exist_ok=True)
 
 # Default settings
 DEFAULT_PROVIDER = "gemini"
@@ -50,7 +54,7 @@ def get_transcripts_to_process(ep_start: int | None = None, ep_end: int | None =
     """Get list of transcripts that need summaries."""
     transcripts = []
 
-    for txt_file in TRANSCRIPT_DIR.glob("EP*.txt"):
+    for txt_file in podcast.transcript_dir.glob("EP*.txt"):
         ep_num = get_episode_number_from_filename(txt_file.name)
         if ep_num is None:
             continue
@@ -62,7 +66,7 @@ def get_transcripts_to_process(ep_start: int | None = None, ep_end: int | None =
             continue
 
         # Check if summary already exists
-        summary_file = SUMMARY_DIR / f"EP{ep_num:04d}_summary.txt"
+        summary_file = podcast.summary_dir / f"EP{ep_num:04d}_summary.txt"
         if summary_file.exists():
             continue
 
@@ -220,7 +224,7 @@ def main():
     print(f"Provider: {args.provider}")
     print(f"Model: {args.model}")
     print(f"Episode range: {f'EP{ep_start}-EP{ep_end}' if ep_start else 'All'}")
-    print(f"Output directory: {SUMMARY_DIR}")
+    print(f"Output directory: {podcast.summary_dir}")
     print()
 
     # Get transcripts to process
@@ -253,7 +257,7 @@ def main():
             summary = summarize_transcript(transcript_path, args.provider, args.model)
 
             # Save summary
-            summary_file = SUMMARY_DIR / f"EP{ep_num:04d}_summary.txt"
+            summary_file = podcast.summary_dir / f"EP{ep_num:04d}_summary.txt"
             summary_file.write_text(summary, encoding="utf-8")
 
             print(f"OK ({len(summary)} chars)")
@@ -266,7 +270,7 @@ def main():
     print()
     print("=" * 60)
     print(f"Complete: {success_count} succeeded, {error_count} failed")
-    print(f"Summaries saved to: {SUMMARY_DIR}")
+    print(f"Summaries saved to: {podcast.summary_dir}")
 
 
 if __name__ == "__main__":

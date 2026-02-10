@@ -6,8 +6,10 @@ Supports:
 - Groq API (whisper-large-v3, fast and free)
 - Local faster-whisper (offline)
 
-Reads MP3s from data/audio/ and outputs transcripts to data/transcripts/
+Reads MP3s from data/{podcast}/audio/ and outputs transcripts to data/{podcast}/transcripts/
 Output format matches SpotScribe: [MM:SS] text...
+
+Supports multiple podcasts via PODCAST environment variable.
 """
 
 import argparse
@@ -23,16 +25,13 @@ from tqdm import tqdm
 GROQ_DELAY_SECONDS = 65  # Wait between requests to avoid 429
 
 from config import (
-    AUDIO_DIR, TRANSCRIPT_DIR, EPISODES_FILE,
+    get_podcast_config,
     WHISPER_MODEL, WHISPER_LANGUAGE, WHISPER_DEVICE,
-    EPISODE_START, EPISODE_END, TIMESTAMP_FORMAT
+    TIMESTAMP_FORMAT, WHISPER_PROVIDER
 )
 
-# Check for provider setting
-try:
-    from config import WHISPER_PROVIDER
-except ImportError:
-    WHISPER_PROVIDER = "local"
+# Get podcast config (from env or default)
+podcast = get_podcast_config()
 
 
 def format_timestamp(seconds: float) -> str:
@@ -233,7 +232,7 @@ def get_episode_number_from_filename(filename: str) -> int | None:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Transcribe Gooaye audio files")
+    parser = argparse.ArgumentParser(description="Transcribe podcast audio files")
     parser.add_argument('--force', action='store_true',
                         help="Re-transcribe even if transcript exists")
     parser.add_argument('--ep', type=str, default=None,
@@ -241,20 +240,20 @@ def main():
     args = parser.parse_args()
 
     print("=" * 60)
-    print("Gooaye Whisper Transcription")
+    print(f"Whisper Transcription: {podcast.name}")
     print("=" * 60)
 
     # Check for audio files
-    audio_files = sorted(AUDIO_DIR.glob("*.mp3"))
+    audio_files = sorted(podcast.audio_dir.glob("*.mp3"))
     if not audio_files:
-        print(f"Error: No MP3 files found in {AUDIO_DIR}")
+        print(f"Error: No MP3 files found in {podcast.audio_dir}")
         print("Run 02_download_audio.py first.")
         return
-    
+
     print(f"Found {len(audio_files)} audio files")
-    
+
     # Parse --ep argument if provided
-    ep_start, ep_end = EPISODE_START, EPISODE_END
+    ep_start, ep_end = podcast.episode_start, podcast.episode_end
     if args.ep:
         if '-' in args.ep:
             parts = args.ep.split('-')
@@ -262,7 +261,7 @@ def main():
         else:
             ep_start = ep_end = int(args.ep)
 
-    # Filter by episode range
+    # Filter by episode range (only applies to numbered podcasts)
     if ep_start or ep_end:
         audio_files = [
             f for f in audio_files
@@ -273,7 +272,7 @@ def main():
         print(f"Filtered to {len(audio_files)} files (EP{ep_start}-EP{ep_end})")
 
     # Create output directory
-    TRANSCRIPT_DIR.mkdir(parents=True, exist_ok=True)
+    podcast.transcript_dir.mkdir(parents=True, exist_ok=True)
 
     # Check what's already transcribed (unless --force)
     if args.force:
@@ -282,7 +281,7 @@ def main():
     else:
         existing = [
             f for f in audio_files
-            if (TRANSCRIPT_DIR / f"{f.stem}.txt").exists()
+            if (podcast.transcript_dir / f"{f.stem}.txt").exists()
         ]
         to_process = [f for f in audio_files if f not in existing]
         print(f"Already transcribed: {len(existing)}")
@@ -332,8 +331,8 @@ def main():
     failed = []
     
     for i, audio_file in enumerate(tqdm(to_process, desc="Transcribing")):
-        output_file = TRANSCRIPT_DIR / f"{audio_file.stem}.txt"
-        output_json = TRANSCRIPT_DIR / f"{audio_file.stem}.json"
+        output_file = podcast.transcript_dir / f"{audio_file.stem}.txt"
+        output_json = podcast.transcript_dir / f"{audio_file.stem}.json"
 
         # Rate limiting for Groq API
         if WHISPER_PROVIDER == "groq" and i > 0:
@@ -377,7 +376,7 @@ def main():
     print(f"{'=' * 60}")
     print(f"  Success: {results['success']}")
     print(f"  Failed: {results['failed']}")
-    print(f"  Output directory: {TRANSCRIPT_DIR}")
+    print(f"  Output directory: {podcast.transcript_dir}")
     
     if failed:
         print(f"\nFailed files:")

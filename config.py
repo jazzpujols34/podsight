@@ -40,6 +40,7 @@ class PodcastConfig:
         self.episode_start = self._data.get('episode_start')
         self.episode_end = self._data.get('episode_end')
         self.episode_pattern = self._data.get('episode_pattern')
+        self.max_episodes = self._data.get('max_episodes')  # Limit for daily podcasts
 
         # Podcast-specific data directories
         self.data_dir = DATA_DIR / slug

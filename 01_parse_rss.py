@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """
-Step 1: Parse Gooaye RSS feed and extract episode metadata.
+Step 1: Parse podcast RSS feed and extract episode metadata.
 
-Output: data/episodes.json with all episode info including audio URLs
+Output: data/{podcast}/episodes.json with all episode info including audio URLs
+
+Supports multiple podcasts via PODCAST environment variable.
 """
 
 import json
@@ -10,17 +12,18 @@ import re
 import feedparser
 import ssl
 from datetime import datetime
-from config import RSS_URL, EPISODES_FILE, DATA_DIR
+from config import get_podcast_config
 
 # Fix SSL certificate verification issues
 ssl._create_default_https_context = ssl._create_unverified_context
 
+# Get podcast config (from env or default)
+podcast = get_podcast_config()
+
+
 def extract_episode_number(title: str) -> int | None:
-    """Extract episode number from title like 'EP621 ...'"""
-    match = re.search(r'EP\.?(\d+)', title, re.IGNORECASE)
-    if match:
-        return int(match.group(1))
-    return None
+    """Extract episode number from title using podcast's pattern."""
+    return podcast.extract_episode_number(title)
 
 def parse_duration(duration_str: str) -> int:
     """Parse duration string to seconds. Handles HH:MM:SS or MM:SS or seconds."""
@@ -40,8 +43,8 @@ def parse_duration(duration_str: str) -> int:
 
 def parse_rss_feed() -> list[dict]:
     """Parse the RSS feed and return episode metadata."""
-    print(f"Fetching RSS feed: {RSS_URL}")
-    feed = feedparser.parse(RSS_URL)
+    print(f"Fetching RSS feed: {podcast.rss_url}")
+    feed = feedparser.parse(podcast.rss_url)
     
     if feed.bozo:
         print(f"Warning: Feed parsing had issues: {feed.bozo_exception}")
@@ -101,17 +104,22 @@ def parse_rss_feed() -> list[dict]:
 
 def main():
     print("=" * 60)
-    print("Gooaye RSS Parser")
+    print(f"RSS Parser: {podcast.name}")
     print("=" * 60)
-    
+
     episodes = parse_rss_feed()
-    
+
+    # Apply max_episodes limit if set (for daily podcasts)
+    if podcast.max_episodes and len(episodes) > podcast.max_episodes:
+        print(f"\nApplying max_episodes limit: {podcast.max_episodes}")
+        episodes = episodes[:podcast.max_episodes]
+
     # Save to JSON
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    with open(EPISODES_FILE, 'w', encoding='utf-8') as f:
+    podcast.data_dir.mkdir(parents=True, exist_ok=True)
+    with open(podcast.episodes_file, 'w', encoding='utf-8') as f:
         json.dump(episodes, f, ensure_ascii=False, indent=2)
-    
-    print(f"\nSaved {len(episodes)} episodes to {EPISODES_FILE}")
+
+    print(f"\nSaved {len(episodes)} episodes to {podcast.episodes_file}")
     
     # Stats
     with_audio = sum(1 for e in episodes if e['audio_url'])

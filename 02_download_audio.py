@@ -2,7 +2,9 @@
 """
 Step 2: Download audio files for all episodes.
 
-Reads from data/episodes.json and downloads MP3s to data/audio/
+Reads from data/{podcast}/episodes.json and downloads MP3s to data/{podcast}/audio/
+
+Supports multiple podcasts via PODCAST environment variable.
 """
 
 import json
@@ -10,11 +12,10 @@ import requests
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
-from config import (
-    EPISODES_FILE, AUDIO_DIR, 
-    DOWNLOAD_WORKERS, DOWNLOAD_RETRY,
-    EPISODE_START, EPISODE_END
-)
+from config import get_podcast_config, DOWNLOAD_WORKERS, DOWNLOAD_RETRY
+
+# Get podcast config (from env or default)
+podcast = get_podcast_config()
 
 def sanitize_filename(title: str, ep_num: int | None) -> str:
     """Create a safe filename from episode title."""
@@ -70,51 +71,51 @@ def download_episode(episode: dict, output_dir: Path) -> dict:
 
 def main():
     print("=" * 60)
-    print("Gooaye Audio Downloader")
+    print(f"Audio Downloader: {podcast.name}")
     print("=" * 60)
-    
+
     # Load episodes
-    if not EPISODES_FILE.exists():
-        print(f"Error: {EPISODES_FILE} not found. Run 01_parse_rss.py first.")
+    if not podcast.episodes_file.exists():
+        print(f"Error: {podcast.episodes_file} not found. Run 01_parse_rss.py first.")
         return
-    
-    with open(EPISODES_FILE, 'r', encoding='utf-8') as f:
+
+    with open(podcast.episodes_file, 'r', encoding='utf-8') as f:
         episodes = json.load(f)
-    
-    print(f"Loaded {len(episodes)} episodes from {EPISODES_FILE}")
-    
-    # Filter by episode range if configured
-    if EPISODE_START or EPISODE_END:
+
+    print(f"Loaded {len(episodes)} episodes from {podcast.episodes_file}")
+
+    # Filter by episode range if configured (for numbered podcasts like Gooaye)
+    if podcast.episode_start or podcast.episode_end:
         original_count = len(episodes)
         episodes = [
-            e for e in episodes 
+            e for e in episodes
             if e.get('episode_number') and
-               (EPISODE_START is None or e['episode_number'] >= EPISODE_START) and
-               (EPISODE_END is None or e['episode_number'] <= EPISODE_END)
+               (podcast.episode_start is None or e['episode_number'] >= podcast.episode_start) and
+               (podcast.episode_end is None or e['episode_number'] <= podcast.episode_end)
         ]
-        print(f"Filtered to {len(episodes)} episodes (EP{EPISODE_START or 1} - EP{EPISODE_END or 'latest'})")
-    
+        print(f"Filtered to {len(episodes)} episodes (EP{podcast.episode_start or 1} - EP{podcast.episode_end or 'latest'})")
+
     # Create output directory
-    AUDIO_DIR.mkdir(parents=True, exist_ok=True)
+    podcast.audio_dir.mkdir(parents=True, exist_ok=True)
     
     # Check how many already exist
-    existing = sum(1 for e in episodes if (AUDIO_DIR / sanitize_filename(e['title'], e.get('episode_number'))).exists())
+    existing = sum(1 for e in episodes if (podcast.audio_dir / sanitize_filename(e['title'], e.get('episode_number'))).exists())
     print(f"Already downloaded: {existing}")
     print(f"To download: {len(episodes) - existing}")
-    
+
     if existing == len(episodes):
         print("All episodes already downloaded!")
         return
-    
+
     # Download with progress bar
     results = {'success': 0, 'failed': 0, 'skipped': 0, 'exists': 0}
     failed_episodes = []
-    
+
     print(f"\nDownloading with {DOWNLOAD_WORKERS} workers...")
-    
+
     with ThreadPoolExecutor(max_workers=DOWNLOAD_WORKERS) as executor:
         futures = {
-            executor.submit(download_episode, ep, AUDIO_DIR): ep 
+            executor.submit(download_episode, ep, podcast.audio_dir): ep
             for ep in episodes
         }
         
@@ -151,9 +152,9 @@ def main():
     
     # Calculate total size
     total_size = sum(
-        (AUDIO_DIR / sanitize_filename(e['title'], e.get('episode_number'))).stat().st_size
+        (podcast.audio_dir / sanitize_filename(e['title'], e.get('episode_number'))).stat().st_size
         for e in episodes
-        if (AUDIO_DIR / sanitize_filename(e['title'], e.get('episode_number'))).exists()
+        if (podcast.audio_dir / sanitize_filename(e['title'], e.get('episode_number'))).exists()
     )
     print(f"\nTotal audio size: {total_size / (1024**3):.2f} GB")
 

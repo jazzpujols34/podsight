@@ -16,18 +16,20 @@ podcasts:
     slug: yutinghao
     rss_url: "https://feeds.soundcloud.com/users/soundcloud:users:735679489/sounds.rss"
     language: zh
-    episode_start: null  # Process all
+    episode_start: null
     episode_end: null
-    episode_pattern: null  # Will use published date as identifier
+    episode_pattern: null  # No numbered episodes, uses date
+    max_episodes: 30  # Daily podcast - limit to ~1 month
 
   zhaohua:
     name: "兆華與股惑仔"
     slug: zhaohua
     rss_url: "https://feeds.soundon.fm/podcasts/91be014b-9f55-4bf3-a910-b232eda82d11.xml"
     language: zh
-    episode_start: null  # Process all
+    episode_start: null
     episode_end: null
-    episode_pattern: null  # Will use published date as identifier
+    episode_pattern: null  # No numbered episodes, uses date
+    max_episodes: 30  # Daily podcast - limit to ~1 month
 
 # Default podcast (used when no --podcast flag specified)
 default: gooaye
