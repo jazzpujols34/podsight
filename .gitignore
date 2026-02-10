@@ -10,13 +10,14 @@ __pycache__/
 *.so
 
 # Data files (large audio, transcripts, summaries)
-data/audio/
-data/transcripts/
-data/summaries/
-data/notifications/
+# Each podcast has its own subdirectory under data/
+data/*/audio/
+data/*/transcripts/
+data/*/summaries/
+data/*/notifications/
 
-# Keep episodes.json (metadata only)
-!data/episodes.json
+# Keep episodes.json (metadata only) for each podcast
+!data/*/episodes.json
 
 # Environment variables
 .env

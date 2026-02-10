@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>股癌 Pipeline Dashboard</title>
+    <title>Podcast Pipeline Dashboard</title>
     <style>
         :root {
             --bg-primary: #0f0f0f;
@@ -87,6 +87,40 @@
             padding: 0.5rem 1rem;
             background: var(--bg-tertiary);
             border-radius: 9999px;
+            font-size: 0.875rem;
+        }
+
+        /* Podcast Selector */
+        .podcast-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .podcast-select {
+            padding: 0.5rem 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.9375rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .podcast-select:hover {
+            border-color: var(--accent);
+        }
+
+        .podcast-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        }
+
+        .podcast-label {
+            color: var(--text-secondary);
             font-size: 0.875rem;
         }
 
@@ -609,7 +643,13 @@
         <div class="header-content">
             <div class="logo">
                 <div class="logo-icon">🎙️</div>
-                <h1>股癌 Pipeline</h1>
+                <h1 id="podcastTitle">Podcast Pipeline</h1>
+            </div>
+            <div class="podcast-selector">
+                <span class="podcast-label">Podcast:</span>
+                <select class="podcast-select" id="podcastSelect" onchange="switchPodcast(this.value)">
+                    <option value="">載入中...</option>
+                </select>
             </div>
             <div class="status-badge">
                 <div class="status-dot" id="serverStatus"></div>
@@ -769,14 +809,58 @@
         let currentEpisode = null;
         let currentTab = 'transcript';
         let episodesData = [];
+        let currentPodcast = null;
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             checkServerStatus();
-            loadEpisodes();
+            loadPodcasts();
             checkRunningPipeline();
             setInterval(checkServerStatus, 30000);
         });
+
+        // Load podcasts
+        async function loadPodcasts() {
+            try {
+                const res = await fetch(`${API_BASE}/podcasts`);
+                const data = await res.json();
+                const select = document.getElementById('podcastSelect');
+
+                select.innerHTML = data.podcasts.map(p =>
+                    `<option value="${p.slug}" ${p.is_current ? 'selected' : ''}>${p.name} (${p.transcript_count})</option>`
+                ).join('');
+
+                currentPodcast = data.current;
+                updatePodcastTitle(data.podcasts.find(p => p.slug === data.current)?.name || 'Pipeline');
+                loadEpisodes();
+            } catch (err) {
+                document.getElementById('podcastSelect').innerHTML = '<option value="">無法載入</option>';
+            }
+        }
+
+        // Switch podcast
+        async function switchPodcast(slug) {
+            if (!slug) return;
+            try {
+                const res = await fetch(`${API_BASE}/podcasts/${slug}/select`, { method: 'POST' });
+                const data = await res.json();
+                if (res.ok) {
+                    currentPodcast = slug;
+                    updatePodcastTitle(data.name);
+                    loadEpisodes();
+                    // Clear viewer
+                    document.getElementById('viewerEmpty').style.display = 'block';
+                    document.getElementById('viewerContent').style.display = 'none';
+                    currentEpisode = null;
+                }
+            } catch (err) {
+                console.error('Switch podcast error:', err);
+            }
+        }
+
+        function updatePodcastTitle(name) {
+            document.getElementById('podcastTitle').textContent = name + ' Pipeline';
+        }
 
         // Check server status
         async function checkServerStatus() {

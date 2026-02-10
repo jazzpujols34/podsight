@@ -1,25 +1,28 @@
 #!/usr/bin/env python3
 """
-Simple HTTP API server for Gooaye transcript database.
+HTTP API server for podcast transcript database.
+Supports multiple podcasts via podcasts.yaml configuration.
 
 Endpoints:
-    GET /                     - Serves the web UI
-    GET /episode/{ep_number}  - Returns transcript + summary as JSON
-    GET /latest               - Returns the most recent episode number and summary
-    GET /search?q={query}     - Returns search results as JSON
-    POST /run/{step}          - Execute a pipeline step
-    GET /run/status           - Get current execution status
+    GET /                           - Serves the web UI
+    GET /podcasts                   - List available podcasts
+    GET /episode/{ep_number}        - Returns transcript + summary as JSON
+    GET /latest                     - Returns the most recent episode number and summary
+    GET /search?q={query}           - Returns search results as JSON
+    POST /run/{step}                - Execute a pipeline step
+    GET /run/status                 - Get current execution status
 
 Usage:
     python server.py              # Start on default port 8000
     python server.py --port 8080  # Start on port 8080
 
 Requirements:
-    pip install fastapi uvicorn
+    pip install fastapi uvicorn pyyaml
 """
 
 import argparse
 import json
+import os
 import re
 import subprocess
 import sys
@@ -34,7 +37,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel
 
-from config import DATA_DIR, TRANSCRIPT_DIR, EPISODES_FILE
+from config import DATA_DIR, get_podcast_config, list_podcasts, DEFAULT_PODCAST
 
 # UI directory
 UI_DIR = Path(__file__).parent / "ui"
@@ -44,6 +47,7 @@ SCRIPT_DIR = Path(__file__).parent
 pipeline_state = {
     "running": False,
     "current_step": None,
+    "current_podcast": None,
     "output": [],
     "started_at": None,
     "finished_at": None,
@@ -51,12 +55,13 @@ pipeline_state = {
     "process": None
 }
 
-SUMMARY_DIR = DATA_DIR / "summaries"
+# Current podcast context (default)
+_current_podcast = get_podcast_config()
 
 app = FastAPI(
-    title="Gooaye Transcript API",
-    description="API for accessing 股癌 podcast transcripts and summaries",
-    version="1.0.0"
+    title="Podcast Transcript API",
+    description="API for accessing podcast transcripts and summaries (supports multiple podcasts)",
+    version="2.0.0"
 )
 
 # Enable CORS for external integrations
@@ -103,13 +108,22 @@ class SearchResponse(BaseModel):
 
 # --- Helper Functions ---
 
-def get_episode_metadata(ep_number: int) -> dict | None:
+def get_podcast(podcast_slug: Optional[str] = None):
+    """Get podcast config, using current context if not specified."""
+    global _current_podcast
+    if podcast_slug:
+        return get_podcast_config(podcast_slug)
+    return _current_podcast
+
+
+def get_episode_metadata(ep_number: int, podcast_slug: Optional[str] = None) -> dict | None:
     """Get episode metadata from episodes.json."""
-    if not EPISODES_FILE.exists():
+    podcast = get_podcast(podcast_slug)
+    if not podcast.episodes_file.exists():
         return None
 
     try:
-        with open(EPISODES_FILE, 'r', encoding='utf-8') as f:
+        with open(podcast.episodes_file, 'r', encoding='utf-8') as f:
             episodes = json.load(f)
 
         for ep in episodes:
@@ -120,11 +134,12 @@ def get_episode_metadata(ep_number: int) -> dict | None:
         return None
 
 
-def get_latest_episode_number() -> int | None:
+def get_latest_episode_number(podcast_slug: Optional[str] = None) -> int | None:
     """Get the highest episode number from transcripts."""
+    podcast = get_podcast(podcast_slug)
     max_ep = None
 
-    for txt_file in TRANSCRIPT_DIR.glob("EP*.txt"):
+    for txt_file in podcast.transcript_dir.glob("EP*.txt"):
         match = re.search(r'EP(\d+)', txt_file.name)
         if match:
             ep_num = int(match.group(1))
@@ -134,17 +149,19 @@ def get_latest_episode_number() -> int | None:
     return max_ep
 
 
-def get_transcript(ep_number: int) -> str | None:
+def get_transcript(ep_number: int, podcast_slug: Optional[str] = None) -> str | None:
     """Read transcript file for an episode."""
-    transcript_file = TRANSCRIPT_DIR / f"EP{ep_number:04d}.txt"
+    podcast = get_podcast(podcast_slug)
+    transcript_file = podcast.transcript_dir / f"EP{ep_number:04d}.txt"
     if transcript_file.exists():
         return transcript_file.read_text(encoding='utf-8')
     return None
 
 
-def get_summary(ep_number: int) -> str | None:
+def get_summary(ep_number: int, podcast_slug: Optional[str] = None) -> str | None:
     """Read summary file for an episode."""
-    summary_file = SUMMARY_DIR / f"EP{ep_number:04d}_summary.txt"
+    podcast = get_podcast(podcast_slug)
+    summary_file = podcast.summary_dir / f"EP{ep_number:04d}_summary.txt"
     if summary_file.exists():
         return summary_file.read_text(encoding='utf-8')
     return None
@@ -153,17 +170,19 @@ def get_summary(ep_number: int) -> str | None:
 def search_transcripts(
     query: str,
     limit: int = 20,
-    search_summaries: bool = False
+    search_summaries: bool = False,
+    podcast_slug: Optional[str] = None
 ) -> list[SearchResultItem]:
     """Search transcripts or summaries for a query string."""
+    podcast = get_podcast(podcast_slug)
     results = []
 
     if search_summaries:
-        search_dir = SUMMARY_DIR
+        search_dir = podcast.summary_dir
         pattern = "EP*_summary.txt"
         source = "summary"
     else:
-        search_dir = TRANSCRIPT_DIR
+        search_dir = podcast.transcript_dir
         pattern = "EP*.txt"
         source = "transcript"
 
@@ -233,15 +252,47 @@ async def root():
 async def api_info():
     """API info - shows available endpoints."""
     return {
-        "name": "Gooaye Transcript API",
-        "version": "1.0.0",
+        "name": "Podcast Transcript API",
+        "version": "2.0.0",
+        "current_podcast": _current_podcast.name,
         "endpoints": {
+            "/podcasts": "List available podcasts",
+            "/podcasts/{slug}/select": "Switch to a different podcast",
             "/episode/{ep_number}": "Get transcript and summary for an episode",
             "/latest": "Get the most recent episode",
             "/search?q={query}": "Search transcripts",
             "/episodes": "List all episodes",
         }
     }
+
+
+@app.get("/podcasts")
+async def get_podcasts():
+    """List all available podcasts."""
+    podcasts = []
+    for slug, name in list_podcasts().items():
+        podcast = get_podcast_config(slug)
+        # Count episodes
+        transcript_count = len(list(podcast.transcript_dir.glob("EP*.txt")))
+        podcasts.append({
+            "slug": slug,
+            "name": name,
+            "is_current": slug == _current_podcast.slug,
+            "transcript_count": transcript_count,
+            "data_dir": str(podcast.data_dir)
+        })
+    return {"podcasts": podcasts, "current": _current_podcast.slug}
+
+
+@app.post("/podcasts/{slug}/select")
+async def select_podcast(slug: str):
+    """Switch to a different podcast."""
+    global _current_podcast
+    try:
+        _current_podcast = get_podcast_config(slug)
+        return {"status": "ok", "current": _current_podcast.slug, "name": _current_podcast.name}
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @app.get("/episode/{ep_number}", response_model=EpisodeResponse)
@@ -373,16 +424,20 @@ STEP_NAMES = {
 }
 
 
-def run_script_async(step: str | int):
+def run_script_async(step: str | int, podcast_slug: str):
     """Run a pipeline script in background and capture output."""
     global pipeline_state
 
     pipeline_state["running"] = True
     pipeline_state["current_step"] = step
+    pipeline_state["current_podcast"] = podcast_slug
     pipeline_state["output"] = []
     pipeline_state["started_at"] = datetime.now().isoformat()
     pipeline_state["finished_at"] = None
     pipeline_state["exit_code"] = None
+
+    # Set environment variable for subprocess
+    env = {**os.environ, 'PODCAST': podcast_slug}
 
     def add_output(line: str, level: str = "info"):
         pipeline_state["output"].append({
@@ -393,6 +448,9 @@ def run_script_async(step: str | int):
         # Keep only last 500 lines
         if len(pipeline_state["output"]) > 500:
             pipeline_state["output"] = pipeline_state["output"][-500:]
+
+    podcast_name = get_podcast_config(podcast_slug).name
+    add_output(f"Podcast: {podcast_name}", "info")
 
     try:
         # Determine which script to run
@@ -416,7 +474,8 @@ def run_script_async(step: str | int):
                     stderr=subprocess.STDOUT,
                     text=True,
                     bufsize=1,
-                    cwd=str(SCRIPT_DIR)
+                    cwd=str(SCRIPT_DIR),
+                    env=env
                 )
                 pipeline_state["process"] = process
 
@@ -449,7 +508,8 @@ def run_script_async(step: str | int):
             stderr=subprocess.STDOUT,
             text=True,
             bufsize=1,
-            cwd=str(SCRIPT_DIR)
+            cwd=str(SCRIPT_DIR),
+            env=env
         )
         pipeline_state["process"] = process
 
@@ -496,15 +556,16 @@ async def run_pipeline_step(step: str, background_tasks: BackgroundTasks):
     # Convert to int if numeric
     step_key = int(step) if step.isdigit() else step
 
-    # Start execution in background
-    thread = threading.Thread(target=run_script_async, args=(step_key,))
+    # Start execution in background with current podcast
+    thread = threading.Thread(target=run_script_async, args=(step_key, _current_podcast.slug))
     thread.daemon = True
     thread.start()
 
     return {
         "status": "started",
         "step": step_key,
-        "name": STEP_NAMES.get(step_key, str(step_key))
+        "name": STEP_NAMES.get(step_key, str(step_key)),
+        "podcast": _current_podcast.slug
     }
 
 
@@ -515,6 +576,7 @@ async def get_pipeline_status():
         "running": pipeline_state["running"],
         "current_step": pipeline_state["current_step"],
         "step_name": STEP_NAMES.get(pipeline_state["current_step"], str(pipeline_state["current_step"])) if pipeline_state["current_step"] else None,
+        "current_podcast": pipeline_state["current_podcast"],
         "started_at": pipeline_state["started_at"],
         "finished_at": pipeline_state["finished_at"],
         "exit_code": pipeline_state["exit_code"],

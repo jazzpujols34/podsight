@@ -1,0 +1,44 @@
+# Multi-podcast configuration
+# Each podcast has its own RSS feed, data directory, and settings
+
+podcasts:
+  gooaye:
+    name: "股癌 Gooaye"
+    slug: gooaye
+    rss_url: "https://feeds.soundon.fm/podcasts/954689a5-3096-43a4-a80b-7810b219cef3.xml"
+    language: zh
+    episode_start: 615  # Start from EP615 for recent episodes
+    episode_end: null   # No upper limit
+    episode_pattern: 'EP\.?(\d+)'  # Regex to extract episode number from title
+
+  yutinghao:
+    name: "游庭皓的財經皓角"
+    slug: yutinghao
+    rss_url: "https://feeds.soundcloud.com/users/soundcloud:users:735679489/sounds.rss"
+    language: zh
+    episode_start: null  # Process all
+    episode_end: null
+    episode_pattern: null  # Will use published date as identifier
+
+  zhaohua:
+    name: "兆華與股惑仔"
+    slug: zhaohua
+    rss_url: "https://feeds.soundon.fm/podcasts/91be014b-9f55-4bf3-a910-b232eda82d11.xml"
+    language: zh
+    episode_start: null  # Process all
+    episode_end: null
+    episode_pattern: null  # Will use published date as identifier
+
+# Default podcast (used when no --podcast flag specified)
+default: gooaye
+
+# Whisper settings (shared across all podcasts)
+whisper:
+  model: "whisper-large-v3"
+  language: zh
+  provider: groq  # "groq" for cloud API, "local" for faster-whisper
+
+# Download settings
+download:
+  workers: 4
+  retry: 3
