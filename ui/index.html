@@ -929,10 +929,13 @@
             }
 
             list.innerHTML = episodesData.map(ep => {
-                const identifier = ep.episode_number || ep.filename;
-                const displayName = ep.episode_number ? `EP${ep.episode_number}` : ep.title;
+                // Properly handle null episode numbers (for date-based podcasts)
+                const hasEpNumber = ep.episode_number !== null && ep.episode_number !== undefined;
+                const identifier = hasEpNumber ? ep.episode_number : (ep.filename || '');
+                const displayName = hasEpNumber ? `EP${ep.episode_number}` : (ep.title || ep.filename || '(無標題)');
+                const safeIdentifier = String(identifier).replace(/'/g, "\\'");
                 return `
-                <div class="episode-item" onclick="loadEpisode('${identifier}')">
+                <div class="episode-item" onclick="loadEpisode('${safeIdentifier}')">
                     <span class="episode-number">${displayName}</span>
                     <div class="episode-badges">
                         ${ep.has_transcript ? '<span class="badge badge-transcript">逐字稿</span>' : ''}
@@ -950,7 +953,8 @@
                 document.getElementById('viewerText').innerHTML = '<div class="spinner"></div>';
 
                 // Use different endpoint for numbered vs file-based episodes
-                const isNumber = !isNaN(identifier);
+                // Check if identifier is purely digits (episode number) or a filename
+                const isNumber = /^\d+$/.test(String(identifier));
                 const url = isNumber
                     ? `${API_BASE}/episode/${identifier}`
                     : `${API_BASE}/episode/file/${encodeURIComponent(identifier)}`;
@@ -959,7 +963,8 @@
                 const data = await res.json();
 
                 currentEpisode = data;
-                document.getElementById('viewerEp').textContent = data.episode_number ? `EP${data.episode_number}` : '';
+                const hasEpNumber = data.episode_number !== null && data.episode_number !== undefined;
+                document.getElementById('viewerEp').textContent = hasEpNumber ? `EP${data.episode_number}` : '';
                 document.getElementById('viewerTitle').textContent = data.title || '(無標題)';
 
                 showTab(currentTab);
