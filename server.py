@@ -278,7 +278,7 @@ async def get_podcasts():
     for slug, name in list_podcasts().items():
         podcast = get_podcast_config(slug)
         # Count episodes
-        transcript_count = len(list(podcast.transcript_dir.glob("EP*.txt")))
+        transcript_count = len(list(podcast.transcript_dir.glob("*.txt")))
         podcasts.append({
             "slug": slug,
             "name": name,
@@ -327,6 +327,41 @@ async def get_episode(ep_number: int):
         has_transcript=transcript is not None,
         has_summary=summary is not None
     )
+
+
+@app.get("/episode/file/{filename:path}")
+async def get_episode_by_file(filename: str):
+    """
+    Get transcript and summary by filename (for non-numbered podcasts).
+
+    - **filename**: Transcript filename (e.g., "2026_1_14_三_展示走向工廠.txt")
+    """
+    podcast = _current_podcast
+
+    # Remove .txt extension if present
+    stem = filename[:-4] if filename.endswith('.txt') else filename
+
+    transcript_file = podcast.transcript_dir / f"{stem}.txt"
+    summary_file = podcast.summary_dir / f"{stem}_summary.txt"
+
+    transcript = transcript_file.read_text(encoding='utf-8') if transcript_file.exists() else None
+    summary = summary_file.read_text(encoding='utf-8') if summary_file.exists() else None
+
+    if transcript is None and summary is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Episode '{filename}' not found"
+        )
+
+    return {
+        "episode_number": None,
+        "title": stem[:50],
+        "filename": filename,
+        "transcript": transcript,
+        "summary": summary,
+        "has_transcript": transcript is not None,
+        "has_summary": summary is not None
+    }
 
 
 @app.get("/latest", response_model=LatestResponse)
@@ -383,18 +418,39 @@ async def list_episodes(
     """
     List all available episodes.
 
-    Returns episode numbers that have transcripts available.
+    Returns episodes that have transcripts available.
+    Supports both numbered (EP*) and date-based podcasts.
     """
     episodes = []
+    podcast = _current_podcast
 
-    for txt_file in sorted(TRANSCRIPT_DIR.glob("EP*.txt"), reverse=True):
+    # Get all transcript files (both EP*.txt and other formats)
+    txt_files = sorted(podcast.transcript_dir.glob("*.txt"), reverse=True)
+
+    for txt_file in txt_files:
+        # Skip JSON files
+        if txt_file.suffix != '.txt':
+            continue
+
+        # Try to extract episode number for numbered podcasts
         match = re.search(r'EP(\d+)', txt_file.name)
         if match:
             ep_num = int(match.group(1))
-            summary_file = SUMMARY_DIR / f"EP{ep_num:04d}_summary.txt"
-
+            summary_file = podcast.summary_dir / f"EP{ep_num:04d}_summary.txt"
             episodes.append({
                 "episode_number": ep_num,
+                "title": txt_file.stem,
+                "filename": txt_file.name,
+                "has_transcript": True,
+                "has_summary": summary_file.exists()
+            })
+        else:
+            # For non-numbered podcasts, use filename as identifier
+            summary_file = podcast.summary_dir / f"{txt_file.stem}_summary.txt"
+            episodes.append({
+                "episode_number": None,
+                "title": txt_file.stem[:50],  # Truncate long names
+                "filename": txt_file.name,
                 "has_transcript": True,
                 "has_summary": summary_file.exists()
             })

@@ -926,29 +926,38 @@
                 return;
             }
 
-            list.innerHTML = episodesData.map(ep => `
-                <div class="episode-item" onclick="loadEpisode(${ep.episode_number})">
-                    <span class="episode-number">EP${ep.episode_number}</span>
+            list.innerHTML = episodesData.map(ep => {
+                const identifier = ep.episode_number || ep.filename;
+                const displayName = ep.episode_number ? `EP${ep.episode_number}` : ep.title;
+                return `
+                <div class="episode-item" onclick="loadEpisode('${identifier}')">
+                    <span class="episode-number">${displayName}</span>
                     <div class="episode-badges">
                         ${ep.has_transcript ? '<span class="badge badge-transcript">逐字稿</span>' : ''}
                         ${ep.has_summary ? '<span class="badge badge-summary">摘要</span>' : ''}
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         // Load episode content
-        async function loadEpisode(epNum) {
+        async function loadEpisode(identifier) {
             try {
                 document.getElementById('viewerEmpty').style.display = 'none';
                 document.getElementById('viewerContent').style.display = 'block';
                 document.getElementById('viewerText').innerHTML = '<div class="spinner"></div>';
 
-                const res = await fetch(`${API_BASE}/episode/${epNum}`);
+                // Use different endpoint for numbered vs file-based episodes
+                const isNumber = !isNaN(identifier);
+                const url = isNumber
+                    ? `${API_BASE}/episode/${identifier}`
+                    : `${API_BASE}/episode/file/${encodeURIComponent(identifier)}`;
+
+                const res = await fetch(url);
                 const data = await res.json();
 
                 currentEpisode = data;
-                document.getElementById('viewerEp').textContent = `EP${data.episode_number}`;
+                document.getElementById('viewerEp').textContent = data.episode_number ? `EP${data.episode_number}` : '';
                 document.getElementById('viewerTitle').textContent = data.title || '(無標題)';
 
                 showTab(currentTab);
