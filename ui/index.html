@@ -963,7 +963,7 @@
                 const formattedTitle = formatDateTitle(latestData.title, false);
                 document.getElementById('latestEpisode').textContent = hasEpNum
                     ? `EP${latestData.episode_number}`
-                    : (formattedTitle?.slice(0, 20) + '...' || '-');
+                    : (formattedTitle ? formattedTitle.slice(0, 20) + '...' : '-');
             } catch {
                 document.getElementById('latestEpisode').textContent = '-';
             }
