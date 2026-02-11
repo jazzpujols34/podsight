@@ -960,9 +960,10 @@
                 const latest = await fetch(`${API_BASE}/latest`);
                 const latestData = await latest.json();
                 const hasEpNum = latestData.episode_number !== null && latestData.episode_number !== undefined;
+                const formattedTitle = formatDateTitle(latestData.title, false);
                 document.getElementById('latestEpisode').textContent = hasEpNum
                     ? `EP${latestData.episode_number}`
-                    : formatDateTitle(latestData.title, true) || '-';
+                    : (formattedTitle?.slice(0, 20) + '...' || '-');
             } catch {
                 document.getElementById('latestEpisode').textContent = '-';
             }
