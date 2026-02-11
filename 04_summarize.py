@@ -275,19 +275,21 @@ def main():
             display_name = transcript_path.stem[:30]
             summary_file = podcast.summary_dir / f"{transcript_path.stem}_summary.txt"
 
-        print(f"[{i}/{len(transcripts)}] Summarizing {display_name}...", end=" ", flush=True)
+        progress_pct = int((i / len(transcripts)) * 100)
+        print(f"\n[{i}/{len(transcripts)}] ({progress_pct}%) Summarizing {display_name}...", flush=True)
 
         try:
+            print(f"  🤖 Generating summary...", flush=True)
             summary = summarize_transcript(transcript_path, args.provider, args.model)
 
             # Save summary
             summary_file.write_text(summary, encoding="utf-8")
 
-            print(f"OK ({len(summary)} chars)")
+            print(f"  ✅ Done! ({len(summary)} chars)", flush=True)
             success_count += 1
 
         except Exception as e:
-            print(f"ERROR: {e}")
+            print(f"  ❌ ERROR: {e}", flush=True)
             error_count += 1
 
     print()

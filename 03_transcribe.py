@@ -330,19 +330,25 @@ def main():
     results = {'success': 0, 'failed': 0}
     failed = []
     
-    for i, audio_file in enumerate(tqdm(to_process, desc="Transcribing")):
+    total = len(to_process)
+    for i, audio_file in enumerate(to_process):
         output_file = podcast.transcript_dir / f"{audio_file.stem}.txt"
         output_json = podcast.transcript_dir / f"{audio_file.stem}.json"
 
+        # Progress indicator
+        progress_pct = int((i / total) * 100)
+        print(f"\n[{i+1}/{total}] ({progress_pct}%) Transcribing: {audio_file.stem[:40]}...", flush=True)
+
         # Rate limiting for Groq API
         if WHISPER_PROVIDER == "groq" and i > 0:
-            tqdm.write(f"Waiting {GROQ_DELAY_SECONDS}s for rate limit...")
+            print(f"  ⏳ Waiting {GROQ_DELAY_SECONDS}s (API rate limit)...", flush=True)
             time.sleep(GROQ_DELAY_SECONDS)
 
         # Retry logic with exponential backoff
         max_retries = 3
         for attempt in range(max_retries):
             try:
+                print(f"  🎙️ Processing audio...", flush=True)
                 # Transcribe
                 segments = transcribe_fn(audio_file)
 
@@ -356,18 +362,19 @@ def main():
                     json.dump(segments, f, ensure_ascii=False, indent=2)
 
                 results['success'] += 1
+                print(f"  ✅ Done! ({len(transcript_text)} chars)", flush=True)
                 break  # Success, exit retry loop
 
             except Exception as e:
                 error_str = str(e)
                 if "429" in error_str and attempt < max_retries - 1:
                     wait_time = GROQ_DELAY_SECONDS * (attempt + 2)
-                    tqdm.write(f"Rate limited, waiting {wait_time}s before retry...")
+                    print(f"  ⚠️ Rate limited, waiting {wait_time}s before retry...", flush=True)
                     time.sleep(wait_time)
                 else:
                     results['failed'] += 1
                     failed.append({'file': audio_file.name, 'error': error_str})
-                    tqdm.write(f"Failed: {audio_file.name} - {e}")
+                    print(f"  ❌ Failed: {e}", flush=True)
                     break
     
     # Summary
