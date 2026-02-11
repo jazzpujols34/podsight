@@ -51,29 +51,38 @@ def get_episode_number_from_filename(filename: str) -> int | None:
 
 
 def get_transcripts_to_process(ep_start: int | None = None, ep_end: int | None = None) -> list[Path]:
-    """Get list of transcripts that need summaries."""
+    """Get list of transcripts that need summaries.
+
+    Supports both numbered (EP*.txt) and non-numbered (date-based) podcasts.
+    """
     transcripts = []
 
-    for txt_file in podcast.transcript_dir.glob("EP*.txt"):
+    # Get all transcript files
+    for txt_file in podcast.transcript_dir.glob("*.txt"):
         ep_num = get_episode_number_from_filename(txt_file.name)
-        if ep_num is None:
-            continue
 
-        # Check episode range filter
-        if ep_start and ep_num < ep_start:
-            continue
-        if ep_end and ep_num > ep_end:
-            continue
+        # For numbered episodes, apply episode range filter
+        if ep_num is not None:
+            if ep_start and ep_num < ep_start:
+                continue
+            if ep_end and ep_num > ep_end:
+                continue
+            summary_file = podcast.summary_dir / f"EP{ep_num:04d}_summary.txt"
+        else:
+            # For non-numbered episodes, use filename-based summary
+            summary_file = podcast.summary_dir / f"{txt_file.stem}_summary.txt"
 
         # Check if summary already exists
-        summary_file = podcast.summary_dir / f"EP{ep_num:04d}_summary.txt"
         if summary_file.exists():
             continue
 
         transcripts.append(txt_file)
 
-    # Sort by episode number
-    transcripts.sort(key=lambda p: get_episode_number_from_filename(p.name) or 0)
+    # Sort: numbered by EP number, others by filename (date)
+    transcripts.sort(key=lambda p: (
+        get_episode_number_from_filename(p.name) or 0,
+        p.name
+    ), reverse=True)
     return transcripts
 
 
@@ -251,13 +260,21 @@ def main():
 
     for i, transcript_path in enumerate(transcripts, 1):
         ep_num = get_episode_number_from_filename(transcript_path.name)
-        print(f"[{i}/{len(transcripts)}] Summarizing EP{ep_num:04d}...", end=" ", flush=True)
+
+        # Display name and determine summary filename
+        if ep_num:
+            display_name = f"EP{ep_num:04d}"
+            summary_file = podcast.summary_dir / f"EP{ep_num:04d}_summary.txt"
+        else:
+            display_name = transcript_path.stem[:30]
+            summary_file = podcast.summary_dir / f"{transcript_path.stem}_summary.txt"
+
+        print(f"[{i}/{len(transcripts)}] Summarizing {display_name}...", end=" ", flush=True)
 
         try:
             summary = summarize_transcript(transcript_path, args.provider, args.model)
 
             # Save summary
-            summary_file = podcast.summary_dir / f"EP{ep_num:04d}_summary.txt"
             summary_file.write_text(summary, encoding="utf-8")
 
             print(f"OK ({len(summary)} chars)")
