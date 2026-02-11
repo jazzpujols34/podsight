@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Podcast Pipeline Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         :root {
             --bg-primary: #0f0f0f;
@@ -550,6 +551,50 @@
             font-size: 0.8125rem;
         }
 
+        /* Markdown styles for summary */
+        .viewer-content.markdown {
+            white-space: normal;
+        }
+
+        .viewer-content.markdown h1,
+        .viewer-content.markdown h2,
+        .viewer-content.markdown h3 {
+            color: var(--text-primary);
+            margin: 1rem 0 0.5rem 0;
+            font-weight: 600;
+        }
+
+        .viewer-content.markdown h1 { font-size: 1.25rem; }
+        .viewer-content.markdown h2 { font-size: 1.125rem; color: var(--accent); }
+        .viewer-content.markdown h3 { font-size: 1rem; }
+
+        .viewer-content.markdown p {
+            margin: 0.5rem 0;
+        }
+
+        .viewer-content.markdown ul,
+        .viewer-content.markdown ol {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .viewer-content.markdown li {
+            margin: 0.25rem 0;
+        }
+
+        .viewer-content.markdown strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .viewer-content.markdown code {
+            background: var(--bg-tertiary);
+            padding: 0.125rem 0.375rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.875rem;
+        }
+
         /* Terminal Output */
         .terminal {
             background: #0d0d0d;
@@ -987,11 +1032,19 @@
 
             if (!content) {
                 viewer.innerHTML = `<div class="empty-state"><p>尚無${tab === 'transcript' ? '逐字稿' : '摘要'}</p></div>`;
+                viewer.classList.remove('markdown');
                 return;
             }
 
-            // Format content with timestamps highlighted
-            viewer.innerHTML = content.replace(/\[(\d+:\d+)\]/g, '<span class="timestamp">[$1]</span>');
+            if (tab === 'summary') {
+                // Render markdown for summaries
+                viewer.classList.add('markdown');
+                viewer.innerHTML = marked.parse(content);
+            } else {
+                // Format transcript with timestamps highlighted
+                viewer.classList.remove('markdown');
+                viewer.innerHTML = content.replace(/\[(\d+:\d+)\]/g, '<span class="timestamp">[$1]</span>');
+            }
         }
 
         // Search
