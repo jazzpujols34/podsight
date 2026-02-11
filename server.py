@@ -384,6 +384,43 @@ async def get_episode_by_file(filename: str):
     }
 
 
+class SaveSummaryRequest(BaseModel):
+    summary: str
+
+
+@app.put("/episode/{ep_number}/summary")
+async def save_episode_summary(ep_number: int, request: SaveSummaryRequest):
+    """
+    Save/update summary for a numbered episode.
+    """
+    podcast = _current_podcast
+    summary_file = podcast.summary_dir / f"EP{ep_number:04d}_summary.txt"
+
+    try:
+        summary_file.write_text(request.summary, encoding='utf-8')
+        return {"status": "ok", "message": f"Summary saved for EP{ep_number}"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.put("/episode/file/{filename:path}/summary")
+async def save_file_summary(filename: str, request: SaveSummaryRequest):
+    """
+    Save/update summary for a file-based episode.
+    """
+    podcast = _current_podcast
+
+    # Remove .txt extension if present
+    stem = filename[:-4] if filename.endswith('.txt') else filename
+    summary_file = podcast.summary_dir / f"{stem}_summary.txt"
+
+    try:
+        summary_file.write_text(request.summary, encoding='utf-8')
+        return {"status": "ok", "message": f"Summary saved for {stem}"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.get("/latest", response_model=LatestResponse)
 async def get_latest():
     """

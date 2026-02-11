@@ -515,10 +515,29 @@
             flex-wrap: wrap;
         }
 
-        .copy-buttons {
+        .copy-buttons, .edit-buttons {
             margin-left: auto;
             display: flex;
             gap: 0.375rem;
+        }
+
+        .edit-textarea {
+            width: 100%;
+            min-height: 400px;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9375rem;
+            line-height: 1.6;
+            resize: vertical;
+        }
+
+        .edit-textarea:focus {
+            outline: none;
+            border-color: var(--accent);
         }
 
         .btn-small {
@@ -845,6 +864,11 @@
                             <div class="copy-buttons">
                                 <button class="btn btn-secondary btn-small" onclick="copyContent(false)" title="複製原始內容">📋 複製</button>
                                 <button class="btn btn-secondary btn-small" onclick="copyContent(true)" title="複製純文字（無格式）">📄 純文字</button>
+                                <button class="btn btn-secondary btn-small" id="editBtn" onclick="toggleEdit()" title="編輯摘要">✏️ 編輯</button>
+                            </div>
+                            <div class="edit-buttons" id="editButtons" style="display: none;">
+                                <button class="btn btn-primary btn-small" onclick="saveEdit()">💾 儲存</button>
+                                <button class="btn btn-secondary btn-small" onclick="cancelEdit()">✕ 取消</button>
                             </div>
                         </div>
                         <div class="viewer-content" id="viewerText"></div>
@@ -1143,6 +1167,78 @@
             document.body.appendChild(toast);
 
             setTimeout(() => toast.remove(), 2000);
+        }
+
+        // Edit summary
+        let isEditing = false;
+        let originalSummary = '';
+
+        function toggleEdit() {
+            if (currentTab !== 'summary') {
+                showCopyToast('只能編輯摘要');
+                return;
+            }
+            if (!currentEpisode || !currentEpisode.summary) {
+                showCopyToast('沒有摘要可編輯');
+                return;
+            }
+
+            isEditing = true;
+            originalSummary = currentEpisode.summary;
+
+            const viewer = document.getElementById('viewerText');
+            viewer.innerHTML = `<textarea class="edit-textarea" id="editTextarea">${currentEpisode.summary}</textarea>`;
+
+            document.querySelector('.copy-buttons').style.display = 'none';
+            document.getElementById('editButtons').style.display = 'flex';
+        }
+
+        async function saveEdit() {
+            const textarea = document.getElementById('editTextarea');
+            if (!textarea) return;
+
+            const newSummary = textarea.value;
+            const hasEpNum = currentEpisode.episode_number !== null && currentEpisode.episode_number !== undefined;
+
+            // Determine the correct endpoint
+            let url;
+            if (hasEpNum) {
+                url = `${API_BASE}/episode/${currentEpisode.episode_number}/summary`;
+            } else {
+                url = `${API_BASE}/episode/file/${encodeURIComponent(currentEpisode.filename)}/summary`;
+            }
+
+            try {
+                const res = await fetch(url, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ summary: newSummary })
+                });
+
+                if (res.ok) {
+                    currentEpisode.summary = newSummary;
+                    showCopyToast('已儲存');
+                    exitEditMode();
+                    showTab('summary');
+                } else {
+                    const err = await res.json();
+                    showCopyToast('儲存失敗: ' + err.detail);
+                }
+            } catch (err) {
+                showCopyToast('儲存失敗');
+                console.error(err);
+            }
+        }
+
+        function cancelEdit() {
+            exitEditMode();
+            showTab('summary');
+        }
+
+        function exitEditMode() {
+            isEditing = false;
+            document.querySelector('.copy-buttons').style.display = 'flex';
+            document.getElementById('editButtons').style.display = 'none';
         }
 
         // Search
