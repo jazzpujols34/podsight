@@ -5,6 +5,7 @@ podcasts:
   gooaye:
     name: "股癌 Gooaye"
     slug: gooaye
+    host: "謝孟恭 (MK)"
     rss_url: "https://feeds.soundon.fm/podcasts/954689a5-3096-43a4-a80b-7810b219cef3.xml"
     language: zh
     episode_start: 615  # Start from EP615 for recent episodes
@@ -14,6 +15,7 @@ podcasts:
   yutinghao:
     name: "游庭皓的財經皓角"
     slug: yutinghao
+    host: "游庭皓"
     rss_url: "https://feeds.soundcloud.com/users/soundcloud:users:735679489/sounds.rss"
     language: zh
     episode_start: null
@@ -24,6 +26,7 @@ podcasts:
   zhaohua:
     name: "兆華與股惑仔"
     slug: zhaohua
+    host: "兆華"
     rss_url: "https://feeds.soundon.fm/podcasts/91be014b-9f55-4bf3-a910-b232eda82d11.xml"
     language: zh
     episode_start: 1010  # Recent episodes only

@@ -35,6 +35,7 @@ class PodcastConfig:
         self._data = PODCASTS[slug]
         self.slug = slug
         self.name = self._data['name']
+        self.host = self._data.get('host', self.name)  # Host name for summaries
         self.rss_url = self._data['rss_url']
         self.language = self._data.get('language', 'zh')
         self.episode_start = self._data.get('episode_start')

@@ -32,13 +32,19 @@ DEFAULT_ANTHROPIC_MODEL = "claude-sonnet-4-20250514"
 DEFAULT_OPENAI_MODEL = "gpt-4o"
 DEFAULT_GEMINI_MODEL = "gemini-3-flash-preview"
 
-SUMMARY_PROMPT = """Summarize this 股癌 podcast episode in Traditional Chinese. Include:
-- 一句話總結
-- 主要討論話題 (bullet points)
-- 提到的股票/ETF/標的
-- MK 的觀點或金句
+def get_summary_prompt(transcript: str) -> str:
+    """Generate podcast-specific summary prompt."""
+    return f"""Summarize this "{podcast.name}" podcast episode in Traditional Chinese.
 
-Keep it concise, under 300 words.
+Host: {podcast.host}
+
+Include:
+- 一句話總結
+- 主要討論話題 (bullet points, 詳細說明每個話題)
+- 提到的股票/ETF/標的
+- {podcast.host} 的觀點或金句
+
+Aim for 400-500 words. Be detailed but concise.
 
 Transcript:
 {transcript}"""
@@ -103,7 +109,7 @@ def summarize_with_anthropic(transcript: str, model: str) -> str:
         model=model,
         max_tokens=1024,
         messages=[
-            {"role": "user", "content": SUMMARY_PROMPT.format(transcript=transcript)}
+            {"role": "user", "content": get_summary_prompt(transcript)}
         ]
     )
 
@@ -127,7 +133,7 @@ def summarize_with_openai(transcript: str, model: str) -> str:
         model=model,
         max_tokens=1024,
         messages=[
-            {"role": "user", "content": SUMMARY_PROMPT.format(transcript=transcript)}
+            {"role": "user", "content": get_summary_prompt(transcript)}
         ]
     )
 
@@ -152,7 +158,7 @@ def summarize_with_gemini(transcript: str, model: str) -> str:
         types.Content(
             role="user",
             parts=[
-                types.Part.from_text(text=SUMMARY_PROMPT.format(transcript=transcript))
+                types.Part.from_text(text=get_summary_prompt(transcript))
             ]
         ),
     ]
