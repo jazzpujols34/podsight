@@ -511,6 +511,40 @@
             margin-bottom: 1rem;
             border-bottom: 1px solid var(--border);
             padding-bottom: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .copy-buttons {
+            margin-left: auto;
+            display: flex;
+            gap: 0.375rem;
+        }
+
+        .btn-small {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.8125rem;
+        }
+
+        .copy-toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--success);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            z-index: 1000;
+            animation: fadeInOut 2s ease-in-out;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+            15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
         }
 
         .tab {
@@ -808,6 +842,10 @@
                         <div class="viewer-tabs">
                             <button class="tab active" onclick="showTab('transcript')">📝 逐字稿</button>
                             <button class="tab" onclick="showTab('summary')">📊 摘要</button>
+                            <div class="copy-buttons">
+                                <button class="btn btn-secondary btn-small" onclick="copyContent(false)" title="複製原始內容">📋 複製</button>
+                                <button class="btn btn-secondary btn-small" onclick="copyContent(true)" title="複製純文字（無格式）">📄 純文字</button>
+                            </div>
                         </div>
                         <div class="viewer-content" id="viewerText"></div>
                     </div>
@@ -1064,6 +1102,47 @@
                 viewer.classList.remove('markdown');
                 viewer.innerHTML = content.replace(/\[(\d+:\d+)\]/g, '<span class="timestamp">[$1]</span>');
             }
+        }
+
+        // Copy content to clipboard
+        function copyContent(plainText = false) {
+            if (!currentEpisode) return;
+
+            const content = currentTab === 'transcript' ? currentEpisode.transcript : currentEpisode.summary;
+            if (!content) return;
+
+            let textToCopy = content;
+
+            // Strip markdown if plain text requested
+            if (plainText && currentTab === 'summary') {
+                textToCopy = content
+                    .replace(/#{1,6}\s*/g, '')           // Remove headers
+                    .replace(/\*\*([^*]+)\*\*/g, '$1')   // Remove bold
+                    .replace(/\*([^*]+)\*/g, '$1')       // Remove italic
+                    .replace(/`([^`]+)`/g, '$1')         // Remove code
+                    .replace(/^[\*\-]\s+/gm, '• ')       // Convert list markers
+                    .replace(/\n{3,}/g, '\n\n')          // Reduce multiple newlines
+                    .trim();
+            }
+
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showCopyToast(plainText ? '已複製純文字' : '已複製');
+            }).catch(err => {
+                console.error('Copy failed:', err);
+            });
+        }
+
+        function showCopyToast(message) {
+            // Remove existing toast
+            const existing = document.querySelector('.copy-toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'copy-toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.remove(), 2000);
         }
 
         // Search
