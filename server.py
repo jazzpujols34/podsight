@@ -446,6 +446,24 @@ async def search(
     )
 
 
+def get_episode_sort_key(filename: str) -> tuple:
+    """Get sort key for episode filename (handles both EP* and date-based)."""
+    # For numbered episodes: EP0634.txt -> (1, 634)
+    ep_match = re.search(r'EP(\d+)', filename)
+    if ep_match:
+        return (1, int(ep_match.group(1)))
+
+    # For date-based: 2026_2_11_... -> (0, 20260211)
+    date_match = re.match(r'(\d{4})_(\d{1,2})_(\d{1,2})_', filename)
+    if date_match:
+        year, month, day = date_match.groups()
+        date_num = int(year) * 10000 + int(month) * 100 + int(day)
+        return (0, date_num)
+
+    # Fallback: sort by filename
+    return (2, filename)
+
+
 @app.get("/episodes")
 async def list_episodes(
     limit: int = Query(50, ge=1, le=500, description="Maximum episodes to return"),
@@ -460,8 +478,12 @@ async def list_episodes(
     episodes = []
     podcast = _current_podcast
 
-    # Get all transcript files (both EP*.txt and other formats)
-    txt_files = sorted(podcast.transcript_dir.glob("*.txt"), reverse=True)
+    # Get all transcript files and sort properly (date-based or EP number)
+    txt_files = sorted(
+        podcast.transcript_dir.glob("*.txt"),
+        key=lambda f: get_episode_sort_key(f.name),
+        reverse=True
+    )
 
     for txt_file in txt_files:
         # Skip JSON files
