@@ -962,10 +962,23 @@
                 const hasEpNum = latestData.episode_number !== null && latestData.episode_number !== undefined;
                 document.getElementById('latestEpisode').textContent = hasEpNum
                     ? `EP${latestData.episode_number}`
-                    : (latestData.title?.slice(0, 10) || '-');
+                    : formatDateTitle(latestData.title, true) || '-';
             } catch {
                 document.getElementById('latestEpisode').textContent = '-';
             }
+        }
+
+        // Format date-based title: 2026_2_5_四_硬體股... → 20260205_硬體股...
+        function formatDateTitle(title, shortDate = false) {
+            if (!title) return null;
+            // Match pattern: YYYY_M_D_weekday_rest
+            const match = title.match(/^(\d{4})_(\d{1,2})_(\d{1,2})_[一二三四五六日]_(.+)$/);
+            if (match) {
+                const [, year, month, day, rest] = match;
+                const formattedDate = `${year}${month.padStart(2, '0')}${day.padStart(2, '0')}`;
+                return shortDate ? formattedDate : `${formattedDate}_${rest}`;
+            }
+            return title;
         }
 
         // Render episode list
@@ -980,7 +993,9 @@
                 // Properly handle null episode numbers (for date-based podcasts)
                 const hasEpNumber = ep.episode_number !== null && ep.episode_number !== undefined;
                 const identifier = hasEpNumber ? ep.episode_number : (ep.filename || '');
-                const displayName = hasEpNumber ? `EP${ep.episode_number}` : (ep.title || ep.filename || '(無標題)');
+                const displayName = hasEpNumber
+                    ? `EP${ep.episode_number}`
+                    : formatDateTitle(ep.title || ep.filename, false) || '(無標題)';
                 const safeIdentifier = String(identifier).replace(/'/g, "\\'");
                 return `
                 <div class="episode-item" onclick="loadEpisode('${safeIdentifier}')">
