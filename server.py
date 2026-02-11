@@ -91,10 +91,11 @@ class EpisodeResponse(BaseModel):
 
 
 class LatestResponse(BaseModel):
-    episode_number: int
+    episode_number: Optional[int] = None
     title: Optional[str] = None
     summary: Optional[str] = None
     published: Optional[str] = None
+    filename: Optional[str] = None  # For date-based podcasts
 
 
 class SearchResultItem(BaseModel):
@@ -152,6 +153,25 @@ def get_latest_episode_number(podcast_slug: Optional[str] = None) -> int | None:
                 max_ep = ep_num
 
     return max_ep
+
+
+def get_latest_episode_info(podcast_slug: Optional[str] = None) -> dict | None:
+    """Get info about the latest episode (works for both numbered and date-based)."""
+    podcast = get_podcast(podcast_slug)
+
+    # First try numbered episodes
+    max_ep = get_latest_episode_number(podcast_slug)
+    if max_ep is not None:
+        return {"episode_number": max_ep, "filename": None}
+
+    # Fall back to date-based (get most recent by filename)
+    txt_files = list(podcast.transcript_dir.glob("*.txt"))
+    if not txt_files:
+        return None
+
+    # Sort by filename descending (date-based names sort chronologically)
+    latest_file = sorted(txt_files, key=lambda f: f.name, reverse=True)[0]
+    return {"episode_number": None, "filename": latest_file.name, "title": latest_file.stem}
 
 
 def get_transcript(ep_number: int, podcast_slug: Optional[str] = None) -> str | None:
@@ -369,23 +389,39 @@ async def get_latest():
     """
     Get the most recent episode number and its summary.
     """
-    ep_number = get_latest_episode_number()
+    latest_info = get_latest_episode_info()
 
-    if ep_number is None:
+    if latest_info is None:
         raise HTTPException(
             status_code=404,
             detail="No episodes found"
         )
 
-    metadata = get_episode_metadata(ep_number)
-    summary = get_summary(ep_number)
+    ep_number = latest_info.get("episode_number")
+    filename = latest_info.get("filename")
 
-    return LatestResponse(
-        episode_number=ep_number,
-        title=metadata.get('title') if metadata else None,
-        summary=summary,
-        published=metadata.get('published') if metadata else None
-    )
+    if ep_number is not None:
+        # Numbered episode
+        metadata = get_episode_metadata(ep_number)
+        summary = get_summary(ep_number)
+        return LatestResponse(
+            episode_number=ep_number,
+            title=metadata.get('title') if metadata else None,
+            summary=summary,
+            published=metadata.get('published') if metadata else None
+        )
+    else:
+        # Date-based episode
+        podcast = get_podcast()
+        title = latest_info.get("title", filename)
+        summary_file = podcast.summary_dir / f"{Path(filename).stem}_summary.txt"
+        summary = summary_file.read_text(encoding='utf-8') if summary_file.exists() else None
+        return LatestResponse(
+            episode_number=None,
+            title=title,
+            summary=summary,
+            filename=filename
+        )
 
 
 @app.get("/search", response_model=SearchResponse)
