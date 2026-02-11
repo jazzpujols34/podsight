@@ -959,7 +959,10 @@
             try {
                 const latest = await fetch(`${API_BASE}/latest`);
                 const latestData = await latest.json();
-                document.getElementById('latestEpisode').textContent = `EP${latestData.episode_number}`;
+                const hasEpNum = latestData.episode_number !== null && latestData.episode_number !== undefined;
+                document.getElementById('latestEpisode').textContent = hasEpNum
+                    ? `EP${latestData.episode_number}`
+                    : (latestData.title?.slice(0, 10) || '-');
             } catch {
                 document.getElementById('latestEpisode').textContent = '-';
             }
