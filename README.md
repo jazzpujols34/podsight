@@ -1,36 +1,62 @@
-# Gooaye 股癌 Podcast Transcription Pipeline
+# PodSight 聲見
 
-Automated pipeline to download and transcribe all 624+ episodes of the Gooaye (股癌) podcast by MK Hsieh (謝孟恭).
+**聽見弦外之音，看見核心觀點**
 
-## 🎯 Goal
+Multi-podcast transcription and AI summarization pipeline with a beautiful web dashboard.
 
-Create transcripts for building a "Mini MK" chatbot that thinks and responds like the podcast host.
+![PodSight Logo](ui/assets/PodSight-Logo.jpeg)
+
+## 🎯 Features
+
+- **Multi-podcast support** - Handle multiple podcasts with different formats (numbered episodes or date-based)
+- **Automated transcription** - Whisper-powered speech-to-text
+- **AI summarization** - Claude, OpenAI, or Gemini for intelligent summaries
+- **Web dashboard** - Beautiful UI for browsing transcripts and summaries
+- **Full-text search** - Search across all transcripts
+- **Edit & copy** - Edit summaries inline, copy with or without markdown
 
 ## 📁 Project Structure
 
 ```
 gooaye_pipeline/
-├── config.py                   # Configuration settings
-├── 01_parse_rss.py             # Step 1: Parse RSS feed → episode list
-├── 02_download_audio.py        # Step 2: Download MP3 files
-├── 03_transcribe.py            # Step 3: Whisper transcription
-├── 04_summarize.py             # Step 4: AI-powered summarization
-├── run_pipeline.py             # Run all steps
-├── auto_check_new_episodes.py  # Auto-detect & process new episodes
-├── search.py                   # Search tool for transcripts
-├── server.py                   # FastAPI HTTP endpoint
-├── cron_setup.md               # Cron/launchd scheduling guide
+├── config.py                   # Configuration & podcast settings
+├── podcasts.yaml               # Podcast definitions
+├── run_pipeline.py             # Run all pipeline steps
+├── server.py                   # FastAPI server + API
 ├── requirements.txt            # Python dependencies
+├── scripts/
+│   ├── 01_parse_rss.py         # Step 1: Parse RSS feed → episode list
+│   ├── 02_download_audio.py    # Step 2: Download MP3 files
+│   ├── 03_transcribe.py        # Step 3: Whisper transcription
+│   ├── 04_summarize.py         # Step 4: AI-powered summarization
+│   ├── auto_check_new_episodes.py  # Auto-detect & process new episodes
+│   ├── search.py               # Search tool for transcripts
+│   └── cron_setup.md           # Cron/launchd scheduling guide
+├── ui/
+│   ├── index.html              # Web dashboard
+│   ├── assets/                 # Logo and images
+│   ├── css/                    # Stylesheets (future)
+│   └── js/                     # JavaScript (future)
 ├── data/
-│   ├── episodes.json           # Episode metadata
-│   ├── audio/                  # Downloaded MP3 files (EP0001.mp3, ...)
-│   ├── transcripts/            # Output transcripts (EP0001.txt, ...)
-│   ├── summaries/              # AI-generated summaries (EP0001_summary.txt)
-│   └── notifications/          # New episode notifications
+│   └── {podcast_slug}/         # Per-podcast data
+│       ├── episodes.json       # Episode metadata
+│       ├── audio/              # Downloaded MP3 files
+│       ├── transcripts/        # Output transcripts
+│       └── summaries/          # AI-generated summaries
 └── gcp/
     ├── Dockerfile              # For cloud deployment
     └── DEPLOYMENT.md           # GCP setup guide
 ```
+
+## 🎙️ Supported Podcasts
+
+| Slug | Name | Host | Format |
+|------|------|------|--------|
+| `gooaye` | 股癌 Gooaye | 謝孟恭 (MK) | EP0001 - EP0624+ |
+| `yutinghao` | 游庭皓的財經皓角 | 游庭皓 | Date-based |
+| `zhaohua` | 兆華與股惑仔 | 兆華 | EP1010+ |
+
+Add new podcasts by editing `podcasts.yaml`.
 
 ## 🚀 Quick Start
 
@@ -46,18 +72,14 @@ brew install ffmpeg
 
 # Ubuntu/Debian
 sudo apt install ffmpeg
-
-# Windows
-# Download from https://ffmpeg.org/download.html
 ```
 
 ### Installation
 
 ```bash
-# Clone or download this folder
 cd gooaye_pipeline
 
-# Create virtual environment (recommended)
+# Create virtual environment
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 
@@ -68,235 +90,129 @@ pip install -r requirements.txt
 ### Run Pipeline
 
 ```bash
-# Run everything (will take 20-50 hours depending on hardware)
+# Run for default podcast (gooaye)
 python run_pipeline.py
 
-# Or run steps individually:
-python 01_parse_rss.py       # Get episode list (~30 seconds)
-python 02_download_audio.py  # Download audio (~2-3 hours for 624 eps)
-python 03_transcribe.py      # Transcribe (~20-40 hours)
-python 04_summarize.py       # Generate AI summaries (requires API key)
+# Run for specific podcast
+python run_pipeline.py --podcast yutinghao
+python run_pipeline.py --podcast zhaohua
+
+# Run single step
+python run_pipeline.py --step 1  # Parse RSS only
+python run_pipeline.py --step 4 --podcast yutinghao  # Summarize only
+
+# List available podcasts
+python run_pipeline.py --list
 ```
 
-### Process Specific Episodes
+### Run Individual Scripts
 
 ```bash
-# Edit config.py to set episode range
-EPISODE_START = 295  # Start from EP295
-EPISODE_END = 624    # End at EP624
-
-# Or use command line
-python run_pipeline.py --from 295 --to 624
+# Set podcast via environment variable
+PODCAST=yutinghao python scripts/01_parse_rss.py
+PODCAST=yutinghao python scripts/04_summarize.py --ep 1-10
 ```
 
-## 📝 Output Format
+## 🖥️ Web Dashboard
 
-Transcripts match SpotScribe format for compatibility with your existing 4 episodes:
-
-```
-[00:00] 歡迎收聽股癌...
-[07:25] 很快的又要過新的一年了所以這邊就先跟大家分享...
-[07:42] 今年表現是大概就跟去年差不多他也覺得非常好...
-```
-
-Each episode generates:
-- `EP0621.txt` - Human-readable transcript with timestamps
-- `EP0621.json` - Machine-readable segments for RAG pipeline
-
-## 🔍 Search Tool
-
-Search through transcripts to find specific content:
+Launch the web UI to browse and manage podcasts:
 
 ```bash
-# Basic search
-python search.py "台積電"
-
-# Search specific episode range
-python search.py "台積電" --ep 620-630
-
-# Search summaries only
-python search.py "台積電" --summary
-
-# Limit results
-python search.py "台積電" --limit 50
-
-# Output as JSON
-python search.py "台積電" --json
-```
-
-## 🔄 Auto-Check New Episodes
-
-Automatically detect and process new episodes:
-
-```bash
-# Check for new episodes and process them
-python auto_check_new_episodes.py
-
-# Dry run (check only, don't process)
-python auto_check_new_episodes.py --dry-run
-
-# With macOS desktop notification
-python auto_check_new_episodes.py --notify
-```
-
-Set up automatic scheduling with cron/launchd - see `cron_setup.md` for details.
-
-## 🖥️ Web Dashboard UI
-
-Launch a beautiful web UI to manage the pipeline:
-
-```bash
-# Start UI (opens browser automatically)
-python run_ui.py
-
-# Custom port
-python run_ui.py --port 8080
-
-# Don't auto-open browser
-python run_ui.py --no-browser
-```
-
-The dashboard provides:
-- Pipeline status overview (episodes, transcripts, summaries)
-- One-click pipeline execution
-- Episode browser with transcript/summary viewer
-- Full-text search across all transcripts
-
-## 🌐 HTTP API Server
-
-The API server (also serves the web UI):
-
-```bash
-# Start server (default port 8000)
+# Start server (opens browser)
 python server.py
 
 # Custom port
 python server.py --port 8080
-
-# Development mode with auto-reload
-python server.py --reload
 ```
 
-**Endpoints:**
-- `GET /` - Web dashboard UI
-- `GET /episode/{ep_number}` - Get transcript + summary
-- `GET /latest` - Get most recent episode
-- `GET /search?q={query}` - Search transcripts
-- `GET /episodes` - List all available episodes
+The dashboard provides:
+- Pipeline status overview
+- Episode browser with transcript/summary viewer
+- Full-text search
+- Edit summaries inline
+- Copy transcripts/summaries
 
-API documentation available at `http://localhost:8000/docs`
+## 🌐 API Endpoints
+
+- `GET /` - Web dashboard
+- `GET /podcasts` - List all podcasts
+- `GET /stats` - Podcast statistics
+- `GET /episodes` - List episodes
+- `GET /episode/{ep_number}` - Get transcript + summary
+- `GET /episode/file/{filename}` - Get by filename (date-based)
+- `GET /latest` - Most recent episode
+- `GET /search?q={query}` - Search transcripts
+- `PUT /episode/{ep_number}/summary` - Update summary
+- `POST /pipeline/run` - Execute pipeline
+
+API docs: `http://localhost:8000/docs`
 
 ## ⚙️ Configuration
 
-Edit `config.py` to customize:
-
-```python
-# Whisper model (trade-off: accuracy vs speed)
-WHISPER_MODEL = "large-v3"  # Best for Mandarin
-# WHISPER_MODEL = "medium"  # Faster, slightly less accurate
-
-# Device
-WHISPER_DEVICE = "cuda"  # NVIDIA GPU
-# WHISPER_DEVICE = "mps"  # Apple Silicon
-# WHISPER_DEVICE = "cpu"  # No GPU (slowest)
-
-# Parallel downloads
-DOWNLOAD_WORKERS = 4
-```
-
 ### AI Summarization
 
-Step 4 requires an API key. Set environment variable:
+Set API key for summarization:
 
 ```bash
-# For Claude (default)
+# Gemini (default)
+export GEMINI_API_KEY=your_key_here
+
+# Or Claude
 export ANTHROPIC_API_KEY=your_key_here
 
-# For OpenAI
+# Or OpenAI
 export OPENAI_API_KEY=your_key_here
 ```
 
-Customize the provider and model:
+Choose provider:
 
 ```bash
-python 04_summarize.py --provider openai --model gpt-4o
-python 04_summarize.py --provider anthropic --model claude-sonnet-4-20250514
+python scripts/04_summarize.py --provider gemini
+python scripts/04_summarize.py --provider anthropic --model claude-sonnet-4-20250514
+python scripts/04_summarize.py --provider openai --model gpt-4o
 ```
 
-## ☁️ Cloud Deployment (GCP)
+### Adding New Podcasts
 
-For faster processing, run on Google Cloud. See `gcp/DEPLOYMENT.md` for details.
+Edit `podcasts.yaml`:
 
-**Recommended: Compute Engine with T4 GPU**
-- Cost: ~$10-20
-- Time: ~20 hours
-- Commands:
-
-```bash
-# Create VM
-gcloud compute instances create gooaye-transcribe \
-    --zone=asia-east1-a \
-    --machine-type=n1-standard-4 \
-    --accelerator=type=nvidia-tesla-t4,count=1 \
-    --image-family=pytorch-latest-gpu \
-    --image-project=deeplearning-platform-release \
-    --boot-disk-size=100GB
-
-# SSH and run
-gcloud compute ssh gooaye-transcribe --zone=asia-east1-a
+```yaml
+podcasts:
+  mypodcast:
+    name: "My Podcast Name"
+    host: "Host Name"
+    rss_url: "https://example.com/feed.xml"
+    episode_pattern: 'EP(\d+)'  # Optional: regex for episode numbers
+    episode_start: 1  # Optional: filter episodes
 ```
 
-## 📊 Estimated Resources
+## 📊 Resource Estimates
 
-| Hardware | Time per Episode | Total (624 eps) | Cost |
-|----------|-----------------|-----------------|------|
-| RTX 3080 | ~2 min | ~21 hours | $0 (local) |
-| M1/M2 Mac | ~4-5 min | ~50 hours | $0 (local) |
-| GCP T4 | ~1.5 min | ~16 hours | ~$10-20 |
-| CPU only | ~15-20 min | ~200 hours | N/A |
-
-**Storage:**
-- Audio files: ~30-40 GB
-- Transcripts: ~500 MB
+| Hardware | Time per Episode | Storage |
+|----------|------------------|---------|
+| RTX 3080 | ~2 min | Audio: ~50MB |
+| M1/M2 Mac | ~4-5 min | Transcript: ~100KB |
+| GCP T4 | ~1.5 min | Summary: ~2KB |
 
 ## 🔧 Troubleshooting
 
 ### "No module named 'whisper'"
 ```bash
 pip install openai-whisper
-# or for faster version:
+# or faster:
 pip install faster-whisper
 ```
 
 ### CUDA out of memory
+Use smaller model in `config.py`:
 ```python
-# In config.py, use smaller model:
 WHISPER_MODEL = "medium"  # or "small"
 ```
 
-### Download failures
-- Check your internet connection
-- Some episodes might have moved - the script will log failures
-- Re-run `02_download_audio.py` to retry failed downloads
-
-### Transcription quality issues
-- Whisper `large-v3` gives best Mandarin results
-- If quality is poor, ensure audio downloaded correctly
-- Check FFmpeg is installed: `ffmpeg -version`
-
-## 📚 Next Steps: Building the Chatbot
-
-After transcription, you'll have the corpus ready for:
-
-1. **Segment labeling** - Classify sections (ad, 感想, 市場話題, etc.)
-2. **Chunking** - Split into semantic chunks for RAG
-3. **Embedding** - Generate embeddings with `text-embedding-3-large`
-4. **Vector DB** - Store in Pinecone, Qdrant, or Chroma
-5. **Persona prompt** - Craft MK's speaking style
-6. **RAG chat** - Retrieve relevant context for each query
-
-Let me know when you've completed transcription and we can build the next phase!
+### Transcription quality
+- Use `large-v3` for best Mandarin results
+- Ensure FFmpeg is installed: `ffmpeg -version`
 
 ## 📄 License
 
-This pipeline is for personal/educational use. Podcast content belongs to Gooaye/謝孟恭.
+Pipeline code is MIT licensed. Podcast content belongs to respective creators.

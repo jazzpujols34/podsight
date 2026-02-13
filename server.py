@@ -40,13 +40,14 @@ from datetime import datetime
 from fastapi import FastAPI, HTTPException, Query, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from config import DATA_DIR, get_podcast_config, list_podcasts, DEFAULT_PODCAST
 
 # UI directory
 UI_DIR = Path(__file__).parent / "ui"
-SCRIPT_DIR = Path(__file__).parent
+SCRIPT_DIR = Path(__file__).parent / "scripts"
 
 # Global state for pipeline execution
 pipeline_state = {
@@ -64,8 +65,8 @@ pipeline_state = {
 _current_podcast = get_podcast_config()
 
 app = FastAPI(
-    title="Podcast Transcript API",
-    description="API for accessing podcast transcripts and summaries (supports multiple podcasts)",
+    title="PodSight 聲見 API",
+    description="聽見弦外之音，看見核心觀點 - Multi-podcast transcription and AI summarization",
     version="2.0.0"
 )
 
@@ -77,6 +78,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Serve static assets (logo, images, etc.)
+app.mount("/assets", StaticFiles(directory=UI_DIR / "assets"), name="assets")
 
 
 # --- Pydantic Models ---
@@ -501,6 +505,27 @@ def get_episode_sort_key(filename: str) -> tuple:
     return (2, filename)
 
 
+@app.get("/audio/{filename:path}")
+async def get_audio_file(filename: str):
+    """Serve audio file for playback."""
+    podcast = _current_podcast
+
+    # Try to find the audio file
+    audio_file = podcast.audio_dir / filename
+    if not audio_file.exists():
+        # Try with .mp3 extension
+        audio_file = podcast.audio_dir / f"{filename}.mp3"
+
+    if not audio_file.exists():
+        raise HTTPException(status_code=404, detail=f"Audio file not found: {filename}")
+
+    return FileResponse(
+        audio_file,
+        media_type="audio/mpeg",
+        filename=audio_file.name
+    )
+
+
 @app.get("/episodes")
 async def list_episodes(
     limit: int = Query(50, ge=1, le=500, description="Maximum episodes to return"),
@@ -580,9 +605,11 @@ STEP_NAMES = {
 }
 
 
-def run_script_async(step: str | int, podcast_slug: str):
+def run_script_async(step: str | int, podcast_slug: str, providers: dict = None):
     """Run a pipeline script in background and capture output."""
     global pipeline_state
+
+    providers = providers or {"transcribe": "groq", "summary": "gemini"}
 
     pipeline_state["running"] = True
     pipeline_state["current_step"] = step
@@ -592,8 +619,13 @@ def run_script_async(step: str | int, podcast_slug: str):
     pipeline_state["finished_at"] = None
     pipeline_state["exit_code"] = None
 
-    # Set environment variable for subprocess
-    env = {**os.environ, 'PODCAST': podcast_slug}
+    # Set environment variables for subprocess
+    env = {
+        **os.environ,
+        'PODCAST': podcast_slug,
+        'WHISPER_PROVIDER': providers.get("transcribe", "groq"),
+        'SUMMARY_PROVIDER': providers.get("summary", "gemini")
+    }
 
     def add_output(line: str, level: str = "info"):
         pipeline_state["output"].append({
@@ -631,7 +663,8 @@ def run_script_async(step: str | int, podcast_slug: str):
                     text=True,
                     bufsize=1,
                     cwd=str(SCRIPT_DIR),
-                    env=env
+                    env=env,
+                    start_new_session=True  # Enable process group for clean kill
                 )
                 pipeline_state["process"] = process
 
@@ -665,7 +698,8 @@ def run_script_async(step: str | int, podcast_slug: str):
             text=True,
             bufsize=1,
             cwd=str(SCRIPT_DIR),
-            env=env
+            env=env,
+            start_new_session=True  # Enable process group for clean kill
         )
         pipeline_state["process"] = process
 
@@ -690,12 +724,57 @@ def run_script_async(step: str | int, podcast_slug: str):
         pipeline_state["process"] = None
 
 
+@app.post("/run/stop")
+async def stop_pipeline():
+    """Stop the currently running pipeline."""
+    global pipeline_state
+
+    if not pipeline_state["running"]:
+        raise HTTPException(status_code=400, detail="No pipeline is running")
+
+    if pipeline_state["process"]:
+        import signal
+        try:
+            # Try graceful termination first
+            pipeline_state["process"].terminate()
+            try:
+                pipeline_state["process"].wait(timeout=2)
+            except subprocess.TimeoutExpired:
+                # Force kill if it doesn't stop
+                pipeline_state["process"].kill()
+                # Also kill any child processes
+                try:
+                    os.killpg(os.getpgid(pipeline_state["process"].pid), signal.SIGKILL)
+                except (ProcessLookupError, PermissionError):
+                    pass
+        except Exception as e:
+            pass  # Process may have already exited
+
+        pipeline_state["output"].append({
+            "time": datetime.now().strftime("%H:%M:%S"),
+            "level": "warning",
+            "text": "Pipeline 已被使用者停止"
+        })
+
+    pipeline_state["running"] = False
+    pipeline_state["finished_at"] = datetime.now().isoformat()
+    pipeline_state["exit_code"] = -1
+    return {"status": "stopped"}
+
+
 @app.post("/run/{step}")
-async def run_pipeline_step(step: str, background_tasks: BackgroundTasks):
+async def run_pipeline_step(
+    step: str,
+    background_tasks: BackgroundTasks,
+    transcribe_provider: str = Query(default="groq", description="Transcription provider: groq, openai, local"),
+    summary_provider: str = Query(default="gemini", description="Summary provider: gemini, anthropic, openai")
+):
     """
     Start a pipeline step execution.
 
     - **step**: Step number (1-4), 'all' for full pipeline, or 'check' for new episode check
+    - **transcribe_provider**: Provider for transcription (groq, openai, local)
+    - **summary_provider**: Provider for summarization (gemini, anthropic, openai)
     """
     global pipeline_state
 
@@ -712,8 +791,14 @@ async def run_pipeline_step(step: str, background_tasks: BackgroundTasks):
     # Convert to int if numeric
     step_key = int(step) if step.isdigit() else step
 
+    # Provider options
+    providers = {
+        "transcribe": transcribe_provider,
+        "summary": summary_provider
+    }
+
     # Start execution in background with current podcast
-    thread = threading.Thread(target=run_script_async, args=(step_key, _current_podcast.slug))
+    thread = threading.Thread(target=run_script_async, args=(step_key, _current_podcast.slug, providers))
     thread.daemon = True
     thread.start()
 
@@ -721,7 +806,8 @@ async def run_pipeline_step(step: str, background_tasks: BackgroundTasks):
         "status": "started",
         "step": step_key,
         "name": STEP_NAMES.get(step_key, str(step_key)),
-        "podcast": _current_podcast.slug
+        "podcast": _current_podcast.slug,
+        "providers": providers
     }
 
 
@@ -741,24 +827,83 @@ async def get_pipeline_status():
     }
 
 
-@app.post("/run/stop")
-async def stop_pipeline():
-    """Stop the currently running pipeline."""
-    global pipeline_state
+@app.get("/stats/cost")
+async def get_cost_estimate():
+    """
+    Get estimated API cost breakdown for the current podcast.
 
-    if not pipeline_state["running"]:
-        raise HTTPException(status_code=400, detail="No pipeline is running")
+    Estimates based on:
+    - OpenAI Whisper: $0.006/minute (avg ~25 min/episode)
+    - Claude Sonnet: ~$0.003/1K input + $0.015/1K output tokens
+    - GPT-4o: ~$0.005/1K input + $0.015/1K output tokens
+    - Gemini: Free
+    - Groq: Free (rate limited)
+    """
+    podcast = _current_podcast
 
-    if pipeline_state["process"]:
-        pipeline_state["process"].terminate()
-        pipeline_state["output"].append({
-            "time": datetime.now().strftime("%H:%M:%S"),
-            "level": "warning",
-            "text": "Pipeline 已被使用者停止"
-        })
+    # Count audio files and estimate duration
+    audio_files = list(podcast.audio_dir.glob("*.mp3"))
+    audio_count = len(audio_files)
 
-    pipeline_state["running"] = False
-    return {"status": "stopped"}
+    # Estimate audio duration from file sizes (bitrate ~128kbps for podcasts)
+    total_audio_mb = sum(f.stat().st_size / (1024 * 1024) for f in audio_files)
+    # 128kbps = 16KB/s, so MB / 0.96 ≈ minutes
+    estimated_minutes = total_audio_mb / 0.96
+
+    # Count transcripts and summaries
+    transcript_files = list(podcast.transcript_dir.glob("*.txt"))
+    summary_files = list(podcast.summary_dir.glob("*_summary.txt"))
+    transcript_count = len(transcript_files)
+    summary_count = len(summary_files)
+
+    # Estimate transcript character counts (for summary input estimation)
+    total_transcript_chars = sum(
+        f.stat().st_size for f in transcript_files
+    )
+    # Approximate tokens: 1 Chinese char ≈ 1.5 tokens, 1 English word ≈ 1.3 tokens
+    # Mixed content: ~1 token per 2 chars
+    estimated_transcript_tokens = total_transcript_chars / 2
+
+    # Estimate summary output tokens (~500 words * 1.3 tokens ≈ 650 tokens/summary)
+    estimated_summary_output_tokens = summary_count * 650
+
+    # Calculate costs
+    costs = {
+        "transcription": {
+            "openai_whisper": round(estimated_minutes * 0.006, 2),
+            "groq": 0.0,  # Free
+            "local": 0.0   # Free (local compute)
+        },
+        "summarization": {
+            "claude": round(
+                (estimated_transcript_tokens / 1000 * 0.003) +
+                (estimated_summary_output_tokens / 1000 * 0.015), 2
+            ),
+            "openai_gpt4o": round(
+                (estimated_transcript_tokens / 1000 * 0.005) +
+                (estimated_summary_output_tokens / 1000 * 0.015), 2
+            ),
+            "gemini": 0.0  # Free
+        }
+    }
+
+    return {
+        "podcast": podcast.name,
+        "stats": {
+            "audio_files": audio_count,
+            "estimated_audio_minutes": round(estimated_minutes, 1),
+            "transcripts": transcript_count,
+            "summaries": summary_count,
+            "estimated_transcript_tokens": int(estimated_transcript_tokens)
+        },
+        "estimated_costs_usd": costs,
+        "total_if_paid": {
+            "transcription_openai": costs["transcription"]["openai_whisper"],
+            "summarization_claude": costs["summarization"]["claude"],
+            "summarization_openai": costs["summarization"]["openai_gpt4o"]
+        },
+        "note": "Groq transcription and Gemini summarization are free (with rate limits)"
+    }
 
 
 def main():

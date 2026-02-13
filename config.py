@@ -86,11 +86,11 @@ AUDIO_DIR = _default.audio_dir
 TRANSCRIPT_DIR = _default.transcript_dir
 EPISODES_FILE = _default.episodes_file
 
-# Whisper settings (from global config)
+# Whisper settings (from global config, env var overrides)
 WHISPER_MODEL = WHISPER_CONFIG['model']
 WHISPER_LANGUAGE = WHISPER_CONFIG.get('language', 'zh')
 WHISPER_DEVICE = "cpu"  # mps not supported by ctranslate2
-WHISPER_PROVIDER = WHISPER_CONFIG.get('provider', 'groq')
+WHISPER_PROVIDER = os.environ.get('WHISPER_PROVIDER') or WHISPER_CONFIG.get('provider', 'groq')
 
 # Download settings
 DOWNLOAD_WORKERS = DOWNLOAD_CONFIG.get('workers', 4)

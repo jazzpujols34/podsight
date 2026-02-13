@@ -23,6 +23,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Generator
 
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from config import DATA_DIR, TRANSCRIPT_DIR
 
 SUMMARY_DIR = DATA_DIR / "summaries"

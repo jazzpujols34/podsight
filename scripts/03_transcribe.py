@@ -16,13 +16,19 @@ import argparse
 import json
 import os
 import re
+import sys
 import time
 from pathlib import Path
 from datetime import timedelta
 from tqdm import tqdm
 
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 # Rate limiting for Groq API (free tier: ~20 audio-minutes per hour)
-GROQ_DELAY_SECONDS = 65  # Wait between requests to avoid 429
+# A 30-min episode uses most of the hourly quota, so we need long waits
+GROQ_DELAY_SECONDS = 180  # 3 minutes between requests
+GROQ_MAX_RETRIES = 5  # More retries for rate limits
 
 from config import (
     get_podcast_config,
@@ -173,7 +179,7 @@ def transcribe_with_faster_whisper(model, audio_path: Path) -> list[dict]:
 
 
 def transcribe_with_openai_whisper(model, audio_path: Path) -> list[dict]:
-    """Transcribe using openai-whisper. Returns segments."""
+    """Transcribe using openai-whisper (local). Returns segments."""
     result = model.transcribe(
         str(audio_path),
         language=WHISPER_LANGUAGE,
@@ -182,6 +188,45 @@ def transcribe_with_openai_whisper(model, audio_path: Path) -> list[dict]:
 
     results = []
     for segment in result['segments']:
+        results.append({
+            'start': segment['start'],
+            'end': segment['end'],
+            'text': segment['text'].strip()
+        })
+    return results
+
+
+def transcribe_with_openai_api(audio_path: Path) -> list[dict]:
+    """Transcribe using OpenAI Whisper API. Returns segments."""
+    import openai
+
+    api_key = os.environ.get("OPENAI_API_KEY")
+    if not api_key:
+        raise ValueError("OPENAI_API_KEY environment variable not set")
+
+    # Compress if needed (OpenAI limit is 25MB)
+    compressed_path = compress_audio_for_upload(audio_path, max_size_mb=24)
+    is_compressed = compressed_path != audio_path
+
+    client = openai.OpenAI(api_key=api_key)
+
+    try:
+        with open(compressed_path, "rb") as audio_file:
+            # Use verbose_json to get timestamps
+            response = client.audio.transcriptions.create(
+                model="whisper-1",
+                file=audio_file,
+                language=WHISPER_LANGUAGE,
+                response_format="verbose_json",
+                timestamp_granularities=["segment"]
+            )
+    finally:
+        # Clean up compressed file
+        if is_compressed and compressed_path.exists():
+            compressed_path.unlink()
+
+    results = []
+    for segment in response.segments:
         results.append({
             'start': segment['start'],
             'end': segment['end'],
@@ -269,7 +314,8 @@ def main():
                (ep_start is None or ep_num >= ep_start) and
                (ep_end is None or ep_num <= ep_end)
         ]
-        print(f"Filtered to {len(audio_files)} files (EP{ep_start}-EP{ep_end})")
+        range_str = f"EP{ep_start}" + (f"-EP{ep_end}" if ep_end else "+")
+        print(f"Filtered to {len(audio_files)} files ({range_str})")
 
     # Create output directory
     podcast.transcript_dir.mkdir(parents=True, exist_ok=True)
@@ -301,6 +347,12 @@ def main():
             print("Error: GROQ_API_KEY environment variable not set")
             return
         transcribe_fn = transcribe_with_groq
+    elif WHISPER_PROVIDER == "openai":
+        print("Using OpenAI Whisper API (whisper-1)")
+        if not os.environ.get("OPENAI_API_KEY"):
+            print("Error: OPENAI_API_KEY environment variable not set")
+            return
+        transcribe_fn = transcribe_with_openai_api
     else:
         # Local whisper
         print(f"Device: {WHISPER_DEVICE}")
@@ -311,17 +363,22 @@ def main():
         except ImportError:
             import whisper
             USE_FASTER_WHISPER = False
-            print("Using openai-whisper")
+            print("Using openai-whisper (local)")
+
+        # Fix model name for local whisper
+        local_model = WHISPER_MODEL
+        if local_model.startswith("whisper-"):
+            local_model = local_model.replace("whisper-", "")  # whisper-large-v3 -> large-v3
 
         if USE_FASTER_WHISPER:
             model = WhisperModel(
-                WHISPER_MODEL,
+                local_model,
                 device=WHISPER_DEVICE,
                 compute_type="float16" if WHISPER_DEVICE == "cuda" else "int8"
             )
             transcribe_fn = lambda audio: transcribe_with_faster_whisper(model, audio)
         else:
-            model = whisper.load_model(WHISPER_MODEL, device=WHISPER_DEVICE)
+            model = whisper.load_model(local_model, device=WHISPER_DEVICE)
             transcribe_fn = lambda audio: transcribe_with_openai_whisper(model, audio)
 
     print("Ready!")
@@ -345,7 +402,7 @@ def main():
             time.sleep(GROQ_DELAY_SECONDS)
 
         # Retry logic with exponential backoff
-        max_retries = 3
+        max_retries = GROQ_MAX_RETRIES if WHISPER_PROVIDER == "groq" else 3
         for attempt in range(max_retries):
             try:
                 print(f"  🎙️ Processing audio...", flush=True)
@@ -368,8 +425,9 @@ def main():
             except Exception as e:
                 error_str = str(e)
                 if "429" in error_str and attempt < max_retries - 1:
-                    wait_time = GROQ_DELAY_SECONDS * (attempt + 2)
-                    print(f"  ⚠️ Rate limited, waiting {wait_time}s before retry...", flush=True)
+                    # Exponential backoff: 5min, 10min, 15min, 20min...
+                    wait_time = 300 * (attempt + 1)  # 5 minutes * attempt
+                    print(f"  ⚠️ Rate limited, waiting {wait_time//60}min before retry ({attempt+1}/{max_retries-1})...", flush=True)
                     time.sleep(wait_time)
                 else:
                     results['failed'] += 1

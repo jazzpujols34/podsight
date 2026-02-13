@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Podcast Pipeline Dashboard</title>
+    <title>PodSight 聲見 - 聽見弦外之音，看見核心觀點</title>
+    <meta name="description" content="將 Podcast 轉為可搜尋、可摘要的知識庫。AI 自動轉錄與摘要財經節目。">
+    <link rel="icon" type="image/jpeg" href="/assets/PodSight-Logo-cropped.jpeg">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
             --bg-primary: #0f0f0f;
@@ -63,14 +66,17 @@
         }
 
         .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--accent) 0%, #ea580c 100%);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .logo h1 {
@@ -79,6 +85,13 @@
             background: linear-gradient(90deg, var(--text-primary) 0%, var(--accent) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            margin-bottom: 0.125rem;
+        }
+
+        .logo-tagline {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 400;
         }
 
         .status-badge {
@@ -230,6 +243,13 @@
             display: flex;
             flex-wrap: wrap;
             gap: 0.75rem;
+        }
+
+        /* Lucide icon styling */
+        [data-lucide] {
+            display: inline-block;
+            vertical-align: middle;
+            flex-shrink: 0;
         }
 
         .btn {
@@ -587,6 +607,84 @@
             color: var(--bg-primary);
         }
 
+        /* Audio Player */
+        .audio-player {
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .audio-btn {
+            background: var(--bg-hover);
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: background 0.2s;
+        }
+
+        .audio-btn:hover {
+            background: var(--accent);
+        }
+
+        .audio-time {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            min-width: 40px;
+            font-family: monospace;
+        }
+
+        .audio-progress {
+            flex: 1;
+            height: 6px;
+            -webkit-appearance: none;
+            background: var(--bg-hover);
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .audio-progress::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .audio-speed {
+            background: var(--bg-hover);
+            border: none;
+            border-radius: 6px;
+            padding: 0.25rem 0.5rem;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        /* Clickable timestamps */
+        .timestamp {
+            color: var(--accent);
+            cursor: pointer;
+            font-family: monospace;
+        }
+
+        .timestamp:hover {
+            text-decoration: underline;
+        }
+
         .viewer-content {
             max-height: 600px;
             overflow-y: auto;
@@ -736,14 +834,294 @@
             font-size: 3rem;
             margin-bottom: 1rem;
         }
+
+        /* Episode filter dropdown */
+        .filter-select {
+            padding: 0.375rem 0.75rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.8125rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .filter-select:hover {
+            border-color: var(--accent);
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .filter-count {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Clickable stat card */
+        .stat-card.clickable {
+            cursor: pointer;
+        }
+
+        .stat-card.clickable:hover {
+            border-color: var(--accent);
+        }
+
+        /* Cost breakdown modal */
+        .cost-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .cost-modal-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .cost-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cost-modal-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .cost-section {
+            margin-bottom: 1rem;
+        }
+
+        .cost-section-title {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .cost-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cost-row:last-child {
+            border-bottom: none;
+        }
+
+        .cost-provider {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cost-free {
+            color: var(--success);
+            font-size: 0.75rem;
+            background: rgba(34, 197, 94, 0.1);
+            padding: 0.125rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .cost-amount {
+            font-weight: 600;
+            font-family: monospace;
+        }
+
+        .cost-note {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Pipeline Progress Bar */
+        .pipeline-progress {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+        }
+
+        .progress-bar-container {
+            height: 8px;
+            background: var(--bg-hover);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent) 0%, #22c55e 100%);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            width: 0%;
+            position: relative;
+        }
+
+        .progress-bar.indeterminate {
+            width: 30%;
+            animation: indeterminate 1.5s ease-in-out infinite;
+        }
+
+        @keyframes indeterminate {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(400%); }
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.5rem;
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+        }
+
+        .progress-step-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .progress-percent {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        /* Stock ticker tags */
+        .ticker-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .ticker-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.625rem;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 6px;
+            font-size: 0.8125rem;
+            color: var(--accent);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ticker-tag:hover {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: var(--accent);
+        }
+
+        .ticker-tag.etf {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: rgba(34, 197, 94, 0.3);
+            color: var(--success);
+        }
+
+        .ticker-tag.etf:hover {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: var(--success);
+        }
+
+        .ticker-tag-label {
+            font-size: 0.6875rem;
+            opacity: 0.7;
+        }
+
+        /* Theme toggle button */
+        .theme-toggle {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-hover);
+            border-color: var(--accent);
+        }
+
+        /* Light theme variables */
+        [data-theme="light"] {
+            --bg-primary: #f8f9fa;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f1f3f4;
+            --bg-hover: #e8eaed;
+            --text-primary: #1a1a1a;
+            --text-secondary: #5f6368;
+            --text-muted: #9aa0a6;
+            --border: #dadce0;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="light"] header {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        }
+
+        [data-theme="light"] .terminal {
+            background: #f1f3f4;
+        }
+
+        [data-theme="light"] .logo h1 {
+            background: linear-gradient(90deg, #1a1a1a 0%, #f59e0b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
     </style>
 </head>
 <body>
     <header>
         <div class="header-content">
             <div class="logo">
-                <div class="logo-icon">🎙️</div>
-                <h1 id="podcastTitle">Podcast Pipeline</h1>
+                <div class="logo-icon">
+                    <img src="/assets/PodSight-Logo-cropped.jpeg" alt="PodSight">
+                </div>
+                <div>
+                    <h1 id="podcastTitle">PodSight 聲見</h1>
+                    <div class="logo-tagline">聽見弦外之音，看見核心觀點</div>
+                </div>
             </div>
             <div class="podcast-selector">
                 <span class="podcast-label">Podcast:</span>
@@ -751,9 +1129,15 @@
                     <option value="">載入中...</option>
                 </select>
             </div>
-            <div class="status-badge">
-                <div class="status-dot" id="serverStatus"></div>
-                <span id="serverStatusText">連線中...</span>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="切換深色/淺色模式">
+                    <i data-lucide="sun" id="themeIconLight" style="width:18px;height:18px;display:none;"></i>
+                    <i data-lucide="moon" id="themeIconDark" style="width:18px;height:18px;"></i>
+                </button>
+                <div class="status-badge">
+                    <div class="status-dot" id="serverStatus"></div>
+                    <span id="serverStatusText">連線中...</span>
+                </div>
             </div>
         </div>
     </header>
@@ -774,9 +1158,9 @@
                     <div class="stat-label">已摘要</div>
                     <div class="stat-value" id="summarizedCount">-</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-label">最新集數</div>
-                    <div class="stat-value" id="latestEpisode">-</div>
+                <div class="stat-card clickable" onclick="showCostBreakdown()" title="點擊查看費用明細">
+                    <div class="stat-label"><i data-lucide="dollar-sign" style="width:12px;height:12px;"></i> 預估費用</div>
+                    <div class="stat-value" id="estimatedCost">-</div>
                 </div>
             </div>
 
@@ -784,23 +1168,55 @@
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-title">
-                        <span>⚡</span> Pipeline 控制台
+                        <i data-lucide="zap" style="width:18px;height:18px;"></i> Pipeline 控制台
                     </h2>
                 </div>
                 <div class="card-body">
+                    <!-- Provider Selection -->
+                    <div class="provider-selection" style="display: flex; gap: 1.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                        <div class="provider-group">
+                            <label style="display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                                <i data-lucide="mic" style="width:14px;height:14px;display:inline;"></i> 語音轉錄 (Step 3)
+                            </label>
+                            <select id="transcribeProvider" onchange="updateCostDisplay()" style="padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-secondary); color: var(--text-primary); font-size: 0.9rem; min-width: 180px;">
+                                <option value="groq">Groq (免費，有限制)</option>
+                                <option value="openai">OpenAI ($0.006/分鐘)</option>
+                                <option value="local">本地 Whisper (免費)</option>
+                            </select>
+                        </div>
+                        <div class="provider-group">
+                            <label style="display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                                <i data-lucide="sparkles" style="width:14px;height:14px;display:inline;"></i> AI 摘要 (Step 4)
+                            </label>
+                            <select id="summaryProvider" onchange="updateCostDisplay()" style="padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-secondary); color: var(--text-primary); font-size: 0.9rem; min-width: 180px;">
+                                <option value="gemini">Gemini (免費)</option>
+                                <option value="anthropic">Claude (付費)</option>
+                                <option value="openai">OpenAI (付費)</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="pipeline-controls">
                         <button class="btn btn-primary" id="runFullPipeline" onclick="runPipeline('all')">
-                            <span>▶️</span> 執行完整 Pipeline
+                            <i data-lucide="play" style="width:16px;height:16px;"></i> 執行完整 Pipeline
                         </button>
                         <button class="btn btn-secondary" onclick="runPipeline('check')">
-                            <span>🔍</span> 檢查新集數
+                            <i data-lucide="radar" style="width:16px;height:16px;"></i> 檢查新集數
                         </button>
                         <button class="btn btn-secondary" onclick="refreshData()">
-                            <span>🔄</span> 重新整理
+                            <i data-lucide="refresh-cw" style="width:16px;height:16px;"></i> 重新整理
                         </button>
                         <button class="btn btn-secondary" id="stopBtn" onclick="stopPipeline()" style="display: none; background: var(--error);">
-                            <span>⏹️</span> 停止執行
+                            <i data-lucide="square" style="width:16px;height:16px;"></i> 停止執行
                         </button>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="pipeline-progress" id="pipelineProgress" style="display: none;">
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="progressBar"></div>
+                        </div>
+                        <div class="progress-text" id="progressText">準備中...</div>
                     </div>
 
                     <div class="pipeline-steps">
@@ -828,9 +1244,9 @@
             <div class="card" style="margin-top: 1.5rem;" id="terminalCard" style="display: none;">
                 <div class="card-header">
                     <h2 class="card-title">
-                        <span>💻</span> 執行輸出
+                        <i data-lucide="terminal" style="width:18px;height:18px;"></i> 執行輸出
                     </h2>
-                    <button class="btn btn-secondary btn-icon" onclick="clearTerminal()">✕</button>
+                    <button class="btn btn-secondary btn-icon" onclick="clearTerminal()"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
                 </div>
                 <div class="card-body">
                     <div class="terminal" id="terminal">
@@ -843,12 +1259,12 @@
             <div class="card" style="margin-top: 1.5rem;" id="viewerCard">
                 <div class="card-header">
                     <h2 class="card-title">
-                        <span>📄</span> 內容檢視
+                        <i data-lucide="file-text" style="width:18px;height:18px;"></i> 內容檢視
                     </h2>
                 </div>
                 <div class="card-body">
                     <div id="viewerEmpty" class="empty-state">
-                        <div class="empty-state-icon">📝</div>
+                        <div class="empty-state-icon"><i data-lucide="file-text" style="width:48px;height:48px;"></i></div>
                         <p>點擊右側集數查看內容</p>
                     </div>
                     <div id="viewerContent" style="display: none;">
@@ -858,17 +1274,46 @@
                                 <div class="viewer-title" id="viewerTitle"></div>
                             </div>
                         </div>
+                        <!-- Audio Player -->
+                        <div class="audio-player" id="audioPlayer" style="display: none;">
+                            <audio id="audioElement" preload="metadata"></audio>
+                            <div class="audio-controls">
+                                <button class="audio-btn" id="playPauseBtn" onclick="togglePlayPause()">
+                                    <i data-lucide="play" id="playIcon" style="width:20px;height:20px;"></i>
+                                </button>
+                                <span class="audio-time" id="currentTime">0:00</span>
+                                <input type="range" class="audio-progress" id="audioProgress" min="0" max="100" value="0" oninput="seekAudio(this.value)">
+                                <span class="audio-time" id="duration">0:00</span>
+                                <button class="audio-btn" onclick="skipAudio(-10)" title="-10s">
+                                    <i data-lucide="rewind" style="width:16px;height:16px;"></i>
+                                </button>
+                                <button class="audio-btn" onclick="skipAudio(10)" title="+10s">
+                                    <i data-lucide="fast-forward" style="width:16px;height:16px;"></i>
+                                </button>
+                                <select class="audio-speed" id="playbackSpeed" onchange="setPlaybackSpeed(this.value)">
+                                    <option value="0.75">0.75x</option>
+                                    <option value="1" selected>1x</option>
+                                    <option value="1.25">1.25x</option>
+                                    <option value="1.5">1.5x</option>
+                                    <option value="2">2x</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Stock ticker tags -->
+                        <div class="ticker-tags" id="tickerTags" style="display: none;"></div>
+
                         <div class="viewer-tabs">
-                            <button class="tab active" onclick="showTab('transcript')">📝 逐字稿</button>
-                            <button class="tab" onclick="showTab('summary')">📊 摘要</button>
+                            <button class="tab active" onclick="showTab('transcript')"><i data-lucide="file-text" style="width:14px;height:14px;"></i> 逐字稿</button>
+                            <button class="tab" onclick="showTab('summary')"><i data-lucide="sparkles" style="width:14px;height:14px;"></i> 摘要</button>
                             <div class="copy-buttons">
-                                <button class="btn btn-secondary btn-small" onclick="copyContent(false)" title="複製原始內容">📋 複製</button>
-                                <button class="btn btn-secondary btn-small" onclick="copyContent(true)" title="複製純文字（無格式）">📄 純文字</button>
-                                <button class="btn btn-secondary btn-small" id="editBtn" onclick="toggleEdit()" title="編輯摘要">✏️ 編輯</button>
+                                <button class="btn btn-secondary btn-small" onclick="copyContent(false)" title="複製原始內容"><i data-lucide="copy" style="width:14px;height:14px;"></i> 複製</button>
+                                <button class="btn btn-secondary btn-small" onclick="copyContent(true)" title="複製純文字（無格式）"><i data-lucide="clipboard" style="width:14px;height:14px;"></i> 純文字</button>
+                                <button class="btn btn-secondary btn-small" onclick="downloadContent()" title="下載 TXT 檔案"><i data-lucide="download" style="width:14px;height:14px;"></i> 下載</button>
+                                <button class="btn btn-secondary btn-small" id="editBtn" onclick="toggleEdit()" title="編輯摘要"><i data-lucide="pencil" style="width:14px;height:14px;"></i> 編輯</button>
                             </div>
                             <div class="edit-buttons" id="editButtons" style="display: none;">
-                                <button class="btn btn-primary btn-small" onclick="saveEdit()">💾 儲存</button>
-                                <button class="btn btn-secondary btn-small" onclick="cancelEdit()">✕ 取消</button>
+                                <button class="btn btn-primary btn-small" onclick="saveEdit()"><i data-lucide="save" style="width:14px;height:14px;"></i> 儲存</button>
+                                <button class="btn btn-secondary btn-small" onclick="cancelEdit()"><i data-lucide="x" style="width:14px;height:14px;"></i> 取消</button>
                             </div>
                         </div>
                         <div class="viewer-content" id="viewerText"></div>
@@ -882,12 +1327,12 @@
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-title">
-                        <span>🔍</span> 搜尋
+                        <i data-lucide="search" style="width:18px;height:18px;"></i> 搜尋
                     </h2>
                 </div>
                 <div class="card-body">
                     <div class="search-container">
-                        <span class="search-icon">🔎</span>
+                        <span class="search-icon"><i data-lucide="search" style="width:16px;height:16px;"></i></span>
                         <input type="text" class="search-input" id="searchInput"
                                placeholder="搜尋關鍵字..."
                                onkeyup="handleSearch(event)">
@@ -900,8 +1345,15 @@
             <div class="card" style="margin-top: 1.5rem;">
                 <div class="card-header">
                     <h2 class="card-title">
-                        <span>📚</span> 集數列表
+                        <i data-lucide="list" style="width:18px;height:18px;"></i> 集數列表
                     </h2>
+                    <select class="filter-select" id="episodeFilter" onchange="filterEpisodes()">
+                        <option value="all">全部</option>
+                        <option value="has-transcript">有逐字稿</option>
+                        <option value="has-summary">有摘要</option>
+                        <option value="no-transcript">缺逐字稿</option>
+                        <option value="no-summary">缺摘要</option>
+                    </select>
                 </div>
                 <div class="episode-list" id="episodeList">
                     <div class="empty-state">
@@ -922,11 +1374,391 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Lucide icons
+            lucide.createIcons();
+
+            // Load saved theme preference
+            initTheme();
+
             checkServerStatus();
             loadPodcasts();
             checkRunningPipeline();
             setInterval(checkServerStatus, 30000);
+
+            // Global keyboard shortcuts
+            document.addEventListener('keydown', handleKeyboardShortcuts);
         });
+
+        // Theme toggle
+        function initTheme() {
+            const savedTheme = localStorage.getItem('podsight-theme') || 'dark';
+            setTheme(savedTheme);
+        }
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('podsight-theme', theme);
+
+            // Update toggle icon
+            const lightIcon = document.getElementById('themeIconLight');
+            const darkIcon = document.getElementById('themeIconDark');
+
+            if (theme === 'light') {
+                lightIcon.style.display = 'block';
+                darkIcon.style.display = 'none';
+            } else {
+                lightIcon.style.display = 'none';
+                darkIcon.style.display = 'block';
+            }
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        }
+
+        // Keyboard shortcuts handler
+        let selectedEpisodeIndex = -1;
+        function handleKeyboardShortcuts(e) {
+            // Ignore if typing in an input/textarea
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+                // Allow Escape to blur
+                if (e.key === 'Escape') {
+                    e.target.blur();
+                }
+                return;
+            }
+
+            const filteredEpisodes = getFilteredEpisodes();
+
+            switch (e.key) {
+                case '/':
+                    // Focus search input
+                    e.preventDefault();
+                    document.getElementById('searchInput').focus();
+                    break;
+
+                case 'j':
+                    // Navigate to next episode
+                    e.preventDefault();
+                    if (filteredEpisodes.length > 0) {
+                        selectedEpisodeIndex = Math.min(selectedEpisodeIndex + 1, filteredEpisodes.length - 1);
+                        const ep = filteredEpisodes[selectedEpisodeIndex];
+                        const hasEpNumber = ep.episode_number !== null && ep.episode_number !== undefined;
+                        const identifier = hasEpNumber ? ep.episode_number : (ep.filename || '');
+                        loadEpisode(identifier);
+                        highlightSelectedEpisode();
+                    }
+                    break;
+
+                case 'k':
+                    // Navigate to previous episode
+                    e.preventDefault();
+                    if (filteredEpisodes.length > 0 && selectedEpisodeIndex > 0) {
+                        selectedEpisodeIndex = Math.max(selectedEpisodeIndex - 1, 0);
+                        const ep = filteredEpisodes[selectedEpisodeIndex];
+                        const hasEpNumber = ep.episode_number !== null && ep.episode_number !== undefined;
+                        const identifier = hasEpNumber ? ep.episode_number : (ep.filename || '');
+                        loadEpisode(identifier);
+                        highlightSelectedEpisode();
+                    }
+                    break;
+
+                case ' ':
+                    // Play/pause audio (only if audio player is visible)
+                    if (document.getElementById('audioPlayer').style.display !== 'none') {
+                        e.preventDefault();
+                        togglePlayPause();
+                    }
+                    break;
+
+                case 'ArrowLeft':
+                    // Skip back 10 seconds
+                    if (document.getElementById('audioPlayer').style.display !== 'none') {
+                        e.preventDefault();
+                        skipAudio(-10);
+                    }
+                    break;
+
+                case 'ArrowRight':
+                    // Skip forward 10 seconds
+                    if (document.getElementById('audioPlayer').style.display !== 'none') {
+                        e.preventDefault();
+                        skipAudio(10);
+                    }
+                    break;
+
+                case '1':
+                    // Show transcript tab
+                    e.preventDefault();
+                    showTab('transcript');
+                    break;
+
+                case '2':
+                    // Show summary tab
+                    e.preventDefault();
+                    showTab('summary');
+                    break;
+
+                case '?':
+                    // Show keyboard shortcuts help
+                    e.preventDefault();
+                    showShortcutsHelp();
+                    break;
+            }
+        }
+
+        function highlightSelectedEpisode() {
+            document.querySelectorAll('.episode-item').forEach((item, index) => {
+                item.style.background = index === selectedEpisodeIndex ? 'var(--bg-hover)' : '';
+            });
+        }
+
+        function showShortcutsHelp() {
+            const shortcuts = [
+                '/ - 搜尋',
+                'j - 下一集',
+                'k - 上一集',
+                '空白鍵 - 播放/暫停',
+                '← - 倒退 10 秒',
+                '→ - 快轉 10 秒',
+                '1 - 顯示逐字稿',
+                '2 - 顯示摘要',
+                '? - 顯示此說明'
+            ];
+            alert('⌨️ 鍵盤快捷鍵\n\n' + shortcuts.join('\n'));
+        }
+
+        // Cost tracking
+        let costData = null;
+
+        async function loadCostData() {
+            try {
+                const res = await fetch(`${API_BASE}/stats/cost`);
+                costData = await res.json();
+                updateCostDisplay();
+            } catch (err) {
+                document.getElementById('estimatedCost').textContent = '-';
+            }
+        }
+
+        function updateCostDisplay() {
+            if (!costData) return;
+
+            // Get currently selected providers
+            const transcribeProvider = document.getElementById('transcribeProvider')?.value || 'groq';
+            const summaryProvider = document.getElementById('summaryProvider')?.value || 'gemini';
+
+            // Map provider names to cost keys
+            const transcribeCostMap = {
+                'groq': 'groq',
+                'openai': 'openai_whisper',
+                'local': 'local'
+            };
+            const summaryCostMap = {
+                'gemini': 'gemini',
+                'anthropic': 'claude',
+                'openai': 'openai_gpt4o'
+            };
+
+            const transcribeCost = costData.estimated_costs_usd.transcription[transcribeCostMap[transcribeProvider]] || 0;
+            const summaryCost = costData.estimated_costs_usd.summarization[summaryCostMap[summaryProvider]] || 0;
+            const totalCost = transcribeCost + summaryCost;
+
+            document.getElementById('estimatedCost').textContent =
+                totalCost === 0 ? '$0 免費' : `~$${totalCost.toFixed(2)}`;
+        }
+
+        // Stock ticker extraction
+        function extractTickers(text) {
+            if (!text) return [];
+
+            const seen = new Set();
+            const tickers = [];
+
+            function addTicker(code, type, name = null) {
+                if (!seen.has(code)) {
+                    seen.add(code);
+                    tickers.push({ code, type, name });
+                }
+            }
+
+            // Taiwan stock codes: 4-digit numbers (2330, 2317, etc.)
+            const twStockRegex = /[（(](\d{4})[）)]/g;
+            let match;
+            while ((match = twStockRegex.exec(text)) !== null) {
+                addTicker(match[1], 'tw_stock');
+            }
+
+            // Taiwan ETF codes: 4-digit starting with 00 (0050, 0056, 00878)
+            const twEtfRegex = /\b(00\d{2,3})\b/g;
+            while ((match = twEtfRegex.exec(text)) !== null) {
+                addTicker(match[1], 'tw_etf');
+            }
+
+            // US stock symbols: $TSLA, $AAPL
+            const usStockRegex = /\$([A-Z]{1,5})\b/g;
+            while ((match = usStockRegex.exec(text)) !== null) {
+                addTicker(match[1], 'us_stock');
+            }
+
+            // Common Taiwan stock names with codes
+            const knownStocks = {
+                '台積電': '2330',
+                '鴻海': '2317',
+                '聯發科': '2454',
+                '廣達': '2382',
+                '台達電': '2308',
+                '緯創': '3231',
+                '中華電': '2412',
+                '國泰金': '2882',
+                '富邦金': '2881',
+                '長榮': '2603',
+                '陽明': '2609',
+                'Nvidia': 'NVDA',
+                'NVIDIA': 'NVDA',
+                '輝達': 'NVDA',
+                'Apple': 'AAPL',
+                '蘋果': 'AAPL',
+                'Tesla': 'TSLA',
+                '特斯拉': 'TSLA',
+                'AMD': 'AMD',
+                'Intel': 'INTC',
+                '英特爾': 'INTC'
+            };
+
+            for (const [name, code] of Object.entries(knownStocks)) {
+                if (text.includes(name)) {
+                    const type = /^\d+$/.test(code) ? 'tw_stock' : 'us_stock';
+                    addTicker(code, type, name);
+                }
+            }
+
+            return tickers;
+        }
+
+        function renderTickerTags(tickers) {
+            const container = document.getElementById('tickerTags');
+            if (!tickers || tickers.length === 0) {
+                container.style.display = 'none';
+                return;
+            }
+
+            container.style.display = 'flex';
+            container.innerHTML = tickers.map(t => {
+                const isEtf = t.type === 'tw_etf';
+                const label = t.name ? `${t.name}` : '';
+                const displayCode = t.type === 'us_stock' ? `$${t.code}` : t.code;
+
+                // Search link based on type
+                let searchUrl;
+                if (t.type === 'tw_stock' || t.type === 'tw_etf') {
+                    searchUrl = `https://www.google.com/search?q=${t.code}+台股`;
+                } else {
+                    searchUrl = `https://www.google.com/search?q=${t.code}+stock`;
+                }
+
+                return `
+                    <a href="${searchUrl}" target="_blank" class="ticker-tag ${isEtf ? 'etf' : ''}" title="搜尋 ${label || displayCode}">
+                        <i data-lucide="${isEtf ? 'pie-chart' : 'trending-up'}" style="width:12px;height:12px;"></i>
+                        ${displayCode}
+                        ${label ? `<span class="ticker-tag-label">${label}</span>` : ''}
+                    </a>
+                `;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        function showCostBreakdown() {
+            if (!costData) {
+                alert('費用資料載入中...');
+                return;
+            }
+
+            const modal = document.createElement('div');
+            modal.className = 'cost-modal';
+            modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+
+            const stats = costData.stats;
+            const costs = costData.estimated_costs_usd;
+
+            modal.innerHTML = `
+                <div class="cost-modal-content">
+                    <div class="cost-modal-header">
+                        <div class="cost-modal-title"><i data-lucide="calculator" style="width:18px;height:18px;"></i> API 費用預估</div>
+                        <button class="btn btn-secondary btn-icon" onclick="this.closest('.cost-modal').remove()">
+                            <i data-lucide="x" style="width:16px;height:16px;"></i>
+                        </button>
+                    </div>
+
+                    <div class="cost-section">
+                        <div class="cost-section-title">使用統計</div>
+                        <div class="cost-row">
+                            <span>音訊檔案</span>
+                            <span>${stats.audio_files} 個 (~${stats.estimated_audio_minutes} 分鐘)</span>
+                        </div>
+                        <div class="cost-row">
+                            <span>逐字稿</span>
+                            <span>${stats.transcripts} 份</span>
+                        </div>
+                        <div class="cost-row">
+                            <span>摘要</span>
+                            <span>${stats.summaries} 份</span>
+                        </div>
+                    </div>
+
+                    <div class="cost-section">
+                        <div class="cost-section-title">語音轉錄費用</div>
+                        <div class="cost-row">
+                            <div class="cost-provider">
+                                <span>Groq</span>
+                                <span class="cost-free">免費</span>
+                            </div>
+                            <span class="cost-amount">$0.00</span>
+                        </div>
+                        <div class="cost-row">
+                            <span>OpenAI Whisper</span>
+                            <span class="cost-amount">$${costs.transcription.openai_whisper.toFixed(2)}</span>
+                        </div>
+                        <div class="cost-row">
+                            <div class="cost-provider">
+                                <span>本地 Whisper</span>
+                                <span class="cost-free">免費</span>
+                            </div>
+                            <span class="cost-amount">$0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="cost-section">
+                        <div class="cost-section-title">AI 摘要費用</div>
+                        <div class="cost-row">
+                            <div class="cost-provider">
+                                <span>Gemini</span>
+                                <span class="cost-free">免費</span>
+                            </div>
+                            <span class="cost-amount">$0.00</span>
+                        </div>
+                        <div class="cost-row">
+                            <span>Claude</span>
+                            <span class="cost-amount">$${costs.summarization.claude.toFixed(2)}</span>
+                        </div>
+                        <div class="cost-row">
+                            <span>OpenAI GPT-4o</span>
+                            <span class="cost-amount">$${costs.summarization.openai_gpt4o.toFixed(2)}</span>
+                        </div>
+                    </div>
+
+                    <div class="cost-note">
+                        <strong>💡 提示：</strong>使用 Groq + Gemini 可免費處理，但有 API 速率限制。
+                        OpenAI Whisper 計費: $0.006/分鐘
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            lucide.createIcons();
+        }
 
         // Load podcasts
         async function loadPodcasts() {
@@ -968,7 +1800,9 @@
         }
 
         function updatePodcastTitle(name) {
-            document.getElementById('podcastTitle').textContent = name + ' Pipeline';
+            document.getElementById('podcastTitle').textContent = 'PodSight 聲見';
+            // Update browser title with current podcast
+            document.title = `${name} - PodSight 聲見`;
         }
 
         // Check server status
@@ -997,6 +1831,7 @@
                 episodesData = data.episodes || [];
                 renderEpisodeList();
                 updateStats(data);
+                loadCostData();  // Load cost estimates
             } catch (err) {
                 document.getElementById('episodeList').innerHTML = `
                     <div class="empty-state">
@@ -1044,6 +1879,31 @@
             return title;
         }
 
+        // Filter episodes based on dropdown
+        function filterEpisodes() {
+            renderEpisodeList();
+        }
+
+        // Get filtered episodes based on current filter
+        function getFilteredEpisodes() {
+            const filter = document.getElementById('episodeFilter')?.value || 'all';
+
+            return episodesData.filter(ep => {
+                switch (filter) {
+                    case 'has-transcript':
+                        return ep.has_transcript;
+                    case 'has-summary':
+                        return ep.has_summary;
+                    case 'no-transcript':
+                        return !ep.has_transcript;
+                    case 'no-summary':
+                        return !ep.has_summary;
+                    default:
+                        return true;
+                }
+            });
+        }
+
         // Render episode list
         function renderEpisodeList() {
             const list = document.getElementById('episodeList');
@@ -1052,7 +1912,28 @@
                 return;
             }
 
-            list.innerHTML = episodesData.map(ep => {
+            const filteredEpisodes = getFilteredEpisodes();
+            const filter = document.getElementById('episodeFilter')?.value || 'all';
+
+            // Show filter count
+            const filterLabel = {
+                'all': '全部',
+                'has-transcript': '有逐字稿',
+                'has-summary': '有摘要',
+                'no-transcript': '缺逐字稿',
+                'no-summary': '缺摘要'
+            }[filter];
+
+            if (filteredEpisodes.length === 0) {
+                list.innerHTML = `<div class="empty-state"><p>沒有符合「${filterLabel}」的集數</p></div>`;
+                return;
+            }
+
+            const countHtml = filter !== 'all'
+                ? `<div class="filter-count">顯示 ${filteredEpisodes.length} / ${episodesData.length} 集 (${filterLabel})</div>`
+                : '';
+
+            list.innerHTML = countHtml + filteredEpisodes.map(ep => {
                 // Properly handle null episode numbers (for date-based podcasts)
                 const hasEpNumber = ep.episode_number !== null && ep.episode_number !== undefined;
                 const identifier = hasEpNumber ? ep.episode_number : (ep.filename || '');
@@ -1093,10 +1974,115 @@
                 document.getElementById('viewerEp').textContent = hasEpNumber ? `EP${data.episode_number}` : '';
                 document.getElementById('viewerTitle').textContent = data.title || '(無標題)';
 
+                // Extract and display stock tickers from summary
+                const tickers = extractTickers(data.summary || '');
+                renderTickerTags(tickers);
+
+                // Load audio if available
+                const audioFilename = hasEpNumber ? `EP${String(data.episode_number).padStart(4, '0')}.mp3` : `${identifier}.mp3`;
+                loadAudio(audioFilename);
+
                 showTab(currentTab);
             } catch (err) {
                 document.getElementById('viewerText').innerHTML = '<p class="error">載入失敗</p>';
             }
+        }
+
+        // Audio player functions
+        window.audioElement = document.getElementById('audioElement');
+        let isPlaying = false;
+
+        function loadAudio(filename) {
+            const audioPlayer = document.getElementById('audioPlayer');
+            const audioUrl = `${API_BASE}/audio/${filename}`;
+
+            // Reset state
+            isPlaying = false;
+            updatePlayButton();
+            document.getElementById('currentTime').textContent = '0:00';
+            document.getElementById('duration').textContent = '0:00';
+            document.getElementById('audioProgress').value = 0;
+
+            // Remove old event listeners by cloning
+            const newAudio = audioElement.cloneNode(true);
+            audioElement.parentNode.replaceChild(newAudio, audioElement);
+            window.audioElement = newAudio;
+
+            newAudio.src = audioUrl;
+            audioPlayer.style.display = 'block';
+            lucide.createIcons();
+
+            newAudio.addEventListener('loadedmetadata', () => {
+                document.getElementById('duration').textContent = formatTime(newAudio.duration);
+            });
+
+            newAudio.addEventListener('timeupdate', () => {
+                const progress = (newAudio.currentTime / newAudio.duration) * 100;
+                document.getElementById('audioProgress').value = progress;
+                document.getElementById('currentTime').textContent = formatTime(newAudio.currentTime);
+            });
+
+            newAudio.addEventListener('ended', () => {
+                isPlaying = false;
+                updatePlayButton();
+            });
+
+            newAudio.addEventListener('error', () => {
+                audioPlayer.style.display = 'none';
+            });
+        }
+
+        function togglePlayPause() {
+            if (isPlaying) {
+                window.audioElement.pause();
+            } else {
+                window.audioElement.play();
+            }
+            isPlaying = !isPlaying;
+            updatePlayButton();
+        }
+
+        function updatePlayButton() {
+            const playIcon = document.getElementById('playIcon');
+            playIcon.setAttribute('data-lucide', isPlaying ? 'pause' : 'play');
+            lucide.createIcons();
+        }
+
+        function seekAudio(value) {
+            const time = (value / 100) * window.audioElement.duration;
+            window.audioElement.currentTime = time;
+        }
+
+        function skipAudio(seconds) {
+            window.audioElement.currentTime = Math.max(0, Math.min(window.audioElement.duration, window.audioElement.currentTime + seconds));
+        }
+
+        function setPlaybackSpeed(speed) {
+            window.audioElement.playbackRate = parseFloat(speed);
+        }
+
+        function seekToTimestamp(timestamp) {
+            // Parse timestamp like "12:34" or "1:23:45"
+            const parts = timestamp.split(':').map(Number);
+            let seconds = 0;
+            if (parts.length === 2) {
+                seconds = parts[0] * 60 + parts[1];
+            } else if (parts.length === 3) {
+                seconds = parts[0] * 3600 + parts[1] * 60 + parts[2];
+            }
+            window.audioElement.currentTime = seconds;
+            if (!isPlaying) {
+                window.audioElement.play();
+                isPlaying = true;
+                updatePlayButton();
+            }
+        }
+
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
         }
 
         // Show tab
@@ -1124,7 +2110,7 @@
             } else {
                 // Format transcript with timestamps highlighted
                 viewer.classList.remove('markdown');
-                viewer.innerHTML = content.replace(/\[(\d+:\d+)\]/g, '<span class="timestamp">[$1]</span>');
+                viewer.innerHTML = content.replace(/\[(\d+:\d+)\]/g, '<span class="timestamp" onclick="seekToTimestamp(\'$1\')">[$1]</span>');
             }
         }
 
@@ -1167,6 +2153,38 @@
             document.body.appendChild(toast);
 
             setTimeout(() => toast.remove(), 2000);
+        }
+
+        // Download content as TXT file
+        function downloadContent() {
+            if (!currentEpisode) return;
+
+            const content = currentTab === 'transcript' ? currentEpisode.transcript : currentEpisode.summary;
+            if (!content) {
+                showCopyToast(`沒有${currentTab === 'transcript' ? '逐字稿' : '摘要'}可下載`);
+                return;
+            }
+
+            // Generate filename
+            const hasEpNum = currentEpisode.episode_number !== null && currentEpisode.episode_number !== undefined;
+            const epIdentifier = hasEpNum
+                ? `EP${String(currentEpisode.episode_number).padStart(4, '0')}`
+                : (currentEpisode.filename || 'episode');
+            const suffix = currentTab === 'transcript' ? '逐字稿' : '摘要';
+            const filename = `${epIdentifier}_${suffix}.txt`;
+
+            // Create blob and download
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showCopyToast(`已下載 ${filename}`);
         }
 
         // Edit summary
@@ -1319,7 +2337,16 @@
             setButtonsDisabled(true);
 
             try {
-                const res = await fetch(`${API_BASE}/run/${step}`, { method: 'POST' });
+                // Get selected providers
+                const transcribeProvider = document.getElementById('transcribeProvider').value;
+                const summaryProvider = document.getElementById('summaryProvider').value;
+
+                const params = new URLSearchParams({
+                    transcribe_provider: transcribeProvider,
+                    summary_provider: summaryProvider
+                });
+
+                const res = await fetch(`${API_BASE}/run/${step}?${params}`, { method: 'POST' });
                 const data = await res.json();
 
                 if (!res.ok) {
@@ -1367,6 +2394,9 @@
                         if (stepEl) stepEl.classList.add('active');
                     }
 
+                    // Update progress bar
+                    updateProgressBar(data);
+
                     // Check if finished
                     if (!data.running) {
                         clearInterval(statusPollingInterval);
@@ -1403,18 +2433,95 @@
 
         function setButtonsDisabled(disabled) {
             document.querySelectorAll('.pipeline-controls .btn').forEach(btn => {
-                btn.disabled = disabled;
+                // Don't disable the stop button
+                if (btn.id !== 'stopBtn') {
+                    btn.disabled = disabled;
+                }
             });
             document.querySelectorAll('.step').forEach(step => {
                 step.style.pointerEvents = disabled ? 'none' : 'auto';
                 step.style.opacity = disabled ? '0.5' : '1';
             });
 
-            // Show/hide stop button
+            // Show/hide stop button and progress bar
             const stopBtn = document.getElementById('stopBtn');
+            const progressEl = document.getElementById('pipelineProgress');
             if (stopBtn) {
                 stopBtn.style.display = disabled ? 'inline-flex' : 'none';
             }
+            if (progressEl) {
+                progressEl.style.display = disabled ? 'block' : 'none';
+                if (disabled) {
+                    // Start with indeterminate progress
+                    document.getElementById('progressBar').classList.add('indeterminate');
+                    document.getElementById('progressBar').style.width = '30%';
+                    document.getElementById('progressText').innerHTML = '<span class="progress-step-info"><span class="spinner" style="width:14px;height:14px;"></span> 準備中...</span><span class="progress-percent">0%</span>';
+                }
+            }
+        }
+
+        // Parse progress from output lines
+        function parseProgressFromOutput(output) {
+            let progress = { percent: 0, stepInfo: '處理中...', currentItem: '' };
+
+            // Look for percentage patterns like "[5/28] (17%)" or "(45%)"
+            for (let i = output.length - 1; i >= 0; i--) {
+                const line = output[i].text || '';
+
+                // Pattern: [X/Y] (Z%)
+                const match = line.match(/\[(\d+)\/(\d+)\]\s*\((\d+)%\)/);
+                if (match) {
+                    const [, current, total, percent] = match;
+                    progress.percent = parseInt(percent);
+                    progress.currentItem = `${current}/${total}`;
+                    break;
+                }
+
+                // Pattern: just (Z%)
+                const percentMatch = line.match(/\((\d+)%\)/);
+                if (percentMatch) {
+                    progress.percent = parseInt(percentMatch[1]);
+                    break;
+                }
+
+                // Pattern: Transcribing: EPXXXX
+                const epMatch = line.match(/Transcribing:\s*(EP\d+|[^.]+)/);
+                if (epMatch && !progress.currentItem) {
+                    progress.currentItem = epMatch[1].slice(0, 20);
+                }
+
+                // Pattern: Summarizing EPXXXX
+                const sumMatch = line.match(/Summarizing\s+(EP\d+|[^.]+)/);
+                if (sumMatch && !progress.currentItem) {
+                    progress.currentItem = sumMatch[1].slice(0, 20);
+                }
+            }
+
+            return progress;
+        }
+
+        function updateProgressBar(data) {
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+
+            if (!data.running) {
+                progressBar.classList.remove('indeterminate');
+                progressBar.style.width = data.exit_code === 0 ? '100%' : '0%';
+                progressText.innerHTML = data.exit_code === 0
+                    ? '<span class="progress-step-info"><i data-lucide="check" style="width:14px;height:14px;color:var(--success);"></i> 完成!</span><span class="progress-percent">100%</span>'
+                    : '<span class="progress-step-info"><i data-lucide="x" style="width:14px;height:14px;color:var(--error);"></i> 已停止</span><span class="progress-percent">-</span>';
+                lucide.createIcons();
+                return;
+            }
+
+            const progress = parseProgressFromOutput(data.output);
+            const stepName = data.step_name || '處理中';
+
+            progressBar.classList.remove('indeterminate');
+            progressBar.style.width = `${Math.max(progress.percent, 5)}%`;
+
+            const itemInfo = progress.currentItem ? ` - ${progress.currentItem}` : '';
+            progressText.innerHTML = `<span class="progress-step-info"><span class="spinner" style="width:14px;height:14px;"></span> ${stepName}${itemInfo}</span><span class="progress-percent">${progress.percent}%</span>`;
         }
 
         function addTerminalLine(text, type = '') {

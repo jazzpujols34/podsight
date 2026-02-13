@@ -17,7 +17,12 @@ Usage:
 import argparse
 import os
 import re
+import sys
 from pathlib import Path
+
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from config import get_podcast_config
 
 # Get podcast config (from env or default)
@@ -26,8 +31,8 @@ podcast = get_podcast_config()
 # Ensure summary directory exists
 podcast.summary_dir.mkdir(parents=True, exist_ok=True)
 
-# Default settings
-DEFAULT_PROVIDER = "gemini"
+# Default settings (env var overrides)
+DEFAULT_PROVIDER = os.environ.get('SUMMARY_PROVIDER') or "gemini"
 DEFAULT_ANTHROPIC_MODEL = "claude-sonnet-4-20250514"
 DEFAULT_OPENAI_MODEL = "gpt-4o"
 DEFAULT_GEMINI_MODEL = "gemini-3-flash-preview"
@@ -107,7 +112,7 @@ def summarize_with_anthropic(transcript: str, model: str) -> str:
 
     message = client.messages.create(
         model=model,
-        max_tokens=1024,
+        max_tokens=4096,
         messages=[
             {"role": "user", "content": get_summary_prompt(transcript)}
         ]
@@ -131,7 +136,7 @@ def summarize_with_openai(transcript: str, model: str) -> str:
 
     response = client.chat.completions.create(
         model=model,
-        max_tokens=1024,
+        max_tokens=4096,
         messages=[
             {"role": "user", "content": get_summary_prompt(transcript)}
         ]
@@ -165,7 +170,7 @@ def summarize_with_gemini(transcript: str, model: str) -> str:
 
     generate_content_config = types.GenerateContentConfig(
         temperature=0.7,
-        max_output_tokens=2048,
+        max_output_tokens=4096,
     )
 
     response = client.models.generate_content(

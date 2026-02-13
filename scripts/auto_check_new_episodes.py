@@ -26,6 +26,9 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from config import (
     RSS_URL, DATA_DIR, EPISODES_FILE, AUDIO_DIR, TRANSCRIPT_DIR
 )

@@ -28,7 +28,7 @@ def run_step(step_num: int, script_name: str, podcast_slug: str):
     print(f"# Step {step_num}: {script_name}")
     print(f"{'#' * 60}\n")
 
-    script_path = Path(__file__).parent / script_name
+    script_path = Path(__file__).parent / "scripts" / script_name
     env = {**os.environ, 'PODCAST': podcast_slug}
     result = subprocess.run([sys.executable, str(script_path)], env=env)
 

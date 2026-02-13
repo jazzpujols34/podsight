@@ -9,9 +9,15 @@ Supports multiple podcasts via PODCAST environment variable.
 
 import json
 import re
+import sys
+from pathlib import Path
 import feedparser
 import ssl
 from datetime import datetime
+
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from config import get_podcast_config
 
 # Fix SSL certificate verification issues

@@ -8,10 +8,15 @@ Supports multiple podcasts via PODCAST environment variable.
 """
 
 import json
+import sys
 import requests
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
+
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from config import get_podcast_config, DOWNLOAD_WORKERS, DOWNLOAD_RETRY
 
 # Get podcast config (from env or default)

@@ -19,6 +19,10 @@ from tqdm import tqdm
 from google.cloud import speech_v1
 from google.oauth2 import service_account
 import io
+
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from config import AUDIO_DIR, TRANSCRIPT_DIR, EPISODES_FILE, EPISODE_START, EPISODE_END, TIMESTAMP_FORMAT
 
 def load_episodes_list() -> list[dict]:
