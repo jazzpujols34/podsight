@@ -37,8 +37,30 @@ DEFAULT_ANTHROPIC_MODEL = "claude-sonnet-4-20250514"
 DEFAULT_OPENAI_MODEL = "gpt-4o"
 DEFAULT_GEMINI_MODEL = "gemini-3-flash-preview"
 
-def get_summary_prompt(transcript: str) -> str:
-    """Generate podcast-specific summary prompt."""
+def get_summary_prompt(transcript: str, episode_number: int | None = None) -> str:
+    """Generate podcast-specific summary prompt.
+
+    Checks for custom_prompt.txt in the podcast data directory.
+    Supports variables: {podcast_name}, {host}, {transcript}, {episode_number}
+    """
+    custom_prompt_file = podcast.data_dir / "custom_prompt.txt"
+
+    if custom_prompt_file.exists():
+        try:
+            template = custom_prompt_file.read_text(encoding='utf-8')
+            # Replace variables
+            prompt = template.format(
+                podcast_name=podcast.name,
+                host=podcast.host,
+                transcript=transcript,
+                episode_number=episode_number or "N/A"
+            )
+            return prompt
+        except Exception as e:
+            print(f"  Warning: Error reading custom prompt: {e}")
+            # Fall through to default
+
+    # Default prompt
     return f"""Summarize this "{podcast.name}" podcast episode in Traditional Chinese.
 
 Host: {podcast.host}

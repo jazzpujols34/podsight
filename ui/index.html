@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PodSight 聲見 - 聽見弦外之音，看見核心觀點</title>
     <meta name="description" content="將 Podcast 轉為可搜尋、可摘要的知識庫。AI 自動轉錄與摘要財經節目。">
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="PodSight">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/static/icon-192.png">
     <link rel="icon" type="image/jpeg" href="/assets/PodSight-Logo-cropped.jpeg">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -1109,6 +1116,336 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
+        /* Auto-refresh settings */
+        .auto-refresh-settings {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .auto-refresh-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background: var(--bg-hover);
+            border-radius: 24px;
+            transition: 0.3s;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: var(--text-secondary);
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background: var(--accent);
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(20px);
+            background: var(--bg-primary);
+        }
+
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .interval-select {
+            padding: 0.375rem 0.75rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.8125rem;
+            cursor: pointer;
+        }
+
+        .last-check-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .new-episodes-badge {
+            background: var(--accent);
+            color: var(--bg-primary);
+            padding: 0.125rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+
+        /* Bookmark styles */
+        .bookmark-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+            color: var(--text-muted);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .bookmark-btn:hover {
+            color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .bookmark-btn.bookmarked {
+            color: var(--accent);
+        }
+
+        .episode-item .bookmark-btn {
+            opacity: 0;
+            margin-left: auto;
+        }
+
+        .episode-item:hover .bookmark-btn {
+            opacity: 1;
+        }
+
+        .episode-item .bookmark-btn.bookmarked {
+            opacity: 1;
+        }
+
+        .viewer-bookmark {
+            margin-left: auto;
+        }
+
+        /* Search highlight in viewer */
+        .search-highlight {
+            background: rgba(245, 158, 11, 0.3);
+            color: var(--accent);
+            padding: 0.125rem 0.25rem;
+            border-radius: 3px;
+            scroll-margin-top: 100px;
+        }
+
+        .search-highlight.current {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        .search-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            font-size: 0.8125rem;
+        }
+
+        .search-nav-count {
+            color: var(--text-secondary);
+            min-width: 60px;
+        }
+
+        .search-nav-btn {
+            background: var(--bg-hover);
+            border: none;
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
+            cursor: pointer;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .search-nav-btn:hover {
+            background: var(--accent);
+        }
+
+        .search-nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .viewer-search-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .viewer-search-input {
+            flex: 1;
+            padding: 0.5rem 0.75rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+
+        .viewer-search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        /* Settings modal */
+        .settings-btn {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.8125rem;
+            transition: all 0.2s;
+        }
+
+        .settings-btn:hover {
+            border-color: var(--accent);
+            color: var(--text-primary);
+        }
+
+        .prompt-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 0.75rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            resize: vertical;
+        }
+
+        .prompt-textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .prompt-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        .prompt-variables {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.375rem;
+            margin-top: 0.5rem;
+        }
+
+        .prompt-variable {
+            background: var(--bg-hover);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-family: monospace;
+            cursor: pointer;
+        }
+
+        .prompt-variable:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        /* Episode notes */
+        .notes-section {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .notes-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .notes-title {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .notes-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 0.75rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            line-height: 1.5;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .notes-textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .notes-textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .notes-saved {
+            font-size: 0.75rem;
+            color: var(--success);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .has-notes-badge {
+            background: rgba(139, 92, 246, 0.15);
+            color: #a78bfa;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
@@ -1193,6 +1530,9 @@
                                 <option value="anthropic">Claude (付費)</option>
                                 <option value="openai">OpenAI (付費)</option>
                             </select>
+                            <button class="settings-btn" onclick="showPromptSettings()" title="自訂摘要 Prompt">
+                                <i data-lucide="settings" style="width:14px;height:14px;"></i>
+                            </button>
                         </div>
                     </div>
 
@@ -1209,6 +1549,27 @@
                         <button class="btn btn-secondary" id="stopBtn" onclick="stopPipeline()" style="display: none; background: var(--error);">
                             <i data-lucide="square" style="width:16px;height:16px;"></i> 停止執行
                         </button>
+                    </div>
+
+                    <!-- Auto-refresh Settings -->
+                    <div class="auto-refresh-settings">
+                        <div class="auto-refresh-toggle">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="autoRefreshToggle" onchange="toggleAutoRefresh()">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span class="toggle-label">
+                                <i data-lucide="clock" style="width:14px;height:14px;"></i>
+                                自動檢查新集數
+                            </span>
+                            <select id="autoRefreshInterval" onchange="updateAutoRefreshInterval()" class="interval-select">
+                                <option value="30">每 30 分鐘</option>
+                                <option value="60" selected>每 1 小時</option>
+                                <option value="120">每 2 小時</option>
+                                <option value="360">每 6 小時</option>
+                            </select>
+                        </div>
+                        <div class="last-check-time" id="lastCheckTime"></div>
                     </div>
 
                     <!-- Progress Bar -->
@@ -1273,6 +1634,9 @@
                                 <div class="viewer-ep" id="viewerEp"></div>
                                 <div class="viewer-title" id="viewerTitle"></div>
                             </div>
+                            <button class="bookmark-btn viewer-bookmark" id="viewerBookmarkBtn" onclick="toggleCurrentBookmark()" title="收藏此集數">
+                                <i data-lucide="star" id="viewerBookmarkIcon" style="width:20px;height:20px;"></i>
+                            </button>
                         </div>
                         <!-- Audio Player -->
                         <div class="audio-player" id="audioPlayer" style="display: none;">
@@ -1316,7 +1680,41 @@
                                 <button class="btn btn-secondary btn-small" onclick="cancelEdit()"><i data-lucide="x" style="width:14px;height:14px;"></i> 取消</button>
                             </div>
                         </div>
+                        <!-- Viewer Search Bar -->
+                        <div class="viewer-search-bar" id="viewerSearchBar">
+                            <input type="text" class="viewer-search-input" id="viewerSearchInput"
+                                   placeholder="在內容中搜尋..." onkeyup="handleViewerSearch(event)">
+                            <div class="search-nav" id="searchNav" style="display: none;">
+                                <span class="search-nav-count" id="searchNavCount">0/0</span>
+                                <button class="search-nav-btn" onclick="jumpToMatch(-1)" title="上一個">
+                                    <i data-lucide="chevron-up" style="width:14px;height:14px;"></i>
+                                </button>
+                                <button class="search-nav-btn" onclick="jumpToMatch(1)" title="下一個">
+                                    <i data-lucide="chevron-down" style="width:14px;height:14px;"></i>
+                                </button>
+                                <button class="search-nav-btn" onclick="clearViewerSearch()" title="清除">
+                                    <i data-lucide="x" style="width:14px;height:14px;"></i>
+                                </button>
+                            </div>
+                        </div>
                         <div class="viewer-content" id="viewerText"></div>
+
+                        <!-- Episode Notes -->
+                        <div class="notes-section" id="notesSection">
+                            <div class="notes-header">
+                                <span class="notes-title">
+                                    <i data-lucide="sticky-note" style="width:14px;height:14px;"></i>
+                                    個人筆記
+                                </span>
+                                <span class="notes-saved" id="notesSaved" style="display:none;">
+                                    <i data-lucide="check" style="width:12px;height:12px;"></i>
+                                    已儲存
+                                </span>
+                            </div>
+                            <textarea class="notes-textarea" id="notesTextarea"
+                                      placeholder="在此記錄你對這集的想法、筆記或重點摘要..."
+                                      oninput="autoSaveNotes()"></textarea>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1349,6 +1747,8 @@
                     </h2>
                     <select class="filter-select" id="episodeFilter" onchange="filterEpisodes()">
                         <option value="all">全部</option>
+                        <option value="bookmarked">已收藏</option>
+                        <option value="has-notes">有筆記</option>
                         <option value="has-transcript">有逐字稿</option>
                         <option value="has-summary">有摘要</option>
                         <option value="no-transcript">缺逐字稿</option>
@@ -1379,6 +1779,9 @@
 
             // Load saved theme preference
             initTheme();
+
+            // Initialize auto-refresh
+            initAutoRefresh();
 
             checkServerStatus();
             loadPodcasts();
@@ -1416,6 +1819,126 @@
             const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             setTheme(newTheme);
+        }
+
+        // Auto-refresh RSS
+        let autoRefreshTimer = null;
+        let lastEpisodeCount = 0;
+
+        function initAutoRefresh() {
+            // Load saved settings
+            const enabled = localStorage.getItem('podsight-autorefresh') === 'true';
+            const interval = localStorage.getItem('podsight-autorefresh-interval') || '60';
+
+            document.getElementById('autoRefreshToggle').checked = enabled;
+            document.getElementById('autoRefreshInterval').value = interval;
+
+            // Load last check time
+            const lastCheck = localStorage.getItem('podsight-last-check');
+            if (lastCheck) {
+                updateLastCheckDisplay(new Date(lastCheck));
+            }
+
+            if (enabled) {
+                startAutoRefresh();
+            }
+        }
+
+        function toggleAutoRefresh() {
+            const enabled = document.getElementById('autoRefreshToggle').checked;
+            localStorage.setItem('podsight-autorefresh', enabled);
+
+            if (enabled) {
+                startAutoRefresh();
+                checkForNewEpisodes();
+            } else {
+                stopAutoRefresh();
+            }
+        }
+
+        function updateAutoRefreshInterval() {
+            const interval = document.getElementById('autoRefreshInterval').value;
+            localStorage.setItem('podsight-autorefresh-interval', interval);
+
+            // Restart if enabled
+            if (document.getElementById('autoRefreshToggle').checked) {
+                stopAutoRefresh();
+                startAutoRefresh();
+            }
+        }
+
+        function startAutoRefresh() {
+            const intervalMinutes = parseInt(document.getElementById('autoRefreshInterval').value);
+            const intervalMs = intervalMinutes * 60 * 1000;
+
+            autoRefreshTimer = setInterval(() => {
+                checkForNewEpisodes();
+            }, intervalMs);
+
+            console.log(`Auto-refresh started: every ${intervalMinutes} minutes`);
+        }
+
+        function stopAutoRefresh() {
+            if (autoRefreshTimer) {
+                clearInterval(autoRefreshTimer);
+                autoRefreshTimer = null;
+            }
+        }
+
+        async function checkForNewEpisodes() {
+            try {
+                // Store current count before check
+                const previousCount = episodesData.length;
+
+                // Run RSS check
+                const res = await fetch(`${API_BASE}/run/check`, { method: 'POST' });
+
+                // Update last check time
+                const now = new Date();
+                localStorage.setItem('podsight-last-check', now.toISOString());
+                updateLastCheckDisplay(now);
+
+                // Wait a bit for the check to complete, then reload
+                setTimeout(async () => {
+                    await loadEpisodes();
+
+                    // Check if new episodes were found
+                    const newCount = episodesData.length;
+                    if (newCount > previousCount) {
+                        const diff = newCount - previousCount;
+                        showNewEpisodesNotification(diff);
+                    }
+                }, 5000);
+
+            } catch (err) {
+                console.error('Auto-refresh check failed:', err);
+            }
+        }
+
+        function updateLastCheckDisplay(date) {
+            const el = document.getElementById('lastCheckTime');
+            if (!el) return;
+
+            const timeStr = date.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' });
+            el.innerHTML = `<i data-lucide="clock" style="width:12px;height:12px;"></i> 上次檢查: ${timeStr}`;
+            lucide.createIcons();
+        }
+
+        function showNewEpisodesNotification(count) {
+            // Show toast notification
+            const toast = document.createElement('div');
+            toast.className = 'copy-toast';
+            toast.style.background = 'var(--success)';
+            toast.innerHTML = `<i data-lucide="bell" style="width:16px;height:16px;"></i> 發現 ${count} 個新集數！`;
+            document.body.appendChild(toast);
+            lucide.createIcons();
+            setTimeout(() => toast.remove(), 3000);
+
+            // Update UI with badge
+            const lastCheckEl = document.getElementById('lastCheckTime');
+            if (lastCheckEl) {
+                lastCheckEl.innerHTML += ` <span class="new-episodes-badge">+${count} 新</span>`;
+            }
         }
 
         // Keyboard shortcuts handler
@@ -1670,6 +2193,115 @@
             lucide.createIcons();
         }
 
+        // Custom prompt settings
+        const DEFAULT_PROMPT = `Summarize this "{podcast_name}" podcast episode in Traditional Chinese.
+
+Host: {host}
+
+Include:
+- 一句話總結
+- 主要討論話題 (bullet points, 詳細說明每個話題)
+- 提到的股票/ETF/標的
+- {host} 的觀點或金句
+
+Aim for 400-500 words. Be detailed but concise.
+
+Transcript:
+{transcript}`;
+
+        function getCustomPrompt() {
+            const key = `podsight-prompt-${currentPodcast}`;
+            return localStorage.getItem(key) || DEFAULT_PROMPT;
+        }
+
+        function saveCustomPrompt(prompt) {
+            const key = `podsight-prompt-${currentPodcast}`;
+            localStorage.setItem(key, prompt);
+        }
+
+        function showPromptSettings() {
+            const currentPrompt = getCustomPrompt();
+
+            const modal = document.createElement('div');
+            modal.className = 'cost-modal';
+            modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+
+            modal.innerHTML = `
+                <div class="cost-modal-content" style="max-width: 600px;">
+                    <div class="cost-modal-header">
+                        <div class="cost-modal-title"><i data-lucide="message-square" style="width:18px;height:18px;"></i> 自訂摘要 Prompt</div>
+                        <button class="btn btn-secondary btn-icon" onclick="this.closest('.cost-modal').remove()">
+                            <i data-lucide="x" style="width:16px;height:16px;"></i>
+                        </button>
+                    </div>
+
+                    <div class="cost-section">
+                        <div class="cost-section-title">Prompt 模板</div>
+                        <textarea class="prompt-textarea" id="customPromptInput">${escapeHtml(currentPrompt)}</textarea>
+                        <div class="prompt-hint">使用以下變數會自動替換：</div>
+                        <div class="prompt-variables">
+                            <span class="prompt-variable" onclick="insertVariable('{podcast_name}')">{podcast_name}</span>
+                            <span class="prompt-variable" onclick="insertVariable('{host}')">{host}</span>
+                            <span class="prompt-variable" onclick="insertVariable('{transcript}')">{transcript}</span>
+                            <span class="prompt-variable" onclick="insertVariable('{episode_number}')">{episode_number}</span>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <button class="btn btn-primary" onclick="savePromptAndClose()">
+                            <i data-lucide="save" style="width:14px;height:14px;"></i> 儲存
+                        </button>
+                        <button class="btn btn-secondary" onclick="resetPromptToDefault()">
+                            <i data-lucide="rotate-ccw" style="width:14px;height:14px;"></i> 重設預設
+                        </button>
+                        <button class="btn btn-secondary" onclick="this.closest('.cost-modal').remove()">取消</button>
+                    </div>
+
+                    <div class="prompt-hint" style="margin-top: 1rem;">
+                        <strong>注意：</strong>此設定會套用到此 Podcast 的所有新摘要。已生成的摘要不受影響。
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            lucide.createIcons();
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function insertVariable(variable) {
+            const textarea = document.getElementById('customPromptInput');
+            if (!textarea) return;
+
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const text = textarea.value;
+
+            textarea.value = text.substring(0, start) + variable + text.substring(end);
+            textarea.focus();
+            textarea.setSelectionRange(start + variable.length, start + variable.length);
+        }
+
+        function savePromptAndClose() {
+            const textarea = document.getElementById('customPromptInput');
+            if (textarea) {
+                saveCustomPrompt(textarea.value);
+                showCopyToast('Prompt 已儲存');
+            }
+            document.querySelector('.cost-modal')?.remove();
+        }
+
+        function resetPromptToDefault() {
+            const textarea = document.getElementById('customPromptInput');
+            if (textarea) {
+                textarea.value = DEFAULT_PROMPT;
+            }
+        }
+
         function showCostBreakdown() {
             if (!costData) {
                 alert('費用資料載入中...');
@@ -1885,11 +2517,79 @@
         }
 
         // Get filtered episodes based on current filter
+        // Bookmarks management
+        function getBookmarks() {
+            const key = `podsight-bookmarks-${currentPodcast}`;
+            const saved = localStorage.getItem(key);
+            return saved ? JSON.parse(saved) : [];
+        }
+
+        function saveBookmarks(bookmarks) {
+            const key = `podsight-bookmarks-${currentPodcast}`;
+            localStorage.setItem(key, JSON.stringify(bookmarks));
+        }
+
+        function isBookmarked(identifier) {
+            return getBookmarks().includes(String(identifier));
+        }
+
+        function toggleBookmark(identifier, event) {
+            if (event) event.stopPropagation();
+
+            const id = String(identifier);
+            let bookmarks = getBookmarks();
+
+            if (bookmarks.includes(id)) {
+                bookmarks = bookmarks.filter(b => b !== id);
+            } else {
+                bookmarks.push(id);
+            }
+
+            saveBookmarks(bookmarks);
+            renderEpisodeList();
+            updateViewerBookmarkButton();
+        }
+
+        function toggleCurrentBookmark() {
+            if (!currentEpisode) return;
+
+            const hasEpNum = currentEpisode.episode_number !== null && currentEpisode.episode_number !== undefined;
+            const identifier = hasEpNum ? currentEpisode.episode_number : currentEpisode.filename;
+
+            toggleBookmark(identifier);
+        }
+
+        function updateViewerBookmarkButton() {
+            if (!currentEpisode) return;
+
+            const hasEpNum = currentEpisode.episode_number !== null && currentEpisode.episode_number !== undefined;
+            const identifier = hasEpNum ? currentEpisode.episode_number : currentEpisode.filename;
+
+            const btn = document.getElementById('viewerBookmarkBtn');
+            const icon = document.getElementById('viewerBookmarkIcon');
+
+            if (btn && icon) {
+                const bookmarked = isBookmarked(identifier);
+                btn.classList.toggle('bookmarked', bookmarked);
+                icon.setAttribute('data-lucide', bookmarked ? 'star' : 'star');
+                icon.style.fill = bookmarked ? 'var(--accent)' : 'none';
+                lucide.createIcons();
+            }
+        }
+
         function getFilteredEpisodes() {
             const filter = document.getElementById('episodeFilter')?.value || 'all';
+            const bookmarks = getBookmarks();
 
             return episodesData.filter(ep => {
+                const hasEpNum = ep.episode_number !== null && ep.episode_number !== undefined;
+                const identifier = hasEpNum ? String(ep.episode_number) : ep.filename;
+
                 switch (filter) {
+                    case 'bookmarked':
+                        return bookmarks.includes(identifier);
+                    case 'has-notes':
+                        return hasNotes(identifier);
                     case 'has-transcript':
                         return ep.has_transcript;
                     case 'has-summary':
@@ -1918,6 +2618,8 @@
             // Show filter count
             const filterLabel = {
                 'all': '全部',
+                'bookmarked': '已收藏',
+                'has-notes': '有筆記',
                 'has-transcript': '有逐字稿',
                 'has-summary': '有摘要',
                 'no-transcript': '缺逐字稿',
@@ -1941,15 +2643,22 @@
                     ? `EP${ep.episode_number}`
                     : formatDateTitle(ep.title || ep.filename, false) || '(無標題)';
                 const safeIdentifier = String(identifier).replace(/'/g, "\\'");
+                const bookmarked = isBookmarked(identifier);
+                const episodeHasNotes = hasNotes(identifier);
                 return `
                 <div class="episode-item" onclick="loadEpisode('${safeIdentifier}')">
                     <span class="episode-number">${displayName}</span>
                     <div class="episode-badges">
                         ${ep.has_transcript ? '<span class="badge badge-transcript">逐字稿</span>' : ''}
                         ${ep.has_summary ? '<span class="badge badge-summary">摘要</span>' : ''}
+                        ${episodeHasNotes ? '<span class="has-notes-badge">筆記</span>' : ''}
                     </div>
+                    <button class="bookmark-btn ${bookmarked ? 'bookmarked' : ''}" onclick="toggleBookmark('${safeIdentifier}', event)" title="${bookmarked ? '取消收藏' : '加入收藏'}">
+                        <i data-lucide="star" style="width:16px;height:16px;${bookmarked ? 'fill:var(--accent);' : ''}"></i>
+                    </button>
                 </div>
             `}).join('');
+            lucide.createIcons();
         }
 
         // Load episode content
@@ -1981,6 +2690,12 @@
                 // Load audio if available
                 const audioFilename = hasEpNumber ? `EP${String(data.episode_number).padStart(4, '0')}.mp3` : `${identifier}.mp3`;
                 loadAudio(audioFilename);
+
+                // Update bookmark button
+                updateViewerBookmarkButton();
+
+                // Load episode notes
+                loadEpisodeNotes(identifier);
 
                 showTab(currentTab);
             } catch (err) {
@@ -2086,6 +2801,118 @@
         }
 
         // Show tab
+        // Viewer search highlighting
+        let viewerSearchMatches = [];
+        let currentMatchIndex = 0;
+        let lastViewerSearchQuery = '';
+
+        function handleViewerSearch(event) {
+            const query = document.getElementById('viewerSearchInput').value.trim();
+
+            if (event.key === 'Enter' && query) {
+                highlightViewerSearch(query);
+            } else if (event.key === 'Escape') {
+                clearViewerSearch();
+            } else if (query.length >= 2) {
+                // Auto-search after typing
+                clearTimeout(window.viewerSearchTimeout);
+                window.viewerSearchTimeout = setTimeout(() => highlightViewerSearch(query), 300);
+            } else if (query.length === 0) {
+                clearViewerSearch();
+            }
+        }
+
+        function highlightViewerSearch(query) {
+            if (!currentEpisode || !query) return;
+
+            lastViewerSearchQuery = query;
+            const content = currentTab === 'transcript' ? currentEpisode.transcript : currentEpisode.summary;
+            if (!content) return;
+
+            // Re-render content with highlights
+            const viewer = document.getElementById('viewerText');
+            const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(`(${escaped})`, 'gi');
+
+            let matchIndex = 0;
+            let highlighted;
+
+            if (currentTab === 'summary') {
+                // For markdown, highlight after parsing
+                let parsed = marked.parse(content);
+                highlighted = parsed.replace(regex, (match) => {
+                    return `<span class="search-highlight" data-match="${matchIndex++}">${match}</span>`;
+                });
+                viewer.classList.add('markdown');
+            } else {
+                // For transcript, preserve timestamps
+                let formatted = content.replace(/\[(\d+:\d+)\]/g, '<span class="timestamp" onclick="seekToTimestamp(\'$1\')">[$1]</span>');
+                highlighted = formatted.replace(regex, (match) => {
+                    // Don't highlight inside timestamp spans
+                    return `<span class="search-highlight" data-match="${matchIndex++}">${match}</span>`;
+                });
+                viewer.classList.remove('markdown');
+            }
+
+            viewer.innerHTML = highlighted;
+
+            // Update match navigation
+            viewerSearchMatches = viewer.querySelectorAll('.search-highlight');
+            currentMatchIndex = 0;
+
+            const nav = document.getElementById('searchNav');
+            if (viewerSearchMatches.length > 0) {
+                nav.style.display = 'flex';
+                updateMatchNavigation();
+                jumpToMatch(0, true);
+            } else {
+                nav.style.display = 'none';
+            }
+
+            lucide.createIcons();
+        }
+
+        function updateMatchNavigation() {
+            const countEl = document.getElementById('searchNavCount');
+            countEl.textContent = `${currentMatchIndex + 1}/${viewerSearchMatches.length}`;
+        }
+
+        function jumpToMatch(direction, absolute = false) {
+            if (viewerSearchMatches.length === 0) return;
+
+            // Remove current highlight
+            viewerSearchMatches.forEach(m => m.classList.remove('current'));
+
+            // Calculate new index
+            if (absolute) {
+                currentMatchIndex = direction;
+            } else {
+                currentMatchIndex += direction;
+                if (currentMatchIndex < 0) currentMatchIndex = viewerSearchMatches.length - 1;
+                if (currentMatchIndex >= viewerSearchMatches.length) currentMatchIndex = 0;
+            }
+
+            // Add current highlight and scroll
+            const current = viewerSearchMatches[currentMatchIndex];
+            current.classList.add('current');
+            current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            updateMatchNavigation();
+        }
+
+        function clearViewerSearch() {
+            document.getElementById('viewerSearchInput').value = '';
+            document.getElementById('searchNav').style.display = 'none';
+            viewerSearchMatches = [];
+            currentMatchIndex = 0;
+            lastViewerSearchQuery = '';
+
+            // Re-render without highlights
+            if (currentEpisode) {
+                showTab(currentTab);
+            }
+        }
+
         function showTab(tab) {
             currentTab = tab;
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -2559,6 +3386,109 @@
                 // Ignore
             }
         }
+
+        // ========== Episode Notes ==========
+        let notesTimeout = null;
+        let currentEpisodeIdentifier = null;
+
+        function getNotesKey() {
+            return `podsight-notes-${currentPodcast}`;
+        }
+
+        function getAllNotes() {
+            const saved = localStorage.getItem(getNotesKey());
+            return saved ? JSON.parse(saved) : {};
+        }
+
+        function saveAllNotes(notes) {
+            localStorage.setItem(getNotesKey(), JSON.stringify(notes));
+        }
+
+        function getEpisodeNotes(identifier) {
+            const notes = getAllNotes();
+            return notes[String(identifier)] || '';
+        }
+
+        function setEpisodeNotes(identifier, text) {
+            const notes = getAllNotes();
+            if (text.trim()) {
+                notes[String(identifier)] = text;
+            } else {
+                delete notes[String(identifier)];
+            }
+            saveAllNotes(notes);
+        }
+
+        function hasNotes(identifier) {
+            const notes = getAllNotes();
+            return !!notes[String(identifier)]?.trim();
+        }
+
+        function loadEpisodeNotes(identifier) {
+            currentEpisodeIdentifier = identifier;
+            const textarea = document.getElementById('notesTextarea');
+            const savedIndicator = document.getElementById('notesSaved');
+
+            if (textarea) {
+                textarea.value = getEpisodeNotes(identifier);
+                savedIndicator.style.display = 'none';
+            }
+            lucide.createIcons();
+        }
+
+        function autoSaveNotes() {
+            if (!currentEpisodeIdentifier) return;
+
+            const savedIndicator = document.getElementById('notesSaved');
+            savedIndicator.style.display = 'none';
+
+            clearTimeout(notesTimeout);
+            notesTimeout = setTimeout(() => {
+                const textarea = document.getElementById('notesTextarea');
+                if (textarea && currentEpisodeIdentifier) {
+                    setEpisodeNotes(currentEpisodeIdentifier, textarea.value);
+                    savedIndicator.style.display = 'flex';
+                    lucide.createIcons();
+                    // Update episode list to show/hide notes badge
+                    renderEpisodeList();
+                    setTimeout(() => {
+                        savedIndicator.style.display = 'none';
+                    }, 2000);
+                }
+            }, 500);
+        }
+
+        // ========== PWA Service Worker Registration ==========
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('[PWA] Service Worker registered:', registration.scope);
+
+                        // Check for updates periodically
+                        setInterval(() => {
+                            registration.update();
+                        }, 60 * 60 * 1000); // Check every hour
+                    })
+                    .catch((error) => {
+                        console.error('[PWA] Service Worker registration failed:', error);
+                    });
+            });
+        }
+
+        // Handle app install prompt
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            // Show install button if desired
+            console.log('[PWA] App can be installed');
+        });
+
+        window.addEventListener('appinstalled', () => {
+            console.log('[PWA] App installed successfully');
+            deferredPrompt = null;
+        });
     </script>
 </body>
 </html>

@@ -82,6 +82,12 @@ app.add_middleware(
 # Serve static assets (logo, images, etc.)
 app.mount("/assets", StaticFiles(directory=UI_DIR / "assets"), name="assets")
 
+# Serve static files for PWA (icons)
+STATIC_DIR = UI_DIR / "static"
+STATIC_DIR.mkdir(exist_ok=True)
+if STATIC_DIR.exists():
+    app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
 
 # --- Pydantic Models ---
 
@@ -277,6 +283,24 @@ async def root():
     """)
 
 
+@app.get("/manifest.json")
+async def manifest():
+    """Serve PWA manifest file."""
+    manifest_file = UI_DIR / "manifest.json"
+    if manifest_file.exists():
+        return FileResponse(manifest_file, media_type="application/manifest+json")
+    return {"error": "manifest not found"}
+
+
+@app.get("/sw.js")
+async def service_worker():
+    """Serve PWA service worker."""
+    sw_file = UI_DIR / "sw.js"
+    if sw_file.exists():
+        return FileResponse(sw_file, media_type="application/javascript")
+    return {"error": "service worker not found"}
+
+
 @app.get("/api")
 async def api_info():
     """API info - shows available endpoints."""
@@ -423,6 +447,65 @@ async def save_file_summary(filename: str, request: SaveSummaryRequest):
         return {"status": "ok", "message": f"Summary saved for {stem}"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# --- Custom Prompt Endpoints ---
+
+class CustomPromptRequest(BaseModel):
+    prompt: str
+
+
+@app.get("/settings/prompt")
+async def get_custom_prompt():
+    """Get the custom summary prompt for the current podcast."""
+    podcast = _current_podcast
+    prompt_file = podcast.data_dir / "custom_prompt.txt"
+
+    if prompt_file.exists():
+        return {"prompt": prompt_file.read_text(encoding='utf-8'), "is_custom": True}
+
+    # Return default prompt
+    default_prompt = f'''Summarize this "{podcast.name}" podcast episode in Traditional Chinese.
+
+Host: {podcast.host}
+
+Include:
+- 一句話總結
+- 主要討論話題 (bullet points, 詳細說明每個話題)
+- 提到的股票/ETF/標的
+- {podcast.host} 的觀點或金句
+
+Aim for 400-500 words. Be detailed but concise.
+
+Transcript:
+{{transcript}}'''
+
+    return {"prompt": default_prompt, "is_custom": False}
+
+
+@app.put("/settings/prompt")
+async def save_custom_prompt(request: CustomPromptRequest):
+    """Save a custom summary prompt for the current podcast."""
+    podcast = _current_podcast
+    prompt_file = podcast.data_dir / "custom_prompt.txt"
+
+    try:
+        prompt_file.write_text(request.prompt, encoding='utf-8')
+        return {"status": "ok", "message": "Custom prompt saved"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.delete("/settings/prompt")
+async def delete_custom_prompt():
+    """Delete custom prompt and revert to default."""
+    podcast = _current_podcast
+    prompt_file = podcast.data_dir / "custom_prompt.txt"
+
+    if prompt_file.exists():
+        prompt_file.unlink()
+
+    return {"status": "ok", "message": "Reverted to default prompt"}
 
 
 @app.get("/latest", response_model=LatestResponse)
