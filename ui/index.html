@@ -830,6 +830,10 @@
             to { transform: rotate(360deg); }
         }
 
+        .spinning {
+            animation: spin 0.8s linear infinite;
+        }
+
         /* Empty state */
         .empty-state {
             text-align: center;
@@ -1446,6 +1450,140 @@
             font-size: 0.75rem;
             font-weight: 500;
         }
+
+        /* Social Push */
+        .social-draft-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .social-draft-item {
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            background: var(--bg-tertiary);
+        }
+
+        .social-draft-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .social-draft-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .social-draft-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .social-platforms {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.75rem;
+        }
+
+        .platform-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .platform-badge.pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+        }
+
+        .platform-badge.published {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+        }
+
+        .platform-badge.failed {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        .platform-badge.not-configured {
+            background: rgba(100, 100, 100, 0.15);
+            color: #888;
+        }
+
+        .social-draft-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .social-preview-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 2rem;
+        }
+
+        .social-preview-content {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+
+        .social-preview-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+
+        .social-preview-tabs button {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+        .social-preview-tabs button.active {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        .social-preview-body {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 1rem;
+            white-space: pre-wrap;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .social-ig-preview {
+            text-align: center;
+        }
+
+        .social-ig-preview img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
@@ -1499,6 +1637,12 @@
                     <div class="stat-label"><i data-lucide="dollar-sign" style="width:12px;height:12px;"></i> 預估費用</div>
                     <div class="stat-value" id="estimatedCost">-</div>
                 </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 0.5rem; margin-top: -1rem; margin-bottom: 1rem; font-size: 0.75rem; color: var(--text-muted);">
+                <span id="statsLastUpdated">-</span>
+                <button onclick="refreshStats()" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.7rem;">
+                    <i data-lucide="refresh-cw" style="width:12px;height:12px;"></i>
+                </button>
             </div>
 
             <!-- Pipeline Controls -->
@@ -1612,6 +1756,44 @@
                 <div class="card-body">
                     <div class="terminal" id="terminal">
                         <div class="terminal-line info">準備就緒，點擊上方按鈕開始執行...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Social Push -->
+            <div class="card" style="margin-top: 1.5rem;">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i data-lucide="share-2" style="width:18px;height:18px;"></i> Social Push
+                    </h2>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-secondary btn-icon" onclick="generateSocialDrafts()" title="產生所有草稿">
+                            <i data-lucide="sparkles" style="width:16px;height:16px;"></i>
+                        </button>
+                        <button class="btn btn-secondary btn-icon" onclick="loadSocialDrafts()" title="重新整理">
+                            <i data-lucide="refresh-cw" style="width:16px;height:16px;"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="social-draft-list" id="socialDraftList">
+                        <div class="empty-state">
+                            <p>載入中...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Social Preview Modal -->
+            <div class="social-preview-modal" id="socialPreviewModal" style="display: none;" onclick="closeSocialPreview(event)">
+                <div class="social-preview-content" onclick="event.stopPropagation()">
+                    <div class="social-preview-tabs" id="socialPreviewTabs"></div>
+                    <div class="social-preview-body" id="socialPreviewBody"></div>
+                    <div style="margin-top: 1rem; display: flex; gap: 0.5rem; justify-content: flex-end;">
+                        <button class="btn btn-secondary" onclick="closeSocialPreview()">關閉</button>
+                        <button class="btn btn-primary" id="socialPublishBtn" onclick="publishCurrentPreview()">
+                            <i data-lucide="send" style="width:14px;height:14px;"></i> 發佈
+                        </button>
                     </div>
                 </div>
             </div>
@@ -2484,6 +2666,11 @@ Transcript:
             document.getElementById('transcribedCount').textContent = transcribed;
             document.getElementById('summarizedCount').textContent = summarized;
 
+            // Update last updated timestamp
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            document.getElementById('statsLastUpdated').textContent = `最後更新: ${timeStr}`;
+
             // Get latest episode
             try {
                 const latest = await fetch(`${API_BASE}/latest`);
@@ -2496,6 +2683,17 @@ Transcript:
             } catch {
                 document.getElementById('latestEpisode').textContent = '-';
             }
+        }
+
+        // Manual refresh stats
+        async function refreshStats() {
+            const btn = event.target.closest('button');
+            btn.disabled = true;
+            btn.querySelector('i')?.classList.add('spinning');
+            await loadEpisodes();
+            btn.disabled = false;
+            btn.querySelector('i')?.classList.remove('spinning');
+            lucide.createIcons();
         }
 
         // Format date-based title: 2026_2_5_四_硬體股... → 20260205_硬體股...
@@ -3457,6 +3655,237 @@ Transcript:
                 }
             }, 500);
         }
+
+        // ========== Social Push ==========
+        let socialDrafts = [];
+        let currentPreviewDraft = null;
+        let currentPreviewPlatform = null;
+        let socialConfig = null;
+
+        async function loadSocialConfig() {
+            try {
+                const res = await fetch(`${API_BASE}/social/config`);
+                socialConfig = await res.json();
+            } catch (err) {
+                console.error('Failed to load social config:', err);
+                socialConfig = { platforms: {} };
+            }
+        }
+
+        async function loadSocialDrafts() {
+            const list = document.getElementById('socialDraftList');
+            list.innerHTML = '<div class="empty-state"><div class="spinner"></div></div>';
+
+            try {
+                await loadSocialConfig();
+                const res = await fetch(`${API_BASE}/social/drafts`);
+                const data = await res.json();
+                socialDrafts = data.drafts || [];
+
+                if (socialDrafts.length === 0) {
+                    list.innerHTML = '<div class="empty-state"><p>尚無社群草稿。點擊上方 ✨ 產生草稿。</p></div>';
+                    return;
+                }
+
+                list.innerHTML = socialDrafts.map(draft => renderSocialDraft(draft)).join('');
+                lucide.createIcons();
+            } catch (err) {
+                list.innerHTML = '<div class="empty-state"><p>載入失敗</p></div>';
+            }
+        }
+
+        function renderSocialDraft(draft) {
+            const date = new Date(draft.created_at).toLocaleDateString('zh-TW');
+            const platforms = ['twitter', 'threads', 'line', 'instagram'];
+
+            const platformBadges = platforms.map(p => {
+                const pData = draft.platforms[p] || {};
+                const configured = socialConfig?.platforms?.[p]?.configured;
+                let statusClass = 'pending';
+                let icon = 'clock';
+
+                if (!configured) {
+                    statusClass = 'not-configured';
+                    icon = 'x';
+                } else if (pData.status === 'published') {
+                    statusClass = 'published';
+                    icon = 'check';
+                } else if (pData.status === 'failed') {
+                    statusClass = 'failed';
+                    icon = 'alert-circle';
+                }
+
+                const label = { twitter: 'X', threads: 'Threads', line: 'LINE', instagram: 'IG' }[p];
+                return `<span class="platform-badge ${statusClass}">
+                    <i data-lucide="${icon}" style="width:12px;height:12px;"></i> ${label}
+                </span>`;
+            }).join('');
+
+            return `
+            <div class="social-draft-item">
+                <div class="social-draft-header">
+                    <span class="social-draft-title">${draft.episode_id}</span>
+                    <span class="social-draft-date">${date}</span>
+                </div>
+                <div class="social-platforms">${platformBadges}</div>
+                <div class="social-draft-actions">
+                    <button class="btn btn-secondary" onclick="previewSocialDraft('${draft.episode_id}')">
+                        <i data-lucide="eye" style="width:14px;height:14px;"></i> 預覽
+                    </button>
+                    <button class="btn btn-primary" onclick="publishAllPlatforms('${draft.episode_id}')">
+                        <i data-lucide="send" style="width:14px;height:14px;"></i> 發佈全部
+                    </button>
+                </div>
+            </div>`;
+        }
+
+        async function previewSocialDraft(episodeId) {
+            try {
+                const res = await fetch(`${API_BASE}/social/drafts/${episodeId}`);
+                const data = await res.json();
+                currentPreviewDraft = data;
+                currentPreviewPlatform = 'twitter';
+
+                showSocialPreviewModal();
+            } catch (err) {
+                alert('載入預覽失敗');
+            }
+        }
+
+        function showSocialPreviewModal() {
+            const modal = document.getElementById('socialPreviewModal');
+            const tabs = document.getElementById('socialPreviewTabs');
+            const body = document.getElementById('socialPreviewBody');
+
+            const platforms = ['twitter', 'threads', 'line', 'instagram'];
+            tabs.innerHTML = platforms.map(p => {
+                const label = { twitter: 'X', threads: 'Threads', line: 'LINE', instagram: 'IG' }[p];
+                const active = p === currentPreviewPlatform ? 'active' : '';
+                return `<button class="${active}" onclick="switchPreviewPlatform('${p}')">${label}</button>`;
+            }).join('');
+
+            updatePreviewBody();
+            modal.style.display = 'flex';
+            lucide.createIcons();
+        }
+
+        function switchPreviewPlatform(platform) {
+            currentPreviewPlatform = platform;
+            showSocialPreviewModal();
+        }
+
+        function updatePreviewBody() {
+            const body = document.getElementById('socialPreviewBody');
+            const content = currentPreviewDraft?.content?.[currentPreviewPlatform];
+
+            if (!content) {
+                body.innerHTML = '<p>無內容</p>';
+                return;
+            }
+
+            if (currentPreviewPlatform === 'twitter') {
+                const thread = content.thread || [];
+                body.innerHTML = thread.map((t, i) =>
+                    `<div style="margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--border);">
+                        <div style="color:var(--text-muted);font-size:0.75rem;margin-bottom:0.5rem;">Tweet ${i+1} (${t.char_count} chars)</div>
+                        <div>${escapeHtml(t.text)}</div>
+                    </div>`
+                ).join('');
+            } else if (currentPreviewPlatform === 'instagram') {
+                const imgUrl = `${API_BASE}/social/image/${currentPreviewDraft.episode_id}`;
+                body.innerHTML = `
+                    <div class="social-ig-preview">
+                        <img src="${imgUrl}" alt="IG Card" onerror="this.style.display='none'">
+                    </div>
+                    <div style="margin-top:1rem;">${escapeHtml(content.caption || '')}</div>
+                `;
+            } else if (currentPreviewPlatform === 'line') {
+                body.innerHTML = escapeHtml(content.message || '');
+            } else {
+                body.innerHTML = escapeHtml(content.text || JSON.stringify(content, null, 2));
+            }
+        }
+
+        function closeSocialPreview(event) {
+            if (event && event.target !== event.currentTarget) return;
+            document.getElementById('socialPreviewModal').style.display = 'none';
+            currentPreviewDraft = null;
+        }
+
+        async function publishCurrentPreview() {
+            if (!currentPreviewDraft || !currentPreviewPlatform) return;
+
+            const btn = document.getElementById('socialPublishBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;"></span> 發佈中...';
+
+            try {
+                const res = await fetch(
+                    `${API_BASE}/social/drafts/${currentPreviewDraft.episode_id}/${currentPreviewPlatform}/publish`,
+                    { method: 'POST' }
+                );
+                const data = await res.json();
+
+                if (res.ok) {
+                    alert(`發佈成功！${data.url ? '\n' + data.url : ''}`);
+                    closeSocialPreview();
+                    loadSocialDrafts();
+                } else {
+                    alert('發佈失敗：' + (data.detail || '未知錯誤'));
+                }
+            } catch (err) {
+                alert('發佈失敗：' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i data-lucide="send" style="width:14px;height:14px;"></i> 發佈';
+                lucide.createIcons();
+            }
+        }
+
+        async function publishAllPlatforms(episodeId) {
+            if (!confirm(`確定要發佈 ${episodeId} 到所有已設定的平台嗎？`)) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/social/drafts/${episodeId}/publish-all`, { method: 'POST' });
+                const data = await res.json();
+
+                const results = Object.entries(data.results || {})
+                    .map(([p, r]) => `${p}: ${r.success ? '✅' : '❌ ' + (r.error || '')}`)
+                    .join('\n');
+
+                alert('發佈結果：\n' + results);
+                loadSocialDrafts();
+            } catch (err) {
+                alert('發佈失敗：' + err.message);
+            }
+        }
+
+        async function generateSocialDrafts() {
+            if (!confirm('產生所有缺少的社群草稿？這可能需要一些時間。')) return;
+
+            const list = document.getElementById('socialDraftList');
+            list.innerHTML = '<div class="empty-state"><div class="spinner"></div><p style="margin-top:1rem;">產生草稿中...</p></div>';
+
+            try {
+                const res = await fetch(`${API_BASE}/run/5`, { method: 'POST' });
+                if (res.ok) {
+                    // Wait a bit then reload
+                    setTimeout(() => loadSocialDrafts(), 3000);
+                } else {
+                    const data = await res.json();
+                    alert('產生失敗：' + (data.detail || '未知錯誤'));
+                    loadSocialDrafts();
+                }
+            } catch (err) {
+                alert('產生失敗：' + err.message);
+                loadSocialDrafts();
+            }
+        }
+
+        // Load social drafts on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(loadSocialDrafts, 1000);
+        });
 
         // ========== PWA Service Worker Registration ==========
         if ('serviceWorker' in navigator) {

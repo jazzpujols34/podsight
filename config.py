@@ -70,6 +70,16 @@ def get_podcast_config(slug: Optional[str] = None) -> PodcastConfig:
     return PodcastConfig(slug)
 
 
+def get_episode_number_from_filename(filename: str) -> Optional[int]:
+    """Extract episode number from standard filename like EP0636.txt, EP0636_summary.txt.
+
+    This is a utility function to avoid duplicating the regex pattern across scripts.
+    For podcast-specific episode patterns, use PodcastConfig.extract_episode_number().
+    """
+    match = re.search(r'EP(\d+)', filename, re.IGNORECASE)
+    return int(match.group(1)) if match else None
+
+
 def list_podcasts() -> dict:
     """Return all available podcasts."""
     return {slug: p['name'] for slug, p in PODCASTS.items()}

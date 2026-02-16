@@ -26,8 +26,9 @@ from tqdm import tqdm
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # Rate limiting for Groq API (free tier: ~20 audio-minutes per hour)
-# A 30-min episode uses most of the hourly quota, so we need long waits
-GROQ_DELAY_SECONDS = 180  # 3 minutes between requests
+# Reduced from 180s to 60s - exponential backoff handles actual rate limits
+# Customizable via GROQ_DELAY_SECONDS env var
+GROQ_DELAY_SECONDS = int(os.environ.get("GROQ_DELAY_SECONDS", "60"))
 GROQ_MAX_RETRIES = 5  # More retries for rate limits
 
 from config import (

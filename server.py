@@ -13,8 +13,8 @@ Endpoints:
     GET /run/status                 - Get current execution status
 
 Usage:
-    python server.py              # Start on default port 8000
-    python server.py --port 8080  # Start on port 8080
+    python server.py              # Start on default port 3500
+    python server.py --port 8080  # Start on custom port
 
 Requirements:
     pip install fastapi uvicorn pyyaml python-dotenv
@@ -37,7 +37,7 @@ from pathlib import Path
 from typing import Optional
 from datetime import datetime
 
-from fastapi import FastAPI, HTTPException, Query, BackgroundTasks
+from fastapi import FastAPI, HTTPException, Query, BackgroundTasks, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -508,6 +508,243 @@ async def delete_custom_prompt():
     return {"status": "ok", "message": "Reverted to default prompt"}
 
 
+# --- Social Push Endpoints ---
+
+from social.draft import DraftManager, SocialDraft
+from social.publishers import TwitterPublisher, ThreadsPublisher, LinePublisher, InstagramPublisher
+
+
+@app.get("/social/drafts")
+async def list_social_drafts(status: Optional[str] = None):
+    """List all social drafts, optionally filtered by status."""
+    draft_manager = DraftManager(_current_podcast.data_dir)
+    drafts = draft_manager.list_drafts(status)
+    return {
+        "drafts": [d.to_dict() for d in drafts],
+        "count": len(drafts),
+        "podcast": _current_podcast.slug
+    }
+
+
+@app.get("/social/drafts/{episode_id}")
+async def get_social_draft(episode_id: str):
+    """Get draft for a specific episode."""
+    draft_manager = DraftManager(_current_podcast.data_dir)
+    draft = draft_manager.get_draft(episode_id)
+
+    if not draft:
+        raise HTTPException(status_code=404, detail="Draft not found")
+
+    # Include platform content
+    result = draft.to_dict()
+    result["content"] = {}
+
+    for platform in ["twitter", "threads", "line", "instagram"]:
+        content = draft_manager.get_platform_content(episode_id, platform)
+        if content:
+            result["content"][platform] = content
+
+    return result
+
+
+@app.put("/social/drafts/{episode_id}/{platform}")
+async def update_social_draft(episode_id: str, platform: str, request: Request):
+    """Update platform-specific content for a draft."""
+    draft_manager = DraftManager(_current_podcast.data_dir)
+    draft = draft_manager.get_draft(episode_id)
+
+    if not draft:
+        raise HTTPException(status_code=404, detail="Draft not found")
+
+    if platform not in ["twitter", "threads", "line", "instagram"]:
+        raise HTTPException(status_code=400, detail="Invalid platform")
+
+    content = await request.json()
+    draft_manager.save_platform_content(episode_id, platform, content)
+
+    return {"status": "ok", "message": f"Updated {platform} content"}
+
+
+@app.post("/social/drafts/{episode_id}/{platform}/publish")
+async def publish_social_draft(episode_id: str, platform: str):
+    """Publish draft to a specific platform."""
+    draft_manager = DraftManager(_current_podcast.data_dir)
+    draft = draft_manager.get_draft(episode_id)
+
+    if not draft:
+        raise HTTPException(status_code=404, detail="Draft not found")
+
+    if platform not in ["twitter", "threads", "line", "instagram"]:
+        raise HTTPException(status_code=400, detail="Invalid platform")
+
+    # Get content
+    content = draft_manager.get_platform_content(episode_id, platform)
+    if not content:
+        raise HTTPException(status_code=400, detail="No content for platform")
+
+    # Get publisher
+    publishers = {
+        "twitter": TwitterPublisher,
+        "threads": ThreadsPublisher,
+        "line": LinePublisher,
+        "instagram": InstagramPublisher,
+    }
+
+    publisher = publishers[platform]()
+
+    if not publisher.is_configured():
+        raise HTTPException(
+            status_code=400,
+            detail=f"{platform} not configured. Check environment variables."
+        )
+
+    # Get image path for Instagram
+    image_path = None
+    if platform == "instagram":
+        image_file = draft.platforms[platform].image_file
+        if image_file:
+            image_path = draft_manager.get_draft_dir(episode_id) / image_file
+
+    # Publish
+    result = publisher.publish(content, image_path)
+
+    # Update draft status
+    draft.platforms[platform].status = "published" if result.success else "failed"
+    draft.platforms[platform].published_at = result.published_at.isoformat() if result.published_at else None
+    draft.platforms[platform].post_ids = result.post_ids
+    draft.platforms[platform].error = result.error
+    draft.platforms[platform].url = result.url
+    draft.update_status()
+    draft_manager.save_draft(draft)
+
+    if result.success:
+        return {
+            "status": "ok",
+            "platform": platform,
+            "post_ids": result.post_ids,
+            "url": result.url
+        }
+    else:
+        raise HTTPException(status_code=500, detail=result.error)
+
+
+@app.post("/social/drafts/{episode_id}/publish-all")
+async def publish_all_platforms(episode_id: str):
+    """Publish draft to all configured platforms."""
+    draft_manager = DraftManager(_current_podcast.data_dir)
+    draft = draft_manager.get_draft(episode_id)
+
+    if not draft:
+        raise HTTPException(status_code=404, detail="Draft not found")
+
+    results = {}
+    publishers = {
+        "twitter": TwitterPublisher,
+        "threads": ThreadsPublisher,
+        "line": LinePublisher,
+        "instagram": InstagramPublisher,
+    }
+
+    for platform, PublisherClass in publishers.items():
+        publisher = PublisherClass()
+
+        if not publisher.is_configured():
+            results[platform] = {"success": False, "error": "Not configured"}
+            continue
+
+        content = draft_manager.get_platform_content(episode_id, platform)
+        if not content:
+            results[platform] = {"success": False, "error": "No content"}
+            continue
+
+        image_path = None
+        if platform == "instagram":
+            image_file = draft.platforms[platform].image_file
+            if image_file:
+                image_path = draft_manager.get_draft_dir(episode_id) / image_file
+
+        result = publisher.publish(content, image_path)
+        results[platform] = {
+            "success": result.success,
+            "post_ids": result.post_ids,
+            "url": result.url,
+            "error": result.error
+        }
+
+        # Update draft
+        draft.platforms[platform].status = "published" if result.success else "failed"
+        draft.platforms[platform].published_at = result.published_at.isoformat() if result.published_at else None
+        draft.platforms[platform].post_ids = result.post_ids
+        draft.platforms[platform].error = result.error
+
+    draft.update_status()
+    draft_manager.save_draft(draft)
+
+    return {"status": "ok", "results": results}
+
+
+@app.delete("/social/drafts/{episode_id}")
+async def delete_social_draft(episode_id: str):
+    """Delete a draft and all its files."""
+    draft_manager = DraftManager(_current_podcast.data_dir)
+    draft_manager.delete_draft(episode_id)
+    return {"status": "ok", "message": f"Deleted draft for {episode_id}"}
+
+
+@app.post("/social/drafts/{episode_id}/regenerate")
+async def regenerate_social_draft(episode_id: str):
+    """Regenerate drafts from the summary file."""
+    import subprocess
+
+    # Run the generate script for this episode
+    ep_num = episode_id.replace("EP", "")
+    result = subprocess.run(
+        ["python", "scripts/05_generate_social.py", "--ep", ep_num, "--regenerate"],
+        capture_output=True,
+        text=True,
+        cwd=str(Path(__file__).parent),
+        env={**os.environ, "PODCAST": _current_podcast.slug}
+    )
+
+    if result.returncode == 0:
+        return {"status": "ok", "message": f"Regenerated drafts for {episode_id}"}
+    else:
+        raise HTTPException(status_code=500, detail=result.stderr)
+
+
+@app.get("/social/image/{episode_id}")
+async def get_social_image(episode_id: str):
+    """Get the Instagram card image for an episode."""
+    draft_manager = DraftManager(_current_podcast.data_dir)
+    image_path = draft_manager.get_draft_dir(episode_id) / "instagram_card.png"
+
+    if not image_path.exists():
+        raise HTTPException(status_code=404, detail="Image not found")
+
+    return FileResponse(image_path, media_type="image/png")
+
+
+@app.get("/social/config")
+async def get_social_config():
+    """Get social configuration (which platforms are configured)."""
+    publishers = {
+        "twitter": TwitterPublisher(),
+        "threads": ThreadsPublisher(),
+        "line": LinePublisher(),
+        "instagram": InstagramPublisher(),
+    }
+
+    return {
+        "platforms": {
+            name: {
+                "configured": pub.is_configured(),
+                "platform": pub.platform
+            }
+            for name, pub in publishers.items()
+        }
+    }
+
+
 @app.get("/latest", response_model=LatestResponse)
 async def get_latest():
     """
@@ -676,6 +913,7 @@ STEP_SCRIPTS = {
     2: "02_download_audio.py",
     3: "03_transcribe.py",
     4: "04_summarize.py",
+    5: "05_generate_social.py",
 }
 
 STEP_NAMES = {
@@ -683,6 +921,7 @@ STEP_NAMES = {
     2: "下載音訊",
     3: "語音轉錄",
     4: "AI 摘要",
+    5: "社群草稿",
     "check": "檢查新集數",
     "all": "完整 Pipeline",
 }
@@ -868,7 +1107,7 @@ async def run_pipeline_step(
         )
 
     # Validate step
-    if step not in ["all", "check", "1", "2", "3", "4"]:
+    if step not in ["all", "check", "1", "2", "3", "4", "5"]:
         raise HTTPException(status_code=400, detail=f"Invalid step: {step}")
 
     # Convert to int if numeric
@@ -993,8 +1232,8 @@ def main():
     import uvicorn
 
     parser = argparse.ArgumentParser(description="Gooaye Transcript API Server")
-    parser.add_argument('--port', type=int, default=8000,
-                        help="Port to run the server on (default: 8000)")
+    parser.add_argument('--port', type=int, default=3500,
+                        help="Port to run the server on (default: 3500)")
     parser.add_argument('--host', type=str, default="127.0.0.1",
                         help="Host to bind to (default: 127.0.0.1)")
     parser.add_argument('--reload', action='store_true',

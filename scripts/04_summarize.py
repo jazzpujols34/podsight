@@ -207,10 +207,13 @@ def summarize_with_gemini(transcript: str, model: str) -> str:
 def summarize_transcript(transcript_path: Path, provider: str, model: str) -> str:
     """Generate summary for a transcript file."""
     transcript = transcript_path.read_text(encoding="utf-8")
+    original_len = len(transcript)
 
     # Truncate if too long (API limits)
     max_chars = 100000  # ~25k tokens
-    if len(transcript) > max_chars:
+    if original_len > max_chars:
+        truncated_pct = ((original_len - max_chars) / original_len) * 100
+        print(f"  ⚠️  Transcript truncated: {original_len:,} → {max_chars:,} chars ({truncated_pct:.1f}% removed)")
         transcript = transcript[:max_chars] + "\n\n[Transcript truncated due to length...]"
 
     if provider == "anthropic":

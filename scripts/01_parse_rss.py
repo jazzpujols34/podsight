@@ -10,6 +10,7 @@ Supports multiple podcasts via PODCAST environment variable.
 import json
 import re
 import sys
+import time
 from pathlib import Path
 import feedparser
 import ssl
@@ -47,11 +48,40 @@ def parse_duration(duration_str: str) -> int:
         return int(parts[0]) * 60 + int(parts[1])
     return 0
 
+def fetch_feed_with_retry(url: str, max_retries: int = 3) -> feedparser.FeedParserDict:
+    """Fetch RSS feed with retry logic and exponential backoff."""
+    delays = [5, 10, 20]  # Seconds between retries
+
+    for attempt in range(max_retries):
+        try:
+            feed = feedparser.parse(url)
+
+            # Check if we got valid content
+            if feed.entries or feed.feed.get('title'):
+                return feed
+
+            # Empty feed might be a temporary issue
+            if attempt < max_retries - 1:
+                delay = delays[min(attempt, len(delays) - 1)]
+                print(f"  ⚠️ Empty feed, retrying in {delay}s... (attempt {attempt + 1}/{max_retries})")
+                time.sleep(delay)
+        except Exception as e:
+            if attempt < max_retries - 1:
+                delay = delays[min(attempt, len(delays) - 1)]
+                print(f"  ❌ Fetch failed: {e}")
+                print(f"  ⏳ Retrying in {delay}s... (attempt {attempt + 1}/{max_retries})")
+                time.sleep(delay)
+            else:
+                raise
+
+    return feed  # Return last attempt result
+
+
 def parse_rss_feed() -> list[dict]:
     """Parse the RSS feed and return episode metadata."""
     print(f"Fetching RSS feed: {podcast.rss_url}")
-    feed = feedparser.parse(podcast.rss_url)
-    
+    feed = fetch_feed_with_retry(podcast.rss_url)
+
     if feed.bozo:
         print(f"Warning: Feed parsing had issues: {feed.bozo_exception}")
     
