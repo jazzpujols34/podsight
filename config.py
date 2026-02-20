@@ -15,8 +15,17 @@ DATA_DIR = BASE_DIR / "data"
 
 # Load podcasts config
 PODCASTS_FILE = BASE_DIR / "podcasts.yaml"
-with open(PODCASTS_FILE, 'r', encoding='utf-8') as f:
-    _config = yaml.safe_load(f)
+try:
+    with open(PODCASTS_FILE, 'r', encoding='utf-8') as f:
+        _config = yaml.safe_load(f)
+    if not _config:
+        raise ValueError("Empty configuration file")
+except FileNotFoundError:
+    raise SystemExit(f"ERROR: Configuration file not found: {PODCASTS_FILE}")
+except yaml.YAMLError as e:
+    raise SystemExit(f"ERROR: Invalid YAML in {PODCASTS_FILE}: {e}")
+except Exception as e:
+    raise SystemExit(f"ERROR: Failed to load {PODCASTS_FILE}: {e}")
 
 PODCASTS = _config['podcasts']
 DEFAULT_PODCAST = _config['default']
@@ -59,7 +68,12 @@ class PodcastConfig:
         if not self.episode_pattern:
             return None
         match = re.search(self.episode_pattern, title, re.IGNORECASE)
-        return int(match.group(1)) if match else None
+        if not match:
+            return None
+        try:
+            return int(match.group(1))
+        except (ValueError, IndexError):
+            return None
 
 
 def get_podcast_config(slug: Optional[str] = None) -> PodcastConfig:

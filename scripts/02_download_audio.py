@@ -90,15 +90,17 @@ def main():
     print(f"Loaded {len(episodes)} episodes from {podcast.episodes_file}")
 
     # Filter by episode range if configured (for numbered podcasts like Gooaye)
+    ep_start = podcast.episode_start or 1
+    ep_end = podcast.episode_end  # None means no upper limit
     if podcast.episode_start or podcast.episode_end:
         original_count = len(episodes)
         episodes = [
             e for e in episodes
-            if e.get('episode_number') and
-               (podcast.episode_start is None or e['episode_number'] >= podcast.episode_start) and
-               (podcast.episode_end is None or e['episode_number'] <= podcast.episode_end)
+            if e.get('episode_number') is not None and
+               e['episode_number'] >= ep_start and
+               (ep_end is None or e['episode_number'] <= ep_end)
         ]
-        print(f"Filtered to {len(episodes)} episodes (EP{podcast.episode_start or 1} - EP{podcast.episode_end or 'latest'})")
+        print(f"Filtered to {len(episodes)} episodes (EP{ep_start} - EP{ep_end or 'latest'})")
 
     # Create output directory
     podcast.audio_dir.mkdir(parents=True, exist_ok=True)

@@ -146,7 +146,8 @@ def get_episode_metadata(ep_number: int, podcast_slug: Optional[str] = None) -> 
             if ep.get('episode_number') == ep_number:
                 return ep
         return None
-    except Exception:
+    except Exception as e:
+        print(f"[WARNING] Failed to read episode metadata: {e}", file=sys.stderr)
         return None
 
 
@@ -234,7 +235,8 @@ def search_transcripts(
 
         try:
             content = file_path.read_text(encoding='utf-8')
-        except Exception:
+        except Exception as e:
+            print(f"[WARNING] Failed to read {file_path}: {e}", file=sys.stderr)
             continue
 
         for line_num, line in enumerate(content.split('\n'), 1):

@@ -16,6 +16,7 @@ import argparse
 import json
 import os
 import re
+import shutil
 import sys
 import time
 from pathlib import Path
@@ -68,6 +69,12 @@ def compress_audio_for_upload(audio_path: Path, max_size_mb: int = 24) -> Path:
     if file_size_mb <= max_size_mb:
         return audio_path  # No compression needed
 
+    # Check for required tools
+    if not shutil.which("ffprobe"):
+        raise RuntimeError("ffprobe not found. Install ffmpeg: brew install ffmpeg (macOS) or apt install ffmpeg (Linux)")
+    if not shutil.which("ffmpeg"):
+        raise RuntimeError("ffmpeg not found. Install ffmpeg: brew install ffmpeg (macOS) or apt install ffmpeg (Linux)")
+
     # Calculate target bitrate to fit under limit
     # Get duration first
     result = subprocess.run(
@@ -75,7 +82,14 @@ def compress_audio_for_upload(audio_path: Path, max_size_mb: int = 24) -> Path:
          "-of", "default=noprint_wrappers=1:nokey=1", str(audio_path)],
         capture_output=True, text=True
     )
-    duration = float(result.stdout.strip())
+
+    try:
+        duration = float(result.stdout.strip())
+    except ValueError:
+        raise RuntimeError(f"Failed to get audio duration from {audio_path}. ffprobe output: {result.stderr}")
+
+    if duration <= 0:
+        raise RuntimeError(f"Invalid audio duration ({duration}s) for {audio_path}")
 
     # Target: max_size_mb * 8 * 1024 kbits / duration seconds = bitrate kbps
     target_bitrate = int((max_size_mb * 8 * 1024) / duration * 0.9)  # 90% to be safe
@@ -301,11 +315,15 @@ def main():
     # Parse --ep argument if provided
     ep_start, ep_end = podcast.episode_start, podcast.episode_end
     if args.ep:
-        if '-' in args.ep:
-            parts = args.ep.split('-')
-            ep_start, ep_end = int(parts[0]), int(parts[1])
-        else:
-            ep_start = ep_end = int(args.ep)
+        try:
+            if '-' in args.ep:
+                parts = args.ep.split('-')
+                ep_start, ep_end = int(parts[0]), int(parts[1])
+            else:
+                ep_start = ep_end = int(args.ep)
+        except ValueError:
+            print(f"Error: Invalid episode format '{args.ep}'. Use a number (e.g., '620') or range (e.g., '615-620').")
+            return
 
     # Filter by episode range (only applies to numbered podcasts)
     if ep_start or ep_end:

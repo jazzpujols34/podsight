@@ -58,19 +58,26 @@ class LinePublisher(BasePublisher):
             headers = {"Authorization": f"Bearer {self.token}"}
             data = {"message": message}
 
-            # Attach image if provided
-            files = None
+            # Attach image if provided - use context manager to avoid file handle leak
             if image_path and image_path.exists():
-                files = {"imageFile": open(image_path, "rb")}
-
-            with httpx.Client() as client:
-                response = client.post(
-                    self.API_URL,
-                    headers=headers,
-                    data=data,
-                    files=files,
-                    timeout=30.0
-                )
+                with open(image_path, "rb") as img_file:
+                    files = {"imageFile": img_file}
+                    with httpx.Client() as client:
+                        response = client.post(
+                            self.API_URL,
+                            headers=headers,
+                            data=data,
+                            files=files,
+                            timeout=30.0
+                        )
+            else:
+                with httpx.Client() as client:
+                    response = client.post(
+                        self.API_URL,
+                        headers=headers,
+                        data=data,
+                        timeout=30.0
+                    )
 
             if response.status_code == 200:
                 return PublishResult(
