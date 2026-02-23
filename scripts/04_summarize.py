@@ -12,12 +12,15 @@ Usage:
     python 04_summarize.py --provider openai  # Use OpenAI instead of Claude
     python 04_summarize.py --model gpt-4o     # Specify model
     python 04_summarize.py --ep 620-625       # Process specific episode range
+    python 04_summarize.py --parallel 3       # Process 3 episodes in parallel (faster!)
 """
 
 import argparse
 import os
 import re
 import sys
+import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 # Add parent directory to path for imports
@@ -134,7 +137,7 @@ def summarize_with_anthropic(transcript: str, model: str) -> str:
 
     message = client.messages.create(
         model=model,
-        max_tokens=4096,
+        max_tokens=8192,
         messages=[
             {"role": "user", "content": get_summary_prompt(transcript)}
         ]
@@ -158,7 +161,7 @@ def summarize_with_openai(transcript: str, model: str) -> str:
 
     response = client.chat.completions.create(
         model=model,
-        max_tokens=4096,
+        max_tokens=8192,
         messages=[
             {"role": "user", "content": get_summary_prompt(transcript)}
         ]
@@ -192,7 +195,7 @@ def summarize_with_gemini(transcript: str, model: str) -> str:
 
     generate_content_config = types.GenerateContentConfig(
         temperature=0.7,
-        max_output_tokens=4096,
+        max_output_tokens=8192,
     )
 
     response = client.models.generate_content(
@@ -236,6 +239,43 @@ def parse_episode_range(range_str: str) -> tuple[int | None, int | None]:
         return ep, ep
 
 
+def process_single_transcript(
+    transcript_path: Path,
+    provider: str,
+    model: str,
+    index: int,
+    total: int
+) -> dict:
+    """Process a single transcript. Returns result dict for parallel execution."""
+    ep_num = get_episode_number_from_filename(transcript_path.name)
+
+    # Display name and determine summary filename
+    if ep_num:
+        display_name = f"EP{ep_num:04d}"
+        summary_file = podcast.summary_dir / f"EP{ep_num:04d}_summary.txt"
+    else:
+        display_name = transcript_path.stem[:30]
+        summary_file = podcast.summary_dir / f"{transcript_path.stem}_summary.txt"
+
+    result = {
+        "transcript": transcript_path,
+        "display_name": display_name,
+        "success": False,
+        "error": None,
+        "chars": 0
+    }
+
+    try:
+        summary = summarize_transcript(transcript_path, provider, model)
+        summary_file.write_text(summary, encoding="utf-8")
+        result["success"] = True
+        result["chars"] = len(summary)
+    except Exception as e:
+        result["error"] = str(e)
+
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser(description="Summarize Gooaye transcripts")
     parser.add_argument('--provider', choices=['anthropic', 'openai', 'gemini'],
@@ -247,7 +287,12 @@ def main():
                         help="Episode range (e.g., '620-625' or '620')")
     parser.add_argument('--dry-run', action='store_true',
                         help="Show what would be processed without actually calling API")
+    parser.add_argument('--parallel', '-p', type=int, default=1, metavar='N',
+                        help="Number of parallel workers (default: 1, max: 5)")
     args = parser.parse_args()
+
+    # Clamp parallel workers to safe range
+    args.parallel = max(1, min(5, args.parallel))
 
     # Set default model based on provider
     if args.model is None:
@@ -269,6 +314,7 @@ def main():
     print(f"Provider: {args.provider}")
     print(f"Model: {args.model}")
     print(f"Episode range: {f'EP{ep_start}-EP{ep_end}' if ep_start else 'All'}")
+    print(f"Parallel workers: {args.parallel}")
     print(f"Output directory: {podcast.summary_dir}")
     print()
 
@@ -290,41 +336,73 @@ def main():
         print("Dry run - no API calls made.")
         return
 
-    # Process each transcript
+    # Process transcripts
     success_count = 0
     error_count = 0
+    total = len(transcripts)
+    start_time = time.time()
 
-    for i, transcript_path in enumerate(transcripts, 1):
-        ep_num = get_episode_number_from_filename(transcript_path.name)
+    if args.parallel > 1:
+        # Parallel processing
+        print(f"Using {args.parallel} parallel workers...")
+        print()
 
-        # Display name and determine summary filename
-        if ep_num:
-            display_name = f"EP{ep_num:04d}"
-            summary_file = podcast.summary_dir / f"EP{ep_num:04d}_summary.txt"
-        else:
-            display_name = transcript_path.stem[:30]
-            summary_file = podcast.summary_dir / f"{transcript_path.stem}_summary.txt"
+        with ThreadPoolExecutor(max_workers=args.parallel) as executor:
+            # Submit all tasks with staggered start to avoid rate limit burst
+            futures = {}
+            for i, transcript_path in enumerate(transcripts):
+                future = executor.submit(
+                    process_single_transcript,
+                    transcript_path,
+                    args.provider,
+                    args.model,
+                    i + 1,
+                    total
+                )
+                futures[future] = transcript_path
+                # Small delay between submissions to avoid rate limit burst
+                if i < len(transcripts) - 1:
+                    time.sleep(0.5)
 
-        progress_pct = int((i / len(transcripts)) * 100)
-        print(f"\n[{i}/{len(transcripts)}] ({progress_pct}%) Summarizing {display_name}...", flush=True)
+            # Collect results as they complete
+            for future in as_completed(futures):
+                result = future.result()
+                if result["success"]:
+                    print(f"  ✅ {result['display_name']} ({result['chars']} chars)")
+                    success_count += 1
+                else:
+                    print(f"  ❌ {result['display_name']}: {result['error']}")
+                    error_count += 1
+    else:
+        # Sequential processing (original behavior)
+        for i, transcript_path in enumerate(transcripts, 1):
+            ep_num = get_episode_number_from_filename(transcript_path.name)
 
-        try:
-            print(f"  🤖 Generating summary...", flush=True)
-            summary = summarize_transcript(transcript_path, args.provider, args.model)
+            if ep_num:
+                display_name = f"EP{ep_num:04d}"
+                summary_file = podcast.summary_dir / f"EP{ep_num:04d}_summary.txt"
+            else:
+                display_name = transcript_path.stem[:30]
+                summary_file = podcast.summary_dir / f"{transcript_path.stem}_summary.txt"
 
-            # Save summary
-            summary_file.write_text(summary, encoding="utf-8")
+            progress_pct = int((i / total) * 100)
+            print(f"\n[{i}/{total}] ({progress_pct}%) Summarizing {display_name}...", flush=True)
 
-            print(f"  ✅ Done! ({len(summary)} chars)", flush=True)
-            success_count += 1
+            try:
+                print(f"  Generating summary...", flush=True)
+                summary = summarize_transcript(transcript_path, args.provider, args.model)
+                summary_file.write_text(summary, encoding="utf-8")
+                print(f"  ✅ Done! ({len(summary)} chars)", flush=True)
+                success_count += 1
+            except Exception as e:
+                print(f"  ❌ ERROR: {e}", flush=True)
+                error_count += 1
 
-        except Exception as e:
-            print(f"  ❌ ERROR: {e}", flush=True)
-            error_count += 1
-
+    elapsed = time.time() - start_time
     print()
     print("=" * 60)
     print(f"Complete: {success_count} succeeded, {error_count} failed")
+    print(f"Time: {elapsed:.1f}s ({elapsed/max(1,success_count+error_count):.1f}s per episode)")
     print(f"Summaries saved to: {podcast.summary_dir}")
 
 

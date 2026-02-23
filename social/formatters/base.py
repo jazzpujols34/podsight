@@ -36,7 +36,10 @@ class SummaryContent:
         content.one_liner = cls._extract_one_liner(text)
         content.topics = cls._extract_bullet_list(text, r"主要討論話題")
         content.tickers = cls._extract_tickers(text)
-        content.quotes = cls._extract_bullet_list(text, rf"{host}.*?(?:觀點|金句)")
+        # Look for quotes section header (### 游庭皓 的觀點或金句 or similar)
+        # Escape special regex chars in host name (like parentheses)
+        host_escaped = re.escape(host)
+        content.quotes = cls._extract_bullet_list(text, rf"###.*?{host_escaped}.*?(?:觀點|金句)")
 
         return content
 
@@ -69,27 +72,49 @@ class SummaryContent:
 
     @staticmethod
     def _extract_bullet_list(text: str, section_header: str) -> list[str]:
-        """Extract bullet points following a section header."""
-        # Find section
-        pattern = rf"{section_header}.*?\n((?:[-•*]\s*.+\n?)+)"
-        match = re.search(pattern, text, re.IGNORECASE | re.DOTALL)
-        if not match:
+        """Extract bullet points following a section header, including multi-line content."""
+        # Find section start
+        header_match = re.search(rf"{section_header}", text, re.IGNORECASE)
+        if not header_match:
             return []
 
-        # Extract bullets
-        bullets = re.findall(r"[-•*]\s*(.+?)(?:\n|$)", match.group(1))
-        # Filter out empty, separator-only (---), and header lines
-        cleaned = []
-        for b in bullets:
-            b = b.strip()
-            if not b:
+        # Get text after header until next section (### or end)
+        section_start = header_match.end()
+        next_section = re.search(r'\n###\s', text[section_start:])
+        section_end = section_start + next_section.start() if next_section else len(text)
+        section_text = text[section_start:section_end]
+
+        # Extract bullets with their multi-line content
+        # A bullet starts with [-•*] and includes all following indented lines
+        bullets = []
+        current_bullet = []
+
+        for line in section_text.split('\n'):
+            stripped = line.strip()
+            if not stripped:
                 continue
-            if re.match(r'^-+$', b):  # Skip --- separators
+            if re.match(r'^-+$', stripped):  # Skip --- separators
                 continue
-            if b.startswith('#'):  # Skip headers
+            if stripped.startswith('#'):  # Skip headers
                 continue
-            cleaned.append(b)
-        return cleaned
+
+            # Check if this is a new bullet point
+            if re.match(r'^[-•*]\s+', line.lstrip()):
+                # Save previous bullet if exists
+                if current_bullet:
+                    bullets.append(' '.join(current_bullet))
+                # Start new bullet (remove the bullet marker)
+                content = re.sub(r'^[-•*]\s+', '', line.lstrip())
+                current_bullet = [content] if content else []
+            elif current_bullet and (line.startswith('    ') or line.startswith('\t')):
+                # This is a continuation line (indented)
+                current_bullet.append(stripped)
+
+        # Don't forget the last bullet
+        if current_bullet:
+            bullets.append(' '.join(current_bullet))
+
+        return bullets
 
     @staticmethod
     def _extract_tickers(text: str) -> dict[str, list[str]]:

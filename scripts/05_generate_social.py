@@ -5,7 +5,7 @@ Step 5: Generate social media drafts from AI summaries.
 For each summary in data/{podcast}/summaries/*.txt that doesn't have a corresponding
 draft in data/{podcast}/social_drafts/, generates platform-specific content.
 
-Platforms: Twitter (thread), Threads (single post), LINE Notify, Instagram (image card)
+Platforms: Twitter (thread), Threads (single post), LINE, Instagram (image card), Telegram
 
 Usage:
     python 05_generate_social.py                    # Process all missing drafts
@@ -23,7 +23,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from config import get_podcast_config, get_episode_number_from_filename
-from social.formatters import TwitterFormatter, ThreadsFormatter, LineFormatter, InstagramFormatter
+from social.formatters import TwitterFormatter, ThreadsFormatter, LineFormatter, InstagramFormatter, TelegramFormatter
 from social.formatters.base import SummaryContent
 from social.draft import DraftManager, SocialDraft
 from social.image_generator import InstagramCardGenerator
@@ -38,6 +38,7 @@ formatters = {
     "threads": ThreadsFormatter(),
     "line": LineFormatter(),
     "instagram": InstagramFormatter(),
+    "telegram": TelegramFormatter(),
 }
 
 

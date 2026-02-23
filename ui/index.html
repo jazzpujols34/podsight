@@ -1750,6 +1750,7 @@
                 <div class="card-header">
                     <h2 class="card-title">
                         <i data-lucide="terminal" style="width:18px;height:18px;"></i> 執行輸出
+                        <span id="runningPodcastBadge" style="display:none; margin-left:0.5rem; font-size:0.75rem; padding:0.2rem 0.5rem; background:var(--primary);color:white;border-radius:4px;font-weight:normal;"></span>
                     </h2>
                     <button class="btn btn-secondary btn-icon" onclick="clearTerminal()"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
                 </div>
@@ -2607,6 +2608,14 @@ Transcript:
                     document.getElementById('viewerEmpty').style.display = 'block';
                     document.getElementById('viewerContent').style.display = 'none';
                     currentEpisode = null;
+
+                    // Check if pipeline is running for a different podcast
+                    if (runningPipelinePodcast && runningPipelinePodcast !== slug) {
+                        // Show terminal with warning
+                        document.getElementById('terminalCard').style.display = 'block';
+                        addTerminalLine(`⚠️ 注意：Pipeline 正在 ${getPodcastDisplayName(runningPipelinePodcast)} 執行中`, 'warning');
+                        addTerminalLine(`已切換到 ${data.name}`, 'info');
+                    }
                 }
             } catch (err) {
                 console.error('Switch podcast error:', err);
@@ -2896,6 +2905,9 @@ Transcript:
                 loadEpisodeNotes(identifier);
 
                 showTab(currentTab);
+
+                // Update social push card for this episode
+                loadSocialDrafts();
             } catch (err) {
                 document.getElementById('viewerText').innerHTML = '<p class="error">載入失敗</p>';
             }
@@ -3383,6 +3395,14 @@ Transcript:
                 addTerminalLine(`Pipeline 已啟動: ${data.name}`, 'success');
                 addTerminalLine('', '');
 
+                // Show running podcast badge
+                runningPipelinePodcast = currentPodcast;
+                const badge = document.getElementById('runningPodcastBadge');
+                if (badge) {
+                    badge.textContent = getPodcastDisplayName(currentPodcast);
+                    badge.style.display = 'inline';
+                }
+
                 // Start polling for output
                 lastOutputCount = 0;
                 startStatusPolling();
@@ -3422,11 +3442,26 @@ Transcript:
                     // Update progress bar
                     updateProgressBar(data);
 
+                    // Update running podcast badge
+                    if (data.running && data.current_podcast) {
+                        runningPipelinePodcast = data.current_podcast;
+                        const badge = document.getElementById('runningPodcastBadge');
+                        if (badge) {
+                            badge.textContent = getPodcastDisplayName(data.current_podcast);
+                            badge.style.display = 'inline';
+                        }
+                    }
+
                     // Check if finished
                     if (!data.running) {
                         clearInterval(statusPollingInterval);
                         statusPollingInterval = null;
                         setButtonsDisabled(false);
+                        runningPipelinePodcast = null;
+
+                        // Hide podcast badge
+                        const badge = document.getElementById('runningPodcastBadge');
+                        if (badge) badge.style.display = 'none';
 
                         // Mark completed steps
                         if (data.exit_code === 0) {
@@ -3568,14 +3603,36 @@ Transcript:
             addTerminalLine('資料已重新整理', 'success');
         }
 
+        // Track running pipeline's podcast
+        let runningPipelinePodcast = null;
+
         // Check for running pipeline on load
         async function checkRunningPipeline() {
             try {
                 const res = await fetch(`${API_BASE}/run/status`);
                 const data = await res.json();
                 if (data.running) {
+                    runningPipelinePodcast = data.current_podcast;
                     document.getElementById('terminalCard').style.display = 'block';
-                    addTerminalLine('偵測到正在執行的 Pipeline...', 'info');
+
+                    // Show which podcast is running
+                    const badge = document.getElementById('runningPodcastBadge');
+                    if (badge && data.current_podcast) {
+                        // Get podcast name from the podcasts list
+                        const podcastName = getPodcastDisplayName(data.current_podcast);
+                        badge.textContent = podcastName;
+                        badge.style.display = 'inline';
+                    }
+
+                    // Show message if viewing different podcast
+                    if (data.current_podcast && data.current_podcast !== currentPodcast) {
+                        const podcastName = getPodcastDisplayName(data.current_podcast);
+                        addTerminalLine(`⚠️ Pipeline 正在執行中：${podcastName}`, 'warning');
+                        addTerminalLine(`目前顯示的是 ${getPodcastDisplayName(currentPodcast)} 的資料`, 'info');
+                    } else {
+                        addTerminalLine('偵測到正在執行的 Pipeline...', 'info');
+                    }
+
                     lastOutputCount = 0;
                     setButtonsDisabled(true);
                     startStatusPolling();
@@ -3583,6 +3640,16 @@ Transcript:
             } catch (err) {
                 // Ignore
             }
+        }
+
+        // Helper to get podcast display name
+        function getPodcastDisplayName(slug) {
+            const names = {
+                'gooaye': '股癌 Gooaye',
+                'yutinghao': '游庭皓的財經皓角',
+                'zhaohua': '兆華與股惑仔'
+            };
+            return names[slug] || slug;
         }
 
         // ========== Episode Notes ==========
@@ -3674,66 +3741,103 @@ Transcript:
 
         async function loadSocialDrafts() {
             const list = document.getElementById('socialDraftList');
+
+            // If no episode is selected, show prompt
+            if (!currentEpisode) {
+                list.innerHTML = '<div class="empty-state"><p>請先選擇一個集數</p></div>';
+                return;
+            }
+
             list.innerHTML = '<div class="empty-state"><div class="spinner"></div></div>';
 
             try {
                 await loadSocialConfig();
-                const res = await fetch(`${API_BASE}/social/drafts`);
-                const data = await res.json();
-                socialDrafts = data.drafts || [];
 
-                if (socialDrafts.length === 0) {
-                    list.innerHTML = '<div class="empty-state"><p>尚無社群草稿。點擊上方 ✨ 產生草稿。</p></div>';
-                    return;
+                // Get episode identifier for the API
+                const hasEpNum = currentEpisode.episode_number !== null && currentEpisode.episode_number !== undefined;
+                const episodeId = hasEpNum ? `EP${String(currentEpisode.episode_number).padStart(4, '0')}` : currentEpisode.filename;
+
+                // Try to fetch draft for current episode only
+                const res = await fetch(`${API_BASE}/social/drafts/${episodeId}`);
+
+                if (res.ok) {
+                    const draft = await res.json();
+                    list.innerHTML = renderSocialDraft(draft);
+                } else {
+                    // No draft exists - show generate button
+                    list.innerHTML = `
+                        <div class="empty-state">
+                            <p>${episodeId} 尚無社群草稿</p>
+                            <button class="btn btn-primary" style="margin-top: 1rem;" onclick="generateDraftForCurrentEpisode()">
+                                <i data-lucide="sparkles" style="width:14px;height:14px;"></i> 產生草稿
+                            </button>
+                        </div>
+                    `;
                 }
-
-                list.innerHTML = socialDrafts.map(draft => renderSocialDraft(draft)).join('');
                 lucide.createIcons();
             } catch (err) {
                 list.innerHTML = '<div class="empty-state"><p>載入失敗</p></div>';
             }
         }
 
+        async function generateDraftForCurrentEpisode() {
+            if (!currentEpisode) return;
+
+            const hasEpNum = currentEpisode.episode_number !== null && currentEpisode.episode_number !== undefined;
+            const epNum = hasEpNum ? currentEpisode.episode_number : null;
+
+            if (!epNum) {
+                showCopyToast('此集數格式不支援');
+                return;
+            }
+
+            const list = document.getElementById('socialDraftList');
+            list.innerHTML = '<div class="empty-state"><div class="spinner"></div><p style="margin-top:1rem;">產生草稿中...</p></div>';
+
+            try {
+                // Run social draft generator for this specific episode
+                const env = `PODCAST=${currentPodcast}`;
+                const res = await fetch(`${API_BASE}/social/drafts/${currentEpisode.episode_number}/regenerate`, { method: 'POST' });
+                // Wait and reload
+                setTimeout(() => loadSocialDrafts(), 3000);
+            } catch (err) {
+                showCopyToast('產生失敗');
+                loadSocialDrafts();
+            }
+        }
+
         function renderSocialDraft(draft) {
-            const date = new Date(draft.created_at).toLocaleDateString('zh-TW');
-            const platforms = ['twitter', 'threads', 'line', 'instagram'];
+            // Check Telegram status (only auto-publish platform)
+            const tgData = draft.platforms?.telegram || {};
+            const tgConfigured = socialConfig?.platforms?.telegram?.configured;
+            let tgStatus = '';
+            let tgIcon = 'send';
 
-            const platformBadges = platforms.map(p => {
-                const pData = draft.platforms[p] || {};
-                const configured = socialConfig?.platforms?.[p]?.configured;
-                let statusClass = 'pending';
-                let icon = 'clock';
-
-                if (!configured) {
-                    statusClass = 'not-configured';
-                    icon = 'x';
-                } else if (pData.status === 'published') {
-                    statusClass = 'published';
-                    icon = 'check';
-                } else if (pData.status === 'failed') {
-                    statusClass = 'failed';
-                    icon = 'alert-circle';
-                }
-
-                const label = { twitter: 'X', threads: 'Threads', line: 'LINE', instagram: 'IG' }[p];
-                return `<span class="platform-badge ${statusClass}">
-                    <i data-lucide="${icon}" style="width:12px;height:12px;"></i> ${label}
-                </span>`;
-            }).join('');
+            if (tgData.status === 'published') {
+                tgStatus = '已發佈';
+                tgIcon = 'check';
+            } else if (tgConfigured) {
+                tgStatus = '待發佈';
+                tgIcon = 'send';
+            } else {
+                tgStatus = '未設定';
+                tgIcon = 'alert-circle';
+            }
 
             return `
-            <div class="social-draft-item">
-                <div class="social-draft-header">
-                    <span class="social-draft-title">${draft.episode_id}</span>
-                    <span class="social-draft-date">${date}</span>
+            <div class="social-draft-item" style="padding: 1rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+                    <span style="font-weight: 600;">${draft.episode_id}</span>
+                    <span class="platform-badge ${tgData.status === 'published' ? 'published' : 'pending'}">
+                        <i data-lucide="${tgIcon}" style="width:12px;height:12px;"></i> Telegram ${tgStatus}
+                    </span>
                 </div>
-                <div class="social-platforms">${platformBadges}</div>
-                <div class="social-draft-actions">
-                    <button class="btn btn-secondary" onclick="previewSocialDraft('${draft.episode_id}')">
+                <div class="social-draft-actions" style="display: flex; gap: 0.5rem;">
+                    <button class="btn btn-secondary" onclick="previewSocialDraft('${draft.episode_id}')" style="flex:1;">
                         <i data-lucide="eye" style="width:14px;height:14px;"></i> 預覽
                     </button>
-                    <button class="btn btn-primary" onclick="publishAllPlatforms('${draft.episode_id}')">
-                        <i data-lucide="send" style="width:14px;height:14px;"></i> 發佈全部
+                    <button class="btn btn-primary" onclick="publishAllPlatforms('${draft.episode_id}')" style="flex:1;" ${tgData.status === 'published' ? 'disabled' : ''}>
+                        <i data-lucide="send" style="width:14px;height:14px;"></i> 發佈到 Telegram
                     </button>
                 </div>
             </div>`;
@@ -3744,7 +3848,7 @@ Transcript:
                 const res = await fetch(`${API_BASE}/social/drafts/${episodeId}`);
                 const data = await res.json();
                 currentPreviewDraft = data;
-                currentPreviewPlatform = 'twitter';
+                currentPreviewPlatform = 'telegram';
 
                 showSocialPreviewModal();
             } catch (err) {
@@ -3757,9 +3861,10 @@ Transcript:
             const tabs = document.getElementById('socialPreviewTabs');
             const body = document.getElementById('socialPreviewBody');
 
-            const platforms = ['twitter', 'threads', 'line', 'instagram'];
+            // Telegram first (auto-publish), then others for copy-paste
+            const platforms = ['telegram', 'twitter', 'threads', 'instagram'];
             tabs.innerHTML = platforms.map(p => {
-                const label = { twitter: 'X', threads: 'Threads', line: 'LINE', instagram: 'IG' }[p];
+                const label = { telegram: 'Telegram', twitter: 'X', threads: 'Threads', instagram: 'IG' }[p];
                 const active = p === currentPreviewPlatform ? 'active' : '';
                 return `<button class="${active}" onclick="switchPreviewPlatform('${p}')">${label}</button>`;
             }).join('');
@@ -3801,6 +3906,10 @@ Transcript:
                 `;
             } else if (currentPreviewPlatform === 'line') {
                 body.innerHTML = escapeHtml(content.message || '');
+            } else if (currentPreviewPlatform === 'telegram') {
+                // Telegram uses HTML formatting, display nicely
+                const msg = content.message || '';
+                body.innerHTML = `<div style="white-space:pre-wrap;">${msg}</div>`;
             } else {
                 body.innerHTML = escapeHtml(content.text || JSON.stringify(content, null, 2));
             }
@@ -3843,20 +3952,30 @@ Transcript:
         }
 
         async function publishAllPlatforms(episodeId) {
-            if (!confirm(`確定要發佈 ${episodeId} 到所有已設定的平台嗎？`)) return;
-
             try {
                 const res = await fetch(`${API_BASE}/social/drafts/${episodeId}/publish-all`, { method: 'POST' });
                 const data = await res.json();
 
-                const results = Object.entries(data.results || {})
-                    .map(([p, r]) => `${p}: ${r.success ? '✅' : '❌ ' + (r.error || '')}`)
-                    .join('\n');
+                // Only show configured platforms that were actually attempted
+                const configured = Object.entries(data.results || {})
+                    .filter(([p, r]) => r.success || (r.error && r.error !== 'Not configured'));
 
-                alert('發佈結果：\n' + results);
+                if (configured.length === 0) {
+                    showCopyToast('沒有已設定的平台');
+                    return;
+                }
+
+                const success = configured.filter(([p, r]) => r.success);
+                const failed = configured.filter(([p, r]) => !r.success);
+
+                if (failed.length === 0) {
+                    showCopyToast(`${episodeId} 已發佈到 ${success.map(([p]) => p).join(', ')}`);
+                } else {
+                    showCopyToast(`發佈失敗: ${failed.map(([p, r]) => r.error).join(', ')}`);
+                }
                 loadSocialDrafts();
             } catch (err) {
-                alert('發佈失敗：' + err.message);
+                showCopyToast('發佈失敗：' + err.message);
             }
         }
 

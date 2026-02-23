@@ -263,10 +263,20 @@ def search_transcripts(
 
 @app.get("/", response_class=HTMLResponse)
 async def root():
-    """Serve the web UI."""
+    """Serve the web UI with no-cache headers."""
+    from fastapi.responses import Response
     index_file = UI_DIR / "index.html"
     if index_file.exists():
-        return FileResponse(index_file)
+        content = index_file.read_text()
+        return Response(
+            content=content,
+            media_type="text/html",
+            headers={
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                "Pragma": "no-cache",
+                "Expires": "0"
+            }
+        )
 
     # Fallback to API info if UI not found
     return HTMLResponse(content="""
@@ -513,7 +523,7 @@ async def delete_custom_prompt():
 # --- Social Push Endpoints ---
 
 from social.draft import DraftManager, SocialDraft
-from social.publishers import TwitterPublisher, ThreadsPublisher, LinePublisher, InstagramPublisher
+from social.publishers import TwitterPublisher, ThreadsPublisher, LinePublisher, InstagramPublisher, TelegramPublisher
 
 
 @app.get("/social/drafts")
@@ -558,7 +568,7 @@ async def update_social_draft(episode_id: str, platform: str, request: Request):
     if not draft:
         raise HTTPException(status_code=404, detail="Draft not found")
 
-    if platform not in ["twitter", "threads", "line", "instagram"]:
+    if platform not in ["twitter", "threads", "line", "instagram", "telegram"]:
         raise HTTPException(status_code=400, detail="Invalid platform")
 
     content = await request.json()
@@ -576,7 +586,7 @@ async def publish_social_draft(episode_id: str, platform: str):
     if not draft:
         raise HTTPException(status_code=404, detail="Draft not found")
 
-    if platform not in ["twitter", "threads", "line", "instagram"]:
+    if platform not in ["twitter", "threads", "line", "instagram", "telegram"]:
         raise HTTPException(status_code=400, detail="Invalid platform")
 
     # Get content
@@ -590,6 +600,7 @@ async def publish_social_draft(episode_id: str, platform: str):
         "threads": ThreadsPublisher,
         "line": LinePublisher,
         "instagram": InstagramPublisher,
+        "telegram": TelegramPublisher,
     }
 
     publisher = publishers[platform]()
@@ -645,6 +656,7 @@ async def publish_all_platforms(episode_id: str):
         "threads": ThreadsPublisher,
         "line": LinePublisher,
         "instagram": InstagramPublisher,
+        "telegram": TelegramPublisher,
     }
 
     for platform, PublisherClass in publishers.items():
@@ -697,11 +709,12 @@ async def delete_social_draft(episode_id: str):
 async def regenerate_social_draft(episode_id: str):
     """Regenerate drafts from the summary file."""
     import subprocess
+    import sys
 
     # Run the generate script for this episode
     ep_num = episode_id.replace("EP", "")
     result = subprocess.run(
-        ["python", "scripts/05_generate_social.py", "--ep", ep_num, "--regenerate"],
+        [sys.executable, "scripts/05_generate_social.py", "--ep", ep_num, "--regenerate"],
         capture_output=True,
         text=True,
         cwd=str(Path(__file__).parent),
@@ -734,6 +747,7 @@ async def get_social_config():
         "threads": ThreadsPublisher(),
         "line": LinePublisher(),
         "instagram": InstagramPublisher(),
+        "telegram": TelegramPublisher(),
     }
 
     return {
@@ -970,9 +984,9 @@ def run_script_async(step: str | int, podcast_slug: str, providers: dict = None)
             script = SCRIPT_DIR / "auto_check_new_episodes.py"
             add_output(f"開始執行: 檢查新集數", "info")
         elif step == "all":
-            # Run all steps sequentially
+            # Run all steps sequentially (including social draft generation)
             add_output("開始執行: 完整 Pipeline", "info")
-            for s in [1, 2, 3, 4]:
+            for s in [1, 2, 3, 4, 5]:
                 if not pipeline_state["running"]:
                     break
                 script = SCRIPT_DIR / STEP_SCRIPTS[s]
@@ -1096,7 +1110,7 @@ async def run_pipeline_step(
     """
     Start a pipeline step execution.
 
-    - **step**: Step number (1-4), 'all' for full pipeline, or 'check' for new episode check
+    - **step**: Step number (1-5), 'all' for full pipeline, or 'check' for new episode check
     - **transcribe_provider**: Provider for transcription (groq, openai, local)
     - **summary_provider**: Provider for summarization (gemini, anthropic, openai)
     """

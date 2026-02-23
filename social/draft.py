@@ -33,7 +33,7 @@ class SocialDraft:
         if not self.created_at:
             self.created_at = datetime.now().isoformat()
         # Initialize platforms
-        for platform in ["twitter", "threads", "line", "instagram"]:
+        for platform in ["twitter", "threads", "line", "instagram", "telegram"]:
             if platform not in self.platforms:
                 self.platforms[platform] = PlatformDraft(content_file=f"{platform}.json")
 
