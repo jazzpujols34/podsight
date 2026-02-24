@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EP638 - 股癌 Gooaye | PodSight</title>
+    <meta name="description" content="MK 分享了近年最悠閒的農曆年假心得，並針對美股資安板塊震盪、川普關稅不確定性及中東地緣政治風險提出警示">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="EP638 - 股癌 Gooaye">
+    <meta property="og:description" content="MK 分享了近年最悠閒的農曆年假心得，並針對美股資安板塊震盪、川普關稅不確定性及中東地緣政治風險提出警示">
+    <meta property="og:type" content="article">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+TC:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <style>
+        :root {
+            --bg-primary: #050508;
+            --bg-secondary: #0a0a10;
+            --bg-card: rgba(18, 18, 28, 0.6);
+            --bg-card-solid: #12121c;
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-glow: rgba(255, 255, 255, 0.12);
+            --text-primary: #f0f0f5;
+            --text-secondary: rgba(240, 240, 245, 0.7);
+            --text-muted: rgba(240, 240, 245, 0.4);
+
+            --accent-primary: #f59e0b;
+            --accent-secondary: #fbbf24;
+            --accent-glow: rgba(245, 158, 11, 0.4);
+            --accent-gradient: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #f97316 100%);
+            --accent-bg: rgba(245, 158, 11, 0.1);
+            --accent-border: rgba(245, 158, 11, 0.25);
+
+            --blue-primary: #3b82f6;
+            --blue-bg: rgba(59, 130, 246, 0.1);
+            --blue-border: rgba(59, 130, 246, 0.2);
+
+            --green-primary: #10b981;
+            --green-bg: rgba(16, 185, 129, 0.1);
+            --green-border: rgba(16, 185, 129, 0.2);
+
+            --red-primary: #ef4444;
+            --red-bg: rgba(239, 68, 68, 0.1);
+            --red-border: rgba(239, 68, 68, 0.2);
+
+            --glass-blur: 20px;
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.8;
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: var(--accent-gradient);
+            z-index: 1000;
+            transition: width 0.1s linear;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        /* Ambient background */
+        .bg-ambient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.2;
+            animation: float 30s ease-in-out infinite;
+        }
+
+        .bg-orb-1 {
+            width: 800px;
+            height: 800px;
+            background: var(--accent-gradient);
+            top: -400px;
+            right: -300px;
+        }
+
+        .bg-orb-2 {
+            width: 600px;
+            height: 600px;
+            background: var(--accent-gradient);
+            bottom: -300px;
+            left: -200px;
+            animation-delay: -15s;
+            opacity: 0.1;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-30px, 30px) scale(1.05); }
+        }
+
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+            background-size: 80px 80px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation */
+        .nav {
+            position: sticky;
+            top: 0;
+            padding: 16px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(5, 5, 8, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 100;
+            margin: 0 -24px;
+            padding-left: 24px;
+            padding-right: 24px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .nav-back {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-back svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .nav-btn:hover {
+            background: var(--accent-bg);
+            border-color: var(--accent-border);
+            color: var(--accent-primary);
+        }
+
+        .nav-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Episode header */
+        .episode-header {
+            padding: 60px 0 40px;
+        }
+
+        .episode-meta-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .episode-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+
+        .episode-date {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .episode-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+        }
+
+        /* TLDR Box */
+        .tldr-box {
+            background: linear-gradient(135deg, var(--accent-bg), rgba(245, 158, 11, 0.05));
+            border: 1px solid var(--accent-border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+
+        .tldr-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tldr-label svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .tldr-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+        }
+
+        /* Stock tickers */
+        .tickers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 24px;
+        }
+
+        .ticker {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 6px 12px;
+            background: var(--blue-bg);
+            border: 1px solid var(--blue-border);
+            border-radius: 6px;
+            color: #60a5fa;
+            transition: all 0.2s;
+            cursor: default;
+        }
+
+        .ticker:hover {
+            background: rgba(59, 130, 246, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .ticker.tw {
+            background: var(--green-bg);
+            border-color: var(--green-border);
+            color: #34d399;
+        }
+
+        .ticker.tw:hover {
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        /* Content sections */
+        .content {
+            padding-bottom: 80px;
+        }
+
+        .section {
+            margin-bottom: 48px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .section-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-primary);
+            flex-shrink: 0;
+        }
+
+        .section-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .section-icon.blue {
+            background: var(--blue-bg);
+            border-color: var(--blue-border);
+            color: var(--blue-primary);
+        }
+
+        .section-icon.green {
+            background: var(--green-bg);
+            border-color: var(--green-border);
+            color: var(--green-primary);
+        }
+
+        .section-icon.red {
+            background: var(--red-bg);
+            border-color: var(--red-border);
+            color: var(--red-primary);
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .section-content {
+            color: var(--text-secondary);
+        }
+
+        .section-content p {
+            margin-bottom: 16px;
+        }
+
+        .section-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Topics list */
+        .topics-list {
+            list-style: none;
+        }
+
+        .topic-item {
+            position: relative;
+            padding: 24px;
+            margin-bottom: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            transition: all 0.3s var(--transition-smooth);
+        }
+
+        .topic-item:hover {
+            border-color: var(--border-glow);
+            transform: translateX(4px);
+        }
+
+        .topic-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 60%;
+            background: var(--accent-gradient);
+            border-radius: 0 2px 2px 0;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .topic-item:hover::before {
+            opacity: 1;
+        }
+
+        .topic-title {
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .topic-desc {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        /* Quote section */
+        .quotes-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .quote-card {
+            position: relative;
+            padding: 28px 28px 28px 48px;
+            background: linear-gradient(135deg, var(--accent-bg), rgba(245, 158, 11, 0.03));
+            border: 1px solid var(--accent-border);
+            border-radius: 16px;
+        }
+
+        .quote-card::before {
+            content: '"';
+            position: absolute;
+            top: 16px;
+            left: 20px;
+            font-family: 'Noto Serif TC', serif;
+            font-size: 3rem;
+            color: var(--accent-primary);
+            opacity: 0.3;
+            line-height: 1;
+        }
+
+        .quote-text {
+            font-family: 'Noto Serif TC', serif;
+            font-size: 1.05rem;
+            font-weight: 400;
+            line-height: 1.9;
+            color: var(--text-primary);
+        }
+
+        .quote-author {
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Strategy section */
+        .strategy-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .strategy-item {
+            display: flex;
+            gap: 16px;
+            padding: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            transition: all 0.2s;
+        }
+
+        .strategy-item:hover {
+            border-color: var(--border-glow);
+        }
+
+        .strategy-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-primary);
+            flex-shrink: 0;
+        }
+
+        .strategy-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .strategy-content {
+            flex: 1;
+        }
+
+        .strategy-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .strategy-desc {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        /* Stocks mentioned */
+        .stocks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+        }
+
+        .stock-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .stock-item:hover {
+            border-color: var(--border-glow);
+        }
+
+        .stock-ticker {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 6px 10px;
+            background: var(--blue-bg);
+            border: 1px solid var(--blue-border);
+            border-radius: 6px;
+            color: #60a5fa;
+            flex-shrink: 0;
+        }
+
+        .stock-ticker.tw {
+            background: var(--green-bg);
+            border-color: var(--green-border);
+            color: #34d399;
+        }
+
+        .stock-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .stock-name {
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+
+        .stock-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Risk section */
+        .risk-list {
+            list-style: none;
+        }
+
+        .risk-item {
+            display: flex;
+            gap: 16px;
+            padding: 20px;
+            margin-bottom: 12px;
+            background: var(--red-bg);
+            border: 1px solid var(--red-border);
+            border-radius: 12px;
+        }
+
+        .risk-icon {
+            width: 24px;
+            height: 24px;
+            color: var(--red-primary);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .risk-content {
+            flex: 1;
+        }
+
+        .risk-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .risk-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Share section */
+        .share-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            margin-top: 48px;
+        }
+
+        .share-text {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .share-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .share-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .share-btn.telegram {
+            background: rgba(0, 136, 204, 0.1);
+            border-color: rgba(0, 136, 204, 0.3);
+            color: #0088cc;
+        }
+
+        .share-btn.telegram:hover {
+            background: rgba(0, 136, 204, 0.2);
+        }
+
+        .share-btn.copy {
+            background: var(--accent-bg);
+            border-color: var(--accent-border);
+            color: var(--accent-primary);
+        }
+
+        .share-btn.copy:hover {
+            background: rgba(245, 158, 11, 0.2);
+        }
+
+        .share-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Episode navigation */
+        .episode-nav {
+            display: flex;
+            gap: 16px;
+            padding: 24px 0;
+            border-top: 1px solid var(--border-subtle);
+            margin-top: 48px;
+        }
+
+        .episode-nav-link {
+            flex: 1;
+            padding: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+        }
+
+        .episode-nav-link:hover {
+            background: var(--bg-card-solid);
+            border-color: var(--border-glow);
+        }
+
+        .episode-nav-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .episode-nav-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .episode-nav-link.next {
+            text-align: right;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .footer-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+        }
+
+        .footer-text a {
+            color: var(--accent-primary);
+            text-decoration: none;
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-card-solid);
+            border: 1px solid var(--accent-border);
+            padding: 12px 24px;
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s var(--transition-smooth);
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.6s var(--transition-smooth) forwards;
+            opacity: 0;
+        }
+
+        .section {
+            animation: fadeInUp 0.6s var(--transition-smooth) forwards;
+            opacity: 0;
+        }
+
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.15s; }
+        .section:nth-child(3) { animation-delay: 0.2s; }
+        .section:nth-child(4) { animation-delay: 0.25s; }
+        .section:nth-child(5) { animation-delay: 0.3s; }
+        .section:nth-child(6) { animation-delay: 0.35s; }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .nav {
+                margin: 0 -16px;
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
+            .episode-header {
+                padding: 40px 0 32px;
+            }
+
+            .tldr-box {
+                padding: 20px;
+            }
+
+            .topic-item {
+                padding: 20px;
+            }
+
+            .quote-card {
+                padding: 24px 24px 24px 40px;
+            }
+
+            .stocks-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .share-section {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+
+            .episode-nav {
+                flex-direction: column;
+            }
+
+            .episode-nav-link.next {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Progress bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Ambient background -->
+    <div class="bg-ambient">
+        <div class="bg-orb bg-orb-1"></div>
+        <div class="bg-orb bg-orb-2"></div>
+    </div>
+    <div class="bg-grid"></div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">連結已複製！</div>
+
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav">
+            <a href="/gooaye/" class="nav-back">
+                <i data-lucide="arrow-left"></i>
+                股癌 Gooaye
+            </a>
+            <div class="nav-actions">
+                <a href="https://t.me/share/url?url=https://podsight.vercel.app/gooaye/638/" class="nav-btn" title="分享到 Telegram" target="_blank">
+                    <i data-lucide="send"></i>
+                </a>
+                <button class="nav-btn" onclick="copyLink()" title="複製連結">
+                    <i data-lucide="link"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Episode header -->
+        <header class="episode-header animate-in">
+            <div class="episode-meta-top">
+                <span class="episode-badge">EP638</span>
+                <span class="episode-date">2024 年 2 月</span>
+            </div>
+            <h1>股癌 Gooaye - EP638</h1>
+
+            <!-- TLDR -->
+            <div class="tldr-box">
+                <div class="tldr-label">
+                    <i data-lucide="zap"></i>
+                    一句話總結
+                </div>
+                <p class="tldr-text">
+                    MK 分享了近年最悠閒的農曆年假心得，並針對美股資安板塊震盪、川普關稅不確定性及中東地緣政治風險提出警示，同時觀察到亞股（日、台）異常強勁的走勢。
+                </p>
+            </div>
+
+            <!-- Stock tickers -->
+            <div class="tickers">
+                <span class="ticker tw">2330.TW</span>
+                <span class="ticker tw">2303.TW</span>
+                <span class="ticker tw">5347.TW</span>
+                <span class="ticker">NET</span>
+                <span class="ticker">CRWD</span>
+                <span class="ticker">PLTR</span>
+                <span class="ticker">ALAB</span>
+                <span class="ticker">LITE</span>
+                <span class="ticker">COHR</span>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="content">
+            <!-- 主要討論話題 -->
+            <section class="section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="message-circle"></i>
+                    </div>
+                    <h2 class="section-title">主要討論話題</h2>
+                </div>
+                <ul class="topics-list">
+                    <li class="topic-item">
+                        <div class="topic-title">年假心得與 AI 應用</div>
+                        <div class="topic-desc">MK 提到這是他畢業以來最放鬆的春節，透過降低部位減少壓力，並重溫《仙境傳說》(RO) 等老遊戲。他分享利用 AI 工具（如 Gemini）協助解決遊戲中的外掛撰寫或操作問題，感嘆我們正處於一個工具極度豐碩的優質時代。</div>
+                    </li>
+                    <li class="topic-item">
+                        <div class="topic-title">地緣政治與戰爭風險</div>
+                        <div class="topic-desc">近期北約及波蘭領導人提醒僑民撤離伊朗，顯示區域衝突機率上升。MK 提醒 2022 年烏俄戰爭的經驗告訴我們，市場對戰爭的反應並非絕對，可能延遲或過度反應，投資者不應輕視地緣政治帶來的衝擊。</div>
+                    </li>
+                    <li class="topic-item">
+                        <div class="topic-title">美國關稅政策不確定性</div>
+                        <div class="topic-desc">最高法院否決了部分關稅行政命令。MK 認為市場將此視為利多是短視的，他推測川普不會退縮，反而會援引更多法源（如 232、301、122 條款）進行碎片化課稅，這將增加市場長期不確定性。</div>
+                    </li>
+                    <li class="topic-item">
+                        <div class="topic-title">資安股與軟體業的估值修正</div>
+                        <div class="topic-desc">Anthropic 推出新資安工具導致資安股大跌。MK 認為這是市場過度解讀 AI 取代性，雖然 AI 可能改變軟體介面（UI）並走向 API 化，但整體市場規模（TAM）是在擴大的，目前的下跌更像是估值修正而非產業終結。</div>
+                    </li>
+                    <li class="topic-item">
+                        <div class="topic-title">亞股強勁表現</div>
+                        <div class="topic-desc">儘管美股近期表現不佳，但日股與台股異常強勢。MK 提到他持有的日股甚至出現數倍漲幅。他坦言目前的盤勢處於「看不懂」的狀態，但不會因此與市場對作。</div>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- MK 的操作心法 -->
+            <section class="section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="target"></i>
+                    </div>
+                    <h2 class="section-title">MK 的操作心法與作法</h2>
+                </div>
+                <div class="strategy-grid">
+                    <div class="strategy-item">
+                        <div class="strategy-icon">
+                            <i data-lucide="scale"></i>
+                        </div>
+                        <div class="strategy-content">
+                            <div class="strategy-title">部位管理與心理素質</div>
+                            <div class="strategy-desc">MK 在農曆年前刻意大幅降低部位與槓桿，主因是為了換取長假的心理舒適度（Chill）。他認為「覺察 (Awareness)」比預測更重要，知道風險可能發生，才不會在真的出事時恐慌性拋售，或在突破時盲目 FOMO。</div>
+                        </div>
+                    </div>
+                    <div class="strategy-item">
+                        <div class="strategy-icon">
+                            <i data-lucide="trending-up"></i>
+                        </div>
+                        <div class="strategy-content">
+                            <div class="strategy-title">進場與加碼策略</div>
+                            <div class="strategy-desc">儘管整體看空或警戒，但他在市場出現恐慌性殺盤（如年前台股踹季線）時會願意補回一點部位。他偏好在大家「看圖說故事」尬吹或尬空時，保持冷靜判斷基本面（Fundamental）。</div>
+                        </div>
+                    </div>
+                    <div class="strategy-item">
+                        <div class="strategy-icon">
+                            <i data-lucide="eye"></i>
+                        </div>
+                        <div class="strategy-content">
+                            <div class="strategy-title">看待看不懂的盤勢</div>
+                            <div class="strategy-desc">當盤勢（如目前的亞股強彈）超出邏輯理解時，MK 的作法是「不要壓太大」且「多打電動」。他建議不要因為看不懂就去放空或對著幹，而是縮小操作頻率，觀察後續發展。</div>
+                        </div>
+                    </div>
+                    <div class="strategy-item">
+                        <div class="strategy-icon">
+                            <i data-lucide="search"></i>
+                        </div>
+                        <div class="strategy-content">
+                            <div class="strategy-title">選股邏輯</div>
+                            <div class="strategy-desc">MK 偏好「業界頂尖」與「先進製程」相關標的。他對成熟製程（如聯電）持保留態度，認為中國產能開出會影響競爭力。如果非要參與成熟製程，他會選擇能吃到台積電溢出單的標的（如世界先進）。</div>
+                        </div>
+                    </div>
+                    <div class="strategy-item">
+                        <div class="strategy-icon">
+                            <i data-lucide="clock"></i>
+                        </div>
+                        <div class="strategy-content">
+                            <div class="strategy-title">長期持有與補倉</div>
+                            <div class="strategy-desc">對於長期看好的軟體股（如 Cloudflare），他不會因為短期的資安工具競爭而離場，反而會趁市場因恐慌導致估值修正時，尋找分批補貨的機會。</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 提到的股票 -->
+            <section class="section">
+                <div class="section-header">
+                    <div class="section-icon blue">
+                        <i data-lucide="bar-chart-2"></i>
+                    </div>
+                    <h2 class="section-title">提到的股票 / ETF / 標的</h2>
+                </div>
+                <div class="stocks-grid">
+                    <div class="stock-item">
+                        <span class="stock-ticker tw">2330</span>
+                        <div class="stock-info">
+                            <div class="stock-name">台積電</div>
+                            <div class="stock-desc">先進製程代表，MK 投資的主軸</div>
+                        </div>
+                    </div>
+                    <div class="stock-item">
+                        <span class="stock-ticker tw">2303</span>
+                        <div class="stock-info">
+                            <div class="stock-name">聯電</div>
+                            <div class="stock-desc">成熟製程代表，MK 對其展望持懷疑態度</div>
+                        </div>
+                    </div>
+                    <div class="stock-item">
+                        <span class="stock-ticker tw">5347</span>
+                        <div class="stock-info">
+                            <div class="stock-name">世界先進</div>
+                            <div class="stock-desc">若要投成熟製程，此檔優於聯電</div>
+                        </div>
+                    </div>
+                    <div class="stock-item">
+                        <span class="stock-ticker">NET</span>
+                        <div class="stock-info">
+                            <div class="stock-name">Cloudflare</div>
+                            <div class="stock-desc">資安軟體股，MK 長期持有標的</div>
+                        </div>
+                    </div>
+                    <div class="stock-item">
+                        <span class="stock-ticker">CRWD</span>
+                        <div class="stock-info">
+                            <div class="stock-name">CrowdStrike</div>
+                            <div class="stock-desc">資安龍頭，受 Anthropic 新聞影響波動</div>
+                        </div>
+                    </div>
+                    <div class="stock-item">
+                        <span class="stock-ticker">PLTR</span>
+                        <div class="stock-info">
+                            <div class="stock-name">Palantir</div>
+                            <div class="stock-desc">軟體/AI 標的，曾帶來倍數獲利</div>
+                        </div>
+                    </div>
+                    <div class="stock-item">
+                        <span class="stock-ticker">ALAB</span>
+                        <div class="stock-info">
+                            <div class="stock-name">Astera Labs</div>
+                            <div class="stock-desc">高速傳輸相關，近期表現讓 MK 感到困惑</div>
+                        </div>
+                    </div>
+                    <div class="stock-item">
+                        <span class="stock-ticker">LITE</span>
+                        <div class="stock-info">
+                            <div class="stock-name">Lumentum</div>
+                            <div class="stock-desc">光通訊板塊，近期表現優異</div>
+                        </div>
+                    </div>
+                    <div class="stock-item">
+                        <span class="stock-ticker">COHR</span>
+                        <div class="stock-info">
+                            <div class="stock-name">Coherent</div>
+                            <div class="stock-desc">光通訊板塊，近期表現優異</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 金句 -->
+            <section class="section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="quote"></i>
+                    </div>
+                    <h2 class="section-title">謝孟恭 (MK) 的觀點或金句</h2>
+                </div>
+                <div class="quotes-grid">
+                    <div class="quote-card">
+                        <p class="quote-text">人生其實就在打發時間，重點是要找到好玩、有趣、有意義的事情來殺時間。</p>
+                        <p class="quote-author">— 引用張家倫觀點</p>
+                    </div>
+                    <div class="quote-card">
+                        <p class="quote-text">市場最討厭的就是不確定性。</p>
+                        <p class="quote-author">— 針對關稅政策與戰爭的評論</p>
+                    </div>
+                    <div class="quote-card">
+                        <p class="quote-text">不要在每次的操作裡面迷失掉自己，慢慢來比較快。</p>
+                    </div>
+                    <div class="quote-card">
+                        <p class="quote-text">看不懂的盤，我會稍微緊張一點。即便賺錢，如果推論過程不合理，心中也不會踏實。</p>
+                    </div>
+                    <div class="quote-card">
+                        <p class="quote-text">投資跟感情一樣，千萬不要給別人建議，因為對了人家覺得自己厲害，錯了會怪你。</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 風險提醒 -->
+            <section class="section">
+                <div class="section-header">
+                    <div class="section-icon red">
+                        <i data-lucide="alert-triangle"></i>
+                    </div>
+                    <h2 class="section-title">風險提醒</h2>
+                </div>
+                <ul class="risk-list">
+                    <li class="risk-item">
+                        <i data-lucide="alert-circle" class="risk-icon"></i>
+                        <div class="risk-content">
+                            <div class="risk-title">地緣政治風險</div>
+                            <div class="risk-desc">特別是伊朗區域的衝突跡象，可能引發市場延遲反應。</div>
+                        </div>
+                    </li>
+                    <li class="risk-item">
+                        <i data-lucide="alert-circle" class="risk-icon"></i>
+                        <div class="risk-content">
+                            <div class="risk-title">政策風險</div>
+                            <div class="risk-desc">川普關稅的法律攻防戰將帶來碎片化的不確定性。</div>
+                        </div>
+                    </li>
+                    <li class="risk-item">
+                        <i data-lucide="alert-circle" class="risk-icon"></i>
+                        <div class="risk-content">
+                            <div class="risk-title">估值修正風險</div>
+                            <div class="risk-desc">軟體股與資安股正經歷 AI 衝擊下的估值重估，短期波動大。</div>
+                        </div>
+                    </li>
+                    <li class="risk-item">
+                        <i data-lucide="alert-circle" class="risk-icon"></i>
+                        <div class="risk-content">
+                            <div class="risk-title">槓桿風險</div>
+                            <div class="risk-desc">呼籲不瞭解槓桿、會跑來問槓桿的人，通常都不適合開槓桿。</div>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Share -->
+            <div class="share-section">
+                <span class="share-text">覺得這篇摘要有幫助？分享給朋友吧！</span>
+                <div class="share-buttons">
+                    <a href="https://t.me/share/url?url=https://podsight.vercel.app/gooaye/638/&text=股癌 EP638 摘要" class="share-btn telegram" target="_blank" title="分享到 Telegram">
+                        <i data-lucide="send"></i>
+                    </a>
+                    <button class="share-btn copy" onclick="copyLink()" title="複製連結">
+                        <i data-lucide="link"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Episode navigation -->
+            <div class="episode-nav">
+                <a href="/gooaye/637/" class="episode-nav-link prev">
+                    <div class="episode-nav-label">← 上一集</div>
+                    <div class="episode-nav-title">EP637</div>
+                </a>
+                <a href="/gooaye/639/" class="episode-nav-link next">
+                    <div class="episode-nav-label">下一集 →</div>
+                    <div class="episode-nav-title">EP639</div>
+                </a>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p class="footer-text">
+                本摘要由 AI 自動生成，僅供參考，不構成投資建議<br>
+                <a href="/">PodSight</a> · Powered by Claude AI
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Reading progress
+        const progressBar = document.getElementById('progressBar');
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (scrollTop / docHeight) * 100;
+            progressBar.style.width = progress + '%';
+        });
+
+        // Copy link with toast
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PodSight 聲見 - AI Podcast Summaries</title>
+    <meta name="description" content="台灣財經 Podcast AI 智慧摘要 - 聽見弦外之音，看見核心觀點">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="PodSight 聲見 - AI Podcast Summaries">
+    <meta property="og:description" content="台灣財經 Podcast AI 智慧摘要 - 聽見弦外之音，看見核心觀點">
+    <meta property="og:image" content="/assets/og-image.png">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="/assets/PodSight-Logo-cropped.jpeg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <style>
+        :root {
+            --bg-primary: #050508;
+            --bg-secondary: #0a0a0f;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --bg-card-hover: rgba(255, 255, 255, 0.06);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.4);
+
+            --gooaye-primary: #4DB8E8;
+            --gooaye-gradient: linear-gradient(135deg, #1A6FAF 0%, #4DB8E8 50%, #F5A623 100%);
+            --yutinghao-primary: #ffffff;
+            --yutinghao-gradient: linear-gradient(135deg, #1A1A1A 0%, #3a3a3a 50%, #ffffff 100%);
+            --zhaohua-primary: #F4A97F;
+            --zhaohua-gradient: linear-gradient(135deg, #F4A97F 0%, #F5C842 50%, #FFCDB2 100%);
+
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Noto Sans TC', 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-ambient {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 600px; height: 600px;
+            background: var(--gooaye-gradient);
+            top: -200px; right: -200px;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 500px; height: 500px;
+            background: var(--zhaohua-gradient);
+            bottom: -150px; left: -150px;
+            animation-delay: -7s;
+        }
+
+        .orb-3 {
+            width: 400px; height: 400px;
+            background: linear-gradient(135deg, #ffffff 0%, #808080 100%);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -14s;
+            opacity: 0.2;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.05); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .nav {
+            padding: 32px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-logo-icon {
+            width: 48px; height: 48px;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(77, 184, 232, 0.3);
+        }
+
+        .nav-logo-icon img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+        }
+
+        .nav-logo-text {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 100px 0 120px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-badge svg { width: 16px; height: 16px; }
+
+        .hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -0.04em;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 .gradient {
+            background: linear-gradient(135deg, var(--gooaye-primary), var(--zhaohua-primary), var(--yutinghao-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .podcasts-section {
+            padding: 40px 0 120px;
+        }
+
+        .section-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+        }
+
+        .podcast-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 24px;
+        }
+
+        .podcast-card {
+            position: relative;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 24px;
+            padding: 40px 32px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.4s var(--transition-smooth);
+            overflow: hidden;
+        }
+
+        .podcast-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .podcast-card.gooaye::before { background: linear-gradient(135deg, rgba(77,184,232,0.1), rgba(245,166,35,0.05)); }
+        .podcast-card.yutinghao::before { background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(128,128,128,0.03)); }
+        .podcast-card.zhaohua::before { background: linear-gradient(135deg, rgba(244,169,127,0.1), rgba(245,200,66,0.05)); }
+
+        .podcast-card:hover {
+            transform: translateY(-8px);
+            border-color: transparent;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+
+        .podcast-card:hover::before { opacity: 1; }
+
+        .podcast-card-content { position: relative; z-index: 1; }
+
+        .podcast-icon {
+            width: 64px; height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .podcast-card.gooaye .podcast-icon { background: var(--gooaye-gradient); }
+        .podcast-card.yutinghao .podcast-icon { background: var(--yutinghao-gradient); }
+        .podcast-card.zhaohua .podcast-icon { background: var(--zhaohua-gradient); }
+
+        .podcast-icon svg {
+            width: 32px; height: 32px;
+            color: var(--bg-primary);
+        }
+
+        .podcast-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .podcast-card .host {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .podcast-card .description {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+
+        .podcast-card .stats {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .stat svg { width: 16px; height: 16px; }
+
+        .podcast-card .arrow {
+            position: absolute;
+            bottom: 32px; right: 32px;
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            border: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            opacity: 0;
+            transform: translateX(-12px);
+            transition: all 0.3s var(--transition-smooth);
+        }
+
+        .podcast-card:hover .arrow {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .podcast-card.gooaye:hover .arrow { border-color: var(--gooaye-primary); color: var(--gooaye-primary); }
+        .podcast-card.yutinghao:hover .arrow { border-color: var(--yutinghao-primary); color: var(--yutinghao-primary); }
+        .podcast-card.zhaohua:hover .arrow { border-color: var(--zhaohua-primary); color: var(--zhaohua-primary); }
+
+        .arrow svg { width: 20px; height: 20px; }
+
+        .footer {
+            padding: 48px 0;
+            border-top: 1px solid var(--border-subtle);
+            text-align: center;
+        }
+
+        .footer-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.8s var(--transition-smooth) forwards;
+            opacity: 0;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 16px; }
+            .hero { padding: 60px 0 80px; }
+            .podcast-grid { grid-template-columns: 1fr; }
+            .orb { opacity: 0.25; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-ambient">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <div class="container">
+        <nav class="nav animate-in">
+            <div class="nav-logo">
+                <div class="nav-logo-icon">
+                    <img src="/assets/PodSight-Logo-cropped.jpeg" alt="PodSight">
+                </div>
+                <span class="nav-logo-text">PodSight 聲見</span>
+            </div>
+        </nav>
+
+        <section class="hero">
+            <div class="hero-badge animate-in delay-1">
+                <i data-lucide="sparkles"></i>
+                AI-Powered Summaries
+            </div>
+            <h1 class="animate-in delay-2">
+                聽不完？<br><span class="gradient">讓 AI 幫你抓重點</span>
+            </h1>
+            <p class="hero-subtitle animate-in delay-3">
+                台灣財經 Podcast 智慧摘要，快速掌握每集精華內容、投資觀點與市場分析。
+            </p>
+        </section>
+
+        <section class="podcasts-section">
+            <div class="section-label animate-in delay-3">收錄節目</div>
+
+            <div class="podcast-grid">
+                <a href="/gooaye/" class="podcast-card gooaye animate-in delay-3">
+                    <div class="podcast-card-content">
+                        <div class="podcast-icon">
+                            <i data-lucide="trending-up"></i>
+                        </div>
+                        <h3>股癌</h3>
+                        <p class="host">謝孟恭 Gooaye</p>
+                        <p class="description">用輕鬆詼諧的方式，分享投資心法與市場觀察。</p>
+                        <div class="stats">
+                            <span class="stat">
+                                <i data-lucide="file-text"></i>
+                                24 集摘要
+                            </span>
+                        </div>
+                    </div>
+                    <div class="arrow">
+                        <i data-lucide="arrow-right"></i>
+                    </div>
+                </a>
+
+                <a href="/yutinghao/" class="podcast-card yutinghao animate-in delay-3">
+                    <div class="podcast-card-content">
+                        <div class="podcast-icon">
+                            <i data-lucide="bar-chart-2"></i>
+                        </div>
+                        <h3>財經皓角</h3>
+                        <p class="host">游庭皓</p>
+                        <p class="description">深入淺出的財經分析，帶你看懂市場邏輯。</p>
+                        <div class="stats">
+                            <span class="stat">
+                                <i data-lucide="file-text"></i>
+                                32 集摘要
+                            </span>
+                        </div>
+                    </div>
+                    <div class="arrow">
+                        <i data-lucide="arrow-right"></i>
+                    </div>
+                </a>
+
+                <a href="/zhaohua/" class="podcast-card zhaohua animate-in delay-4">
+                    <div class="podcast-card-content">
+                        <div class="podcast-icon">
+                            <i data-lucide="mic"></i>
+                        </div>
+                        <h3>兆華與股惑仔</h3>
+                        <p class="host">兆華</p>
+                        <p class="description">專業與生活化角度，掌握台股脈動。</p>
+                        <div class="stats">
+                            <span class="stat">
+                                <i data-lucide="file-text"></i>
+                                32 集摘要
+                            </span>
+                        </div>
+                    </div>
+                    <div class="arrow">
+                        <i data-lucide="arrow-right"></i>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p class="footer-text">
+                摘要由 AI 自動生成，僅供參考 · PodSight
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

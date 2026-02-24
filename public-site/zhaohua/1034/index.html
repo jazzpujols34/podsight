@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EP1034 - 兆華 - PodSight</title>
+    <meta name="description" content="兆華與股惑仔 EP1034 AI 智慧摘要">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="EP1034 - 兆華 - PodSight 聲見">
+    <meta property="og:description" content="兆華與股惑仔 EP1034 AI 智慧摘要">
+    <meta property="og:image" content="/assets/og-image.png">
+    <meta property="og:type" content="article">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="/assets/PodSight-Logo-cropped.jpeg">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <style>
+        :root {
+            
+            --bg-primary: #1a1512;
+            --bg-secondary: #241d18;
+            --bg-card: rgba(244, 169, 127, 0.08);
+            --bg-card-hover: rgba(244, 169, 127, 0.12);
+            --border-subtle: rgba(244, 169, 127, 0.15);
+            --border-glow: rgba(245, 200, 66, 0.3);
+            --text-primary: #fff5f0;
+            --text-secondary: rgba(255, 245, 240, 0.75);
+            --text-muted: rgba(255, 245, 240, 0.5);
+            --accent-primary: #F4A97F;
+            --accent-secondary: #F5C842;
+            --accent-tertiary: #4A90D9;
+            --accent-glow: rgba(244, 169, 127, 0.4);
+            --accent-gradient: linear-gradient(135deg, #F4A97F 0%, #F5C842 50%, #FFCDB2 100%);
+            --accent-bg: rgba(244, 169, 127, 0.12);
+            --accent-border: rgba(244, 169, 127, 0.25);
+        
+            --glass-blur: 20px;
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.8;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--accent-gradient);
+            z-index: 1000;
+            transition: width 0.1s linear;
+        }
+
+        .bg-ambient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at top right, var(--accent-glow) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom left, rgba(255,255,255,0.02) 0%, transparent 50%);
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .nav {
+            padding: 24px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-back {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover {
+            color: var(--accent-primary);
+        }
+
+        .nav-back svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .nav-logo-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .nav-logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .nav-logo-text {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .episode-header {
+            padding: 40px 0 60px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .episode-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .episode-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            color: var(--accent-primary);
+        }
+
+        .episode-badge svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .episode-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .episode-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .episode-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .share-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .share-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .share-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .content {
+            padding: 60px 0;
+        }
+
+        .section {
+            margin-bottom: 56px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-primary);
+        }
+
+        .section-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .tldr-box {
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 48px;
+        }
+
+        .tldr-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--accent-primary);
+            margin-bottom: 12px;
+        }
+
+        .tldr-text {
+            font-size: 1.25rem;
+            font-weight: 500;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        .topic-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .topic-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.2s var(--transition-smooth);
+        }
+
+        .topic-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-card-hover);
+        }
+
+        .topic-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-secondary);
+            margin-bottom: 8px;
+        }
+
+        .topic-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .topic-content {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .strategy-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .strategy-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+
+        .strategy-card:hover {
+            border-color: var(--accent-border);
+        }
+
+        .strategy-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-bg);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-secondary);
+            flex-shrink: 0;
+        }
+
+        .strategy-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .strategy-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .stock-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .stock-tag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 18px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+
+        .stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .stock-symbol {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--accent-primary);
+        }
+
+        .stock-name {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .quote-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .quote-card {
+            position: relative;
+            padding: 24px 24px 24px 32px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-left: 3px solid var(--accent-primary);
+            border-radius: 0 12px 12px 0;
+        }
+
+        .quote-text {
+            font-size: 1.1rem;
+            font-style: italic;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .quote-icon {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            color: var(--accent-bg);
+        }
+
+        .quote-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .risk-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .risk-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 18px;
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 10px;
+        }
+
+        .risk-icon {
+            color: #ef4444;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .risk-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .risk-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .footer {
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .footer-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .footer-text a {
+            color: var(--accent-primary);
+            text-decoration: none;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.6s var(--transition-smooth) forwards;
+        }
+
+        .section {
+            opacity: 0;
+            animation: fadeInUp 0.6s var(--transition-smooth) forwards;
+        }
+
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.15s; }
+        .section:nth-child(3) { animation-delay: 0.2s; }
+        .section:nth-child(4) { animation-delay: 0.25s; }
+        .section:nth-child(5) { animation-delay: 0.3s; }
+        .section:nth-child(6) { animation-delay: 0.35s; }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .episode-header {
+                padding: 24px 0 40px;
+            }
+
+            .share-buttons {
+                flex-wrap: wrap;
+            }
+
+            .stock-grid {
+                gap: 8px;
+            }
+
+            .stock-tag {
+                padding: 10px 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="bg-ambient"></div>
+
+    <div class="container">
+        <nav class="nav animate-in">
+            <a href="/zhaohua/" class="nav-back">
+                <i data-lucide="arrow-left"></i>
+                返回列表
+            </a>
+            <a href="/" class="nav-logo">
+                <div class="nav-logo-icon">
+                    <img src="/assets/PodSight-Logo-cropped.jpeg" alt="PodSight">
+                </div>
+                <span class="nav-logo-text">PodSight 聲見</span>
+            </a>
+        </nav>
+
+        <header class="episode-header animate-in">
+            <div class="episode-meta">
+                <span class="episode-badge">
+                    <i data-lucide="mic"></i>
+                    EP1034
+                </span>
+                <span class="episode-date"></span>
+            </div>
+            <h1>兆華 EP1034</h1>
+            <p class="episode-subtitle">面對美股科技巨頭資本支出引發的市場恐慌與台股封關前的賣壓，投資人應透過產業長期趨勢（如 ABF 載板）與主動式 ETF 配置，在震盪中尋找布局良機。</p>
+
+            <div class="share-buttons">
+                <a href="#" class="share-btn" onclick="navigator.share({title: document.title, url: window.location.href}); return false;">
+                    <i data-lucide="share-2"></i>
+                    分享
+                </a>
+                <a href="https://t.me/share/url?url=${encodeURIComponent(window.location.href)}" class="share-btn" target="_blank">
+                    <i data-lucide="send"></i>
+                    Telegram
+                </a>
+            </div>
+        </header>
+
+        <main class="content">
+            
+            <div class="tldr-box animate-in">
+                <div class="tldr-label">一句話總結</div>
+                <div class="tldr-text">面對美股科技巨頭資本支出引發的市場恐慌與台股封關前的賣壓，投資人應透過產業長期趨勢（如 ABF 載板）與主動式 ETF 配置，在震盪中尋找布局良機。</div>
+            </div>
+            
+
+            
+            <section class="section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="message-square"></i>
+                    </div>
+                    <h2 class="section-title">主要討論話題</h2>
+                </div>
+                <div class="topic-list">
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 01</div>
+                        <div class="topic-title">美股科技股的「北風北」賭局與恐慌</div>
+                        <div class="topic-content">：儘管 Google 與 Amazon 財報亮眼，但市場對其龐大的資本支出（Capex）感到不安，擔憂投資回報率（ROI）無法回收，導致股價大幅跳水。這種「好上加好才及格」的市場情緒，讓納斯達克與費半指數出現月線下彎的空頭形態。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 02</div>
+                        <div class="topic-title">市場背景與影響</div>
+                        <div class="topic-content">OpenAI 與 NVIDIA 的投資額縮減傳聞，加上大廠紛紛自研晶片（如 Google TPU），讓原本過熱的 AI 投資熱潮進入審慎修正期。 2. 記憶體族群的報價分歧與短線壓力 詳細說明：記憶體現貨報價（如 DDR4）漲勢趨緩，甚至出現停滯，這對景氣循環股而言是警訊。雖然南亞科、群聯營收不俗，但市場需要「更大的利多」才能推升股價，導致群聯盤中一度殺至跌停。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 03</div>
+                        <div class="topic-title">市場背景與影響</div>
+                        <div class="topic-content">市場正從「三隻老虎」（欣興、景碩、南電）轉向觀察位階較低的標的（如臻鼎）。</div>
+                    </div>
+                </div>
+            </section>
+            
+
+            
+
+            
+            <section class="section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="bar-chart-2"></i>
+                    </div>
+                    <h2 class="section-title">提到的股票 / ETF</h2>
+                </div>
+                <div class="stock-grid">
+                    <div class="stock-tag">
+                        <span class="stock-symbol">欣興 (3037)</span>
+                        <span class="stock-name">1月營收歷史第三高</span>
+                    </div>
+                    <div class="stock-tag">
+                        <span class="stock-symbol">景碩 (3189)</span>
+                        <span class="stock-name">跌停主因是現增與大戶調節</span>
+                    </div>
+                    <div class="stock-tag">
+                        <span class="stock-symbol">群聯 (8299)</span>
+                        <span class="stock-name">營收雖好但報價漲勢趨緩</span>
+                    </div>
+                    <div class="stock-tag">
+                        <span class="stock-symbol">達興材料 (5234)</span>
+                        <span class="stock-name">凱哥以大量中值示範如何判斷進場點</span>
+                    </div>
+                    <div class="stock-tag">
+                        <span class="stock-symbol">旺宏 (2337)</span>
+                        <span class="stock-name">1月營收年增逾50%</span>
+                    </div>
+                    <div class="stock-tag">
+                        <span class="stock-symbol">奇鋐 (3017)</span>
+                        <span class="stock-name">受邀參加 NVIDIA 趙元宴</span>
+                    </div>
+                    <div class="stock-tag">
+                        <span class="stock-symbol">主動式 ETF</span>
+                        <span class="stock-name">兆華建議若無法做決策</span>
+                    </div>
+                </div>
+            </section>
+            
+
+            
+
+            
+        </main>
+
+        <footer class="footer">
+            <p class="footer-text">
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (scrollTop / docHeight) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        });
+    </script>
+</body>
+</html>

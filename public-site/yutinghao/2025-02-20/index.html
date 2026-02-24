@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025.02.20 - 財經皓角 | PodSight</title>
+    <meta name="description" content="財經皓角 2025.02.20 AI 智慧摘要">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+TC:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <style>
+        :root {
+            /* 財經皓角 - Minimal Black & White */
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #141414;
+            --bg-card: rgba(20, 20, 20, 0.9);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.4);
+
+            --accent-primary: #ffffff;
+            --accent-bg: rgba(255, 255, 255, 0.06);
+            --accent-border: rgba(255, 255, 255, 0.15);
+
+            --blue-primary: #4A90D9;
+            --blue-bg: rgba(74, 144, 217, 0.1);
+            --blue-border: rgba(74, 144, 217, 0.2);
+
+            --green-primary: #4ade80;
+            --green-bg: rgba(74, 222, 128, 0.1);
+            --green-border: rgba(74, 222, 128, 0.2);
+
+            --red-primary: #f87171;
+            --red-bg: rgba(248, 113, 113, 0.1);
+            --red-border: rgba(248, 113, 113, 0.2);
+
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Noto Sans TC', 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.8;
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background: var(--accent-primary);
+            z-index: 1000;
+        }
+
+        /* Minimal background */
+        .bg-ambient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: radial-gradient(ellipse at top, rgba(255,255,255,0.02) 0%, transparent 50%);
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation */
+        .nav {
+            position: sticky;
+            top: 0;
+            padding: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(20px);
+            z-index: 100;
+            margin: 0 -24px;
+            padding-left: 24px;
+            padding-right: 24px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .nav-back {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover { color: var(--text-primary); }
+        .nav-back svg { width: 18px; height: 18px; }
+
+        .nav-actions { display: flex; gap: 8px; }
+
+        .nav-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .nav-btn svg { width: 18px; height: 18px; }
+
+        /* Episode header */
+        .episode-header {
+            padding: 80px 0 60px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .episode-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 24px;
+        }
+
+        .episode-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 32px;
+            letter-spacing: -0.03em;
+        }
+
+        /* TLDR */
+        .tldr-box {
+            padding: 24px 0;
+            border-left: 2px solid var(--accent-primary);
+            padding-left: 24px;
+        }
+
+        .tldr-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 12px;
+        }
+
+        .tldr-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        /* Stock tickers */
+        .tickers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .ticker {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 6px 12px;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .ticker:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .ticker.tw {
+            border-color: var(--green-border);
+            color: var(--green-primary);
+        }
+
+        /* Content sections */
+        .content { padding: 60px 0 80px; }
+
+        .section { margin-bottom: 60px; }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        /* Topics */
+        .topics-list { list-style: none; }
+
+        .topic-item {
+            padding: 24px 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .topic-item:last-child { border-bottom: none; }
+
+        .topic-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+        }
+
+        .topic-desc {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.9;
+        }
+
+        /* Quotes */
+        .quotes-list { display: flex; flex-direction: column; gap: 24px; }
+
+        .quote-item {
+            padding-left: 24px;
+            border-left: 2px solid var(--border-subtle);
+        }
+
+        .quote-text {
+            font-family: 'Noto Serif TC', serif;
+            font-size: 1.05rem;
+            line-height: 1.9;
+            color: var(--text-primary);
+            font-style: italic;
+        }
+
+        /* Strategies */
+        .strategy-list { display: flex; flex-direction: column; gap: 16px; }
+
+        .strategy-item {
+            display: flex;
+            gap: 16px;
+            padding: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+        }
+
+        .strategy-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        .strategy-content { flex: 1; }
+
+        .strategy-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .strategy-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        /* Stocks grid */
+        .stocks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .stock-item {
+            padding: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+        }
+
+        .stock-ticker {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--blue-primary);
+            margin-bottom: 6px;
+        }
+
+        .stock-ticker.tw { color: var(--green-primary); }
+
+        .stock-name {
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+
+        .stock-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Risk section */
+        .risk-list { display: flex; flex-direction: column; gap: 12px; }
+
+        .risk-item {
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            background: var(--red-bg);
+            border: 1px solid var(--red-border);
+            border-radius: 8px;
+        }
+
+        .risk-icon {
+            color: var(--red-primary);
+            flex-shrink: 0;
+        }
+
+        .risk-icon svg { width: 20px; height: 20px; }
+
+        .risk-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+
+        .risk-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Share */
+        .share-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            margin-top: 60px;
+        }
+
+        .share-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .share-buttons { display: flex; gap: 8px; }
+
+        .share-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 1px solid var(--border-subtle);
+            background: transparent;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .share-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .share-btn svg { width: 18px; height: 18px; }
+
+        /* Footer */
+        .footer {
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .footer-text {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .footer-text a {
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .container { padding: 0 16px; }
+            .nav { margin: 0 -16px; padding-left: 16px; padding-right: 16px; }
+            .episode-header { padding: 60px 0 40px; }
+            .stocks-grid { grid-template-columns: 1fr; }
+            .share-section { flex-direction: column; gap: 16px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="bg-ambient"></div>
+    <div class="toast" id="toast">連結已複製</div>
+
+    <div class="container">
+        <nav class="nav">
+            <a href="/yutinghao/" class="nav-back">
+                <i data-lucide="arrow-left"></i>
+                財經皓角
+            </a>
+            <div class="nav-actions">
+                <button class="nav-btn" onclick="copyLink()" title="複製連結">
+                    <i data-lucide="link"></i>
+                </button>
+            </div>
+        </nav>
+
+        <header class="episode-header">
+            <div class="episode-date">2025 年 2 月 20 日</div>
+            <h1>台股開紅盤首日觀察：AI 族群與外資動向</h1>
+
+            <div class="tldr-box">
+                <div class="tldr-label">一句話總結</div>
+                <p class="tldr-text">
+                    農曆年後首個交易日，台股在 AI 族群帶動下開高走高，外資回補動作明顯，但需留意美股財報週與聯準會動向帶來的變數。
+                </p>
+            </div>
+
+            <div class="tickers">
+                <span class="ticker tw">2330</span>
+                <span class="ticker tw">2454</span>
+                <span class="ticker tw">3037</span>
+                <span class="ticker">NVDA</span>
+                <span class="ticker">AMD</span>
+                <span class="ticker">MSFT</span>
+            </div>
+        </header>
+
+        <main class="content">
+            <section class="section">
+                <h2 class="section-title">主要討論話題</h2>
+                <ul class="topics-list">
+                    <li class="topic-item">
+                        <div class="topic-title">台股開紅盤表現</div>
+                        <div class="topic-desc">農曆年後首日開盤，加權指數跳空開高，成交量放大至三千億以上，顯示市場買氣回籠。AI 相關族群成為領漲主力，台積電、聯發科雙雙創高。</div>
+                    </li>
+                    <li class="topic-item">
+                        <div class="topic-title">外資動向分析</div>
+                        <div class="topic-desc">外資在年假期間累積的買盤於開盤後一次性進場，淨買超金額創近期新高。期貨市場多單部位持續增加，顯示外資對後市仍偏多看待。</div>
+                    </li>
+                    <li class="topic-item">
+                        <div class="topic-title">美股財報週影響</div>
+                        <div class="topic-desc">本週為美股超級財報週，NVIDIA、Microsoft 等重量級科技股將公布財報。市場預期 AI 相關營收將成為觀察重點，財報結果將牽動全球科技股走勢。</div>
+                    </li>
+                    <li class="topic-item">
+                        <div class="topic-title">聯準會政策展望</div>
+                        <div class="topic-desc">聯準會最新會議紀要顯示，降息時程可能延後。市場已將首次降息預期從三月延至五月，利率維持高檔將持續影響資金成本與股市評價。</div>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">游庭皓觀點</h2>
+                <div class="quotes-list">
+                    <div class="quote-item">
+                        <p class="quote-text">「開紅盤的氣勢很重要，但更重要的是後續能否維持量能。沒有量的上漲，終究只是假突破。」</p>
+                    </div>
+                    <div class="quote-item">
+                        <p class="quote-text">「外資回來了，但散戶也回來了。當大家都樂觀的時候，反而要多一份警覺。」</p>
+                    </div>
+                    <div class="quote-item">
+                        <p class="quote-text">「財報是照妖鏡，所有的期待與幻想都會在數字面前攤牌。」</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">操作策略建議</h2>
+                <div class="strategy-list">
+                    <div class="strategy-item">
+                        <span class="strategy-num">01</span>
+                        <div class="strategy-content">
+                            <div class="strategy-title">短線操作者</div>
+                            <div class="strategy-desc">可趁開紅盤氣勢參與強勢股，但需嚴設停損，財報公布前宜減碼觀望。</div>
+                        </div>
+                    </div>
+                    <div class="strategy-item">
+                        <span class="strategy-num">02</span>
+                        <div class="strategy-content">
+                            <div class="strategy-title">中長線投資者</div>
+                            <div class="strategy-desc">核心持股續抱，趁回檔分批布局 AI、半導體等長線看好的產業龍頭。</div>
+                        </div>
+                    </div>
+                    <div class="strategy-item">
+                        <span class="strategy-num">03</span>
+                        <div class="strategy-content">
+                            <div class="strategy-title">觀望者</div>
+                            <div class="strategy-desc">等待財報週過後，市場方向更明確時再進場，避免追高套牢。</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">提到的股票</h2>
+                <div class="stocks-grid">
+                    <div class="stock-item">
+                        <div class="stock-ticker tw">2330</div>
+                        <div class="stock-name">台積電</div>
+                        <div class="stock-desc">先進製程龍頭，AI 晶片主要代工廠</div>
+                    </div>
+                    <div class="stock-item">
+                        <div class="stock-ticker tw">2454</div>
+                        <div class="stock-name">聯發科</div>
+                        <div class="stock-desc">IC 設計龍頭，手機晶片市佔提升</div>
+                    </div>
+                    <div class="stock-item">
+                        <div class="stock-ticker tw">3037</div>
+                        <div class="stock-name">欣興</div>
+                        <div class="stock-desc">ABF 載板龍頭，AI 伺服器受惠股</div>
+                    </div>
+                    <div class="stock-item">
+                        <div class="stock-ticker">NVDA</div>
+                        <div class="stock-name">NVIDIA</div>
+                        <div class="stock-desc">AI 晶片霸主，本週公布財報</div>
+                    </div>
+                    <div class="stock-item">
+                        <div class="stock-ticker">AMD</div>
+                        <div class="stock-name">AMD</div>
+                        <div class="stock-desc">AI 晶片第二大廠，競爭態勢升溫</div>
+                    </div>
+                    <div class="stock-item">
+                        <div class="stock-ticker">MSFT</div>
+                        <div class="stock-name">Microsoft</div>
+                        <div class="stock-desc">AI 應用龍頭，Copilot 營收受關注</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">風險提醒</h2>
+                <div class="risk-list">
+                    <div class="risk-item">
+                        <div class="risk-icon"><i data-lucide="alert-circle"></i></div>
+                        <div>
+                            <div class="risk-title">財報不如預期風險</div>
+                            <div class="risk-desc">科技股估值已高，若財報未能超越市場期待，可能引發獲利了結賣壓。</div>
+                        </div>
+                    </div>
+                    <div class="risk-item">
+                        <div class="risk-icon"><i data-lucide="alert-circle"></i></div>
+                        <div>
+                            <div class="risk-title">利率維持高檔</div>
+                            <div class="risk-desc">聯準會延後降息將壓抑股市評價，高成長股首當其衝。</div>
+                        </div>
+                    </div>
+                    <div class="risk-item">
+                        <div class="risk-icon"><i data-lucide="alert-circle"></i></div>
+                        <div>
+                            <div class="risk-title">追高風險</div>
+                            <div class="risk-desc">開紅盤後追價買進者，需留意短線漲多回檔的可能性。</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="share-section">
+                <span class="share-text">分享這篇摘要</span>
+                <div class="share-buttons">
+                    <button class="share-btn" onclick="copyLink()" title="複製連結">
+                        <i data-lucide="link"></i>
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p class="footer-text">
+                AI 自動生成摘要，僅供參考 · <a href="/">PodSight</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const progressBar = document.getElementById('progressBar');
+        window.addEventListener('scroll', () => {
+            const progress = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            progressBar.style.width = progress + '%';
+        });
+
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2000);
+            });
+        }
+    </script>
+</body>
+</html>

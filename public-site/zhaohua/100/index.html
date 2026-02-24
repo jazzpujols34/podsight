@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EP100 - 兆華與股惑仔 - PodSight</title>
+    <meta name="description" content="兆華與股惑仔 EP100 AI 智慧摘要">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <style>
+        :root {
+            /* 兆華與股惑仔 - Warm Peach & Golden */
+            --bg-primary: #1a1512;
+            --bg-secondary: #241d18;
+            --bg-card: rgba(244, 169, 127, 0.08);
+            --bg-card-hover: rgba(244, 169, 127, 0.12);
+            --border-subtle: rgba(244, 169, 127, 0.15);
+            --border-glow: rgba(245, 200, 66, 0.3);
+            --text-primary: #fff5f0;
+            --text-secondary: rgba(255, 245, 240, 0.75);
+            --text-muted: rgba(255, 245, 240, 0.5);
+
+            --accent-primary: #F4A97F;
+            --accent-secondary: #F5C842;
+            --accent-tertiary: #4A90D9;
+            --accent-glow: rgba(244, 169, 127, 0.4);
+            --accent-gradient: linear-gradient(135deg, #F4A97F 0%, #F5C842 50%, #FFCDB2 100%);
+            --accent-bg: rgba(244, 169, 127, 0.12);
+            --accent-border: rgba(244, 169, 127, 0.25);
+
+            --glass-blur: 20px;
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.8;
+        }
+
+        /* Reading progress bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--accent-gradient);
+            z-index: 1000;
+            transition: width 0.1s linear;
+        }
+
+        /* Warm ambient background */
+        .bg-ambient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at top right, rgba(244, 169, 127, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom left, rgba(245, 200, 66, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 30% 70%, rgba(74, 144, 217, 0.03) 0%, transparent 40%);
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation */
+        .nav {
+            padding: 24px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-back {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover {
+            color: var(--accent-primary);
+        }
+
+        .nav-back svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .nav-logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-gradient);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-logo-icon svg {
+            width: 18px;
+            height: 18px;
+            color: var(--bg-primary);
+        }
+
+        .nav-logo-text {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        /* Episode header */
+        .episode-header {
+            padding: 40px 0 60px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .episode-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .episode-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            color: var(--accent-primary);
+        }
+
+        .episode-badge svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .episode-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .episode-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .episode-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Share buttons */
+        .share-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .share-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .share-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .share-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Content sections */
+        .content {
+            padding: 60px 0;
+        }
+
+        .section {
+            margin-bottom: 56px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-primary);
+        }
+
+        .section-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* TLDR box */
+        .tldr-box {
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 48px;
+        }
+
+        .tldr-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--accent-primary);
+            margin-bottom: 12px;
+        }
+
+        .tldr-text {
+            font-size: 1.25rem;
+            font-weight: 500;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        /* Topic cards */
+        .topic-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .topic-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.2s var(--transition-smooth);
+        }
+
+        .topic-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-card-hover);
+        }
+
+        .topic-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-secondary);
+            margin-bottom: 8px;
+        }
+
+        .topic-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .topic-content {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        /* Strategy cards */
+        .strategy-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .strategy-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+
+        .strategy-card:hover {
+            border-color: var(--accent-border);
+        }
+
+        .strategy-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-bg);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-secondary);
+            flex-shrink: 0;
+        }
+
+        .strategy-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .strategy-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* Stock tags */
+        .stock-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .stock-tag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 18px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+
+        .stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .stock-symbol {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--accent-primary);
+        }
+
+        .stock-name {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Quotes */
+        .quote-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .quote-card {
+            position: relative;
+            padding: 24px 24px 24px 32px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-left: 3px solid var(--accent-primary);
+            border-radius: 0 12px 12px 0;
+        }
+
+        .quote-text {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-style: italic;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .quote-icon {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            color: var(--accent-bg);
+        }
+
+        .quote-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Risk warnings */
+        .risk-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .risk-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 18px;
+            background: rgba(74, 144, 217, 0.08);
+            border: 1px solid rgba(74, 144, 217, 0.2);
+            border-radius: 10px;
+        }
+
+        .risk-icon {
+            color: var(--accent-tertiary);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .risk-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .risk-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .footer-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .footer-text a {
+            color: var(--accent-primary);
+            text-decoration: none;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.6s var(--transition-smooth) forwards;
+        }
+
+        .section {
+            opacity: 0;
+            animation: fadeInUp 0.6s var(--transition-smooth) forwards;
+        }
+
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.15s; }
+        .section:nth-child(3) { animation-delay: 0.2s; }
+        .section:nth-child(4) { animation-delay: 0.25s; }
+        .section:nth-child(5) { animation-delay: 0.3s; }
+        .section:nth-child(6) { animation-delay: 0.35s; }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .episode-header {
+                padding: 24px 0 40px;
+            }
+
+            .share-buttons {
+                flex-wrap: wrap;
+            }
+
+            .stock-grid {
+                gap: 8px;
+            }
+
+            .stock-tag {
+                padding: 10px 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="bg-ambient"></div>
+
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav animate-in">
+            <a href="/zhaohua/" class="nav-back">
+                <i data-lucide="arrow-left"></i>
+                返回列表
+            </a>
+            <a href="/" class="nav-logo">
+                <div class="nav-logo-icon">
+                    <i data-lucide="radio"></i>
+                </div>
+                <span class="nav-logo-text">PodSight</span>
+            </a>
+        </nav>
+
+        <!-- Episode Header -->
+        <header class="episode-header animate-in">
+            <div class="episode-meta">
+                <span class="episode-badge">
+                    <i data-lucide="mic"></i>
+                    EP100
+                </span>
+                <span class="episode-date">2025-02-18</span>
+            </div>
+            <h1>台股春節後展望與產業趨勢</h1>
+            <p class="episode-subtitle">
+                兆華與股惑仔團隊深度分析農曆年後台股走勢，聚焦 AI 伺服器、半導體、電動車三大產業鏈，探討資金流向與投資策略。
+            </p>
+
+            <div class="share-buttons">
+                <a href="#" class="share-btn" onclick="navigator.share({title: document.title, url: window.location.href}); return false;">
+                    <i data-lucide="share-2"></i>
+                    分享
+                </a>
+                <a href="https://t.me/share/url?url=${encodeURIComponent(window.location.href)}" class="share-btn" target="_blank">
+                    <i data-lucide="send"></i>
+                    Telegram
+                </a>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="content">
+            <!-- TLDR -->
+            <div class="tldr-box animate-in">
+                <div class="tldr-label">一句話總結</div>
+                <div class="tldr-text">
+                    台股年後開紅盤機率高，AI 伺服器供應鏈與半導體設備股將成為領漲主力，但須留意美國關稅政策與外資動向變化。
+                </div>
+            </div>
+
+            <!-- Topics -->
+            <section class="section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="message-square"></i>
+                    </div>
+                    <h2 class="section-title">主要討論話題</h2>
+                </div>
+
+                <div class="topic-list">
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 01</div>
+                        <div class="topic-title">台股春節後開盤展望</div>
+                        <div class="topic-content">
+                            回顧歷史數據，台股春節後開紅盤機率超過七成，尤其在外資回補與內資作帳行情下，電子股往往領先反彈。今年需觀察美股春節期間表現，以及台積電 ADR 走勢作為風向指標。
+                        </div>
+                    </div>
+
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 02</div>
+                        <div class="topic-title">AI 伺服器產業鏈追蹤</div>
+                        <div class="topic-content">
+                            GB200 伺服器出貨持續增溫，帶動散熱、電源、連接器等零組件需求。雙鴻、廣達、緯創等廠商訂單能見度已看到第二季，營收年增率有望維持雙位數成長。
+                        </div>
+                    </div>
+
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 03</div>
+                        <div class="topic-title">半導體設備股機會</div>
+                        <div class="topic-content">
+                            台積電資本支出創新高，設備廠弘塑、家登、辛耘等將直接受惠。CoWoS 先進封裝產能持續擴充，相關設備需求強勁，預估全年營收成長 20-30%。
+                        </div>
+                    </div>
+
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 04</div>
+                        <div class="topic-title">電動車與車用電子</div>
+                        <div class="topic-content">
+                            雖然電動車銷量成長放緩，但車用電子滲透率持續提升。ADAS、車用面板、車用 MCU 等需求不減，台廠聯發科、瑞昱、敦泰等車用營收佔比逐季攀升。
+                        </div>
+                    </div>
+
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 05</div>
+                        <div class="topic-title">外資動向與資金配置</div>
+                        <div class="topic-content">
+                            外資年初以來持續賣超台股，但主要集中在金融與傳產股，對電子權值股反而逢低承接。觀察外資期貨多單部位已開始回升，顯示短線偏多看待台股後市。
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Strategies -->
+            <section class="section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h2 class="section-title">兆華的操作建議</h2>
+                </div>
+
+                <div class="strategy-list">
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="strategy-text">
+                            聚焦 AI 伺服器供應鏈，特別是散熱與電源相關個股，逢回檔可分批布局。
+                        </div>
+                    </div>
+
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="layers"></i>
+                        </div>
+                        <div class="strategy-text">
+                            半導體設備股以中小型股為主，建議搭配大盤走勢做波段操作，避免追高。
+                        </div>
+                    </div>
+
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="shield"></i>
+                        </div>
+                        <div class="strategy-text">
+                            車用電子可選擇龍頭股長期持有，享受產業趨勢紅利，短線波動不必過度在意。
+                        </div>
+                    </div>
+
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="eye"></i>
+                        </div>
+                        <div class="strategy-text">
+                            密切觀察美國關稅政策進展，若有意外利空，可能是逢低布局的好時機。
+                        </div>
+                    </div>
+
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="percent"></i>
+                        </div>
+                        <div class="strategy-text">
+                            維持投資組合 6-7 成水位，保留現金應對市場波動，不要滿持股進場。
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stocks -->
+            <section class="section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="bar-chart-2"></i>
+                    </div>
+                    <h2 class="section-title">提到的股票 / ETF</h2>
+                </div>
+
+                <div class="stock-grid">
+                    <div class="stock-tag">
+                        <span class="stock-symbol">2330</span>
+                        <span class="stock-name">台積電</span>
+                    </div>
+                    <div class="stock-tag">
+                        <span class="stock-symbol">2382</span>
+                        <span class="stock-name">廣達</span>
+                    </div>
+                    <div class="stock-tag">
+                        <span class="stock-symbol">3231</span>
+                        <span class="stock-name">緯創</span>
+                    </div>
+                    <div class="stock-tag">
+                        <span class="stock-symbol">3324</span>
+                        <span class="stock-name">雙鴻</span>
+                    </div>
+                    <div class="stock-tag">
+                        <span class="stock-symbol">3205</span>
+                        <span class="stock-name">佳能</span>
+                    </div>
+                    <div class="stock-tag">
+                        <span class="stock-symbol">3680</span>
+                        <span class="stock-name">家登</span>
+                    </div>
+                    <div class="stock-tag">
+                        <span class="stock-symbol">3583</span>
+                        <span class="stock-name">辛耘</span>
+                    </div>
+                    <div class="stock-tag">
+                        <span class="stock-symbol">2454</span>
+                        <span class="stock-name">聯發科</span>
+                    </div>
+                    <div class="stock-tag">
+                        <span class="stock-symbol">2379</span>
+                        <span class="stock-name">瑞昱</span>
+                    </div>
+                    <div class="stock-tag">
+                        <span class="stock-symbol">00881</span>
+                        <span class="stock-name">國泰台灣 5G+</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quotes -->
+            <section class="section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="quote"></i>
+                    </div>
+                    <h2 class="section-title">金句摘錄</h2>
+                </div>
+
+                <div class="quote-list">
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">「AI 伺服器不是題材，是實實在在的訂單與營收，這波行情才剛開始。」</p>
+                    </div>
+
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">「春節後開盤，看的是籌碼面，不是基本面，外資動向決定短線方向。」</p>
+                    </div>
+
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">「投資最怕的不是看錯，是看對了卻沒有部位，這比虧錢還難受。」</p>
+                    </div>
+
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">「車用電子是慢牛，不會像 AI 這樣噴，但勝在穩定，適合長期配置。」</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Risks -->
+            <section class="section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="alert-triangle"></i>
+                    </div>
+                    <h2 class="section-title">風險提醒</h2>
+                </div>
+
+                <div class="risk-list">
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">美國對台半導體關稅政策仍有不確定性，需持續關注白宮動態。</span>
+                    </div>
+
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">AI 伺服器股價已反映部分預期，追高風險較大，宜耐心等待回檔。</span>
+                    </div>
+
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">外資若持續賣超，可能壓抑大盤反彈力道，控制持股水位為上策。</span>
+                    </div>
+
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">本節目為財經分析，非投資建議，投資有風險，請審慎評估個人狀況。</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p class="footer-text">
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Reading progress
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (scrollTop / docHeight) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        });
+    </script>
+</body>
+</html>

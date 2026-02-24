@@ -1,0 +1,46 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": true,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    },
+    {
+      "source": "/(.*).(js|css|ico|png|jpg|jpeg|gif|svg|woff|woff2)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/gooaye/:episode",
+      "destination": "/gooaye/:episode/index.html"
+    },
+    {
+      "source": "/yutinghao/:episode",
+      "destination": "/yutinghao/:episode/index.html"
+    },
+    {
+      "source": "/zhaohua/:episode",
+      "destination": "/zhaohua/:episode/index.html"
+    }
+  ]
+}

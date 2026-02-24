@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游庭皓的財經皓角 - PodSight</title>
+    <meta name="description" content="游庭皓的財經皓角 AI 智慧摘要">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="游庭皓的財經皓角 - PodSight 聲見">
+    <meta property="og:description" content="游庭皓的財經皓角 AI 智慧摘要">
+    <meta property="og:image" content="/assets/og-image.png">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="/assets/PodSight-Logo-cropped.jpeg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <style>
+        :root {
+            
+            --bg-primary: #0f0f0f;
+            --bg-secondary: #1a1a1a;
+            --bg-card: rgba(26, 26, 26, 0.8);
+            --bg-card-hover: rgba(40, 40, 40, 0.9);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.4);
+            --accent-primary: #ffffff;
+            --accent-secondary: #e0e0e0;
+            --accent-tertiary: #a0a0a0;
+            --accent-glow: rgba(255, 255, 255, 0.2);
+            --accent-gradient: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+            --accent-bg: rgba(255, 255, 255, 0.08);
+            --accent-border: rgba(255, 255, 255, 0.2);
+        
+            --glass-blur: 20px;
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Noto Sans TC', 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .bg-ambient {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at top right, var(--accent-glow) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom left, rgba(255,255,255,0.02) 0%, transparent 50%);
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .nav {
+            padding: 24px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-back {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover { color: var(--text-primary); }
+        .nav-back svg { width: 18px; height: 18px; }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .nav-logo-icon {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .nav-logo-icon img { width: 100%; height: 100%; object-fit: cover; }
+        .nav-logo-text { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 600; }
+
+        .podcast-header {
+            text-align: center;
+            padding: 60px 0 80px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .podcast-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid var(--accent-border);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .podcast-badge svg { width: 16px; height: 16px; }
+
+        .podcast-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .podcast-header .host {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .podcast-header .description {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .controls { padding: 32px 0; }
+
+        .search-box {
+            position: relative;
+            max-width: 400px;
+        }
+
+        .search-box svg {
+            position: absolute;
+            left: 16px; top: 50%;
+            transform: translateY(-50%);
+            width: 18px; height: 18px;
+            color: var(--text-muted);
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .search-box input::placeholder { color: var(--text-muted); }
+        .search-box input:focus { outline: none; border-color: var(--accent-primary); }
+
+        .episode-count {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .episode-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            background: var(--border-subtle);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 80px;
+        }
+
+        .episode-card {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding: 24px;
+            background: var(--bg-secondary);
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s var(--transition-smooth);
+        }
+
+        .episode-card:hover { background: var(--bg-card-hover); }
+
+        .episode-date-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: var(--accent-bg);
+            padding: 10px 14px;
+            border-radius: 6px;
+            min-width: 80px;
+            text-align: center;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .episode-content { flex: 1; min-width: 0; }
+
+        .episode-title {
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+
+        .episode-preview {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .episode-arrow {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            opacity: 0;
+            transform: translateX(-8px);
+            transition: all 0.2s var(--transition-smooth);
+        }
+
+        .episode-card:hover .episode-arrow {
+            opacity: 1;
+            transform: translateX(0);
+            color: var(--text-primary);
+            border-color: var(--accent-primary);
+        }
+
+        .episode-arrow svg { width: 16px; height: 16px; }
+
+        .footer {
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .footer-text { font-size: 0.85rem; color: var(--text-muted); }
+        .footer-text a { color: var(--text-secondary); text-decoration: none; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .animate-in { animation: fadeIn 0.6s var(--transition-smooth) forwards; }
+
+        .episode-card {
+            animation: fadeIn 0.4s var(--transition-smooth) forwards;
+            opacity: 0;
+        }
+
+        .episode-card:nth-child(1) { animation-delay: 0.05s; }
+        .episode-card:nth-child(2) { animation-delay: 0.1s; }
+        .episode-card:nth-child(3) { animation-delay: 0.15s; }
+        .episode-card:nth-child(4) { animation-delay: 0.2s; }
+        .episode-card:nth-child(5) { animation-delay: 0.25s; }
+        .episode-card:nth-child(n+6) { animation-delay: 0.3s; }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 16px; }
+            .podcast-header { padding: 40px 0 60px; }
+            .episode-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+                position: relative;
+            }
+            .episode-arrow {
+                opacity: 1;
+                transform: translateX(0);
+                position: absolute;
+                right: 24px; top: 50%;
+                transform: translateY(-50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-ambient"></div>
+
+    <div class="container">
+        <nav class="nav animate-in">
+            <a href="/" class="nav-back">
+                <i data-lucide="arrow-left"></i>
+                返回首頁
+            </a>
+            <a href="/" class="nav-logo">
+                <div class="nav-logo-icon">
+                    <img src="/assets/PodSight-Logo-cropped.jpeg" alt="PodSight">
+                </div>
+                <span class="nav-logo-text">PodSight 聲見</span>
+            </a>
+        </nav>
+
+        <header class="podcast-header animate-in">
+            <div class="podcast-badge">
+                <i data-lucide="bar-chart-2"></i>
+                每日財經
+            </div>
+            <h1>財經皓角</h1>
+            <p class="host">主持人：游庭皓</p>
+            <p class="description">深入淺出的財經分析，結合時事與數據，帶你看懂市場背後的邏輯。</p>
+        </header>
+
+        <div class="controls">
+            <div class="search-box">
+                <i data-lucide="search"></i>
+                <input type="text" placeholder="搜尋集數..." id="searchInput">
+            </div>
+        </div>
+
+        <div class="episode-count">
+            共 <strong>32</strong> 集摘要
+        </div>
+
+        <div class="episode-list" id="episodeList">
+            <a href="/yutinghao/2026-02-09/" class="episode-card">
+                <span class="episode-date-badge">02.09</span>
+                <div class="episode-content">
+                    <div class="episode-title">川普喊話拉股市 高市交易完全執政 日股再起飛 早晨財經速解讀 </div>
+                    <div class="episode-preview">日本高市政權迎來史詩級權力擴張，將透過「大減稅」與「強國防」驅動日股結構性轉型，但也正面臨財政赤字與高通膨的嚴峻考驗。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-02-06/" class="episode-card">
+                <span class="episode-date-badge">02.06</span>
+                <div class="episode-content">
+                    <div class="episode-title">6 5 萬美元失守 比特幣大崩盤 美股要跌到 什麼時候 早晨財經速解讀 </div>
+                    <div class="episode-preview">全球市場正經歷一場「去槓桿」的流動性收縮風暴，AI 的高額投資從市場春藥變成了評價負擔，比特幣與軟體股則淪為這一波殺盤的領頭羊。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-02-05/" class="episode-card">
+                <span class="episode-date-badge">02.05</span>
+                <div class="episode-content">
+                    <div class="episode-title">硬體股也擋不住 AMD下殺17 美股重挫 買點到了嗎 早晨財經速解讀 </div>
+                    <div class="episode-preview">科技股因 AI 估值回撥陷入「跳樓大拍賣」，資金正大規模轉向傳產價值股，製造業上行循環已正式點火。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-02-04/" class="episode-card">
+                <span class="episode-date-badge">02.04</span>
+                <div class="episode-content">
+                    <div class="episode-title">現在買股票 會是壞時機 軟體股逃殺 還沒結束 早晨財經速解讀 </div>
+                    <div class="episode-preview">AI 浪潮進入「硬體吃肉、軟體喝風」的殘酷洗牌期，投資者應在資本大戰中建立「財務自信」以應對變革。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-02-03/" class="episode-card">
+                <span class="episode-date-badge">02.03</span>
+                <div class="episode-content">
+                    <div class="episode-title">記憶體通膨 何時能降溫 金屬冷卻 通膨危急解除了 早晨財經速解讀 </div>
+                    <div class="episode-preview">市場正經歷從「資金推升」轉向「生產力審判」的去槓桿過程，投資者應避開高估值泡沫，回歸具有護城河的基本面標的。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-02-02/" class="episode-card">
+                <span class="episode-date-badge">02.02</span>
+                <div class="episode-content">
+                    <div class="episode-title">金屬風暴 股市跟著跌 Fed新主席沃許 會是鷹皮帥鴿 早晨財經速解讀 </div>
+                    <div class="episode-preview">貴金屬與加密貨幣的閃崩並非基本面轉向，而是高槓桿擁擠交易在「鷹皮帥哥」沃許（Kevin Warsh）獲提名後的集體踩踏與獲利了結。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-02-23/" class="episode-card">
+                <span class="episode-date-badge">02.23</span>
+                <div class="episode-content">
+                    <div class="episode-title">台積電ADR續漲 馬年開紅盤 關稅推翻 美股繼續漲 早晨財經速解讀 </div>
+                    <div class="episode-preview">川普關稅戰因違憲轉向「法律游擊戰」，美股表面平靜實則暗潮洶湧，軟體股與加密貨幣正獨自承受AI浪潮下的結構性修正。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-02-11/" class="episode-card">
+                <span class="episode-date-badge">02.11</span>
+                <div class="episode-content">
+                    <div class="episode-title">黃金漲幅榜首 一路贏到年底 台股封關 該抱股過年 早晨財經速解讀 </div>
+                    <div class="episode-preview">在 AI 驅動的 2026 投資大航海時代，投資者應無視短期封關波動，透過長線資產配置擁抱「資本回報勝過勞動所得」的趨勢。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-02-10/" class="episode-card">
+                <span class="episode-date-badge">02.10</span>
+                <div class="episode-content">
+                    <div class="episode-title">道瓊再創史高 修正結束了 谷歌大發債 科技股迎十字路口 早晨財經速解讀 </div>
+                    <div class="episode-preview">AI 浪潮進入「估值大洗牌」與「融資大競賽」階段，市場正透過價格回落消化過度樂觀的預期，但台美科技產業鏈的擴張動能依然強勁。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-09/" class="episode-card">
+                <span class="episode-date-badge">01.09</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股市值 衝全球第七 AI熱退燒 記憶體撐盤 七巨頭為何 漲不動了 早晨財經</div>
+                    <div class="episode-preview">美股資金正從科技七巨頭轉向「S&amp;P 493」與中小企業，投資者應關注估值回撥中的輪動機會，並及早建立「認錯要快」的投資心理素質。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-08/" class="episode-card">
+                <span class="episode-date-badge">01.08</span>
+                <div class="episode-content">
+                    <div class="episode-title">關稅審判 川普能挺過 再扣押油輪 唐羅主義撐2026 早晨財經速解讀 </div>
+                    <div class="episode-preview">川普正透過「唐羅主義」在全球掠奪資源以補貼軍費與打擊通膨，投資者應警覺看似分散的資產配置背後，實則隱藏著「全押 AI」的系統性風險。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-07/" class="episode-card">
+                <span class="episode-date-badge">01.07</span>
+                <div class="episode-content">
+                    <div class="episode-title">融資創史高 買股該慌嗎 輝達攻自駕AI 無人車大戰 誰能勝出 早晨財經速解讀</div>
+                    <div class="episode-preview">AI 正式從螢幕走入物理世界（自駕車與機器人），帶動全球股市創高，而台股則在內資推動下無視外資調節，展現強勁韌性。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-06/" class="episode-card">
+                <span class="episode-date-badge">01.06</span>
+                <div class="episode-content">
+                    <div class="episode-title">台積電狂飆 年底衝2000 台股上三萬 外資卻跑了 早晨財經速解讀 </div>
+                    <div class="episode-preview">台積電憑藉 AI 浪潮獨霸全球市值第六，引發內外資對作奇觀，更讓主動型基金陷入「打不過就加入」的 ETF 無限迴圈。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-05/" class="episode-card">
+                <span class="episode-date-badge">01.05</span>
+                <div class="episode-content">
+                    <div class="episode-title">2026金銀銅帶頭衝 原物料爆發 活捉馬杜洛 油價還要跌 早晨財經速解讀 </div>
+                    <div class="episode-preview">川普閃電逮捕馬杜羅不僅是一場教科書級的軍事斬首秀，更是透過「唐羅主義」重塑全球能源供應、壓制通膨預期並清空俄中在美洲勢力的結構性佈局。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-30/" class="episode-card">
+                <span class="episode-date-badge">01.30</span>
+                <div class="episode-content">
+                    <div class="episode-title">微軟暴跌近10 美股該修正了嗎 2026誰能 跑贏標普 早晨財經速解讀 </div>
+                    <div class="episode-preview">當前全球投資已演變為一場對賭 AI 的單一宏觀交易，而在美股七巨頭橫盤之際，資金正大舉流向亞洲與南美洲的新興市場硬體與原物料標的。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-02/" class="episode-card">
+                <span class="episode-date-badge">01.02</span>
+                <div class="episode-content">
+                    <div class="episode-title">2026AI 如何變現 過去一年 七巨頭只有 三支贏大盤 早晨財經速解讀 </div>
+                    <div class="episode-preview">2026 年是 AI 從「投資神話」轉向「實戰賬本」的關鍵年，投資績效將取決於匯率因子、個股選擇，以及你腦袋裡那些「市場帶不走的認知積蓄」。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-29/" class="episode-card">
+                <span class="episode-date-badge">01.29</span>
+                <div class="episode-content">
+                    <div class="episode-title">鮑爾抗川普 美元先破底 七巨頭財報開跑 資本支出還有戲 早晨財經速解讀 </div>
+                    <div class="episode-preview">聯準會維持利率不變並捍衛獨立性，市場資金正從軟體AI轉向硬體基建，馬斯克帝國則試圖透過自駕與太空夢重塑估值。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-28/" class="episode-card">
+                <span class="episode-date-badge">01.28</span>
+                <div class="episode-content">
+                    <div class="episode-title">歐印貿易協議簽訂 強權聯手 能擋住川普 景氣燈轉紅 榮景又來了 早晨財經速</div>
+                    <div class="episode-preview">全球正加速建構「非美貿易圈」以應對川普衝擊，而 AI 引發的資源爭奪已演變成全民買單的「全面漲價潮」。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-27/" class="episode-card">
+                <span class="episode-date-badge">01.27</span>
+                <div class="episode-content">
+                    <div class="episode-title">韓國會延宕 美韓關稅戰再起 全球漲價潮 通膨難降溫 早晨財經速解讀 </div>
+                    <div class="episode-preview">川普對韓祭出關稅重拳引發連鎖反應，全球正陷入從原物料到終端電子產品的「全面漲價迴圈」，聯準會抗通膨壓力劇增。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-26/" class="episode-card">
+                <span class="episode-date-badge">01.26</span>
+                <div class="episode-content">
+                    <div class="episode-title">美元將破底 Fed主席黑馬是誰 日債暴跌 美債也遭殃 早晨財經速解讀 </div>
+                    <div class="episode-preview">在全球資產因日債崩跌與美債不確定性而劇烈輪動時，投資者應警惕「結果不等於品質」的陷阱，優先確保跟上大盤而非盲目承擔過度風險。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-23/" class="episode-card">
+                <span class="episode-date-badge">01.23</span>
+                <div class="episode-content">
+                    <div class="episode-title">Robotaxi上路 自駕AI大爆發 2026還能 買七巨頭嗎 早晨財經速</div>
+                    <div class="episode-preview">全球經濟敘事從「軟著陸」正式轉向「不著陸」，AI 實體化與主權 AI 浪潮正引領一場史詩級的生產力爆發。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-22/" class="episode-card">
+                <span class="episode-date-badge">01.22</span>
+                <div class="episode-content">
+                    <div class="episode-title">外交博弈vs 國內經濟 川普TACO 美股止跌了 早晨財經速解讀 </div>
+                    <div class="episode-preview">川普在美歐關稅、Fed 人選與能源政策上多線出擊，試圖以核能開發與外交妥協，挽救因通膨壓力而下滑的民調。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-21/" class="episode-card">
+                <span class="episode-date-badge">01.21</span>
+                <div class="episode-content">
+                    <div class="episode-title">川普執政週年 TACO交易還在 美股重挫 回檔是買點 早晨財經速解讀 </div>
+                    <div class="episode-preview">市場正經歷川普「塔可交易」引發的估值回撥，投資者需分清跌勢源於地緣政治噪音還是AI基本面轉弱，並在金銀齊漲的避險情緒中尋找左側交易機會。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-20/" class="episode-card">
+                <span class="episode-date-badge">01.20</span>
+                <div class="episode-content">
+                    <div class="episode-title">財報季開跑 七巨頭何時回神 法人賣壓止不住 台股到底誰在買 早晨財經速解讀</div>
+                    <div class="episode-preview">當美股七巨頭因高基期陷入盤整，AI 投資的下一個戰場將從「算力」轉向「電力」，而台灣企業則因人口紅利消失被迫開啟「大航海時代」全球布局。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-19/" class="episode-card">
+                <span class="episode-date-badge">01.19</span>
+                <div class="episode-content">
+                    <div class="episode-title">黃金創高 TACO交易是買點 美歐關稅戰 又開打了 早晨財經速解讀 </div>
+                    <div class="episode-preview">川普以格陵蘭為籌碼引爆美歐關稅戰，市場雖波瀾不驚，但貴金屬與軍工股已領先反應這場「川式談判」的混亂紅利。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-16/" class="episode-card">
+                <span class="episode-date-badge">01.16</span>
+                <div class="episode-content">
+                    <div class="episode-title">2500億投資 台美關稅15 終於拍板了 法說報喜 台積電衝高 現在還能追</div>
+                    <div class="episode-preview">台積電法說會數據與台美關稅談判雙雙報喜，台灣正以「半導體社會」之姿，在全球AI浪潮與地緣政治夾縫中奪取超額紅利。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-15/" class="episode-card">
+                <span class="episode-date-badge">01.15</span>
+                <div class="episode-content">
+                    <div class="episode-title">金屬狂飆 市場怕什麼 關稅判決再延 關稅戰未完 早晨財經速解讀 </div>
+                    <div class="episode-preview">全球金屬資產在降息預期、地緣政治動盪及聯準會獨立性受挑戰的三重壓力下陷入「暴走模式」，而台灣與韓國正透過不同的政治與經濟策略，在川普時代的貿易戰中尋求生存。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-14/" class="episode-card">
+                <span class="episode-date-badge">01.14</span>
+                <div class="episode-content">
+                    <div class="episode-title">展示走向工廠 2026 AI機器人 戰場開打了 早晨財經速解讀 </div>
+                    <div class="episode-preview">AI 浪潮正從「會說話的大腦」轉向「會動手的實體機器人」，亞洲硬體供應鏈憑藉實質獲利正全面碾壓尚在燒錢的美國軟體股。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-13/" class="episode-card">
+                <span class="episode-date-badge">01.13</span>
+                <div class="episode-content">
+                    <div class="episode-title">Fed收傳票 黃金剎不住 國安基金退場 台美談判有譜 記憶體漲價潮 通膨難</div>
+                    <div class="episode-preview">川普對聯準會與企業的多方施壓雖造成市場雜訊，但科技生產力週期與景氣本質才是驅動台美股市長線創高的真正核心。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-12/" class="episode-card">
+                <span class="episode-date-badge">01.12</span>
+                <div class="episode-content">
+                    <div class="episode-title">台積電年底 能衝2000 美國就業 失去了方向感 川普2026選戰開打 早</div>
+                    <div class="episode-preview">儘管全球地緣政治動盪，市場卻因「被嚇大」而異常冷靜，川普正轉向激進的內政補貼與限價政策，試圖在經濟數據亮眼但民調下滑的矛盾中挽回選民。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2025-12-31/" class="episode-card">
+                <span class="episode-date-badge">12.31</span>
+                <div class="episode-content">
+                    <div class="episode-title">台商遷徙潮 2026台股 三萬穩了嗎 台灣關稅 還在等川普 早晨財經速解</div>
+                    <div class="episode-preview">在全球 AI 浪潮與台商大規模遷徙美洲的背景下，台灣正迎來從基本面到社會結構的重大轉捩點。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2025-12-30/" class="episode-card">
+                <span class="episode-date-badge">12.30</span>
+                <div class="episode-content">
+                    <div class="episode-title">金銀急殺 股市沒在怕 2026美股 跑得贏黃金 早晨財經速解讀 </div>
+                    <div class="episode-preview">2025 年是「亂射飛鏢都能賺」的資產大豐收年，但川普正面臨支持率與體感經濟崩塌的雙重挑戰，2026 年的市場將在 AI 獲利與聯準會流動性之間尋找新平衡。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+        </div>
+
+        <footer class="footer">
+            <p class="footer-text">
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const searchInput = document.getElementById('searchInput');
+        const episodeCards = document.querySelectorAll('.episode-card');
+
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            episodeCards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(query) ? 'flex' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>
