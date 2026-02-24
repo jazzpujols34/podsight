@@ -16,10 +16,10 @@ import feedparser
 import ssl
 from datetime import datetime
 
-# Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Add project root to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from config import get_podcast_config
+from src.config import get_podcast_config
 
 # Fix SSL certificate verification issues
 ssl._create_default_https_context = ssl._create_unverified_context

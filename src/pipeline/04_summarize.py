@@ -23,10 +23,10 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
-# Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Add project root to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from config import get_podcast_config
+from src.config import get_podcast_config
 
 # Get podcast config (from env or default)
 podcast = get_podcast_config()

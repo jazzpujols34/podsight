@@ -14,10 +14,10 @@ from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
 
-# Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Add project root to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from config import get_podcast_config, DOWNLOAD_WORKERS, DOWNLOAD_RETRY
+from src.config import get_podcast_config, DOWNLOAD_WORKERS, DOWNLOAD_RETRY
 
 # Get podcast config (from env or default)
 podcast = get_podcast_config()

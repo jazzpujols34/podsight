@@ -23,7 +23,7 @@ Requirements:
 # Load .env file first (for API keys)
 from pathlib import Path
 from dotenv import load_dotenv
-load_dotenv(Path(__file__).parent / ".env")
+load_dotenv(Path(__file__).parent.parent / ".env")
 
 import argparse
 import json
@@ -43,11 +43,12 @@ from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from config import DATA_DIR, get_podcast_config, list_podcasts, DEFAULT_PODCAST
+from src.config import DATA_DIR, get_podcast_config, list_podcasts, DEFAULT_PODCAST
 
-# UI directory
-UI_DIR = Path(__file__).parent / "ui"
-SCRIPT_DIR = Path(__file__).parent / "scripts"
+# Project root directory (parent of src/)
+PROJECT_DIR = Path(__file__).parent.parent
+UI_DIR = PROJECT_DIR / "ui"
+SCRIPT_DIR = Path(__file__).parent / "pipeline"
 
 # Global state for pipeline execution
 pipeline_state = {
@@ -522,8 +523,8 @@ async def delete_custom_prompt():
 
 # --- Social Push Endpoints ---
 
-from social.draft import DraftManager, SocialDraft
-from social.publishers import TwitterPublisher, ThreadsPublisher, LinePublisher, InstagramPublisher, TelegramPublisher
+from src.social.draft import DraftManager, SocialDraft
+from src.social.publishers import TwitterPublisher, ThreadsPublisher, LinePublisher, InstagramPublisher, TelegramPublisher
 
 
 @app.get("/social/drafts")
@@ -714,10 +715,10 @@ async def regenerate_social_draft(episode_id: str):
     # Run the generate script for this episode
     ep_num = episode_id.replace("EP", "")
     result = subprocess.run(
-        [sys.executable, "scripts/05_generate_social.py", "--ep", ep_num, "--regenerate"],
+        [sys.executable, str(SCRIPT_DIR / "05_generate_social.py"), "--ep", ep_num, "--regenerate"],
         capture_output=True,
         text=True,
-        cwd=str(Path(__file__).parent),
+        cwd=str(PROJECT_DIR),
         env={**os.environ, "PODCAST": _current_podcast.slug}
     )
 

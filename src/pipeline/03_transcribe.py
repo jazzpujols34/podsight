@@ -23,8 +23,8 @@ from pathlib import Path
 from datetime import timedelta
 from tqdm import tqdm
 
-# Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Add project root to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 # Rate limiting for Groq API (free tier: ~20 audio-minutes per hour)
 # Reduced from 180s to 60s - exponential backoff handles actual rate limits
@@ -32,7 +32,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 GROQ_DELAY_SECONDS = int(os.environ.get("GROQ_DELAY_SECONDS", "60"))
 GROQ_MAX_RETRIES = 5  # More retries for rate limits
 
-from config import (
+from src.config import (
     get_podcast_config,
     WHISPER_MODEL, WHISPER_LANGUAGE, WHISPER_DEVICE,
     TIMESTAMP_FORMAT, WHISPER_PROVIDER

@@ -19,14 +19,14 @@ import re
 import sys
 from pathlib import Path
 
-# Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Add project root to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from config import get_podcast_config, get_episode_number_from_filename
-from social.formatters import TwitterFormatter, ThreadsFormatter, LineFormatter, InstagramFormatter, TelegramFormatter
-from social.formatters.base import SummaryContent
-from social.draft import DraftManager, SocialDraft
-from social.image_generator import InstagramCardGenerator
+from src.config import get_podcast_config, get_episode_number_from_filename
+from src.social.formatters import TwitterFormatter, ThreadsFormatter, LineFormatter, InstagramFormatter, TelegramFormatter
+from src.social.formatters.base import SummaryContent
+from src.social.draft import DraftManager, SocialDraft
+from src.social.image_generator import InstagramCardGenerator
 
 
 # Get podcast config (from env or default)

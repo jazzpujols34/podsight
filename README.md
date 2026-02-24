@@ -19,33 +19,29 @@ Multi-podcast transcription and AI summarization pipeline with a beautiful web d
 
 ```
 gooaye_pipeline/
-├── config.py                   # Configuration & podcast settings
+├── main.py                     # Entry point (server & pipeline)
 ├── podcasts.yaml               # Podcast definitions
-├── run_pipeline.py             # Run all pipeline steps
-├── server.py                   # FastAPI server + API
 ├── requirements.txt            # Python dependencies
-├── scripts/
-│   ├── 01_parse_rss.py         # Step 1: Parse RSS feed → episode list
-│   ├── 02_download_audio.py    # Step 2: Download MP3 files
-│   ├── 03_transcribe.py        # Step 3: Whisper transcription
-│   ├── 04_summarize.py         # Step 4: AI-powered summarization
-│   ├── auto_check_new_episodes.py  # Auto-detect & process new episodes
-│   ├── search.py               # Search tool for transcripts
-│   └── cron_setup.md           # Cron/launchd scheduling guide
-├── ui/
-│   ├── index.html              # Web dashboard
-│   ├── assets/                 # Logo and images
-│   ├── css/                    # Stylesheets (future)
-│   └── js/                     # JavaScript (future)
-├── data/
-│   └── {podcast_slug}/         # Per-podcast data
+├── src/
+│   ├── config.py               # Configuration & podcast settings
+│   ├── server.py               # FastAPI server + API
+│   ├── pipeline/               # Pipeline scripts
+│   │   ├── 01_parse_rss.py     # Parse RSS feed → episode list
+│   │   ├── 02_download_audio.py # Download MP3 files
+│   │   ├── 03_transcribe.py    # Whisper transcription
+│   │   ├── 04_summarize.py     # AI summarization
+│   │   └── ...
+│   └── social/                 # Social media publishing
+│       ├── formatters/         # Platform formatters
+│       └── publishers/         # Platform publishers
+├── ui/                         # Web dashboard
+├── data/                       # Per-podcast data
+│   └── {podcast_slug}/
 │       ├── episodes.json       # Episode metadata
-│       ├── audio/              # Downloaded MP3 files
 │       ├── transcripts/        # Output transcripts
 │       └── summaries/          # AI-generated summaries
-└── gcp/
-    ├── Dockerfile              # For cloud deployment
-    └── DEPLOYMENT.md           # GCP setup guide
+├── public-site/                # Static public site
+└── docs/                       # Documentation
 ```
 
 ## 🎙️ Supported Podcasts
@@ -91,26 +87,26 @@ pip install -r requirements.txt
 
 ```bash
 # Run for default podcast (gooaye)
-python run_pipeline.py
+python main.py pipeline
 
 # Run for specific podcast
-python run_pipeline.py --podcast yutinghao
-python run_pipeline.py --podcast zhaohua
+python main.py pipeline -p yutinghao
+python main.py pipeline -p zhaohua
 
 # Run single step
-python run_pipeline.py --step 1  # Parse RSS only
-python run_pipeline.py --step 4 --podcast yutinghao  # Summarize only
+python main.py pipeline --step 1  # Parse RSS only
+python main.py pipeline --step 4 -p yutinghao  # Summarize only
 
 # List available podcasts
-python run_pipeline.py --list
+python main.py pipeline --list
 ```
 
 ### Run Individual Scripts
 
 ```bash
 # Set podcast via environment variable
-PODCAST=yutinghao python scripts/01_parse_rss.py
-PODCAST=yutinghao python scripts/04_summarize.py --ep 1-10
+PODCAST=yutinghao python src/pipeline/01_parse_rss.py
+PODCAST=yutinghao python src/pipeline/04_summarize.py --ep 1-10
 ```
 
 ## 🖥️ Web Dashboard
@@ -119,10 +115,13 @@ Launch the web UI to browse and manage podcasts:
 
 ```bash
 # Start server (opens browser)
-python server.py
+python main.py
+
+# Or explicitly
+python main.py serve
 
 # Custom port
-python server.py --port 8080
+python main.py serve --port 8080
 ```
 
 The dashboard provides:
@@ -167,9 +166,9 @@ export OPENAI_API_KEY=your_key_here
 Choose provider:
 
 ```bash
-python scripts/04_summarize.py --provider gemini
-python scripts/04_summarize.py --provider anthropic --model claude-sonnet-4-20250514
-python scripts/04_summarize.py --provider openai --model gpt-4o
+python src/pipeline/04_summarize.py --provider gemini
+python src/pipeline/04_summarize.py --provider anthropic --model claude-sonnet-4-20250514
+python src/pipeline/04_summarize.py --provider openai --model gpt-4o
 ```
 
 ### Adding New Podcasts
@@ -204,9 +203,10 @@ pip install faster-whisper
 ```
 
 ### CUDA out of memory
-Use smaller model in `config.py`:
-```python
-WHISPER_MODEL = "medium"  # or "small"
+Use smaller model in `podcasts.yaml`:
+```yaml
+whisper:
+  model: "medium"  # or "small"
 ```
 
 ### Transcription quality

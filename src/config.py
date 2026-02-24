@@ -9,8 +9,8 @@ from typing import Optional
 
 import yaml
 
-# Base directories
-BASE_DIR = Path(__file__).parent
+# Base directories (project root is parent of src/)
+BASE_DIR = Path(__file__).parent.parent
 DATA_DIR = BASE_DIR / "data"
 
 # Load podcasts config
