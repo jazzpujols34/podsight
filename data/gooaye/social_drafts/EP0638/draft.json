@@ -1,0 +1,56 @@
+{
+  "episode_id": "EP0638",
+  "podcast": "gooaye",
+  "created_at": "2026-02-23T16:46:34.881502",
+  "summary_hash": "23b488a6364e",
+  "status": "partial",
+  "platforms": {
+    "twitter": {
+      "status": "pending",
+      "content_file": "twitter.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    },
+    "threads": {
+      "status": "pending",
+      "content_file": "threads.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    },
+    "line": {
+      "status": "pending",
+      "content_file": "line.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    },
+    "instagram": {
+      "status": "pending",
+      "content_file": "instagram.json",
+      "image_file": "instagram_card.png",
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    },
+    "telegram": {
+      "status": "published",
+      "content_file": "telegram.json",
+      "image_file": null,
+      "published_at": "2026-02-23T16:46:49.351127",
+      "post_ids": [
+        "7"
+      ],
+      "error": null,
+      "url": "https://t.me/podsight/7"
+    }
+  }
+}
