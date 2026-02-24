@@ -931,6 +931,7 @@ STEP_SCRIPTS = {
     3: "03_transcribe.py",
     4: "04_summarize.py",
     5: "05_generate_social.py",
+    6: "generate_public_site.py",
 }
 
 STEP_NAMES = {
@@ -939,6 +940,7 @@ STEP_NAMES = {
     3: "語音轉錄",
     4: "AI 摘要",
     5: "社群草稿",
+    6: "更新公開網站",
     "check": "檢查新集數",
     "all": "完整 Pipeline",
 }
@@ -987,7 +989,7 @@ def run_script_async(step: str | int, podcast_slug: str, providers: dict = None)
         elif step == "all":
             # Run all steps sequentially (including social draft generation)
             add_output("開始執行: 完整 Pipeline", "info")
-            for s in [1, 2, 3, 4, 5]:
+            for s in [1, 2, 3, 4, 5, 6]:
                 if not pipeline_state["running"]:
                     break
                 script = SCRIPT_DIR / STEP_SCRIPTS[s]
