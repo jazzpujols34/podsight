@@ -1001,7 +1001,7 @@ def run_script_async(step: str | int, podcast_slug: str, providers: dict = None)
                     stderr=subprocess.STDOUT,
                     text=True,
                     bufsize=1,
-                    cwd=str(SCRIPT_DIR),
+                    cwd=str(PROJECT_DIR),
                     env=env,
                     start_new_session=True  # Enable process group for clean kill
                 )
@@ -1036,7 +1036,7 @@ def run_script_async(step: str | int, podcast_slug: str, providers: dict = None)
             stderr=subprocess.STDOUT,
             text=True,
             bufsize=1,
-            cwd=str(SCRIPT_DIR),
+            cwd=str(PROJECT_DIR),
             env=env,
             start_new_session=True  # Enable process group for clean kill
         )
