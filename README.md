@@ -4,6 +4,8 @@
 
 Multi-podcast transcription and AI summarization pipeline with a beautiful web dashboard.
 
+**Live Site:** https://gooaye-agent.vercel.app/
+
 ![PodSight Logo](ui/assets/PodSight-Logo.jpeg)
 
 ## 🎯 Features
@@ -46,11 +48,11 @@ gooaye_pipeline/
 
 ## 🎙️ Supported Podcasts
 
-| Slug | Name | Host | Format |
-|------|------|------|--------|
-| `gooaye` | 股癌 Gooaye | 謝孟恭 (MK) | EP0001 - EP0624+ |
-| `yutinghao` | 游庭皓的財經皓角 | 游庭皓 | Date-based |
-| `zhaohua` | 兆華與股惑仔 | 兆華 | EP1010+ |
+| Slug | Name | Host | Episodes |
+|------|------|------|----------|
+| `gooaye` | 股癌 Gooaye | 謝孟恭 (MK) | EP615 - EP638 (24 eps) |
+| `yutinghao` | 游庭皓的財經皓角 | 游庭皓 | Date-based (34 eps) |
+| `zhaohua` | 兆華與股惑仔 | 兆華 | 32 eps |
 
 Add new podcasts by editing `podcasts.yaml`.
 
