@@ -1,0 +1,56 @@
+name: Auto Pipeline
+
+on:
+  schedule:
+    # 10:00 AM Taiwan (UTC+8) = 02:00 UTC - catches YTH morning upload
+    - cron: '0 2 * * *'
+    # 7:00 PM Taiwan (UTC+8) = 11:00 UTC - catches ZH afternoon + Gooaye (Wed/Sat)
+    - cron: '0 11 * * *'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run auto pipeline
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python src/pipeline/auto_pipeline.py
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "feat: auto-update $(date +'%Y-%m-%d %H:%M') UTC
+
+          - New episodes processed
+          - Summaries generated
+          - Public site updated
+
+          [skip ci]"
+            git push
+          fi
