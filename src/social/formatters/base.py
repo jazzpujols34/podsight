@@ -22,12 +22,12 @@ class SummaryContent:
 
     def get_frontend_url(self) -> str:
         """Generate frontend URL for this episode."""
-        base = "https://gooaye-agent.vercel.app"
+        base = "https://podsight.vercel.app"
         ep_id = self.episode_id
 
         if ep_id.startswith("EP"):
-            # Numbered episode: EP0638 -> /gooaye/638/
-            num = ep_id.replace("EP", "").lstrip("0") or "0"
+            # Numbered episode: EP0638 -> /gooaye/0638/
+            num = ep_id.replace("EP", "")  # Keep leading zeros
             return f"{base}/{self.podcast_slug}/{num}/"
         else:
             # Date-based: 2026_2_24... -> /yutinghao/2026-02-24/
