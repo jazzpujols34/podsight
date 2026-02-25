@@ -9,12 +9,13 @@ __pycache__/
 *$py.class
 *.so
 
-# Data files (large audio, transcripts, summaries)
-# Each podcast has its own subdirectory under data/
+# Data files - only gitignore large audio files
 data/*/audio/
-data/*/transcripts/
-data/*/summaries/
 data/*/notifications/
+
+# Keep transcripts and summaries (text files, needed for GitHub Actions)
+# !data/*/transcripts/
+# !data/*/summaries/
 
 # Keep episodes.json (metadata only) for each podcast
 !data/*/episodes.json
