@@ -302,6 +302,56 @@
         .episode-card:nth-child(5) { animation-delay: 0.25s; }
         .episode-card:nth-child(n+6) { animation-delay: 0.3s; }
 
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin: 32px 0;
+            flex-wrap: wrap;
+        }
+
+        .pagination button {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: var(--bg-card-hover);
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .pagination button.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: var(--bg-primary);
+            font-weight: 600;
+        }
+
+        .pagination button svg { width: 16px; height: 16px; }
+
+        .page-info {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            padding: 0 12px;
+        }
+
         @media (max-width: 768px) {
             .container { padding: 0 16px; }
             .podcast-header { padding: 40px 0 60px; }
@@ -343,8 +393,8 @@
                 <i data-lucide="mic"></i>
                 台股分析
             </div>
-            <h1>兆華</h1>
-            <p class="host">主持人：兆華</p>
+            <h1>兆華與股惑仔</h1>
+            <p class="host">主持人：李兆華</p>
             <p class="description">結合專業與生活化的角度，帶你掌握台股脈動與投資機會。</p>
         </header>
 
@@ -356,14 +406,34 @@
         </div>
 
         <div class="episode-count">
-            共 <strong>32</strong> 集摘要
+            共 <strong>34</strong> 集摘要
         </div>
 
         <div class="episode-list" id="episodeList">
+            <a href="/zhaohua/1043/" class="episode-card">
+                <span class="episode-date-badge">EP1043</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1043｜台股逼近35000點！為何台韓與美股脫鉤？關稅架構下，GDP預估還要往上？載板、矽光子無極限，能追？還有誰沒漲到？ft.國泰證期 蔡明翰</div>
+                    <div class="episode-preview">台股在全球資金流向新興市場與 AI 產業高速成長的驅動下，與美股呈現脫鉤強勢，投資人應鎖定「AI 純度高」的 PCB 與載板族群，並留意三月下旬後的季節性降溫。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/zhaohua/1042/" class="episode-card">
+                <span class="episode-date-badge">EP1042</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1042｜馬年開紅盤，川普關稅違法怎看，台股該喜還憂？載板、矽光子、玻纖布、被動、低軌、記憶體、特化都噴，如何介入？ft.操盤手 黃豐凱</div>
+                    <div class="episode-preview">2026 年馬年開紅盤台股站上三萬四千點，資金呈現「大盤穩、櫃買強」的輪動態勢，投資人應聚焦具實質 AI 基本面的 ABF 載板與被動元件，並留意川普關稅與記憶體規格轉換的變數。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
             <a href="/zhaohua/1041/" class="episode-card">
                 <span class="episode-date-badge">EP1041</span>
                 <div class="episode-content">
-                    <div class="episode-title">本集透過國家級操盤手凱哥的職涯轉折，揭示了深度產業研究、價值投資的心理修煉，以及如何透過「教人釣魚」</div>
+                    <div class="episode-title">EP1041｜非財金本科系，9彎18拐闖進投信，甘苦談！放棄發言人職位，如何當上最懂產業的操盤手？ft.國家級基金操盤手 黄豐凱</div>
                     <div class="episode-preview">本集透過國家級操盤手凱哥的職涯轉折，揭示了深度產業研究、價值投資的心理修煉，以及如何透過「教人釣魚」的心態在充滿寶藏的股市中穩健獲利。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -373,7 +443,7 @@
             <a href="/zhaohua/1040/" class="episode-card">
                 <span class="episode-date-badge">EP1040</span>
                 <div class="episode-content">
-                    <div class="episode-title">人生與投資成功的核心在於「對未來有看法」，並堅持以「企業獲利成長」為唯一準則的長線投資策略。</div>
+                    <div class="episode-title">EP1040｜打混到27歲，知道自己找不到工作，振作！社會直接給教訓，咬牙苦讀逆轉人生！ft.國泰證期 蔡明翰協理</div>
                     <div class="episode-preview">人生與投資成功的核心在於「對未來有看法」，並堅持以「企業獲利成長」為唯一準則的長線投資策略。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -383,7 +453,7 @@
             <a href="/zhaohua/1039/" class="episode-card">
                 <span class="episode-date-badge">EP1039</span>
                 <div class="episode-content">
-                    <div class="episode-title">存股教父古魚分享為女兒執行十年的「紅包存股計畫」，透過紀律化買入大盤市值型標的達成最高 300% 的</div>
+                    <div class="episode-title">EP1039｜幫女兒存股14年，從0050到00850，會加入主動式ETF嗎？孩子績效永遠比父母好？ft.存股教父 股魚</div>
                     <div class="episode-preview">存股教父古魚分享為女兒執行十年的「紅包存股計畫」，透過紀律化買入大盤市值型標的達成最高 300% 的報酬，並深度解析臺股槓桿型 ETF（正二）的長期持有優勢。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -393,7 +463,7 @@
             <a href="/zhaohua/1038/" class="episode-card">
                 <span class="episode-date-badge">EP1038</span>
                 <div class="episode-content">
-                    <div class="episode-title">本集由主持人兆華與分析師艾倫（Alan）深入對談，揭露投顧產業的職涯抉擇內幕，並強調投資應如同選職，</div>
+                    <div class="episode-title">EP1038｜從小看父親參加投顧賠錢，自己卻成為投顧分析師！「特殊行業」的祕密？誠實帶來的痛苦和成果？ft.大華投顧分析師 艾綸</div>
                     <div class="episode-preview">本集由主持人兆華與分析師艾倫（Alan）深入對談，揭露投顧產業的職涯抉擇內幕，並強調投資應如同選職，需順應熱門產業趨勢並透過長期佈局累積複利。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -403,7 +473,7 @@
             <a href="/zhaohua/1037/" class="episode-card">
                 <span class="episode-date-badge">EP1037</span>
                 <div class="episode-content">
-                    <div class="episode-title">台股蛇年以 33,707 點歷史新高強勢封關，AI 依舊是 2026 馬年的核心主軸，投資者應透過資</div>
+                    <div class="episode-title">EP1037｜史上最強封關日！台積電領軍，PCB、記憶體、CPO、低軌衛星主軸延續？有配置就賺錢！過年要觀察的事？ft.報價天王 林信富</div>
                     <div class="episode-preview">台股蛇年以 33,707 點歷史新高強勢封關，AI 依舊是 2026 馬年的核心主軸，投資者應透過資產配置與產業輪動參與大多頭行情。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -413,7 +483,7 @@
             <a href="/zhaohua/1036/" class="episode-card">
                 <span class="episode-date-badge">EP1036</span>
                 <div class="episode-content">
-                    <div class="episode-title">台股在封關前夕由台積電領軍噴發 668 點創歷史新高，國家級操盤手凱哥建議持股至少五成，並鎖定 CP</div>
+                    <div class="episode-title">EP1036｜台股衝破33000，台積電營收歷史新高，提早拉貨？華邦電Q4三降，會影響記憶體？封關後依舊看好低軌、CPO、探針！ft.操盤手 黃豐凱</div>
                     <div class="episode-preview">台股在封關前夕由台積電領軍噴發 668 點創歷史新高，國家級操盤手凱哥建議持股至少五成，並鎖定 CPO、探針卡及特化等具備明確轉機與成長動能的族群。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -423,7 +493,7 @@
             <a href="/zhaohua/1035/" class="episode-card">
                 <span class="episode-date-badge">EP1035</span>
                 <div class="episode-content">
-                    <div class="episode-title">面對農曆年前封關行情，投資人應把握川普激勵與 AI 資本支出利多，運用「看高做低」策略並搭配 ETF</div>
+                    <div class="episode-title">EP1035｜川普喊道瓊10萬點，台美股大復活！漲了才覺得可以抱股過年？蛇年ETF報酬56%，馬年ETF看5大產業！ft.題材獵人 林漢偉</div>
                     <div class="episode-preview">面對農曆年前封關行情，投資人應把握川普激勵與 AI 資本支出利多，運用「看高做低」策略並搭配 ETF 配置，實現主動報股過年的目標。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -433,7 +503,7 @@
             <a href="/zhaohua/1034/" class="episode-card">
                 <span class="episode-date-badge">EP1034</span>
                 <div class="episode-content">
-                    <div class="episode-title">面對美股科技巨頭資本支出引發的市場恐慌與台股封關前的賣壓，投資人應透過產業長期趨勢（如 ABF 載板</div>
+                    <div class="episode-title">EP1034｜美股怎麼了？亞馬遜資本支出2000億美元卻崩，台股殺到月線下再站回，絕對受惠角色不變？想清楚抱股理由！ft.操盤手 黃豐凱</div>
                     <div class="episode-preview">面對美股科技巨頭資本支出引發的市場恐慌與台股封關前的賣壓，投資人應透過產業長期趨勢（如 ABF 載板）與主動式 ETF 配置，在震盪中尋找布局良機。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -443,7 +513,7 @@
             <a href="/zhaohua/1033/" class="episode-card">
                 <span class="episode-date-badge">EP1033</span>
                 <div class="episode-content">
-                    <div class="episode-title">本集聚焦於美股科技股財報後的震盪與台股封關前的配置策略，強調在市場高檔時應區分「正規軍」與「投機股」</div>
+                    <div class="episode-title">EP1033｜Google好財報卻下跌，美股AI回收疑慮擴大？太陽能鈣鈦礦電池是什麼？投資主、被動ETF，不用擔心成分股？ft.紀緯明 小明同學</div>
                     <div class="episode-preview">本集聚焦於美股科技股財報後的震盪與台股封關前的配置策略，強調在市場高檔時應區分「正規軍」與「投機股」，並解析主動式 ETF 的操作邏輯。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -453,7 +523,7 @@
             <a href="/zhaohua/1032/" class="episode-card">
                 <span class="episode-date-badge">EP1032</span>
                 <div class="episode-content">
-                    <div class="episode-title">本集聚焦於農曆年前封關的操作節奏，透過「三大族群分類法」剖析 AI 長線成長、題材轉機與記憶體波動的</div>
+                    <div class="episode-title">EP1032｜美科技股震盪，台股依舊世界強，低軌、PCB、散熱、記憶體、CPO，封關前捨不得離場？3種分類做決策！ft.國泰證期 蔡明翰協理</div>
                     <div class="episode-preview">本集聚焦於農曆年前封關的操作節奏，透過「三大族群分類法」剖析 AI 長線成長、題材轉機與記憶體波動的操作邏輯，並強調紀律與無痛換股的重要性。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -463,7 +533,7 @@
             <a href="/zhaohua/1031/" class="episode-card">
                 <span class="episode-date-badge">EP1031</span>
                 <div class="episode-content">
-                    <div class="episode-title">本集聚焦於農曆年前的封關操作策略，透過觀察融資減肥與族群強弱換股，並解析記憶體、老 AI 及被動元件</div>
+                    <div class="episode-title">EP1031｜大跌又大漲，美國製造業復甦，基本面化解AI疑慮？記憶體機會和風險的平衡？奇鋐創新高，何時輪到被動元件？ft.選股教練 陳唯泰</div>
                     <div class="episode-preview">本集聚焦於農曆年前的封關操作策略，透過觀察融資減肥與族群強弱換股，並解析記憶體、老 AI 及被動元件的長線配置邏輯。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -473,7 +543,7 @@
             <a href="/zhaohua/1030/" class="episode-card">
                 <span class="episode-date-badge">EP1030</span>
                 <div class="episode-content">
-                    <div class="episode-title">本集探討在全球原物料暴跌、聯準會人事變動及 AI 資金鏈疑慮引發的市場大回檔中，投資人應如何透過產業</div>
+                    <div class="episode-title">EP1030｜台股回月線，是買點嗎？誰影響最大：FED新主席華許、金銀保證金提高、輝達不承諾投Open AI、黃仁勳不認識群聯？ft.統一投顧總經理 廖婉婷</div>
                     <div class="episode-preview">本集探討在全球原物料暴跌、聯準會人事變動及 AI 資金鏈疑慮引發的市場大回檔中，投資人應如何透過產業趨勢（如載板規格升級）與資產配置來應對恐慌。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -483,7 +553,7 @@
             <a href="/zhaohua/1029/" class="episode-card">
                 <span class="episode-date-badge">EP1029</span>
                 <div class="episode-content">
-                    <div class="episode-title">台股隨美股財報利空回檔，投資人應警惕農曆年前丙種資金撤退，操作上宜「微調部位而不加碼」，聚焦 ABF</div>
+                    <div class="episode-title">EP1029｜連2天爆量回檔，是年前換手，還是AI又生變？封關前怕漲完，記憶體、載板、CPO、PCB洗刷，還要抱嗎？ft.操盤手 黃豐凱</div>
                     <div class="episode-preview">台股隨美股財報利空回檔，投資人應警惕農曆年前丙種資金撤退，操作上宜「微調部位而不加碼」，聚焦 ABF 載板元年與低估值測試介面標的。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -493,7 +563,7 @@
             <a href="/zhaohua/1028/" class="episode-card">
                 <span class="episode-date-badge">EP1028</span>
                 <div class="episode-content">
-                    <div class="episode-title">台股爆出 1.16 兆歷史天量，市場進入「不講理」的資金與題材博弈期，投資人應在瘋狂漲勢中透過資產配</div>
+                    <div class="episode-title">EP1028｜黃金5600美元，台股成交量1.16兆！價格通膨是硬道理？微軟加持CPO，仁勳來台，機器人開心？聯電、世界暴跌怎麼了？ft.題材獵人 林漢偉</div>
                     <div class="episode-preview">台股爆出 1.16 兆歷史天量，市場進入「不講理」的資金與題材博弈期，投資人應在瘋狂漲勢中透過資產配置與節奏控管來應對高檔震盪。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -503,7 +573,7 @@
             <a href="/zhaohua/1027/" class="episode-card">
                 <span class="episode-date-badge">EP1027</span>
                 <div class="episode-content">
-                    <div class="episode-title">台股衝向 33,000 點歷史高位，在資金盤推升評價（Re-rating）的狂熱下，投資人應回歸產業</div>
+                    <div class="episode-title">EP1027｜兆元資金狂潮，台積電登上1820元，記憶體續創高，低位階IC設計、機器人、電力、散裝也來，不錯過也不昏頭的配置？ft.報價天王 林信富</div>
                     <div class="episode-preview">台股衝向 33,000 點歷史高位，在資金盤推升評價（Re-rating）的狂熱下，投資人應回歸產業趨勢並透過資產配置（如 ETF）來平衡風險與收益。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -513,7 +583,7 @@
             <a href="/zhaohua/1026/" class="episode-card">
                 <span class="episode-date-badge">EP1026</span>
                 <div class="episode-content">
-                    <div class="episode-title">台股在壽險資金回補與 AI 題材助攻下衝破 32,000 點大關，面對川普關稅威脅市場已顯麻痺，高手</div>
+                    <div class="episode-title">EP1026｜南韓被提高關稅卻噴漲，台股大戶和散戶撐盤？CPO回來了，記憶體跌就是機會？怕買不夠、怕賣飛，熱門產業休息該介入？ft.小明同學 紀緯明</div>
                     <div class="episode-preview">台股在壽險資金回補與 AI 題材助攻下衝破 32,000 點大關，面對川普關稅威脅市場已顯麻痺，高手建議採取「順勢而為、不預設高點」的積極策略。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -523,7 +593,7 @@
             <a href="/zhaohua/1025/" class="episode-card">
                 <span class="episode-date-badge">EP1025</span>
                 <div class="episode-content">
-                    <div class="episode-title">台股指數突破 32,000 點創歷史新高，市場雖現「全民瘋股」熱潮，但從融資市值比觀察尚未過熱，投資</div>
+                    <div class="episode-title">EP1025｜所有人都在討論股票，融資市值比還在半山腰，不怕？記憶體強到年底，價值股不動要等何時？基金也能3%以下年利質押？ft.存股教父 股魚</div>
                     <div class="episode-preview">台股指數突破 32,000 點創歷史新高，市場雖現「全民瘋股」熱潮，但從融資市值比觀察尚未過熱，投資人應順勢而為並善用基金質押等靈活工具。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -533,8 +603,8 @@
             <a href="/zhaohua/1024/" class="episode-card">
                 <span class="episode-date-badge">EP1024</span>
                 <div class="episode-content">
-                    <div class="episode-title">台股在元月噴發摸到三萬二千點大關，由 SpaceX 即將 IPO 帶動的「低軌衛星」與「AI 擴散效</div>
-                    <div class="episode-preview">台股在元月噴發摸到三萬二千點大關，由 SpaceX 即將 IPO 帶動的「低軌衛星」與「AI 擴散效應」成為盤面核心，高手建議順勢而為，並以「大量支撐位」作為不...</div>
+                    <div class="episode-title">EP1024｜32000來了，封關前要漲去哪？Spacex來台密訪？聯發科沾到也漲停！追趨勢要設出場點，蹲點要對產業有信心！ft.操盤手 黃豐凱</div>
+                    <div class="episode-preview">台股在元月噴發摸到三萬二千點大關，由 SpaceX 即將 IPO 帶動的「低軌衛星」與「AI 擴散效應」成為盤面核心，高手建議順勢而為，並以「大量支撐位」作為不預設高點的防守準則。...</div>
                 </div>
                 <div class="episode-arrow">
                     <i data-lucide="arrow-right"></i>
@@ -543,7 +613,7 @@
             <a href="/zhaohua/1023/" class="episode-card">
                 <span class="episode-date-badge">EP1023</span>
                 <div class="episode-content">
-                    <div class="episode-title">川普針對格林蘭事件的轉折性發言引發全球股市強彈，台股在AI、電力基礎設施及BBU族群百花齊放帶動下，</div>
+                    <div class="episode-title">EP1023｜川普投顧說股市再翻倍？不武取格陵蘭，台股又創高！電力四射，台達電、光寶、重電、BBU齊漲，散熱真復活嗎？ft.選股教練 陳唯泰</div>
                     <div class="episode-preview">川普針對格林蘭事件的轉折性發言引發全球股市強彈，台股在AI、電力基礎設施及BBU族群百花齊放帶動下，衝上31,890點歷史新高。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -553,7 +623,7 @@
             <a href="/zhaohua/1022/" class="episode-card">
                 <span class="episode-date-badge">EP1022</span>
                 <div class="episode-content">
-                    <div class="episode-title">台股大跌 513 點宣告「不會跌的病」痊癒，市場進入「凌晨一點的賭場」階段，投資人應把握低位階補漲與</div>
+                    <div class="episode-title">EP1022｜格陵蘭事件影響美股，台股只跌今天，還是今天起跌？勇敢撿記憶體，還是關注軍工、重電、磊晶？BBU怎麼了？ft.型男股神 陳威良</div>
                     <div class="episode-preview">台股大跌 513 點宣告「不會跌的病」痊癒，市場進入「凌晨一點的賭場」階段，投資人應把握低位階補漲與政策題材，並在農曆年前適時獲利了結。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -563,7 +633,7 @@
             <a href="/zhaohua/1021/" class="episode-card">
                 <span class="episode-date-badge">EP1021</span>
                 <div class="episode-content">
-                    <div class="episode-title">本集核心在於探討 2026 年「價值股翻身」的投資主軸，並透過 1 月份的市場表現預測全年縮影，同時</div>
+                    <div class="episode-title">EP1021｜元月是全年縮影，AI、價值都能漲？小心，融資餘額其實已破經8000億？利空殺不死記憶體，矽光子復活，汽零件確定翻身！ft.存股總編 謝富旭</div>
                     <div class="episode-preview">本集核心在於探討 2026 年「價值股翻身」的投資主軸，並透過 1 月份的市場表現預測全年縮影，同時警示投資人應關注融資過高與熱門股回檔的風險訊號。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -573,7 +643,7 @@
             <a href="/zhaohua/1020/" class="episode-card">
                 <span class="episode-date-badge">EP1020</span>
                 <div class="episode-content">
-                    <div class="episode-title">台股無視川普加徵關稅利空，在大戶融資與散戶 FOMO 情緒推升下，指數直逼 32,000 點歷史新高</div>
+                    <div class="episode-title">EP1020｜台股近32000，有過熱現象嗎？緯創獲利創高大跌，沒獲利的低價股卻噴，該選誰？劉德音買美光助攻記憶體！PCB上游比價？ft.題材獵人 林漢偉</div>
                     <div class="episode-preview">台股無視川普加徵關稅利空，在大戶融資與散戶 FOMO 情緒推升下，指數直逼 32,000 點歷史新高，市場資金由老 AI 族群轉向記憶體與低位階中低價股。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -583,8 +653,8 @@
             <a href="/zhaohua/1019/" class="episode-card">
                 <span class="episode-date-badge">EP1019</span>
                 <div class="episode-content">
-                    <div class="episode-title">台積電法說會釋出極佳展望帶動大盤暴漲近 600 點，市場焦點從半導體外溢至重電、記憶體及載板族群，專</div>
-                    <div class="episode-preview">台積電法說會釋出極佳展望帶動大盤暴漲近 600 點，市場焦點從半導體外溢至重電、記憶體及載板族群，專家建議採取「擇優而抱」與「ETF 配置」策略應對 32,00...</div>
+                    <div class="episode-title">EP1019｜關稅拍定15%、積情600點，記憶體、電力、載板也歡慶，開始覺得買太少？不急，領頭羊、母公司、ETF，先參與、再放大？ft.操盤手 黃豐凱</div>
+                    <div class="episode-preview">台積電法說會釋出極佳展望帶動大盤暴漲近 600 點，市場焦點從半導體外溢至重電、記憶體及載板族群，專家建議採取「擇優而抱」與「ETF 配置」策略應對 32,000 點行情。...</div>
                 </div>
                 <div class="episode-arrow">
                     <i data-lucide="arrow-right"></i>
@@ -593,7 +663,7 @@
             <a href="/zhaohua/1018/" class="episode-card">
                 <span class="episode-date-badge">EP1018</span>
                 <div class="episode-content">
-                    <div class="episode-title">台積電法說會交出毛利率與資本支出雙爆表的「不可思議」成績單，確立 AI 長線成長趨勢，但在股價與過熱</div>
+                    <div class="episode-title">EP1018｜台積電法說已是「不可思議」，Q1估毛利率65%封神！選設備股還是PCB？透露記憶體還有空間？散熱最委屈？ft.國泰證期 蔡明翰協理</div>
                     <div class="episode-preview">台積電法說會交出毛利率與資本支出雙爆表的「不可思議」成績單，確立 AI 長線成長趨勢，但在股價與過熱氛圍下，高手建議採取「拉回佈局、不追高」的穩健策略。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -603,7 +673,7 @@
             <a href="/zhaohua/1017/" class="episode-card">
                 <span class="episode-date-badge">EP1017</span>
                 <div class="episode-content">
-                    <div class="episode-title">台股挑戰三萬一千點大關，市場呈現「擦鞋童效應」的集體狂熱，投資人應在台積電法說會前關注中小型股動能，</div>
+                    <div class="episode-title">EP1017｜1400多家上漲，低價股噴出終於讓散戶有感？如何判斷是瘋狂還是續漲？被動、矽晶圓、重電轉強，主動ETF洗牌中！ft.紀緯明 小明同學</div>
                     <div class="episode-preview">台股挑戰三萬一千點大關，市場呈現「擦鞋童效應」的集體狂熱，投資人應在台積電法說會前關注中小型股動能，並嚴守停損以應對高位階波動。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -613,7 +683,7 @@
             <a href="/zhaohua/1016/" class="episode-card">
                 <span class="episode-date-badge">EP1016</span>
                 <div class="episode-content">
-                    <div class="episode-title">台股站上三萬點大關之際，國安基金高割離席，市場焦點轉向「2026 AI 外溢效應」與低位階轉機股的操</div>
+                    <div class="episode-title">EP1016｜國安賺64億退場！關稅15%談妥了？台積電法說，利多不漲的可能？土方事件讓存股變飆股，這種機會能跟嗎？ft.選股教練 陳唯泰</div>
                     <div class="episode-preview">台股站上三萬點大關之際，國安基金高割離席，市場焦點轉向「2026 AI 外溢效應」與低位階轉機股的操作契機。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -623,7 +693,7 @@
             <a href="/zhaohua/1015/" class="episode-card">
                 <span class="episode-date-badge">EP1015</span>
                 <div class="episode-content">
-                    <div class="episode-title">台股攻上三萬點新高，資金在川普政見與 AI 題材推動下，由半導體擴散至記憶體、低軌衛星及機器人，呈現</div>
+                    <div class="episode-title">EP1015｜川普出奇招「自行降息」？資金氾濫中！台積電法說前哨站，記憶體、PCB、矽晶圓、封測全面走強，軍工續勢中？ft.題材獵人 林漢偉</div>
                     <div class="episode-preview">台股攻上三萬點新高，資金在川普政見與 AI 題材推動下，由半導體擴散至記憶體、低軌衛星及機器人，呈現百花齊放的「做夢行情」。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -633,7 +703,7 @@
             <a href="/zhaohua/1014/" class="episode-card">
                 <span class="episode-date-badge">EP1014</span>
                 <div class="episode-content">
-                    <div class="episode-title">本集聚焦於記憶體族群因處置降溫引發的資金大挪移，並深度解析台積電法說會前的資本支出預期，以及散熱、機</div>
+                    <div class="episode-title">EP1014｜川普關稅會叛違法嗎？下周國安基金會退？記憶體都被關，資金出來排隊！設備、散熱、PCB、機器人、被動、重電舉手！ft.操盤手 黃豐凱</div>
                     <div class="episode-preview">本集聚焦於記憶體族群因處置降溫引發的資金大挪移，並深度解析台積電法說會前的資本支出預期，以及散熱、機器人、軍工與重電等接棒族群的操作策略。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -644,7 +714,7 @@
                 <span class="episode-date-badge">EP1013</span>
                 <div class="episode-content">
                     <div class="episode-title">台股站上三萬點大關後爆出史上天量，資金由高價 AI 股轉向低價同板股與位階較低的正規軍（如面板、成熟</div>
-                    <div class="episode-preview">台股站上三萬點大關後爆出史上天量，資金由高價 AI 股轉向低價同板股與位階較低的正規軍（如面板、成熟製程、生技），投資人應關注產業轉型實質進度而非盲目追逐題材小...</div>
+                    <div class="episode-preview">台股站上三萬點大關後爆出史上天量，資金由高價 AI 股轉向低價同板股與位階較低的正規軍（如面板、成熟製程、生技），投資人應關注產業轉型實質進度而非盲目追逐題材小作文。...</div>
                 </div>
                 <div class="episode-arrow">
                     <i data-lucide="arrow-right"></i>
@@ -654,7 +724,7 @@
                 <span class="episode-date-badge">EP1012</span>
                 <div class="episode-content">
                     <div class="episode-title">本集解析台股創下歷史天量的背後真相，並由 PCB 女王廖婉婷深度駁斥 AI 供應鏈降規謠言，指引投資</div>
-                    <div class="episode-preview">本集解析台股創下歷史天量的背後真相，並由 PCB 女王廖婉婷深度駁斥 AI 供應鏈降規謠言，指引投資人如何在「小作文」亂飛與高檔震盪中尋找真正具備基面支撐的買點...</div>
+                    <div class="episode-preview">本集解析台股創下歷史天量的背後真相，並由 PCB 女王廖婉婷深度駁斥 AI 供應鏈降規謠言，指引投資人如何在「小作文」亂飛與高檔震盪中尋找真正具備基面支撐的買點。...</div>
                 </div>
                 <div class="episode-arrow">
                     <i data-lucide="arrow-right"></i>
@@ -682,6 +752,8 @@
             </a>
         </div>
 
+        <div class="pagination" id="pagination"></div>
+
         <footer class="footer">
             <p class="footer-text">
                 摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
@@ -692,16 +764,92 @@
     <script>
         lucide.createIcons();
 
-        const searchInput = document.getElementById('searchInput');
-        const episodeCards = document.querySelectorAll('.episode-card');
+        const ITEMS_PER_PAGE = 10;
+        let currentPage = 1;
+        let filteredCards = [];
 
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            episodeCards.forEach(card => {
-                const text = card.textContent.toLowerCase();
-                card.style.display = text.includes(query) ? 'flex' : 'none';
+        const searchInput = document.getElementById('searchInput');
+        const episodeCards = Array.from(document.querySelectorAll('.episode-card'));
+        const paginationContainer = document.getElementById('pagination');
+
+        function getFilteredCards() {
+            const query = searchInput.value.toLowerCase();
+            return episodeCards.filter(card => card.textContent.toLowerCase().includes(query));
+        }
+
+        function renderPagination() {
+            filteredCards = getFilteredCards();
+            const totalPages = Math.ceil(filteredCards.length / ITEMS_PER_PAGE);
+
+            if (currentPage > totalPages) currentPage = Math.max(1, totalPages);
+
+            // Hide all cards first
+            episodeCards.forEach(card => card.style.display = 'none');
+
+            // Show only current page cards
+            const start = (currentPage - 1) * ITEMS_PER_PAGE;
+            const end = start + ITEMS_PER_PAGE;
+            filteredCards.slice(start, end).forEach((card, i) => {
+                card.style.display = 'flex';
+                card.style.animationDelay = `${i * 0.05}s`;
             });
+
+            // Build pagination HTML
+            if (totalPages <= 1) {
+                paginationContainer.innerHTML = '';
+                return;
+            }
+
+            let html = `
+                <button onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+                    上一頁
+                </button>
+            `;
+
+            // Page numbers
+            const maxVisible = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+            if (endPage - startPage < maxVisible - 1) startPage = Math.max(1, endPage - maxVisible + 1);
+
+            if (startPage > 1) {
+                html += `<button onclick="goToPage(1)">1</button>`;
+                if (startPage > 2) html += `<span class="page-info">...</span>`;
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button onclick="goToPage(${i})" class="${i === currentPage ? 'active' : ''}">${i}</button>`;
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) html += `<span class="page-info">...</span>`;
+                html += `<button onclick="goToPage(${totalPages})">${totalPages}</button>`;
+            }
+
+            html += `
+                <button onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                    下一頁
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
+            `;
+
+            paginationContainer.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            renderPagination();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        searchInput.addEventListener('input', () => {
+            currentPage = 1;
+            renderPagination();
         });
+
+        // Initial render
+        renderPagination();
     </script>
 </body>
 </html>

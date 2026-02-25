@@ -1,9 +1,9 @@
 {
   "episode_id": "EP0638",
   "podcast": "gooaye",
-  "created_at": "2026-02-23T16:46:34.881502",
+  "created_at": "2026-02-24T22:18:19.137143",
   "summary_hash": "23b488a6364e",
-  "status": "partial",
+  "status": "pending",
   "platforms": {
     "twitter": {
       "status": "pending",
@@ -42,15 +42,13 @@
       "url": null
     },
     "telegram": {
-      "status": "published",
+      "status": "pending",
       "content_file": "telegram.json",
       "image_file": null,
-      "published_at": "2026-02-23T16:46:49.351127",
-      "post_ids": [
-        "7"
-      ],
+      "published_at": null,
+      "post_ids": [],
       "error": null,
-      "url": "https://t.me/podsight/7"
+      "url": null
     }
   }
 }

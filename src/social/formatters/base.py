@@ -13,14 +13,32 @@ class SummaryContent:
     episode_id: str
     podcast_name: str
     host: str
+    podcast_slug: str = ""  # Added for URL generation
     one_liner: str = ""
     topics: list[str] = field(default_factory=list)
     tickers: dict[str, list[str]] = field(default_factory=dict)  # {"美股": ["NVDA"], "台股": ["2330"]}
     quotes: list[str] = field(default_factory=list)
     raw_text: str = ""
 
+    def get_frontend_url(self) -> str:
+        """Generate frontend URL for this episode."""
+        base = "https://gooaye-agent.vercel.app"
+        ep_id = self.episode_id
+
+        if ep_id.startswith("EP"):
+            # Numbered episode: EP0638 -> /gooaye/638/
+            num = ep_id.replace("EP", "").lstrip("0") or "0"
+            return f"{base}/{self.podcast_slug}/{num}/"
+        else:
+            # Date-based: 2026_2_24... -> /yutinghao/2026-02-24/
+            parts = ep_id.split("_")
+            if len(parts) >= 3:
+                y, m, d = parts[0], parts[1].zfill(2), parts[2].zfill(2)
+                return f"{base}/{self.podcast_slug}/{y}-{m}-{d}/"
+            return f"{base}/{self.podcast_slug}/{ep_id}/"
+
     @classmethod
-    def from_summary_file(cls, filepath: Path, episode_id: str, podcast_name: str, host: str) -> "SummaryContent":
+    def from_summary_file(cls, filepath: Path, episode_id: str, podcast_name: str, host: str, podcast_slug: str = "") -> "SummaryContent":
         """Parse a summary file into structured content."""
         text = filepath.read_text(encoding="utf-8")
 
@@ -28,6 +46,7 @@ class SummaryContent:
             episode_id=episode_id,
             podcast_name=podcast_name,
             host=host,
+            podcast_slug=podcast_slug,
             raw_text=text
         )
 

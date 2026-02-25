@@ -1741,6 +1741,14 @@
                             <div class="step-number">4</div>
                             <div class="step-label">AI 摘要</div>
                         </div>
+                        <div class="step" onclick="runPipeline(5)" id="step5">
+                            <div class="step-number">5</div>
+                            <div class="step-label">社群草稿</div>
+                        </div>
+                        <div class="step" onclick="runPipeline(6)" id="step6">
+                            <div class="step-number">6</div>
+                            <div class="step-label">更新網站</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1787,11 +1795,25 @@
 
             <!-- Social Preview Modal -->
             <div class="social-preview-modal" id="socialPreviewModal" style="display: none;" onclick="closeSocialPreview(event)">
-                <div class="social-preview-content" onclick="event.stopPropagation()">
-                    <div class="social-preview-tabs" id="socialPreviewTabs"></div>
-                    <div class="social-preview-body" id="socialPreviewBody"></div>
+                <div class="social-preview-content" onclick="event.stopPropagation()" style="max-width: 600px;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                        <i data-lucide="send" style="width:18px;height:18px;color:var(--primary);"></i>
+                        <span style="font-weight: 600;">Telegram 預覽</span>
+                        <span id="socialPreviewEpisode" style="color: var(--text-muted); font-size: 0.85rem;"></span>
+                    </div>
+                    <div id="socialPreviewLink" style="margin-bottom: 1rem; padding: 0.5rem; background: var(--bg-tertiary); border-radius: 6px; font-size: 0.85rem;">
+                        <i data-lucide="link" style="width:12px;height:12px;"></i>
+                        <a href="#" target="_blank" id="socialPreviewLinkUrl" style="color: var(--primary);"></a>
+                    </div>
+                    <textarea id="socialPreviewTextarea" style="width: 100%; min-height: 300px; padding: 1rem; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-secondary); color: var(--text-primary); font-size: 0.9rem; line-height: 1.6; resize: vertical; font-family: inherit;"></textarea>
+                    <div style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-muted);">
+                        <span id="socialPreviewCharCount">0</span> 字元 · 支援 HTML 格式 (&lt;b&gt;粗體&lt;/b&gt;, &lt;i&gt;斜體&lt;/i&gt;)
+                    </div>
                     <div style="margin-top: 1rem; display: flex; gap: 0.5rem; justify-content: flex-end;">
-                        <button class="btn btn-secondary" onclick="closeSocialPreview()">關閉</button>
+                        <button class="btn btn-secondary" onclick="closeSocialPreview()">取消</button>
+                        <button class="btn btn-secondary" onclick="saveTelegramDraft()">
+                            <i data-lucide="save" style="width:14px;height:14px;"></i> 儲存
+                        </button>
                         <button class="btn btn-primary" id="socialPublishBtn" onclick="publishCurrentPreview()">
                             <i data-lucide="send" style="width:14px;height:14px;"></i> 發佈
                         </button>
@@ -3357,7 +3379,9 @@ Transcript:
                 1: '解析 RSS',
                 2: '下載音訊',
                 3: '語音轉錄',
-                4: 'AI 摘要'
+                4: 'AI 摘要',
+                5: '社群草稿',
+                6: '更新網站'
             }[step];
 
             // Clear terminal
@@ -3861,57 +3885,110 @@ Transcript:
             const tabs = document.getElementById('socialPreviewTabs');
             const body = document.getElementById('socialPreviewBody');
 
-            // Telegram first (auto-publish), then others for copy-paste
-            const platforms = ['telegram', 'twitter', 'threads', 'instagram'];
-            tabs.innerHTML = platforms.map(p => {
-                const label = { telegram: 'Telegram', twitter: 'X', threads: 'Threads', instagram: 'IG' }[p];
-                const active = p === currentPreviewPlatform ? 'active' : '';
-                return `<button class="${active}" onclick="switchPreviewPlatform('${p}')">${label}</button>`;
-            }).join('');
+            // Only Telegram now
+            currentPreviewPlatform = 'telegram';
+
+            // Show episode info
+            document.getElementById('socialPreviewEpisode').textContent = currentPreviewDraft.episode_id;
+
+            // Build frontend URL
+            const frontendBase = 'https://gooaye-agent.vercel.app';
+            const epId = currentPreviewDraft.episode_id;
+            // For numbered episodes (EPxxxx), extract number; for date-based, use as-is
+            let urlPath = '';
+            if (epId.startsWith('EP')) {
+                urlPath = `/${currentPodcast}/${epId.replace('EP', '')}/`;
+            } else {
+                // Date-based: convert 2026_2_24... to 2026-02-24
+                const parts = epId.split('_');
+                if (parts.length >= 3) {
+                    const y = parts[0];
+                    const m = parts[1].padStart(2, '0');
+                    const d = parts[2].padStart(2, '0');
+                    urlPath = `/${currentPodcast}/${y}-${m}-${d}/`;
+                } else {
+                    urlPath = `/${currentPodcast}/${epId}/`;
+                }
+            }
+            const fullUrl = frontendBase + urlPath;
+            document.getElementById('socialPreviewLinkUrl').href = fullUrl;
+            document.getElementById('socialPreviewLinkUrl').textContent = fullUrl;
 
             updatePreviewBody();
             modal.style.display = 'flex';
             lucide.createIcons();
         }
 
-        function switchPreviewPlatform(platform) {
-            currentPreviewPlatform = platform;
-            showSocialPreviewModal();
-        }
-
         function updatePreviewBody() {
-            const body = document.getElementById('socialPreviewBody');
-            const content = currentPreviewDraft?.content?.[currentPreviewPlatform];
+            const textarea = document.getElementById('socialPreviewTextarea');
+            const content = currentPreviewDraft?.content?.telegram;
 
             if (!content) {
-                body.innerHTML = '<p>無內容</p>';
+                textarea.value = '';
+                document.getElementById('socialPreviewCharCount').textContent = '0';
                 return;
             }
 
-            if (currentPreviewPlatform === 'twitter') {
-                const thread = content.thread || [];
-                body.innerHTML = thread.map((t, i) =>
-                    `<div style="margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--border);">
-                        <div style="color:var(--text-muted);font-size:0.75rem;margin-bottom:0.5rem;">Tweet ${i+1} (${t.char_count} chars)</div>
-                        <div>${escapeHtml(t.text)}</div>
-                    </div>`
-                ).join('');
-            } else if (currentPreviewPlatform === 'instagram') {
-                const imgUrl = `${API_BASE}/social/image/${currentPreviewDraft.episode_id}`;
-                body.innerHTML = `
-                    <div class="social-ig-preview">
-                        <img src="${imgUrl}" alt="IG Card" onerror="this.style.display='none'">
-                    </div>
-                    <div style="margin-top:1rem;">${escapeHtml(content.caption || '')}</div>
-                `;
-            } else if (currentPreviewPlatform === 'line') {
-                body.innerHTML = escapeHtml(content.message || '');
-            } else if (currentPreviewPlatform === 'telegram') {
-                // Telegram uses HTML formatting, display nicely
-                const msg = content.message || '';
-                body.innerHTML = `<div style="white-space:pre-wrap;">${msg}</div>`;
-            } else {
-                body.innerHTML = escapeHtml(content.text || JSON.stringify(content, null, 2));
+            // Get message and ensure it has the frontend link
+            let msg = content.message || '';
+
+            // Add link if not already present
+            const frontendBase = 'https://gooaye-agent.vercel.app';
+            if (!msg.includes(frontendBase)) {
+                const epId = currentPreviewDraft.episode_id;
+                let urlPath = '';
+                if (epId.startsWith('EP')) {
+                    urlPath = `/${currentPodcast}/${epId.replace('EP', '')}/`;
+                } else {
+                    const parts = epId.split('_');
+                    if (parts.length >= 3) {
+                        const y = parts[0];
+                        const m = parts[1].padStart(2, '0');
+                        const d = parts[2].padStart(2, '0');
+                        urlPath = `/${currentPodcast}/${y}-${m}-${d}/`;
+                    } else {
+                        urlPath = `/${currentPodcast}/${epId}/`;
+                    }
+                }
+                msg += `\n\n🔗 <a href="${frontendBase}${urlPath}">閱讀完整摘要</a>`;
+            }
+
+            textarea.value = msg;
+            document.getElementById('socialPreviewCharCount').textContent = msg.length;
+
+            // Update char count on input
+            textarea.oninput = () => {
+                document.getElementById('socialPreviewCharCount').textContent = textarea.value.length;
+            };
+        }
+
+        async function saveTelegramDraft() {
+            if (!currentPreviewDraft) return;
+
+            const textarea = document.getElementById('socialPreviewTextarea');
+            const newMessage = textarea.value;
+
+            try {
+                const res = await fetch(
+                    `${API_BASE}/social/drafts/${currentPreviewDraft.episode_id}/telegram`,
+                    {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: newMessage, char_count: newMessage.length })
+                    }
+                );
+
+                if (res.ok) {
+                    showCopyToast('已儲存');
+                    // Update local cache
+                    if (currentPreviewDraft.content) {
+                        currentPreviewDraft.content.telegram = { message: newMessage, char_count: newMessage.length };
+                    }
+                } else {
+                    showCopyToast('儲存失敗');
+                }
+            } catch (err) {
+                showCopyToast('儲存失敗: ' + err.message);
             }
         }
 
@@ -3922,21 +3999,38 @@ Transcript:
         }
 
         async function publishCurrentPreview() {
-            if (!currentPreviewDraft || !currentPreviewPlatform) return;
+            if (!currentPreviewDraft) return;
 
             const btn = document.getElementById('socialPublishBtn');
             btn.disabled = true;
             btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;"></span> 發佈中...';
 
             try {
+                // Save edited content first
+                const textarea = document.getElementById('socialPreviewTextarea');
+                const editedMessage = textarea.value;
+
+                await fetch(
+                    `${API_BASE}/social/drafts/${currentPreviewDraft.episode_id}/telegram`,
+                    {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: editedMessage, char_count: editedMessage.length })
+                    }
+                );
+
+                // Then publish
                 const res = await fetch(
-                    `${API_BASE}/social/drafts/${currentPreviewDraft.episode_id}/${currentPreviewPlatform}/publish`,
+                    `${API_BASE}/social/drafts/${currentPreviewDraft.episode_id}/telegram/publish`,
                     { method: 'POST' }
                 );
                 const data = await res.json();
 
                 if (res.ok) {
-                    alert(`發佈成功！${data.url ? '\n' + data.url : ''}`);
+                    showCopyToast(`發佈成功！`);
+                    if (data.url) {
+                        window.open(data.url, '_blank');
+                    }
                     closeSocialPreview();
                     loadSocialDrafts();
                 } else {

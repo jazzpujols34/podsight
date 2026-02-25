@@ -552,7 +552,7 @@ async def get_social_draft(episode_id: str):
     result = draft.to_dict()
     result["content"] = {}
 
-    for platform in ["twitter", "threads", "line", "instagram"]:
+    for platform in ["twitter", "threads", "line", "instagram", "telegram"]:
         content = draft_manager.get_platform_content(episode_id, platform)
         if content:
             result["content"][platform] = content
@@ -1126,7 +1126,7 @@ async def run_pipeline_step(
         )
 
     # Validate step
-    if step not in ["all", "check", "1", "2", "3", "4", "5"]:
+    if step not in ["all", "check", "1", "2", "3", "4", "5", "6"]:
         raise HTTPException(status_code=400, detail=f"Invalid step: {step}")
 
     # Convert to int if numeric

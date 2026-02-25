@@ -302,6 +302,56 @@
         .episode-card:nth-child(5) { animation-delay: 0.25s; }
         .episode-card:nth-child(n+6) { animation-delay: 0.3s; }
 
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin: 32px 0;
+            flex-wrap: wrap;
+        }
+
+        .pagination button {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: var(--bg-card-hover);
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .pagination button.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: var(--bg-primary);
+            font-weight: 600;
+        }
+
+        .pagination button svg { width: 16px; height: 16px; }
+
+        .page-info {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            padding: 0 12px;
+        }
+
         @media (max-width: 768px) {
             .container { padding: 0 16px; }
             .podcast-header { padding: 40px 0 60px; }
@@ -343,7 +393,7 @@
                 <i data-lucide="bar-chart-2"></i>
                 每日財經
             </div>
-            <h1>財經皓角</h1>
+            <h1>游庭皓的財經皓角</h1>
             <p class="host">主持人：游庭皓</p>
             <p class="description">深入淺出的財經分析，結合時事與數據，帶你看懂市場背後的邏輯。</p>
         </header>
@@ -356,10 +406,70 @@
         </div>
 
         <div class="episode-count">
-            共 <strong>32</strong> 集摘要
+            共 <strong>35</strong> 集摘要
         </div>
 
         <div class="episode-list" id="episodeList">
+            <a href="/yutinghao/2026-02-24/" class="episode-card">
+                <span class="episode-date-badge">02.24</span>
+                <div class="episode-content">
+                    <div class="episode-title">軟體股股災 AI受害股 為何越來越多 早晨財經速解讀 </div>
+                    <div class="episode-preview">AI 正在從「講故事」進入「算總帳」階段，軟體股首當其衝面臨取代危機，投資者應從盲目追逐轉向關注變現能力與物理限制。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-02-23/" class="episode-card">
+                <span class="episode-date-badge">02.23</span>
+                <div class="episode-content">
+                    <div class="episode-title">台積電ADR續漲 馬年開紅盤 關稅推翻 美股繼續漲 早晨財經速解讀 </div>
+                    <div class="episode-preview">川普關稅戰因違憲轉向「法律游擊戰」，美股表面平靜實則暗潮洶湧，軟體股與加密貨幣正獨自承受AI浪潮下的結構性修正。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-02-13/" class="episode-card">
+                <span class="episode-date-badge">02.13</span>
+                <div class="episode-content">
+                    <div class="episode-title">市場觀察 2026台灣人如何迎接AI時代 </div>
+                    <div class="episode-preview">2026 年臺灣將迎來 AI 帶動的「第二次經濟奇蹟」，GDP 增速重回 80 年代巔峰，但社會將面臨顯著的財富分層，唯有擁抱 AI 生產力圈層才能避免被時代拋下。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-02-12/" class="episode-card">
+                <span class="episode-date-badge">02.12</span>
+                <div class="episode-content">
+                    <div class="episode-title">市場觀察 2026台灣人如何迎接少子化海嘯 </div>
+                    <div class="episode-preview">台灣正進入「生不如死」的人口縮表時代，這將迫使產業全面外移並改寫房地產結構，未來經濟將從「靠人數支撐」轉向「靠效率與資產流動」驅動。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-02-11/" class="episode-card">
+                <span class="episode-date-badge">02.11</span>
+                <div class="episode-content">
+                    <div class="episode-title">黃金漲幅榜首 一路贏到年底 台股封關 該抱股過年 早晨財經速解讀 </div>
+                    <div class="episode-preview">在 AI 驅動的 2026 投資大航海時代，投資者應無視短期封關波動，透過長線資產配置擁抱「資本回報勝過勞動所得」的趨勢。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-02-10/" class="episode-card">
+                <span class="episode-date-badge">02.10</span>
+                <div class="episode-content">
+                    <div class="episode-title">道瓊再創史高 修正結束了 谷歌大發債 科技股迎十字路口 早晨財經速解讀 </div>
+                    <div class="episode-preview">AI 浪潮進入「估值大洗牌」與「融資大競賽」階段，市場正透過價格回落消化過度樂觀的預期，但台美科技產業鏈的擴張動能依然強勁。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
             <a href="/yutinghao/2026-02-09/" class="episode-card">
                 <span class="episode-date-badge">02.09</span>
                 <div class="episode-content">
@@ -420,101 +530,11 @@
                     <i data-lucide="arrow-right"></i>
                 </div>
             </a>
-            <a href="/yutinghao/2026-02-23/" class="episode-card">
-                <span class="episode-date-badge">02.23</span>
-                <div class="episode-content">
-                    <div class="episode-title">台積電ADR續漲 馬年開紅盤 關稅推翻 美股繼續漲 早晨財經速解讀 </div>
-                    <div class="episode-preview">川普關稅戰因違憲轉向「法律游擊戰」，美股表面平靜實則暗潮洶湧，軟體股與加密貨幣正獨自承受AI浪潮下的結構性修正。...</div>
-                </div>
-                <div class="episode-arrow">
-                    <i data-lucide="arrow-right"></i>
-                </div>
-            </a>
-            <a href="/yutinghao/2026-02-11/" class="episode-card">
-                <span class="episode-date-badge">02.11</span>
-                <div class="episode-content">
-                    <div class="episode-title">黃金漲幅榜首 一路贏到年底 台股封關 該抱股過年 早晨財經速解讀 </div>
-                    <div class="episode-preview">在 AI 驅動的 2026 投資大航海時代，投資者應無視短期封關波動，透過長線資產配置擁抱「資本回報勝過勞動所得」的趨勢。...</div>
-                </div>
-                <div class="episode-arrow">
-                    <i data-lucide="arrow-right"></i>
-                </div>
-            </a>
-            <a href="/yutinghao/2026-02-10/" class="episode-card">
-                <span class="episode-date-badge">02.10</span>
-                <div class="episode-content">
-                    <div class="episode-title">道瓊再創史高 修正結束了 谷歌大發債 科技股迎十字路口 早晨財經速解讀 </div>
-                    <div class="episode-preview">AI 浪潮進入「估值大洗牌」與「融資大競賽」階段，市場正透過價格回落消化過度樂觀的預期，但台美科技產業鏈的擴張動能依然強勁。...</div>
-                </div>
-                <div class="episode-arrow">
-                    <i data-lucide="arrow-right"></i>
-                </div>
-            </a>
-            <a href="/yutinghao/2026-01-09/" class="episode-card">
-                <span class="episode-date-badge">01.09</span>
-                <div class="episode-content">
-                    <div class="episode-title">台股市值 衝全球第七 AI熱退燒 記憶體撐盤 七巨頭為何 漲不動了 早晨財經</div>
-                    <div class="episode-preview">美股資金正從科技七巨頭轉向「S&amp;P 493」與中小企業，投資者應關注估值回撥中的輪動機會，並及早建立「認錯要快」的投資心理素質。...</div>
-                </div>
-                <div class="episode-arrow">
-                    <i data-lucide="arrow-right"></i>
-                </div>
-            </a>
-            <a href="/yutinghao/2026-01-08/" class="episode-card">
-                <span class="episode-date-badge">01.08</span>
-                <div class="episode-content">
-                    <div class="episode-title">關稅審判 川普能挺過 再扣押油輪 唐羅主義撐2026 早晨財經速解讀 </div>
-                    <div class="episode-preview">川普正透過「唐羅主義」在全球掠奪資源以補貼軍費與打擊通膨，投資者應警覺看似分散的資產配置背後，實則隱藏著「全押 AI」的系統性風險。...</div>
-                </div>
-                <div class="episode-arrow">
-                    <i data-lucide="arrow-right"></i>
-                </div>
-            </a>
-            <a href="/yutinghao/2026-01-07/" class="episode-card">
-                <span class="episode-date-badge">01.07</span>
-                <div class="episode-content">
-                    <div class="episode-title">融資創史高 買股該慌嗎 輝達攻自駕AI 無人車大戰 誰能勝出 早晨財經速解讀</div>
-                    <div class="episode-preview">AI 正式從螢幕走入物理世界（自駕車與機器人），帶動全球股市創高，而台股則在內資推動下無視外資調節，展現強勁韌性。...</div>
-                </div>
-                <div class="episode-arrow">
-                    <i data-lucide="arrow-right"></i>
-                </div>
-            </a>
-            <a href="/yutinghao/2026-01-06/" class="episode-card">
-                <span class="episode-date-badge">01.06</span>
-                <div class="episode-content">
-                    <div class="episode-title">台積電狂飆 年底衝2000 台股上三萬 外資卻跑了 早晨財經速解讀 </div>
-                    <div class="episode-preview">台積電憑藉 AI 浪潮獨霸全球市值第六，引發內外資對作奇觀，更讓主動型基金陷入「打不過就加入」的 ETF 無限迴圈。...</div>
-                </div>
-                <div class="episode-arrow">
-                    <i data-lucide="arrow-right"></i>
-                </div>
-            </a>
-            <a href="/yutinghao/2026-01-05/" class="episode-card">
-                <span class="episode-date-badge">01.05</span>
-                <div class="episode-content">
-                    <div class="episode-title">2026金銀銅帶頭衝 原物料爆發 活捉馬杜洛 油價還要跌 早晨財經速解讀 </div>
-                    <div class="episode-preview">川普閃電逮捕馬杜羅不僅是一場教科書級的軍事斬首秀，更是透過「唐羅主義」重塑全球能源供應、壓制通膨預期並清空俄中在美洲勢力的結構性佈局。...</div>
-                </div>
-                <div class="episode-arrow">
-                    <i data-lucide="arrow-right"></i>
-                </div>
-            </a>
             <a href="/yutinghao/2026-01-30/" class="episode-card">
                 <span class="episode-date-badge">01.30</span>
                 <div class="episode-content">
                     <div class="episode-title">微軟暴跌近10 美股該修正了嗎 2026誰能 跑贏標普 早晨財經速解讀 </div>
                     <div class="episode-preview">當前全球投資已演變為一場對賭 AI 的單一宏觀交易，而在美股七巨頭橫盤之際，資金正大舉流向亞洲與南美洲的新興市場硬體與原物料標的。...</div>
-                </div>
-                <div class="episode-arrow">
-                    <i data-lucide="arrow-right"></i>
-                </div>
-            </a>
-            <a href="/yutinghao/2026-01-02/" class="episode-card">
-                <span class="episode-date-badge">01.02</span>
-                <div class="episode-content">
-                    <div class="episode-title">2026AI 如何變現 過去一年 七巨頭只有 三支贏大盤 早晨財經速解讀 </div>
-                    <div class="episode-preview">2026 年是 AI 從「投資神話」轉向「實戰賬本」的關鍵年，投資績效將取決於匯率因子、個股選擇，以及你腦袋裡那些「市場帶不走的認知積蓄」。...</div>
                 </div>
                 <div class="episode-arrow">
                     <i data-lucide="arrow-right"></i>
@@ -660,6 +680,66 @@
                     <i data-lucide="arrow-right"></i>
                 </div>
             </a>
+            <a href="/yutinghao/2026-01-09/" class="episode-card">
+                <span class="episode-date-badge">01.09</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股市值 衝全球第七 AI熱退燒 記憶體撐盤 七巨頭為何 漲不動了 早晨財經</div>
+                    <div class="episode-preview">美股資金正從科技七巨頭轉向「S&amp;P 493」與中小企業，投資者應關注估值回撥中的輪動機會，並及早建立「認錯要快」的投資心理素質。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-08/" class="episode-card">
+                <span class="episode-date-badge">01.08</span>
+                <div class="episode-content">
+                    <div class="episode-title">關稅審判 川普能挺過 再扣押油輪 唐羅主義撐2026 早晨財經速解讀 </div>
+                    <div class="episode-preview">川普正透過「唐羅主義」在全球掠奪資源以補貼軍費與打擊通膨，投資者應警覺看似分散的資產配置背後，實則隱藏著「全押 AI」的系統性風險。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-07/" class="episode-card">
+                <span class="episode-date-badge">01.07</span>
+                <div class="episode-content">
+                    <div class="episode-title">融資創史高 買股該慌嗎 輝達攻自駕AI 無人車大戰 誰能勝出 早晨財經速解讀</div>
+                    <div class="episode-preview">AI 正式從螢幕走入物理世界（自駕車與機器人），帶動全球股市創高，而台股則在內資推動下無視外資調節，展現強勁韌性。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-06/" class="episode-card">
+                <span class="episode-date-badge">01.06</span>
+                <div class="episode-content">
+                    <div class="episode-title">台積電狂飆 年底衝2000 台股上三萬 外資卻跑了 早晨財經速解讀 </div>
+                    <div class="episode-preview">台積電憑藉 AI 浪潮獨霸全球市值第六，引發內外資對作奇觀，更讓主動型基金陷入「打不過就加入」的 ETF 無限迴圈。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-05/" class="episode-card">
+                <span class="episode-date-badge">01.05</span>
+                <div class="episode-content">
+                    <div class="episode-title">2026金銀銅帶頭衝 原物料爆發 活捉馬杜洛 油價還要跌 早晨財經速解讀 </div>
+                    <div class="episode-preview">川普閃電逮捕馬杜羅不僅是一場教科書級的軍事斬首秀，更是透過「唐羅主義」重塑全球能源供應、壓制通膨預期並清空俄中在美洲勢力的結構性佈局。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/yutinghao/2026-01-02/" class="episode-card">
+                <span class="episode-date-badge">01.02</span>
+                <div class="episode-content">
+                    <div class="episode-title">2026AI 如何變現 過去一年 七巨頭只有 三支贏大盤 早晨財經速解讀 </div>
+                    <div class="episode-preview">2026 年是 AI 從「投資神話」轉向「實戰賬本」的關鍵年，投資績效將取決於匯率因子、個股選擇，以及你腦袋裡那些「市場帶不走的認知積蓄」。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
             <a href="/yutinghao/2025-12-31/" class="episode-card">
                 <span class="episode-date-badge">12.31</span>
                 <div class="episode-content">
@@ -682,6 +762,8 @@
             </a>
         </div>
 
+        <div class="pagination" id="pagination"></div>
+
         <footer class="footer">
             <p class="footer-text">
                 摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
@@ -692,16 +774,92 @@
     <script>
         lucide.createIcons();
 
-        const searchInput = document.getElementById('searchInput');
-        const episodeCards = document.querySelectorAll('.episode-card');
+        const ITEMS_PER_PAGE = 10;
+        let currentPage = 1;
+        let filteredCards = [];
 
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            episodeCards.forEach(card => {
-                const text = card.textContent.toLowerCase();
-                card.style.display = text.includes(query) ? 'flex' : 'none';
+        const searchInput = document.getElementById('searchInput');
+        const episodeCards = Array.from(document.querySelectorAll('.episode-card'));
+        const paginationContainer = document.getElementById('pagination');
+
+        function getFilteredCards() {
+            const query = searchInput.value.toLowerCase();
+            return episodeCards.filter(card => card.textContent.toLowerCase().includes(query));
+        }
+
+        function renderPagination() {
+            filteredCards = getFilteredCards();
+            const totalPages = Math.ceil(filteredCards.length / ITEMS_PER_PAGE);
+
+            if (currentPage > totalPages) currentPage = Math.max(1, totalPages);
+
+            // Hide all cards first
+            episodeCards.forEach(card => card.style.display = 'none');
+
+            // Show only current page cards
+            const start = (currentPage - 1) * ITEMS_PER_PAGE;
+            const end = start + ITEMS_PER_PAGE;
+            filteredCards.slice(start, end).forEach((card, i) => {
+                card.style.display = 'flex';
+                card.style.animationDelay = `${i * 0.05}s`;
             });
+
+            // Build pagination HTML
+            if (totalPages <= 1) {
+                paginationContainer.innerHTML = '';
+                return;
+            }
+
+            let html = `
+                <button onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+                    上一頁
+                </button>
+            `;
+
+            // Page numbers
+            const maxVisible = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+            if (endPage - startPage < maxVisible - 1) startPage = Math.max(1, endPage - maxVisible + 1);
+
+            if (startPage > 1) {
+                html += `<button onclick="goToPage(1)">1</button>`;
+                if (startPage > 2) html += `<span class="page-info">...</span>`;
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button onclick="goToPage(${i})" class="${i === currentPage ? 'active' : ''}">${i}</button>`;
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) html += `<span class="page-info">...</span>`;
+                html += `<button onclick="goToPage(${totalPages})">${totalPages}</button>`;
+            }
+
+            html += `
+                <button onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                    下一頁
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
+            `;
+
+            paginationContainer.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            renderPagination();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        searchInput.addEventListener('input', () => {
+            currentPage = 1;
+            renderPagination();
         });
+
+        // Initial render
+        renderPagination();
     </script>
 </body>
 </html>

@@ -100,7 +100,8 @@ def generate_drafts(summary_path: Path) -> SocialDraft | None:
         summary_path,
         episode_id=episode_id,
         podcast_name=podcast.name,
-        host=podcast.host
+        host=podcast.host,
+        podcast_slug=podcast.slug
     )
 
     # Create draft

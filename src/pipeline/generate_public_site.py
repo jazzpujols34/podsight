@@ -21,7 +21,7 @@ PODCASTS = {
     "gooaye": {
         "name": "股癌 Gooaye",
         "short_name": "股癌",
-        "host": "謝孟恭 Gooaye",
+        "host": "謝孟恭 Melody Hsieh",
         "description": "用輕鬆詼諧的方式，分享投資心法與市場觀察，陪你在股海中找到方向。",
         "badge_text": "投資理財",
         "badge_icon": "trending-up",
@@ -79,7 +79,7 @@ PODCASTS = {
     "zhaohua": {
         "name": "兆華與股惑仔",
         "short_name": "兆華",
-        "host": "兆華",
+        "host": "李兆華",
         "description": "結合專業與生活化的角度，帶你掌握台股脈動與投資機會。",
         "badge_text": "台股分析",
         "badge_icon": "mic",
@@ -106,6 +106,31 @@ PODCASTS = {
         """,
     },
 }
+
+
+def get_sort_key(filename: str, podcast_id: str):
+    """Get sort key for a summary file. Returns tuple for proper sorting."""
+    name = filename.replace("_summary.txt", "")
+
+    # For EP-based podcasts (gooaye, zhaohua), sort by episode number
+    if podcast_id in ["gooaye", "zhaohua"]:
+        match = re.search(r"EP?(\d+)", name, re.IGNORECASE)
+        if match:
+            return (0, int(match.group(1)))
+        return (1, name)
+
+    # For date-based podcasts (yutinghao), parse the date
+    # Format: 2026_2_24_二_... or _市場觀察_...
+    match = re.match(r"(\d{4})_(\d{1,2})_(\d{1,2})_", name)
+    if match:
+        year, month, day = int(match.group(1)), int(match.group(2)), int(match.group(3))
+        return (0, year, month, day)
+
+    # Files starting with _ (like _市場觀察_) - put at the end
+    if name.startswith("_"):
+        return (1, 0, 0, 0, name)
+
+    return (2, 0, 0, 0, name)
 
 
 def strip_markdown(text: str) -> str:
@@ -927,11 +952,11 @@ def generate_episode_html(
             <div class="episode-meta">
                 <span class="episode-badge">
                     <i data-lucide="{config['badge_icon']}"></i>
-                    {display_id}
+                    {config['name']}
                 </span>
                 <span class="episode-date">{date_display}</span>
             </div>
-            <h1>{config['short_name']} {display_id}</h1>
+            <h1>{html_escape(episode_info.get('title', display_id))}</h1>
             <p class="episode-subtitle">{html_escape(sections['tldr'][:200]) if sections['tldr'] else config['description']}</p>
 
             <div class="share-buttons">
@@ -1060,12 +1085,15 @@ def generate_listing_html(podcast_id: str, episodes: list) -> str:
         else:
             date_display = f"{config['episode_prefix']}{ep_id}"
 
+        # Truncate title nicely - try to cut at a good point
+        truncated_title = ep_title[:100] if len(ep_title) <= 100 else ep_title[:97] + "..."
+
         episodes_html += f"""
             <a href="/{podcast_id}/{ep_id}/" class="episode-card">
                 <span class="episode-date-badge">{date_display}</span>
                 <div class="episode-content">
-                    <div class="episode-title">{html_escape(ep_title[:50])}</div>
-                    <div class="episode-preview">{html_escape(ep_preview[:80])}...</div>
+                    <div class="episode-title">{html_escape(truncated_title)}</div>
+                    <div class="episode-preview">{html_escape(ep_preview[:100])}...</div>
                 </div>
                 <div class="episode-arrow">
                     <i data-lucide="arrow-right"></i>
@@ -1359,6 +1387,56 @@ def generate_listing_html(podcast_id: str, episodes: list) -> str:
         .episode-card:nth-child(5) {{ animation-delay: 0.25s; }}
         .episode-card:nth-child(n+6) {{ animation-delay: 0.3s; }}
 
+        /* Pagination */
+        .pagination {{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin: 32px 0;
+            flex-wrap: wrap;
+        }}
+
+        .pagination button {{
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }}
+
+        .pagination button:hover:not(:disabled) {{
+            background: var(--bg-card-hover);
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+        }}
+
+        .pagination button:disabled {{
+            opacity: 0.4;
+            cursor: not-allowed;
+        }}
+
+        .pagination button.active {{
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: var(--bg-primary);
+            font-weight: 600;
+        }}
+
+        .pagination button svg {{ width: 16px; height: 16px; }}
+
+        .page-info {{
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            padding: 0 12px;
+        }}
+
         @media (max-width: 768px) {{
             .container {{ padding: 0 16px; }}
             .podcast-header {{ padding: 40px 0 60px; }}
@@ -1400,7 +1478,7 @@ def generate_listing_html(podcast_id: str, episodes: list) -> str:
                 <i data-lucide="{config['badge_icon']}"></i>
                 {config['badge_text']}
             </div>
-            <h1>{config['short_name']}</h1>
+            <h1>{config['name']}</h1>
             <p class="host">主持人：{config['host']}</p>
             <p class="description">{config['description']}</p>
         </header>
@@ -1419,6 +1497,8 @@ def generate_listing_html(podcast_id: str, episodes: list) -> str:
         <div class="episode-list" id="episodeList">{episodes_html}
         </div>
 
+        <div class="pagination" id="pagination"></div>
+
         <footer class="footer">
             <p class="footer-text">
                 摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
@@ -1429,16 +1509,92 @@ def generate_listing_html(podcast_id: str, episodes: list) -> str:
     <script>
         lucide.createIcons();
 
-        const searchInput = document.getElementById('searchInput');
-        const episodeCards = document.querySelectorAll('.episode-card');
+        const ITEMS_PER_PAGE = 10;
+        let currentPage = 1;
+        let filteredCards = [];
 
-        searchInput.addEventListener('input', (e) => {{
-            const query = e.target.value.toLowerCase();
-            episodeCards.forEach(card => {{
-                const text = card.textContent.toLowerCase();
-                card.style.display = text.includes(query) ? 'flex' : 'none';
+        const searchInput = document.getElementById('searchInput');
+        const episodeCards = Array.from(document.querySelectorAll('.episode-card'));
+        const paginationContainer = document.getElementById('pagination');
+
+        function getFilteredCards() {{
+            const query = searchInput.value.toLowerCase();
+            return episodeCards.filter(card => card.textContent.toLowerCase().includes(query));
+        }}
+
+        function renderPagination() {{
+            filteredCards = getFilteredCards();
+            const totalPages = Math.ceil(filteredCards.length / ITEMS_PER_PAGE);
+
+            if (currentPage > totalPages) currentPage = Math.max(1, totalPages);
+
+            // Hide all cards first
+            episodeCards.forEach(card => card.style.display = 'none');
+
+            // Show only current page cards
+            const start = (currentPage - 1) * ITEMS_PER_PAGE;
+            const end = start + ITEMS_PER_PAGE;
+            filteredCards.slice(start, end).forEach((card, i) => {{
+                card.style.display = 'flex';
+                card.style.animationDelay = `${{i * 0.05}}s`;
             }});
+
+            // Build pagination HTML
+            if (totalPages <= 1) {{
+                paginationContainer.innerHTML = '';
+                return;
+            }}
+
+            let html = `
+                <button onclick="goToPage(${{currentPage - 1}})" ${{currentPage === 1 ? 'disabled' : ''}}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+                    上一頁
+                </button>
+            `;
+
+            // Page numbers
+            const maxVisible = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+            if (endPage - startPage < maxVisible - 1) startPage = Math.max(1, endPage - maxVisible + 1);
+
+            if (startPage > 1) {{
+                html += `<button onclick="goToPage(1)">1</button>`;
+                if (startPage > 2) html += `<span class="page-info">...</span>`;
+            }}
+
+            for (let i = startPage; i <= endPage; i++) {{
+                html += `<button onclick="goToPage(${{i}})" class="${{i === currentPage ? 'active' : ''}}">${{i}}</button>`;
+            }}
+
+            if (endPage < totalPages) {{
+                if (endPage < totalPages - 1) html += `<span class="page-info">...</span>`;
+                html += `<button onclick="goToPage(${{totalPages}})">${{totalPages}}</button>`;
+            }}
+
+            html += `
+                <button onclick="goToPage(${{currentPage + 1}})" ${{currentPage === totalPages ? 'disabled' : ''}}>
+                    下一頁
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
+            `;
+
+            paginationContainer.innerHTML = html;
+        }}
+
+        function goToPage(page) {{
+            currentPage = page;
+            renderPagination();
+            window.scrollTo({{ top: 0, behavior: 'smooth' }});
+        }}
+
+        searchInput.addEventListener('input', () => {{
+            currentPage = 1;
+            renderPagination();
         }});
+
+        // Initial render
+        renderPagination();
     </script>
 </body>
 </html>"""
@@ -1842,7 +1998,7 @@ def generate_homepage(podcast_counts: dict) -> str:
                             <i data-lucide="trending-up"></i>
                         </div>
                         <h3>股癌</h3>
-                        <p class="host">謝孟恭 Gooaye</p>
+                        <p class="host">謝孟恭 Melody Hsieh</p>
                         <p class="description">用輕鬆詼諧的方式，分享投資心法與市場觀察。</p>
                         <div class="stats">
                             <span class="stat">
@@ -1861,7 +2017,7 @@ def generate_homepage(podcast_counts: dict) -> str:
                         <div class="podcast-icon">
                             <i data-lucide="bar-chart-2"></i>
                         </div>
-                        <h3>財經皓角</h3>
+                        <h3>游庭皓的財經皓角</h3>
                         <p class="host">游庭皓</p>
                         <p class="description">深入淺出的財經分析，帶你看懂市場邏輯。</p>
                         <div class="stats">
@@ -1882,7 +2038,7 @@ def generate_homepage(podcast_counts: dict) -> str:
                             <i data-lucide="mic"></i>
                         </div>
                         <h3>兆華與股惑仔</h3>
-                        <p class="host">兆華</p>
+                        <p class="host">李兆華</p>
                         <p class="description">專業與生活化角度，掌握台股脈動。</p>
                         <div class="stats">
                             <span class="stat">
@@ -1926,6 +2082,21 @@ def html_escape(text: str) -> str:
     )
 
 
+def load_episodes_data(podcast_id: str) -> dict:
+    """Load episodes.json and return a dict mapping episode_number to episode data."""
+    episodes_file = DATA_DIR / podcast_id / "episodes.json"
+    if not episodes_file.exists():
+        return {}
+
+    try:
+        with open(episodes_file, "r", encoding="utf-8") as f:
+            episodes = json.load(f)
+        # Map by episode number for quick lookup
+        return {ep.get("episode_number"): ep for ep in episodes if ep.get("episode_number")}
+    except Exception:
+        return {}
+
+
 def main():
     """Generate the complete public site."""
     print("Generating PodSight public site...")
@@ -1942,13 +2113,22 @@ def main():
             print(f"  No summaries directory found")
             continue
 
+        # Load episodes data for original titles
+        episodes_data = load_episodes_data(podcast_id)
+
         # Get all summary files
         summary_files = list(summaries_dir.glob("*_summary.txt"))
         print(f"  Found {len(summary_files)} summaries")
 
         episodes = []
 
-        for summary_file in sorted(summary_files, reverse=True):
+        # Sort by proper key (date for yutinghao, episode number for others)
+        sorted_files = sorted(
+            summary_files,
+            key=lambda f: get_sort_key(f.name, podcast_id),
+            reverse=True
+        )
+        for summary_file in sorted_files:
             episode_id = get_episode_id(summary_file.name, podcast_id)
             if not episode_id:
                 continue
@@ -1961,8 +2141,18 @@ def main():
                 print(f"  Error parsing {summary_file.name}: {e}")
                 continue
 
-            # Get episode title
-            title = get_episode_title(summary_file.name, podcast_id)
+            # Get original episode title from episodes.json
+            title = None
+            if podcast_id in ["gooaye", "zhaohua"]:
+                # Numbered episodes - look up by episode number
+                ep_num = int(episode_id) if episode_id.isdigit() else None
+                if ep_num and ep_num in episodes_data:
+                    title = episodes_data[ep_num].get("title", "")
+            else:
+                # Date-based (yutinghao) - use filename title
+                title = get_episode_title(summary_file.name, podcast_id)
+
+            # Fallback to TLDR if no title found
             if not title and sections["tldr"]:
                 title = sections["tldr"][:50]
 

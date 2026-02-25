@@ -302,6 +302,56 @@
         .episode-card:nth-child(5) { animation-delay: 0.25s; }
         .episode-card:nth-child(n+6) { animation-delay: 0.3s; }
 
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin: 32px 0;
+            flex-wrap: wrap;
+        }
+
+        .pagination button {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: var(--bg-card-hover);
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .pagination button.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: var(--bg-primary);
+            font-weight: 600;
+        }
+
+        .pagination button svg { width: 16px; height: 16px; }
+
+        .page-info {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            padding: 0 12px;
+        }
+
         @media (max-width: 768px) {
             .container { padding: 0 16px; }
             .podcast-header { padding: 40px 0 60px; }
@@ -343,8 +393,8 @@
                 <i data-lucide="trending-up"></i>
                 投資理財
             </div>
-            <h1>股癌</h1>
-            <p class="host">主持人：謝孟恭 Gooaye</p>
+            <h1>股癌 Gooaye</h1>
+            <p class="host">主持人：謝孟恭 Melody Hsieh</p>
             <p class="description">用輕鬆詼諧的方式，分享投資心法與市場觀察，陪你在股海中找到方向。</p>
         </header>
 
@@ -363,7 +413,7 @@
             <a href="/gooaye/0638/" class="episode-card">
                 <span class="episode-date-badge">EP0638</span>
                 <div class="episode-content">
-                    <div class="episode-title">MK 分享了近年最悠閒的農曆年假心得，並針對美股資安板塊震盪、川普關稅不確定性及中東地緣政治風險提出</div>
+                    <div class="episode-title">EP638 | 🐈‍⬛</div>
                     <div class="episode-preview">MK 分享了近年最悠閒的農曆年假心得，並針對美股資安板塊震盪、川普關稅不確定性及中東地緣政治風險提出警示，同時觀察到亞股（日、台）異常強勁的走勢。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -373,8 +423,8 @@
             <a href="/gooaye/0637/" class="episode-card">
                 <span class="episode-date-badge">EP0637</span>
                 <div class="episode-content">
-                    <div class="episode-title">MK 認為近期美股軟體股正經歷市場過度恐慌的「通殺」（Overshoot），投資者應識別具備實質 A</div>
-                    <div class="episode-preview">MK 認為近期美股軟體股正經歷市場過度恐慌的「通殺」（Overshoot），投資者應識別具備實質 AI 流量紅利與資安防禦剛需的標的，並看好硬體終端（如蘋果）在...</div>
+                    <div class="episode-title">EP637 | 🦖</div>
+                    <div class="episode-preview">MK 認為近期美股軟體股正經歷市場過度恐慌的「通殺」（Overshoot），投資者應識別具備實質 AI 流量紅利與資安防禦剛需的標的，並看好硬體終端（如蘋果）在 AI Agent 時代的長期優勢。...</div>
                 </div>
                 <div class="episode-arrow">
                     <i data-lucide="arrow-right"></i>
@@ -383,8 +433,8 @@
             <a href="/gooaye/0636/" class="episode-card">
                 <span class="episode-date-badge">EP0636</span>
                 <div class="episode-content">
-                    <div class="episode-title">MK 透過峇里島奢華旅遊體悟「花錢買寧靜」的價值，並強調投資應看重「未來展望（Guidance）」而</div>
-                    <div class="episode-preview">MK 透過峇里島奢華旅遊體悟「花錢買寧靜」的價值，並強調投資應看重「未來展望（Guidance）」而非過去數據，同時抨擊麥克·貝瑞（Michael Burry）...</div>
+                    <div class="episode-title">EP636 | 🐚</div>
+                    <div class="episode-preview">MK 透過峇里島奢華旅遊體悟「花錢買寧靜」的價值，並強調投資應看重「未來展望（Guidance）」而非過去數據，同時抨擊麥克·貝瑞（Michael Burry）對 Palantir 的偏見。...</div>
                 </div>
                 <div class="episode-arrow">
                     <i data-lucide="arrow-right"></i>
@@ -393,7 +443,7 @@
             <a href="/gooaye/0635/" class="episode-card">
                 <span class="episode-date-badge">EP0635</span>
                 <div class="episode-content">
-                    <div class="episode-title">本集強調在市場修正時勇於抄底，並在農曆年前透過「降低槓桿、保留現股」的策略穩健過年，同時解析記憶體與</div>
+                    <div class="episode-title">EP635 | 🌴</div>
                     <div class="episode-preview">本集強調在市場修正時勇於抄底，並在農曆年前透過「降低槓桿、保留現股」的策略穩健過年，同時解析記憶體與衛星產業的最新雜訊與實質利多。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -403,7 +453,7 @@
             <a href="/gooaye/0634/" class="episode-card">
                 <span class="episode-date-badge">EP0634</span>
                 <div class="episode-content">
-                    <div class="episode-title">本集聚焦於美股四大巨頭高達 7000 億美元的資本支出（CAPEX）對 AI 供應鏈的長遠影響，以及</div>
+                    <div class="episode-title">EP634 | 👻</div>
                     <div class="episode-preview">本集聚焦於美股四大巨頭高達 7000 億美元的資本支出（CAPEX）對 AI 供應鏈的長遠影響，以及 MK 在台股恐慌性殺盤中如何進行抄底與部位管理。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -413,7 +463,7 @@
             <a href="/gooaye/0633/" class="episode-card">
                 <span class="episode-date-badge">EP0633</span>
                 <div class="episode-content">
-                    <div class="episode-title">在震盪洗盤的市場中應優先降槓桿保命，並將目光鎖定在低軌衛星、高階散熱等具備實質訂單支撐的強勢族群。</div>
+                    <div class="episode-title">EP633 | 🪢</div>
                     <div class="episode-preview">在震盪洗盤的市場中應優先降槓桿保命，並將目光鎖定在低軌衛星、高階散熱等具備實質訂單支撐的強勢族群。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -423,7 +473,7 @@
             <a href="/gooaye/0632/" class="episode-card">
                 <span class="episode-date-badge">EP0632</span>
                 <div class="episode-content">
-                    <div class="episode-title">本集探討市場回檔時的減碼邏輯，並深入解析 ASML 與 Tesla 財報後的產業展望，強調「自駕與機</div>
+                    <div class="episode-title">EP632 | ❄️</div>
                     <div class="episode-preview">本集探討市場回檔時的減碼邏輯，並深入解析 ASML 與 Tesla 財報後的產業展望，強調「自駕與機器人」才是未來核心估值所在。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -433,8 +483,8 @@
             <a href="/gooaye/0631/" class="episode-card">
                 <span class="episode-date-badge">EP0631</span>
                 <div class="episode-content">
-                    <div class="episode-title">本集聚焦於低軌道衛星（LEO）產業鏈的爆發性需求，並透過攀岩大師 Alex Honnold 爬 10</div>
-                    <div class="episode-preview">本集聚焦於低軌道衛星（LEO）產業鏈的爆發性需求，並透過攀岩大師 Alex Honnold 爬 101 的事件，深度探討投資者應具備的「冒險者精神」與對抗「失敗...</div>
+                    <div class="episode-title">EP631 | 🎁</div>
+                    <div class="episode-preview">本集聚焦於低軌道衛星（LEO）產業鏈的爆發性需求，並透過攀岩大師 Alex Honnold 爬 101 的事件，深度探討投資者應具備的「冒險者精神」與對抗「失敗主義」的心態。...</div>
                 </div>
                 <div class="episode-arrow">
                     <i data-lucide="arrow-right"></i>
@@ -443,7 +493,7 @@
             <a href="/gooaye/0630/" class="episode-card">
                 <span class="episode-date-badge">EP0630</span>
                 <div class="episode-content">
-                    <div class="episode-title">本集探討了 2024 年開年以來台股強勢的市場廣度、低軌衛星產業受惠於馬斯克 NCNT 政策的轉單效</div>
+                    <div class="episode-title">EP630 | ⭐</div>
                     <div class="episode-preview">本集探討了 2024 年開年以來台股強勢的市場廣度、低軌衛星產業受惠於馬斯克 NCNT 政策的轉單效應，以及對記憶體與聯發科近期走勢的深度分析。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -453,7 +503,7 @@
             <a href="/gooaye/0629/" class="episode-card">
                 <span class="episode-date-badge">EP0629</span>
                 <div class="episode-content">
-                    <div class="episode-title">MK 分享抵達羅馬後的見聞，並深入分析 SpaceX 潛在 IPO 對衛星產業的佈局機會，以及台股近</div>
+                    <div class="episode-title">EP629 | ⏳</div>
                     <div class="episode-preview">MK 分享抵達羅馬後的見聞，並深入分析 SpaceX 潛在 IPO 對衛星產業的佈局機會，以及台股近期「市場廣度」開啟、工具機族群轉強的盤勢觀察。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -463,7 +513,7 @@
             <a href="/gooaye/0628/" class="episode-card">
                 <span class="episode-date-badge">EP0628</span>
                 <div class="episode-content">
-                    <div class="episode-title">本集探討台美關稅協定的利多意義、台積電資本支出上修帶來的設備股長期機會，以及被動元件因成本推升與 A</div>
+                    <div class="episode-title">EP628 | 🍑</div>
                     <div class="episode-preview">本集探討台美關稅協定的利多意義、台積電資本支出上修帶來的設備股長期機會，以及被動元件因成本推升與 AI 需求可能迎來的漲價潮。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -473,7 +523,7 @@
             <a href="/gooaye/0627/" class="episode-card">
                 <span class="episode-date-badge">EP0627</span>
                 <div class="episode-content">
-                    <div class="episode-title">MK 分析了近期「極度窄化但瘋狂」的市場行情，深度解析被動元件漲價邏輯與 Co-op 封裝題材，並強</div>
+                    <div class="episode-title">EP627 | 🪸</div>
                     <div class="episode-preview">MK 分析了近期「極度窄化但瘋狂」的市場行情，深度解析被動元件漲價邏輯與 Co-op 封裝題材，並強調在過熱情緒中應保持「空杯心態」與靈活的部位管理。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -483,7 +533,7 @@
             <a href="/gooaye/0626/" class="episode-card">
                 <span class="episode-date-badge">EP0626</span>
                 <div class="episode-content">
-                    <div class="episode-title">MK 認為當前市場處於極度瘋狂但廣度極窄的狀態，建議投資人應適度降槓桿、汰弱留強，並關注估值相對較低</div>
+                    <div class="episode-title">EP626 | 🕷️</div>
                     <div class="episode-preview">MK 認為當前市場處於極度瘋狂但廣度極窄的狀態，建議投資人應適度降槓桿、汰弱留強，並關注估值相對較低的半導體廠務與基礎設施標的。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -493,8 +543,8 @@
             <a href="/gooaye/0625/" class="episode-card">
                 <span class="episode-date-badge">EP0625</span>
                 <div class="episode-content">
-                    <div class="episode-title">本集探討台股主流股資金輪動的警訊，並深度解析 NVIDIA 新架構 VR Rubin 與 ICMS </div>
-                    <div class="episode-preview">本集探討台股主流股資金輪動的警訊，並深度解析 NVIDIA 新架構 VR Rubin 與 ICMS 平台如何透過「KV Cache 下放」開啟存儲產業（如群聯）...</div>
+                    <div class="episode-title">EP625 | 🧸</div>
+                    <div class="episode-preview">本集探討台股主流股資金輪動的警訊，並深度解析 NVIDIA 新架構 VR Rubin 與 ICMS 平台如何透過「KV Cache 下放」開啟存儲產業（如群聯）的新投資題材。...</div>
                 </div>
                 <div class="episode-arrow">
                     <i data-lucide="arrow-right"></i>
@@ -503,7 +553,7 @@
             <a href="/gooaye/0624/" class="episode-card">
                 <span class="episode-date-badge">EP0624</span>
                 <div class="episode-content">
-                    <div class="episode-title">MK 透過實地參訪 MR 團隊反思科技奇點，並強調台積電在 AI 浪潮下的長期價值，同時教導投資者如</div>
+                    <div class="episode-title">EP624 | 🎥</div>
                     <div class="episode-preview">MK 透過實地參訪 MR 團隊反思科技奇點，並強調台積電在 AI 浪潮下的長期價值，同時教導投資者如何識別市場雜音與利用均線判斷強弱。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -513,7 +563,7 @@
             <a href="/gooaye/0623/" class="episode-card">
                 <span class="episode-date-badge">EP0623</span>
                 <div class="episode-content">
-                    <div class="episode-title">MK 回顧過去一年在家庭與事業平衡的收穫，並展望明年 AI 基礎設施（電力、光通訊、先進封裝）的延續</div>
+                    <div class="episode-title">EP623 | 🎆</div>
                     <div class="episode-preview">MK 回顧過去一年在家庭與事業平衡的收穫，並展望明年 AI 基礎設施（電力、光通訊、先進封裝）的延續性機會，強調「不預設高點」與「耐心」是當前操作的核心。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -523,7 +573,7 @@
             <a href="/gooaye/0622/" class="episode-card">
                 <span class="episode-date-badge">EP0622</span>
                 <div class="episode-content">
-                    <div class="episode-title">NVIDIA 收購 Grok 團隊揭示了打破「記憶體牆」以優化 AI 推論的野心，而記憶體市況則正式</div>
+                    <div class="episode-title">EP622 | 🕯️</div>
                     <div class="episode-preview">NVIDIA 收購 Grok 團隊揭示了打破「記憶體牆」以優化 AI 推論的野心，而記憶體市況則正式進入全年「逐月漲」的強勁多頭循環。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -533,7 +583,7 @@
             <a href="/gooaye/0621/" class="episode-card">
                 <span class="episode-date-badge">EP0621</span>
                 <div class="episode-content">
-                    <div class="episode-title">MK 回顧 2023 年投資績效並分享從 4 月崩盤事件中領悟的風險控管革新，強調降低槓桿、優化流動</div>
+                    <div class="episode-title">EP621 | 🎄</div>
                     <div class="episode-preview">MK 回顧 2023 年投資績效並分享從 4 月崩盤事件中領悟的風險控管革新，強調降低槓桿、優化流動性，並朝向「放置 Play」的長線資本家思維轉型。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -543,8 +593,8 @@
             <a href="/gooaye/0620/" class="episode-card">
                 <span class="episode-date-badge">EP0620</span>
                 <div class="episode-content">
-                    <div class="episode-title">本集探討了如何透過行為數據重塑傳統產業（如 AI 保險公司 Lemonade），並分享在市場轉換期（</div>
-                    <div class="episode-preview">本集探討了如何透過行為數據重塑傳統產業（如 AI 保險公司 Lemonade），並分享在市場轉換期（Transition）如何透過「插旗試單」與「觀察族群連動」...</div>
+                    <div class="episode-title">EP620 | 🐥</div>
+                    <div class="episode-preview">本集探討了如何透過行為數據重塑傳統產業（如 AI 保險公司 Lemonade），並分享在市場轉換期（Transition）如何透過「插旗試單」與「觀察族群連動」來佈局新題材。...</div>
                 </div>
                 <div class="episode-arrow">
                     <i data-lucide="arrow-right"></i>
@@ -553,7 +603,7 @@
             <a href="/gooaye/0619/" class="episode-card">
                 <span class="episode-date-badge">EP0619</span>
                 <div class="episode-content">
-                    <div class="episode-title">MK 分享其「拾荒式」逆向操作心法，並深入解析 OpenAI 與 Amazon 的潛在結盟，以及低軌</div>
+                    <div class="episode-title">EP619 | 🛰️</div>
                     <div class="episode-preview">MK 分享其「拾荒式」逆向操作心法，並深入解析 OpenAI 與 Amazon 的潛在結盟，以及低軌衛星產業如何透過技術變革擴張市場規模（TAM）。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -563,8 +613,8 @@
             <a href="/gooaye/0618/" class="episode-card">
                 <span class="episode-date-badge">EP0618</span>
                 <div class="episode-content">
-                    <div class="episode-title">MK 藉由柏林獨旅體悟家庭價值，並深入解析博通 (Broadcom) 財報，揭示 AI 產業從單純晶</div>
-                    <div class="episode-preview">MK 藉由柏林獨旅體悟家庭價值，並深入解析博通 (Broadcom) 財報，揭示 AI 產業從單純晶片銷售轉向「整櫃輸出 (Rack Level)」的毛利結構轉...</div>
+                    <div class="episode-title">EP618 | 🐟</div>
+                    <div class="episode-preview">MK 藉由柏林獨旅體悟家庭價值，並深入解析博通 (Broadcom) 財報，揭示 AI 產業從單純晶片銷售轉向「整櫃輸出 (Rack Level)」的毛利結構轉變，同時看好封裝瓶頸帶動的廠務標的。...</div>
                 </div>
                 <div class="episode-arrow">
                     <i data-lucide="arrow-right"></i>
@@ -573,7 +623,7 @@
             <a href="/gooaye/0617/" class="episode-card">
                 <span class="episode-date-badge">EP0617</span>
                 <div class="episode-content">
-                    <div class="episode-title">本集探討了半導體封裝與材料的技術謠言澄清，並透過 Confluent 被 IBM 收購一事，分享軟體</div>
+                    <div class="episode-title">EP617 | 👾</div>
                     <div class="episode-preview">本集探討了半導體封裝與材料的技術謠言澄清，並透過 Confluent 被 IBM 收購一事，分享軟體股配置與「長期持有」對改善生活品質的重要性。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -583,7 +633,7 @@
             <a href="/gooaye/0616/" class="episode-card">
                 <span class="episode-date-badge">EP0616</span>
                 <div class="episode-content">
-                    <div class="episode-title">本集核心在於探討台積電產能外溢引發的封測與 Intel EMIB 轉單機會，並分享 MK 如何在動能</div>
+                    <div class="episode-title">EP616 | 🥚</div>
                     <div class="episode-preview">本集核心在於探討台積電產能外溢引發的封測與 Intel EMIB 轉單機會，並分享 MK 如何在動能地獄中轉向「槓鈴策略」以應對市場震盪。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -593,7 +643,7 @@
             <a href="/gooaye/0615/" class="episode-card">
                 <span class="episode-date-badge">EP0615</span>
                 <div class="episode-content">
-                    <div class="episode-title">本集探討 AWS re:Invent 後的供應鏈誤讀機會、散熱產業的降價壓力，並分享在「黏稠」的區間</div>
+                    <div class="episode-title">EP615 | 🌶️</div>
                     <div class="episode-preview">本集探討 AWS re:Invent 後的供應鏈誤讀機會、散熱產業的降價壓力，並分享在「黏稠」的區間盤勢中，如何透過動態減碼與轉入指數來管理部位。...</div>
                 </div>
                 <div class="episode-arrow">
@@ -601,6 +651,8 @@
                 </div>
             </a>
         </div>
+
+        <div class="pagination" id="pagination"></div>
 
         <footer class="footer">
             <p class="footer-text">
@@ -612,16 +664,92 @@
     <script>
         lucide.createIcons();
 
-        const searchInput = document.getElementById('searchInput');
-        const episodeCards = document.querySelectorAll('.episode-card');
+        const ITEMS_PER_PAGE = 10;
+        let currentPage = 1;
+        let filteredCards = [];
 
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            episodeCards.forEach(card => {
-                const text = card.textContent.toLowerCase();
-                card.style.display = text.includes(query) ? 'flex' : 'none';
+        const searchInput = document.getElementById('searchInput');
+        const episodeCards = Array.from(document.querySelectorAll('.episode-card'));
+        const paginationContainer = document.getElementById('pagination');
+
+        function getFilteredCards() {
+            const query = searchInput.value.toLowerCase();
+            return episodeCards.filter(card => card.textContent.toLowerCase().includes(query));
+        }
+
+        function renderPagination() {
+            filteredCards = getFilteredCards();
+            const totalPages = Math.ceil(filteredCards.length / ITEMS_PER_PAGE);
+
+            if (currentPage > totalPages) currentPage = Math.max(1, totalPages);
+
+            // Hide all cards first
+            episodeCards.forEach(card => card.style.display = 'none');
+
+            // Show only current page cards
+            const start = (currentPage - 1) * ITEMS_PER_PAGE;
+            const end = start + ITEMS_PER_PAGE;
+            filteredCards.slice(start, end).forEach((card, i) => {
+                card.style.display = 'flex';
+                card.style.animationDelay = `${i * 0.05}s`;
             });
+
+            // Build pagination HTML
+            if (totalPages <= 1) {
+                paginationContainer.innerHTML = '';
+                return;
+            }
+
+            let html = `
+                <button onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+                    上一頁
+                </button>
+            `;
+
+            // Page numbers
+            const maxVisible = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+            if (endPage - startPage < maxVisible - 1) startPage = Math.max(1, endPage - maxVisible + 1);
+
+            if (startPage > 1) {
+                html += `<button onclick="goToPage(1)">1</button>`;
+                if (startPage > 2) html += `<span class="page-info">...</span>`;
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button onclick="goToPage(${i})" class="${i === currentPage ? 'active' : ''}">${i}</button>`;
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) html += `<span class="page-info">...</span>`;
+                html += `<button onclick="goToPage(${totalPages})">${totalPages}</button>`;
+            }
+
+            html += `
+                <button onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                    下一頁
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
+            `;
+
+            paginationContainer.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            renderPagination();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        searchInput.addEventListener('input', () => {
+            currentPage = 1;
+            renderPagination();
         });
+
+        // Initial render
+        renderPagination();
     </script>
 </body>
 </html>

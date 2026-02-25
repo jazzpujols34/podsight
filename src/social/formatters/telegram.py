@@ -74,6 +74,12 @@ class TelegramFormatter(BaseFormatter):
                 lines.append(f"• {clean_joke}")
             lines.append("")
 
+        # Add frontend link
+        if content.podcast_slug:
+            url = content.get_frontend_url()
+            lines.append(f'🔗 <a href="{url}">閱讀完整摘要</a>')
+            lines.append("")
+
         message = "\n".join(lines)
 
         # Enforce limit - truncate if needed

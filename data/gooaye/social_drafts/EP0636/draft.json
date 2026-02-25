@@ -1,9 +1,9 @@
 {
   "episode_id": "EP0636",
   "podcast": "gooaye",
-  "created_at": "2026-02-21T14:17:21.552185",
+  "created_at": "2026-02-24T22:18:19.273963",
   "summary_hash": "f1caa6282af9",
-  "status": "partial",
+  "status": "pending",
   "platforms": {
     "twitter": {
       "status": "pending",
@@ -42,13 +42,11 @@
       "url": null
     },
     "telegram": {
-      "status": "published",
+      "status": "pending",
       "content_file": "telegram.json",
       "image_file": null,
-      "published_at": "2026-02-23T16:30:17.756092",
-      "post_ids": [
-        "22"
-      ],
+      "published_at": null,
+      "post_ids": [],
       "error": null,
       "url": null
     }
