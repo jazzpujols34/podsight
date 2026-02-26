@@ -3649,10 +3649,13 @@ Transcript:
                     }
 
                     // Show message if viewing different podcast
-                    if (data.current_podcast && data.current_podcast !== currentPodcast) {
+                    if (data.current_podcast && currentPodcast && data.current_podcast !== currentPodcast) {
                         const podcastName = getPodcastDisplayName(data.current_podcast);
                         addTerminalLine(`⚠️ Pipeline 正在執行中：${podcastName}`, 'warning');
                         addTerminalLine(`目前顯示的是 ${getPodcastDisplayName(currentPodcast)} 的資料`, 'info');
+                    } else if (data.current_podcast) {
+                        const podcastName = getPodcastDisplayName(data.current_podcast);
+                        addTerminalLine(`偵測到正在執行的 Pipeline：${podcastName}`, 'info');
                     } else {
                         addTerminalLine('偵測到正在執行的 Pipeline...', 'info');
                     }
