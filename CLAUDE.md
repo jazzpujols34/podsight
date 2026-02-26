@@ -4,17 +4,17 @@
 
 **ALWAYS start servers with assigned ports:** Never use default ports (3000, 8000, 5173).
 
-| Service         | Port |
-|-----------------|------|
-| Frontend (site) | 3500 |
-| Backend (API)   | 3501 |
+| Service                    | Port | URL                    |
+|----------------------------|------|------------------------|
+| Backend (pipeline control) | 3501 | http://localhost:3501  |
+| Frontend (static site)     | 3500 | http://localhost:3500  |
 
 ```bash
-# Local preview
-cd public-site && python3 -m http.server 3500
-
-# API server (if needed)
+# Backend - pipeline web UI (USE THIS)
 ./venv/bin/python src/server.py --port 3501
+
+# Frontend - static site preview (optional)
+cd public-site && python3 -m http.server 3500
 ```
 
 ## Quick Commands
