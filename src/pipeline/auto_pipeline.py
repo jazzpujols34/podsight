@@ -78,8 +78,28 @@ def get_summary_episodes(podcast: str) -> set:
     return eps
 
 
+def get_published_episodes(podcast: str) -> set:
+    """Get set of episode IDs already published to Telegram."""
+    published_file = DATA_DIR / podcast / "social_drafts" / ".telegram_published"
+    if not published_file.exists():
+        return set()
+    return set(published_file.read_text().strip().split("\n"))
+
+
+def mark_published(podcast: str, episode_id: str):
+    """Mark an episode as published to Telegram."""
+    published_file = DATA_DIR / podcast / "social_drafts" / ".telegram_published"
+    with open(published_file, "a", encoding="utf-8") as f:
+        f.write(f"{episode_id}\n")
+
+
 def push_telegram(podcast: str, episode_id: str) -> bool:
-    """Push a single episode to Telegram."""
+    """Push a single episode to Telegram (with deduplication)."""
+    # Check if already published
+    if episode_id in get_published_episodes(podcast):
+        log(f"  Skipping {episode_id} (already published to Telegram)")
+        return False
+
     draft_file = DATA_DIR / podcast / "social_drafts" / episode_id / "telegram.json"
 
     if not draft_file.exists():
@@ -96,10 +116,11 @@ def push_telegram(podcast: str, episode_id: str) -> bool:
         result = pub.publish(content)
 
         if result.success:
-            log(f"  Pushed to Telegram: {episode_id}")
+            mark_published(podcast, episode_id)  # Track successful publish
+            log(f"  Pushed to Telegram: {episode_id} (URL: {result.url})")
             return True
         else:
-            log(f"  Telegram push failed: {episode_id}")
+            log(f"  Telegram push failed: {episode_id} - {result.error}")
             return False
     except Exception as e:
         log(f"  Telegram error: {e}")
