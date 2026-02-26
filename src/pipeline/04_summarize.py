@@ -24,7 +24,12 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 # Add project root to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+PROJECT_ROOT = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
+# Load .env file
+from dotenv import load_dotenv
+load_dotenv(PROJECT_ROOT / ".env")
 
 from src.config import get_podcast_config
 

@@ -15,6 +15,10 @@ from datetime import datetime
 BASE_DIR = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(BASE_DIR / "src"))
 
+# Load .env file
+from dotenv import load_dotenv
+load_dotenv(BASE_DIR / ".env")
+
 DATA_DIR = BASE_DIR / "data"
 PODCASTS = ["gooaye", "yutinghao", "zhaohua"]
 
