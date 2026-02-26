@@ -241,19 +241,27 @@ def parse_summary(content: str) -> dict:
     )
     if topics_match:
         topics_text = topics_match.group(1)
-        # Parse each topic block - handle various formats
-        # Format 1: **話題名稱：XXX** followed by content with sub-bullets
-        # Format 2: **1. Title**\nContent (simple format without sub-bullets)
-        # Format 3: *   **Topic Title:** content (EP636 format)
+        topic_blocks = []
 
-        # Try simpler numbered format first: **1. Title**\nContent\n\n**2. Title**
-        topic_blocks = re.findall(
-            r"\*\*(\d+\.\s*[^*\n]+)\*\*\s*\n(.+?)(?=\n\n\*\*\d+\.|\n---|\n###|$)",
+        # Format 1: *   **Title**\n    Content (bullet with bold title, content until next topic)
+        # This handles: *   **台日美股表現兩極化**\n    台股與日股...
+        bullet_topics = re.findall(
+            r"\*\s+\*\*([^*\n]+)\*\*\s*\n([\s\S]+?)(?=\n\*\s+\*\*|\n---|\n###|$)",
             topics_text,
-            re.DOTALL,
         )
+        if bullet_topics:
+            for title, content_text in bullet_topics:
+                topic_blocks.append((title, content_text))
 
-        # If no matches, try format with sub-bullets (詳細說明)
+        # Format 2: **1. Title**\nContent (numbered format)
+        if not topic_blocks:
+            topic_blocks = re.findall(
+                r"\*\*(\d+\.\s*[^*\n]+)\*\*\s*\n(.+?)(?=\n\n\*\*\d+\.|\n---|\n###|$)",
+                topics_text,
+                re.DOTALL,
+            )
+
+        # Format 3: **話題名稱：XXX** with 詳細說明
         if not topic_blocks:
             topic_blocks = re.findall(
                 r"\*\*(?:話題名稱：)?([^*\n：:]+)[：:]?\*\*[：:\s]*\n?\s*(?:\*\s*\*\*詳細說明：?\*\*\s*)?(.+?)(?=\n\s*\*\s*\*\*[^詳相利]|\n\s*---|\n\s*###|$)",
@@ -287,20 +295,44 @@ def parse_summary(content: str) -> dict:
         )
     if strategies_match:
         strategies_text = strategies_match.group(1)
-        # Parse bullet points with **title:** content format
-        strategy_items = re.findall(
-            r"\*\s*\*\*([^*]+)\*\*[：:]\s*(.+?)(?=\n\*\s*\*\*|\n---|\n###|$)",
+        strategy_items = []
+
+        # Format 1: Numbered list with nested bullets
+        # 1.  **Title**\n    Content\n    *   **Sub:** details
+        numbered_items = re.findall(
+            r"(\d+)\.\s+\*\*([^*\n]+)\*\*\s*\n((?:[ \t]+.*?\n?)*?)(?=\n\d+\.|\n---|\n###|$)",
             strategies_text,
-            re.DOTALL,
+            re.MULTILINE,
         )
+        if numbered_items:
+            for num, title, content_text in numbered_items:
+                # Parse nested sub-bullets within content
+                sub_items = re.findall(r"\*\s+\*\*([^*]+)\*\*[：:]\s*(.+?)(?=\n\s*\*\s+\*\*|\n\d+\.|\n---|$)", content_text, re.DOTALL)
+                if sub_items:
+                    # Build full content with sub-items
+                    full_content = []
+                    for sub_title, sub_content in sub_items:
+                        full_content.append(f"{strip_markdown(sub_title)}：{strip_markdown(sub_content)}")
+                    strategy_items.append((title, "\n".join(full_content)))
+                else:
+                    # No sub-items, just use content directly
+                    strategy_items.append((title, content_text))
+
+        # Format 2: Bullet points with **title:** content
+        if not strategy_items:
+            strategy_items = re.findall(
+                r"\*\s*\*\*([^*]+)\*\*[：:]\s*(.+?)(?=\n\*\s*\*\*|\n---|\n###|$)",
+                strategies_text,
+                re.DOTALL,
+            )
+
         if strategy_items:
             for title, content_text in strategy_items:
-                # Combine title and content, strip markdown
                 full_text = f"{strip_markdown(title)}：{strip_markdown(content_text)}"
                 if full_text and len(full_text) > 10:
                     sections["strategies"].append(full_text)
         else:
-            # Try simple bullet points
+            # Fallback: simple bullet points
             bullets = re.findall(r"[•\-\*]\s*(.+?)(?=\n[•\-\*]|\n\n|$)", strategies_text, re.DOTALL)
             sections["strategies"] = [strip_markdown(b) for b in bullets if b.strip() and len(b.strip()) > 10]
 
