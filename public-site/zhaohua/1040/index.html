@@ -502,6 +502,102 @@
             text-decoration: none;
         }
 
+        /* Episode Navigation */
+        .episode-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .ep-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .ep-nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .ep-nav-prev { justify-content: flex-start; }
+        .ep-nav-next { justify-content: flex-end; text-align: right; }
+
+        .ep-nav-btn svg { width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0; }
+        .ep-nav-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .ep-nav-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+        .ep-nav-disabled { visibility: hidden; }
+
+        .ep-nav-prev .ep-nav-label,
+        .ep-nav-prev .ep-nav-title { display: block; }
+        .ep-nav-next .ep-nav-label,
+        .ep-nav-next .ep-nav-title { display: block; }
+
+        /* Table of Contents */
+        .toc {
+            position: fixed;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .toc-link {
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .toc-link:hover,
+        .toc-link.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        /* Clickable stock tags */
+        .stock-tag {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a.stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .toc { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .episode-nav { flex-direction: column; }
+            .ep-nav-btn { max-width: 100%; }
+            .ep-nav-next { flex-direction: row-reverse; text-align: left; }
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -595,14 +691,14 @@
 
         <main class="content">
             
-            <div class="tldr-box animate-in">
+            <div class="tldr-box animate-in" id="tldr">
                 <div class="tldr-label">一句話總結</div>
                 <div class="tldr-text">人生與投資成功的核心在於「對未來有看法」，並堅持以「企業獲利成長」為唯一準則的長線投資策略。</div>
             </div>
             
 
             
-            <section class="section">
+            <section class="section" id="topics">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="message-square"></i>
@@ -640,9 +736,50 @@
             
 
             
+            <section class="section" id="strategies">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h2 class="section-title">操作心法與建議</h2>
+                </div>
+                <div class="strategy-list">
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="strategy-text">專業背景：國泰證期顧問處經理、CFA（特許金融分析師）Level 3 證照持有者。 高手的操作心法與作法：</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="layers"></i>
+                        </div>
+                        <div class="strategy-text">進出場策略：進場點：判斷標的未來半年到一年的獲利是否持續成長。 出場點：當初買進的「利多理由」消失時，無論賺賠皆須果斷減碼或退場。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="shield"></i>
+                        </div>
+                        <div class="strategy-text">選股邏輯：EPS 導向：今年賺 10 元、明年預估賺 13 元，具備 30% 成長力道的公司就是好標的。 免疫短線：對市場熱點或短線強勢股保持免疫，不追逐當下最熱但看不清長線的標的。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="eye"></i>
+                        </div>
+                        <div class="strategy-text">風險控管方法：信心與耐心：信心來自於對公司基本面的深度研究（做功課），而非股價漲跌。當大盤大跌但個股 EPS 預估不變時，他會選擇「加碼」而非恐慌性拋售。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="percent"></i>
+                        </div>
+                        <div class="strategy-text">實戰經驗分享：早年入行也曾沉迷短線交易，發現資產僅隨指數波動，長期報酬遠不及長線趨勢投資。 目前資產配置以「長線為主、短線為輔」，甚至極少進行短線操作。</div>
+                    </div>
+                </div>
+            </section>
+            
 
             
-            <section class="section">
+            <section class="section" id="stocks">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="bar-chart-2"></i>
@@ -650,33 +787,94 @@
                     <h2 class="section-title">提到的股票 / ETF</h2>
                 </div>
                 <div class="stock-grid">
-                    <div class="stock-tag">
+                    <a href="/stocks/?q=特斯拉" class="stock-tag">
                         <span class="stock-symbol">特斯拉 (Tesla)</span>
                         <span class="stock-name">作為具備預見未來 20 年眼光的產業典範提及</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=台積電" class="stock-tag">
                         <span class="stock-symbol">台積電 (2330)</span>
                         <span class="stock-name">主持人兆華提及</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=台灣50" class="stock-tag">
                         <span class="stock-symbol">台灣50 (0050) 概念股</span>
                         <span class="stock-name">建議新手可從大型龍頭股中尋找長線獲利穩定的標的</span>
+                    </a>
+                </div>
+            </section>
+            
+
+            
+            <section class="section" id="quotes">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="quote"></i>
+                    </div>
+                    <h2 class="section-title">金句摘錄</h2>
+                </div>
+                <div class="quote-list">
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">社會是很現實的，父母會對你很客氣，但社會不會。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">投資人的信心通常來自股價，漲的時候有信心，跌的時候就沒了。但真正的信心應來自你對數字的領悟。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">投資是次要的，你的本業與職場競爭力遠比投資更重要。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">只要公司獲利能上去，股價未來就一定會到。</p>
                     </div>
                 </div>
             </section>
             
 
             
-
+            <section class="section" id="risks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="alert-triangle"></i>
+                    </div>
+                    <h2 class="section-title">風險提醒</h2>
+                </div>
+                <div class="risk-list">
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">給年輕人的建議：初期本金小時可適度使用槓桿（如融資或衍生性工具）累積第一桶金，但前提是本業必須努力工作以提供穩定現金流。</span>
+                    </div>
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">資產配置轉型：投資經歷超過三年者，應強迫自己撥出部分資金轉向「長線投資」，不要永遠只做短線進出，資產才能隨時間真正擴大。</span>
+                    </div>
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">操作紀律：不要與股票談戀愛。若發現原先預估的獲利成長不如預期（預估錯誤），即便賠錢也必須退場，將資金移往更有勝率的標的。</span>
+                    </div>
+                </div>
+            </section>
             
+            <nav class="episode-nav"><a href="/zhaohua/1041/" class="ep-nav-btn ep-nav-prev">
+                <i data-lucide="chevron-left"></i>
+                <span class="ep-nav-label">上一集</span>
+                <span class="ep-nav-title">EP1041｜非財金本科系，9彎18拐闖進投信，甘苦談！放棄</span>
+            </a><a href="/zhaohua/1039/" class="ep-nav-btn ep-nav-next">
+                <span class="ep-nav-label">下一集</span>
+                <span class="ep-nav-title">EP1039｜幫女兒存股14年，從0050到00850，會加</span>
+                <i data-lucide="chevron-right"></i>
+            </a></nav>
         </main>
 
         <footer class="footer">
             <p class="footer-text">
-                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
             </p>
         </footer>
     </div>
+
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#strategies" class="toc-link" data-section="strategies">心法</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a><a href="#risks" class="toc-link" data-section="risks">風險</a></nav>
 
     <script>
         lucide.createIcons();
@@ -686,6 +884,25 @@
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (scrollTop / docHeight) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
+
+            // TOC active state
+            const sections = document.querySelectorAll('.section[id], .tldr-box[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (scrollTop >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>

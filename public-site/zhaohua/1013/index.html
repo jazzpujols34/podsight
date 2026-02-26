@@ -502,6 +502,102 @@
             text-decoration: none;
         }
 
+        /* Episode Navigation */
+        .episode-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .ep-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .ep-nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .ep-nav-prev { justify-content: flex-start; }
+        .ep-nav-next { justify-content: flex-end; text-align: right; }
+
+        .ep-nav-btn svg { width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0; }
+        .ep-nav-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .ep-nav-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+        .ep-nav-disabled { visibility: hidden; }
+
+        .ep-nav-prev .ep-nav-label,
+        .ep-nav-prev .ep-nav-title { display: block; }
+        .ep-nav-next .ep-nav-label,
+        .ep-nav-next .ep-nav-title { display: block; }
+
+        /* Table of Contents */
+        .toc {
+            position: fixed;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .toc-link {
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .toc-link:hover,
+        .toc-link.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        /* Clickable stock tags */
+        .stock-tag {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a.stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .toc { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .episode-nav { flex-direction: column; }
+            .ep-nav-btn { max-width: 100%; }
+            .ep-nav-next { flex-direction: row-reverse; text-align: left; }
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -595,14 +691,14 @@
 
         <main class="content">
             
-            <div class="tldr-box animate-in">
+            <div class="tldr-box animate-in" id="tldr">
                 <div class="tldr-label">一句話總結</div>
                 <div class="tldr-text">台股站上三萬點大關後爆出史上天量，資金由高價 AI 股轉向低價同板股與位階較低的正規軍（如面板、成熟製程、生技），投資人應關注產業轉型實質進度而非盲目追逐題材小作文。</div>
             </div>
             
 
             
-            <section class="section">
+            <section class="section" id="topics">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="message-square"></i>
@@ -615,25 +711,168 @@
                         <div class="topic-title">1. 台股史上最大成交量的背後意涵</div>
                         <div class="topic-content">詳細說明：2026 年初台股熱度爆棚，1 月 7 日上市櫃合計成交量突破一兆元，創下歷史新高。雖然外資大賣 300 億，但市場出現神祕買盤（推測為壽險資金或政府基金）接手。兆華觀察到，高成交量通常反映市場參與度極高，但也伴隨體感溫度不佳的狀況，許多中小型股呈現開高走低。 市場背景與影響：指數位於三萬點高位，投資人心理轉趨謹慎，資金開始在盤中劇烈輪動。</div>
                     </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 02</div>
+                        <div class="topic-title">2. 資金輪動：從高價 AI 轉向低價同板股</div>
+                        <div class="topic-content">詳細說明：近期盤面出現許多陌生、低價（5-15元）的標的集體漲停，如宏光、合同、無敵等。來賓小明認為，這是因為法人主導的盤勢轉向散戶資金進場，散戶對高價股（如台積電、台光電）買不下手，轉而尋找與 AI、PCB 或記憶體能「沾到邊」的低價股，並配合市場「小作文」（傳聞）炒作。 市場背景與影響：這類標的往往脫離基本面，屬於短線資金避風港，操作難度與風險極高。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 03</div>
+                        <div class="topic-title">3. 面板與成熟製程的轉型與考驗</div>
+                        <div class="topic-content">詳細說明：群創與友達近期因轉型題材受到關注。群創積極投入「扇出型面板級封裝」(FOPLP) 並與台積電合作，轉型方向較明確；聯電則因搶下三星訂單及台積電可能釋放成熟製程產能的傳聞而大漲。然而，面板報價回升緩慢，聯電今年也面臨消費性電子疲軟、漲價條件不足的壓力。 市場背景與影響：資金在尋找「右下角」（低位階）且有基本面支撐的標的。</div>
+                    </div>
                 </div>
             </section>
             
 
             
-
+            <section class="section" id="strategies">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h2 class="section-title">操作心法與建議</h2>
+                </div>
+                <div class="strategy-list">
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="strategy-text">紀緯明 (小明同學)：永城投顧分析師，擅長產業基本面研究與趨勢判斷。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="layers"></i>
+                        </div>
+                        <div class="strategy-text">高手的操作心法與作法*：</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="shield"></i>
+                        </div>
+                        <div class="strategy-text">進出場策略：小明堅持「正規軍」邏輯，不建議硬追漲幅已達 7-8% 的股票，特別是與基本面無關的題材股。他傾向在震盪拉回時，尋找「進可攻、退可守」的防禦型標的。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="eye"></i>
+                        </div>
+                        <div class="strategy-text">選股邏輯： 1. 高成長性：即便在右上角，若產業趨勢向上（如 PCB、散熱）仍具吸引力。 2. 產業共識：關注市場資金流向，但需分辨是「短線投票」還是「長線趨勢」。 3. 價值評估：以面板為例，應參考股價淨值比（P/B），理解目前交易的是什麼樣的評價。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="percent"></i>
+                        </div>
+                        <div class="strategy-text">對當前市場的判斷：小明對農曆年前的行情持樂觀態度。他認為台股市值大膨脹後，資金量體極大，只要高價股休息，流出的資金足以支撐其他族群飛天。他強調 2026 年是考驗「做功課能力」的一年，盲目射飛鏢的時代已過去。</div>
+                    </div>
+                </div>
+            </section>
             
 
             
+            <section class="section" id="stocks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="bar-chart-2"></i>
+                    </div>
+                    <h2 class="section-title">提到的股票 / ETF</h2>
+                </div>
+                <div class="stock-grid">
+                    <a href="/stocks/?q=台光電" class="stock-tag">
+                        <span class="stock-symbol">台光電 (6213)</span>
+                        <span class="stock-name">遭謠言（小作文）誤傳規格降級導致暴跌</span>
+                    </a>
+                    <a href="/stocks/?q=群聯" class="stock-tag">
+                        <span class="stock-symbol">群聯 (8299)</span>
+                        <span class="stock-name">記憶體代表股</span>
+                    </a>
+                    <a href="/stocks/?q=群創" class="stock-tag">
+                        <span class="stock-symbol">群創 (3481)</span>
+                        <span class="stock-name">轉型半導體封裝態度積極</span>
+                    </a>
+                    <a href="/stocks/?q=聯電" class="stock-tag">
+                        <span class="stock-symbol">聯電 (2303)</span>
+                        <span class="stock-name">遭外資長期借券賣出</span>
+                    </a>
+                    <a href="/stocks/?q=保瑞" class="stock-tag">
+                        <span class="stock-symbol">保瑞 (6472)</span>
+                        <span class="stock-name">生技績優股</span>
+                    </a>
+                    <a href="/stocks/?q=南亞科" class="stock-tag">
+                        <span class="stock-symbol">南亞科 (2408)</span>
+                        <span class="stock-name">記憶體漲價實質受惠者</span>
+                    </a>
+                    <a href="/stocks/?q=華景電" class="stock-tag">
+                        <span class="stock-symbol">華景電 (6688)</span>
+                        <span class="stock-name">台積電供應鏈</span>
+                    </a>
+                </div>
+            </section>
+            
 
             
+            <section class="section" id="quotes">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="quote"></i>
+                    </div>
+                    <h2 class="section-title">金句摘錄</h2>
+                </div>
+                <div class="quote-list">
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">賣也是量！外資回來不一定是回來買，回來賣也是貢獻成交量。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">股價短期是投票機，長期是體重計。當市場共識形成，大牛也會飛天。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">你不需要買在最低點才會賺錢，重點是你對產業是否有足夠的認知與信仰，讓你在震盪中抱得住。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">低價股亂飆時，渾水摸魚賺一兩根就走，總比套在裡面好幾年來得強。</p>
+                    </div>
+                </div>
+            </section>
+            
+
+            
+            <section class="section" id="risks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="alert-triangle"></i>
+                    </div>
+                    <h2 class="section-title">風險提醒</h2>
+                </div>
+                <div class="risk-list">
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">短期策略*：農曆年前資金充沛，可關注軍工、生技、面板等具族群性且有基本面支撐的「低位階補漲股」。 2. 風險控管：避開純題材、無營收支撐的低價同板股。若手中持股位於「右上角」且遭遇亂流（如散熱、PCB），只要產業趨勢未變，震盪反而是上車機會。 3. 產業警訊：留意記憶體漲價對下游代工廠（筆電、手機）的成本壓力，可能導致其他零組件利潤被削減。 4. 長期觀察：關注傳統產業或非 AI 公司如何透過「AI 化」或轉型切入新供應鏈，這將是 2026 年最大的股價想像空間來源。</span>
+                    </div>
+                </div>
+            </section>
+            
+            <nav class="episode-nav"><a href="/zhaohua/1014/" class="ep-nav-btn ep-nav-prev">
+                <i data-lucide="chevron-left"></i>
+                <span class="ep-nav-label">上一集</span>
+                <span class="ep-nav-title">本集聚焦於記憶體族群因處置降溫引發的資金大挪移，並深度解析台</span>
+            </a><a href="/zhaohua/1012/" class="ep-nav-btn ep-nav-next">
+                <span class="ep-nav-label">下一集</span>
+                <span class="ep-nav-title">本集解析台股創下歷史天量的背後真相，並由 PCB 女王廖婉婷</span>
+                <i data-lucide="chevron-right"></i>
+            </a></nav>
         </main>
 
         <footer class="footer">
             <p class="footer-text">
-                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
             </p>
         </footer>
     </div>
+
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#strategies" class="toc-link" data-section="strategies">心法</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a><a href="#risks" class="toc-link" data-section="risks">風險</a></nav>
 
     <script>
         lucide.createIcons();
@@ -643,6 +882,25 @@
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (scrollTop / docHeight) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
+
+            // TOC active state
+            const sections = document.querySelectorAll('.section[id], .tldr-box[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (scrollTop >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>

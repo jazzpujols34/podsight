@@ -502,6 +502,102 @@
             text-decoration: none;
         }
 
+        /* Episode Navigation */
+        .episode-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .ep-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .ep-nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .ep-nav-prev { justify-content: flex-start; }
+        .ep-nav-next { justify-content: flex-end; text-align: right; }
+
+        .ep-nav-btn svg { width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0; }
+        .ep-nav-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .ep-nav-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+        .ep-nav-disabled { visibility: hidden; }
+
+        .ep-nav-prev .ep-nav-label,
+        .ep-nav-prev .ep-nav-title { display: block; }
+        .ep-nav-next .ep-nav-label,
+        .ep-nav-next .ep-nav-title { display: block; }
+
+        /* Table of Contents */
+        .toc {
+            position: fixed;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .toc-link {
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .toc-link:hover,
+        .toc-link.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        /* Clickable stock tags */
+        .stock-tag {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a.stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .toc { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .episode-nav { flex-direction: column; }
+            .ep-nav-btn { max-width: 100%; }
+            .ep-nav-next { flex-direction: row-reverse; text-align: left; }
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -595,14 +691,14 @@
 
         <main class="content">
             
-            <div class="tldr-box animate-in">
+            <div class="tldr-box animate-in" id="tldr">
                 <div class="tldr-label">一句話總結</div>
                 <div class="tldr-text">AI 浪潮正從「會說話的大腦」轉向「會動手的實體機器人」，亞洲硬體供應鏈憑藉實質獲利正全面碾壓尚在燒錢的美國軟體股。</div>
             </div>
             
 
             
-            <section class="section">
+            <section class="section" id="topics">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="message-square"></i>
@@ -613,22 +709,17 @@
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 01</div>
                         <div class="topic-title">1. 亞洲科技股的結構性輪動</div>
-                        <div class="topic-content">庭皓指出，雖然美股納斯達克仍在創新高，但亞洲股市（特別是台、韓）的動能更強。原因在於 AI 軟體商（如 OpenAI）目前仍處於燒錢階段，而真正賺到真金白銀的是提供算力與硬體的亞洲廠商；南韓與台灣去年的 EPS 成長率分別高達 80% 與 30%，遠優於納斯達克的 12%。</div>
+                        <div class="topic-content">庭皓指出，雖然美股納斯達克仍在創新高，但亞洲股市（特別是台、韓）的動能更強。原因在於 AI 軟體商（如 OpenAI）目前仍處於燒錢階段，而真正賺到真金白銀的是提供算力與硬體的亞洲廠商；南韓與台灣去年的 EPS 成長率分別高達 80% 與 30%，遠優於納斯達克的 12%。 市場影響： 資金開始從高估值的美國軟體股流向低基期、高獲利的亞洲硬體商。</div>
                     </div>
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 02</div>
-                        <div class="topic-title">市場影響</div>
-                        <div class="topic-content">資金開始從高估值的美國軟體股流向低基期、高獲利的亞洲硬體商。 2. 實體 AI 與機器人大戰 AI 模型已從文字推論進入物理世界。庭皓詳細介紹了 Figure AI（雙系統大腦）、1X（親和力臉部設計）、波士頓動力（最強運動控制）等新創，以及亞馬遜機器人數即將超越員工數的轉折點。</div>
+                        <div class="topic-title">2. 實體 AI 與機器人大戰</div>
+                        <div class="topic-content">AI 模型已從文字推論進入物理世界。庭皓詳細介紹了 Figure AI（雙系統大腦）、1X（親和力臉部設計）、波士頓動力（最強運動控制）等新創，以及亞馬遜機器人數即將超越員工數的轉折點。 投資啟示： 機器人的核心競爭力在於「知行合一」的 VLA 模型，台灣在感測晶片、旋轉關節與視覺模組具備完整產業鏈。</div>
                     </div>
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 03</div>
-                        <div class="topic-title">投資啟示</div>
-                        <div class="topic-content">機器人的核心競爭力在於「知行合一」的 VLA 模型，台灣在感測晶片、旋轉關節與視覺模組具備完整產業鏈。 3. AI 生產力週期的 J 曲線 解釋為何軟體股近期表現較平淡。企業引進 AI 初期會經歷流程混亂、學習成本上升的「陣痛期」，導致生產力暫時下滑（Nike 勾勾型左側），待組織調整完畢後，AI 的效益才會在右側爆發。</div>
-                    </div>
-                    <div class="topic-card">
-                        <div class="topic-number">TOPIC 04</div>
-                        <div class="topic-title">市場影響</div>
-                        <div class="topic-content">目前處於硬體先行、軟體蓄勢的轉口期，硬體股的拉貨潮最為明確。</div>
+                        <div class="topic-title">3. AI 生產力週期的 J 曲線</div>
+                        <div class="topic-content">解釋為何軟體股近期表現較平淡。企業引進 AI 初期會經歷流程混亂、學習成本上升的「陣痛期」，導致生產力暫時下滑（Nike 勾勾型左側），待組織調整完畢後，AI 的效益才會在右側爆發。 市場影響： 目前處於硬體先行、軟體蓄勢的轉口期，硬體股的拉貨潮最為明確。</div>
                     </div>
                 </div>
             </section>
@@ -637,7 +728,7 @@
             
 
             
-            <section class="section">
+            <section class="section" id="stocks">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="bar-chart-2"></i>
@@ -645,49 +736,83 @@
                     <h2 class="section-title">提到的股票 / ETF</h2>
                 </div>
                 <div class="stock-grid">
-                    <div class="stock-tag">
+                    <a href="/stocks/?q=亞馬遜" class="stock-tag">
                         <span class="stock-symbol">亞馬遜 (AMZN)</span>
                         <span class="stock-name">機器人數量破 100 萬台</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=特斯拉" class="stock-tag">
                         <span class="stock-symbol">特斯拉 (TSLA)</span>
                         <span class="stock-name">Optimus 機器人雖量產進度落後</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=碩網" class="stock-tag">
                         <span class="stock-symbol">碩網 (掛牌公司)</span>
                         <span class="stock-name">專攻企業級 AI 客服與內控系統</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=衝泰" class="stock-tag">
                         <span class="stock-symbol">衝泰</span>
                         <span class="stock-name">影像擷取卡轉型為「機器人之眼」</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=利普斯" class="stock-tag">
                         <span class="stock-symbol">利普斯</span>
                         <span class="stock-name">3D 感測技術整合軟硬體</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=秉碩" class="stock-tag">
                         <span class="stock-symbol">秉碩</span>
                         <span class="stock-name">醫療機器人</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=Figure AI" class="stock-tag">
                         <span class="stock-symbol">Figure AI</span>
                         <span class="stock-name">C 輪估值達 390 億美元的明星機器人公司</span>
+                    </a>
+                </div>
+            </section>
+            
+
+            
+            <section class="section" id="quotes">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="quote"></i>
+                    </div>
+                    <h2 class="section-title">金句摘錄</h2>
+                </div>
+                <div class="quote-list">
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">沒有被渣男傷過，怎麼會喜歡老實人？主動投資被傷透了，才會發現被動投資（大盤）的好。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">AI 的故事一旦從願景進入到季報，敘事難度就會瞬間拉高。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">人生每個階段比的不一樣，年輕比愛情，中年比財富，晚年比命長。你不如一開始就比命長，因為活著就是優勢。</p>
                     </div>
                 </div>
             </section>
             
 
             
-
-            
+            <nav class="episode-nav"><a href="/yutinghao/2026-01-15/" class="ep-nav-btn ep-nav-prev">
+                <i data-lucide="chevron-left"></i>
+                <span class="ep-nav-label">上一集</span>
+                <span class="ep-nav-title">金屬狂飆 市場怕什麼 關稅判決再延 關稅戰未完 早晨財經速解</span>
+            </a><a href="/yutinghao/2026-01-13/" class="ep-nav-btn ep-nav-next">
+                <span class="ep-nav-label">下一集</span>
+                <span class="ep-nav-title">Fed收傳票 黃金剎不住 國安基金退場 台美談判有譜 記憶體</span>
+                <i data-lucide="chevron-right"></i>
+            </a></nav>
         </main>
 
         <footer class="footer">
             <p class="footer-text">
-                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
             </p>
         </footer>
     </div>
+
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a></nav>
 
     <script>
         lucide.createIcons();
@@ -697,6 +822,25 @@
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (scrollTop / docHeight) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
+
+            // TOC active state
+            const sections = document.querySelectorAll('.section[id], .tldr-box[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (scrollTop >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>

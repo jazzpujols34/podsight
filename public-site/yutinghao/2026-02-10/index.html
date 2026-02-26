@@ -502,6 +502,102 @@
             text-decoration: none;
         }
 
+        /* Episode Navigation */
+        .episode-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .ep-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .ep-nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .ep-nav-prev { justify-content: flex-start; }
+        .ep-nav-next { justify-content: flex-end; text-align: right; }
+
+        .ep-nav-btn svg { width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0; }
+        .ep-nav-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .ep-nav-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+        .ep-nav-disabled { visibility: hidden; }
+
+        .ep-nav-prev .ep-nav-label,
+        .ep-nav-prev .ep-nav-title { display: block; }
+        .ep-nav-next .ep-nav-label,
+        .ep-nav-next .ep-nav-title { display: block; }
+
+        /* Table of Contents */
+        .toc {
+            position: fixed;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .toc-link {
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .toc-link:hover,
+        .toc-link.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        /* Clickable stock tags */
+        .stock-tag {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a.stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .toc { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .episode-nav { flex-direction: column; }
+            .ep-nav-btn { max-width: 100%; }
+            .ep-nav-next { flex-direction: row-reverse; text-align: left; }
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -595,14 +691,14 @@
 
         <main class="content">
             
-            <div class="tldr-box animate-in">
+            <div class="tldr-box animate-in" id="tldr">
                 <div class="tldr-label">一句話總結</div>
                 <div class="tldr-text">AI 浪潮進入「估值大洗牌」與「融資大競賽」階段，市場正透過價格回落消化過度樂觀的預期，但台美科技產業鏈的擴張動能依然強勁。</div>
             </div>
             
 
             
-            <section class="section">
+            <section class="section" id="topics">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="message-square"></i>
@@ -612,23 +708,18 @@
                 <div class="topic-list">
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 01</div>
-                        <div class="topic-title">詳細說明</div>
-                        <div class="topic-content">雖然納斯達克指數在高位震盪，但內部已發生劇烈分化。資金正從容易被 AI 顛覆的應用軟體（SaaS）撤出，轉向能見度更高的 AI 基礎建設與半導體硬體。美國軟體股單週市值蒸發兩兆美元，遠期本益比從 35 倍腰斬至 20 倍。</div>
+                        <div class="topic-title">1. 科技股的內部大洗牌：軟硬體走勢兩極化</div>
+                        <div class="topic-content">詳細說明： 雖然納斯達克指數在高位震盪，但內部已發生劇烈分化。資金正從容易被 AI 顛覆的應用軟體（SaaS）撤出，轉向能見度更高的 AI 基礎建設與半導體硬體。美國軟體股單週市值蒸發兩兆美元，遠期本益比從 35 倍腰斬至 20 倍。 市場影響： 這並非基本面崩壞，而是資金重新分配風險。投資人應關注本益成長比（PEG）的變化，目前許多巨頭的估值已回落至相對健康的水位。</div>
                     </div>
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 02</div>
-                        <div class="topic-title">市場影響</div>
-                        <div class="topic-content">這並非基本面崩壞，而是資金重新分配風險。投資人應關注本益成長比（PEG）的變化，目前許多巨頭的估值已回落至相對健康的水位。 2. 科技巨頭的「搶錢大作戰」與資本支出 詳細說明： Alphabet（Google）近期發債 150 億美元，認購訂單竟突破 1000 億美元，顯示市場對頂級巨頭的現金流極具信心。四大科技巨頭（Meta, Amazon, MSFT, Google）的資本支出佔 GDP 比例已逼近 19 世紀鐵路建設高峰，顯示 AI 競賽已進入「軍備競賽」階段。</div>
+                        <div class="topic-title">2. 科技巨頭的「搶錢大作戰」與資本支出</div>
+                        <div class="topic-content">詳細說明： Alphabet（Google）近期發債 150 億美元，認購訂單竟突破 1000 億美元，顯示市場對頂級巨頭的現金流極具信心。四大科技巨頭（Meta, Amazon, MSFT, Google）的資本支出佔 GDP 比例已逼近 19 世紀鐵路建設高峰，顯示 AI 競賽已進入「軍備競賽」階段。 投資啟示： 巨頭發債是為了卡位算力和供應鏈，目前處於「重資本開支期」而非「收割期」，投資人需觀察這些支出何時能轉化為實質現金流。</div>
                     </div>
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 03</div>
-                        <div class="topic-title">投資啟示</div>
-                        <div class="topic-content">巨頭發債是為了卡位算力和供應鏈，目前處於「重資本開支期」而非「收割期」，投資人需觀察這些支出何時能轉化為實質現金流。 3. 台灣出口數據的「離譜」增長 詳細說明： 台灣 1 月出口金額年增 69.9%，創下歷史單月新高，且首度突破 2 兆新台幣大關。美國已正式取代中國，成為台灣最大的直接出口市場（佔比 32%），顯示全球供應鏈已發生結構性轉變。</div>
-                    </div>
-                    <div class="topic-card">
-                        <div class="topic-number">TOPIC 04</div>
-                        <div class="topic-title">市場影響</div>
-                        <div class="topic-content">台積電 ADR 創下歷史新高，帶動台股挑戰新高。傳統產業如台塑集團也開始大規模融資進行 AI 轉型，顯示全產業都在「蹭」AI 的熱度。</div>
+                        <div class="topic-title">3. 台灣出口數據的「離譜」增長</div>
+                        <div class="topic-content">詳細說明： 台灣 1 月出口金額年增 69.9%，創下歷史單月新高，且首度突破 2 兆新台幣大關。美國已正式取代中國，成為台灣最大的直接出口市場（佔比 32%），顯示全球供應鏈已發生結構性轉變。 市場影響： 台積電 ADR 創下歷史新高，帶動台股挑戰新高。傳統產業如台塑集團也開始大規模融資進行 AI 轉型，顯示全產業都在「蹭」AI 的熱度。</div>
                     </div>
                 </div>
             </section>
@@ -637,7 +728,7 @@
             
 
             
-            <section class="section">
+            <section class="section" id="stocks">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="bar-chart-2"></i>
@@ -645,49 +736,83 @@
                     <h2 class="section-title">提到的股票 / ETF</h2>
                 </div>
                 <div class="stock-grid">
-                    <div class="stock-tag">
+                    <a href="/stocks/?q=Alphabet" class="stock-tag">
                         <span class="stock-symbol">Alphabet (GOOGL)</span>
                         <span class="stock-name">全球發債認購爆棚</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=Microsoft" class="stock-tag">
                         <span class="stock-symbol">Microsoft (MSFT)</span>
                         <span class="stock-name">估值大幅回撥</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=台積電" class="stock-tag">
                         <span class="stock-symbol">台積電 (2330 / TSM)</span>
                         <span class="stock-name">受惠 AI 算力需求</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=Oracle" class="stock-tag">
                         <span class="stock-symbol">Oracle (ORCL)</span>
                         <span class="stock-name">股價回測關稅戰低點後強勢反彈</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=SpaceX / XAI" class="stock-tag">
                         <span class="stock-symbol">SpaceX / XAI</span>
                         <span class="stock-name">馬斯克旗下新創</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=IGV" class="stock-tag">
                         <span class="stock-symbol">IGV (軟體股 ETF)</span>
                         <span class="stock-name">近期重災區</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=XLK" class="stock-tag">
                         <span class="stock-symbol">XLK (科技股 ETF)</span>
                         <span class="stock-name">前瞻 PEG 快速下滑</span>
+                    </a>
+                </div>
+            </section>
+            
+
+            
+            <section class="section" id="quotes">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="quote"></i>
+                    </div>
+                    <h2 class="section-title">金句摘錄</h2>
+                </div>
+                <div class="quote-list">
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">多頭就是要漲一漲休息一下，讓本益比適度修正，獲利才能跟上股價。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">制度是靠流程在運作，但人性會試圖找到漏洞和捷徑。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">我們容易用自己的期待去填補對方還沒有說完的話，把模糊訊號腦補成好消息。</p>
                     </div>
                 </div>
             </section>
             
 
             
-
-            
+            <nav class="episode-nav"><a href="/yutinghao/2026-02-11/" class="ep-nav-btn ep-nav-prev">
+                <i data-lucide="chevron-left"></i>
+                <span class="ep-nav-label">上一集</span>
+                <span class="ep-nav-title">黃金漲幅榜首 一路贏到年底 台股封關 該抱股過年 早晨財經速</span>
+            </a><a href="/yutinghao/2026-02-09/" class="ep-nav-btn ep-nav-next">
+                <span class="ep-nav-label">下一集</span>
+                <span class="ep-nav-title">川普喊話拉股市 高市交易完全執政 日股再起飛 早晨財經速解讀</span>
+                <i data-lucide="chevron-right"></i>
+            </a></nav>
         </main>
 
         <footer class="footer">
             <p class="footer-text">
-                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
             </p>
         </footer>
     </div>
+
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a></nav>
 
     <script>
         lucide.createIcons();
@@ -697,6 +822,25 @@
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (scrollTop / docHeight) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
+
+            // TOC active state
+            const sections = document.querySelectorAll('.section[id], .tldr-box[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (scrollTop >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>

@@ -502,6 +502,102 @@
             text-decoration: none;
         }
 
+        /* Episode Navigation */
+        .episode-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .ep-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .ep-nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .ep-nav-prev { justify-content: flex-start; }
+        .ep-nav-next { justify-content: flex-end; text-align: right; }
+
+        .ep-nav-btn svg { width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0; }
+        .ep-nav-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .ep-nav-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+        .ep-nav-disabled { visibility: hidden; }
+
+        .ep-nav-prev .ep-nav-label,
+        .ep-nav-prev .ep-nav-title { display: block; }
+        .ep-nav-next .ep-nav-label,
+        .ep-nav-next .ep-nav-title { display: block; }
+
+        /* Table of Contents */
+        .toc {
+            position: fixed;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .toc-link {
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .toc-link:hover,
+        .toc-link.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        /* Clickable stock tags */
+        .stock-tag {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a.stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .toc { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .episode-nav { flex-direction: column; }
+            .ep-nav-btn { max-width: 100%; }
+            .ep-nav-next { flex-direction: row-reverse; text-align: left; }
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -595,14 +691,14 @@
 
         <main class="content">
             
-            <div class="tldr-box animate-in">
+            <div class="tldr-box animate-in" id="tldr">
                 <div class="tldr-label">一句話總結</div>
                 <div class="tldr-text">台股站上三萬點大關之際，國安基金高割離席，市場焦點轉向「2026 AI 外溢效應」與低位階轉機股的操作契機。</div>
             </div>
             
 
             
-            <section class="section">
+            <section class="section" id="topics">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="message-square"></i>
@@ -640,9 +736,50 @@
             
 
             
+            <section class="section" id="strategies">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h2 class="section-title">操作心法與建議</h2>
+                </div>
+                <div class="strategy-list">
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="strategy-text">來賓姓名：韋泰（黃金右下角）</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="layers"></i>
+                        </div>
+                        <div class="strategy-text">專業背景：選股教練，擅長挖掘低位階、形態剛轉強的轉機股。 高手的操作心法與作法：</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="shield"></i>
+                        </div>
+                        <div class="strategy-text">進出場策略：秉持「黃金右下角」邏輯，尋找股價淨值比低（如台泥低於 1 倍）、均線剛開始翻揚、價漲量增且法人回頭買超的標的。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="eye"></i>
+                        </div>
+                        <div class="strategy-text">選股邏輯：1. 價值型投資的耐心：分享台泥 (1101) 的心路歷程，強調好公司遇到倒楣事（如電池廠火災、中國內需差）後，若本業復甦且轉投資開花結果，即是佈局時機。 2. 避開過熱題材：不建議在法說會前追逐已大漲的台積電供應鏈，傾向在量縮拉回時分批承接。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="percent"></i>
+                        </div>
+                        <div class="strategy-text">風險控管：反對單押單一估值或標的，應採取「主從衛星策略」，在 AI 主軸外搭配低位階的價值股。</div>
+                    </div>
+                </div>
+            </section>
+            
 
             
-            <section class="section">
+            <section class="section" id="stocks">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="bar-chart-2"></i>
@@ -650,53 +787,106 @@
                     <h2 class="section-title">提到的股票 / ETF</h2>
                 </div>
                 <div class="stock-grid">
-                    <div class="stock-tag">
+                    <a href="/stocks/?q=台積電" class="stock-tag">
                         <span class="stock-symbol">台積電 (2330)</span>
                         <span class="stock-name">創歷史新高 1720 元</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=台泥" class="stock-tag">
                         <span class="stock-symbol">台泥 (1101)</span>
                         <span class="stock-name">淨值比低於 1</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=漢唐" class="stock-tag">
                         <span class="stock-symbol">漢唐 (2404)</span>
                         <span class="stock-name">12 月營收表現佳</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=華通" class="stock-tag">
                         <span class="stock-symbol">華通 (2313)</span>
                         <span class="stock-name">低軌衛星產能拉升</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=泰林" class="stock-tag">
                         <span class="stock-symbol">泰林 (8080)</span>
                         <span class="stock-name">土方管制政策受益股</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=力成" class="stock-tag">
                         <span class="stock-symbol">力成 (6239)</span>
                         <span class="stock-name">記憶體封測龍頭</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=南亞科" class="stock-tag">
                         <span class="stock-symbol">南亞科 (2408)</span>
                         <span class="stock-name">記憶體顆粒代表</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=大力光" class="stock-tag">
                         <span class="stock-symbol">大力光 (3008)</span>
                         <span class="stock-name">積極切入 CPO（光通訊）領域</span>
+                    </a>
+                </div>
+            </section>
+            
+
+            
+            <section class="section" id="quotes">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="quote"></i>
+                    </div>
+                    <h2 class="section-title">金句摘錄</h2>
+                </div>
+                <div class="quote-list">
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">國安基金這次真的是攻心為上，122 億就讓大家覺得場內有人，心理素質極強。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">2026 年的關鍵字是『外溢』，訂單會從核心向外擴散到封測與零組件。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">價值型投資最難的是寂寞，看著別人的標的噴發，你的股票每天只漲一點點，這需要極強的信心。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">當工讀生都在談航運（或熱門股）時，就是慣性養成的危險時刻。</p>
                     </div>
                 </div>
             </section>
             
 
             
-
+            <section class="section" id="risks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="alert-triangle"></i>
+                    </div>
+                    <h2 class="section-title">風險提醒</h2>
+                </div>
+                <div class="risk-list">
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">切勿追高*：台積電法說會前夕，相關裝置與特化股不建議追價，應待利多公佈後的市場反應再行決定。 2. 關注低位階轉機：尋找如台泥、華通等評價處於低檔、且產業趨勢好轉的標的，作為衛星配置。 3. 鎖定 AI 外溢效應：2026 年封測（如日月光、力成）與光通訊（CPO）仍是主戰場，特別是 CPO 若隨台積電技術公佈而有回檔，是長期關注的機會。 4. 警惕記憶體慣性：記憶體雖有空單回補燃料，但需注意中國產能釋放的長線壓力，操作上建議採「量縮拉回低接」，而非「噴發追價」。</span>
+                    </div>
+                </div>
+            </section>
             
+            <nav class="episode-nav"><a href="/zhaohua/1017/" class="ep-nav-btn ep-nav-prev">
+                <i data-lucide="chevron-left"></i>
+                <span class="ep-nav-label">上一集</span>
+                <span class="ep-nav-title">EP1017｜1400多家上漲，低價股噴出終於讓散戶有感？如</span>
+            </a><a href="/zhaohua/1015/" class="ep-nav-btn ep-nav-next">
+                <span class="ep-nav-label">下一集</span>
+                <span class="ep-nav-title">台股攻上三萬點新高，資金在川普政見與 AI 題材推動下，由半</span>
+                <i data-lucide="chevron-right"></i>
+            </a></nav>
         </main>
 
         <footer class="footer">
             <p class="footer-text">
-                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
             </p>
         </footer>
     </div>
+
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#strategies" class="toc-link" data-section="strategies">心法</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a><a href="#risks" class="toc-link" data-section="risks">風險</a></nav>
 
     <script>
         lucide.createIcons();
@@ -706,6 +896,25 @@
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (scrollTop / docHeight) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
+
+            // TOC active state
+            const sections = document.querySelectorAll('.section[id], .tldr-box[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (scrollTop >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>

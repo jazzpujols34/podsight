@@ -345,10 +345,115 @@
         .delay-3 { animation-delay: 0.3s; }
         .delay-4 { animation-delay: 0.4s; }
 
+        /* Latest Episodes Section */
+        .latest-section {
+            padding: 0 0 80px;
+        }
+
+        .latest-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .latest-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 24px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s var(--transition-smooth);
+        }
+
+        .latest-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255,255,255,0.15);
+            background: var(--bg-card-hover);
+        }
+
+        .latest-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .latest-podcast {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+
+        .latest-title {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            line-height: 1.4;
+        }
+
+        .latest-preview {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Freshness badges */
+        .fresh-badge {
+            font-size: 0.65rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .fresh-today {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+
+        .fresh-yesterday {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .fresh-week {
+            background: rgba(168, 85, 247, 0.15);
+            color: #a855f7;
+        }
+
+        /* Telegram CTA */
+        .telegram-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: rgba(0, 136, 204, 0.15);
+            border: 1px solid rgba(0, 136, 204, 0.3);
+            border-radius: 100px;
+            color: #0088cc;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-top: 32px;
+        }
+
+        .telegram-cta:hover {
+            background: rgba(0, 136, 204, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .telegram-cta svg { width: 18px; height: 18px; }
+
         @media (max-width: 768px) {
             .container { padding: 0 16px; }
             .hero { padding: 60px 0 80px; }
             .podcast-grid { grid-template-columns: 1fr; }
+            .latest-grid { grid-template-columns: 1fr; }
             .orb { opacity: 0.25; }
         }
     </style>
@@ -382,6 +487,62 @@
                 台灣財經 Podcast 智慧摘要，快速掌握每集精華內容、投資觀點與市場分析。
             </p>
         </section>
+
+        
+        <section class="latest-section">
+            <div class="section-label animate-in delay-2">最新摘要</div>
+            <div class="latest-grid animate-in delay-3">
+                <a href="/gooaye/0639/" class="latest-card">
+                    <div class="latest-meta">
+                        <span class="latest-podcast">股癌</span>
+                        <span class="fresh-badge fresh-yesterday">昨天</span>
+                    </div>
+                    <div class="latest-title">EP639 | 🐗</div>
+                    <div class="latest-preview">台、日股近期表現強於美股，投資者應理解市場的「呼吸輪動」並關注 AI 帶動的能源需求，特別是太陽能產業在「去中化」趨勢下的轉機。...</div>
+                </a>
+                <a href="/yutinghao/2026-02-25/" class="latest-card">
+                    <div class="latest-meta">
+                        <span class="latest-podcast">財經皓角</span>
+                        <span class="fresh-badge fresh-yesterday">昨天</span>
+                    </div>
+                    <div class="latest-title">美股追得上 台股漲幅嗎 早晨財經速解讀 </div>
+                    <div class="latest-preview">AI 浪潮正進入「硬體收割、軟體重估」的兩極化時代，台股與韓股靠半導體硬體噴到懷疑人生，美股軟體股則在「AI 替代恐慌」中跌到懷疑人生。...</div>
+                </a>
+                <a href="/zhaohua/1044/" class="latest-card">
+                    <div class="latest-meta">
+                        <span class="latest-podcast">兆華</span>
+                        <span class="fresh-badge fresh-yesterday">昨天</span>
+                    </div>
+                    <div class="latest-title">EP1044｜台積電2000元達陣，鴻海、廣達回神，爆史上最大成交量！中小熱門股休息，落後AI股補漲</div>
+                    <div class="latest-preview">台股馬年開春強勢站上 35,000 點大關，在 AI 硬體需求實質支撐下，資金由美轉亞，投資人應透過「資產配置」與「順勢而為」參與這場史無前例的大多頭。...</div>
+                </a>
+                <a href="/gooaye/0638/" class="latest-card">
+                    <div class="latest-meta">
+                        <span class="latest-podcast">股癌</span>
+                        <span class="fresh-badge fresh-week">本週</span>
+                    </div>
+                    <div class="latest-title">EP638 | 🐈‍⬛</div>
+                    <div class="latest-preview">MK 分享了近年最悠閒的農曆年假心得，並針對美股資安板塊震盪、川普關稅不確定性及中東地緣政治風險提出警示，同時觀察到亞股（日、台）異常強勁的走勢。...</div>
+                </a>
+                <a href="/yutinghao/2026-02-24/" class="latest-card">
+                    <div class="latest-meta">
+                        <span class="latest-podcast">財經皓角</span>
+                        <span class="fresh-badge fresh-week">本週</span>
+                    </div>
+                    <div class="latest-title">軟體股股災 AI受害股 為何越來越多 早晨財經速解讀 </div>
+                    <div class="latest-preview">AI 正在從「講故事」進入「算總帳」階段，軟體股首當其衝面臨取代危機，投資者應從盲目追逐轉向關注變現能力與物理限制。...</div>
+                </a>
+                <a href="/zhaohua/1043/" class="latest-card">
+                    <div class="latest-meta">
+                        <span class="latest-podcast">兆華</span>
+                        <span class="fresh-badge fresh-yesterday">昨天</span>
+                    </div>
+                    <div class="latest-title">EP1043｜台股逼近35000點！為何台韓與美股脫鉤？關稅架構下，GDP預估還要往上？載板、矽光子</div>
+                    <div class="latest-preview">台股在全球資金流向新興市場與 AI 產業高速成長的驅動下，與美股呈現脫鉤強勢，投資人應鎖定「AI 純度高」的 PCB 與載板族群，並留意三月下旬後的季節性降溫。...</div>
+                </a>
+            </div>
+        </section>
+        
 
         <section class="podcasts-section">
             <div class="section-label animate-in delay-3">收錄節目</div>
@@ -450,7 +611,11 @@
         </section>
 
         <footer class="footer">
-            <p class="footer-text">
+            <a href="https://t.me/podsight" target="_blank" class="telegram-cta">
+                <i data-lucide="send"></i>
+                訂閱 Telegram 頻道
+            </a>
+            <p class="footer-text" style="margin-top: 24px;">
                 摘要由 AI 自動生成，僅供參考 · PodSight
             </p>
         </footer>

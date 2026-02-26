@@ -233,6 +233,33 @@
             min-width: 80px;
             text-align: center;
             border: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .fresh-badge {
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .fresh-today {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+
+        .fresh-yesterday {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .fresh-week {
+            background: rgba(168, 85, 247, 0.15);
+            color: #a855f7;
         }
 
         .episode-content { flex: 1; min-width: 0; }
@@ -411,7 +438,7 @@
 
         <div class="episode-list" id="episodeList">
             <a href="/zhaohua/1044/" class="episode-card">
-                <span class="episode-date-badge">EP1044</span>
+                <span class="episode-date-badge">EP1044<span class="fresh-badge fresh-yesterday">昨天</span></span>
                 <div class="episode-content">
                     <div class="episode-title">EP1044｜台積電2000元達陣，鴻海、廣達回神，爆史上最大成交量！中小熱門股休息，落後AI股補漲，如何低風險賺這波錢？ft.題材獵人 林漢偉</div>
                     <div class="episode-preview">台股馬年開春強勢站上 35,000 點大關，在 AI 硬體需求實質支撐下，資金由美轉亞，投資人應透過「資產配置」與「順勢而為」參與這場史無前例的大多頭。...</div>
@@ -421,7 +448,7 @@
                 </div>
             </a>
             <a href="/zhaohua/1043/" class="episode-card">
-                <span class="episode-date-badge">EP1043</span>
+                <span class="episode-date-badge">EP1043<span class="fresh-badge fresh-yesterday">昨天</span></span>
                 <div class="episode-content">
                     <div class="episode-title">EP1043｜台股逼近35000點！為何台韓與美股脫鉤？關稅架構下，GDP預估還要往上？載板、矽光子無極限，能追？還有誰沒漲到？ft.國泰證期 蔡明翰</div>
                     <div class="episode-preview">台股在全球資金流向新興市場與 AI 產業高速成長的驅動下，與美股呈現脫鉤強勢，投資人應鎖定「AI 純度高」的 PCB 與載板族群，並留意三月下旬後的季節性降溫。...</div>
@@ -431,7 +458,7 @@
                 </div>
             </a>
             <a href="/zhaohua/1042/" class="episode-card">
-                <span class="episode-date-badge">EP1042</span>
+                <span class="episode-date-badge">EP1042<span class="fresh-badge fresh-week">本週</span></span>
                 <div class="episode-content">
                     <div class="episode-title">EP1042｜馬年開紅盤，川普關稅違法怎看，台股該喜還憂？載板、矽光子、玻纖布、被動、低軌、記憶體、特化都噴，如何介入？ft.操盤手 黃豐凱</div>
                     <div class="episode-preview">2026 年馬年開紅盤台股站上三萬四千點，資金呈現「大盤穩、櫃買強」的輪動態勢，投資人應聚焦具實質 AI 基本面的 ABF 載板與被動元件，並留意川普關稅與記憶體規格轉換的變數。...</div>
@@ -441,7 +468,7 @@
                 </div>
             </a>
             <a href="/zhaohua/1041/" class="episode-card">
-                <span class="episode-date-badge">EP1041</span>
+                <span class="episode-date-badge">EP1041<span class="fresh-badge fresh-week">本週</span></span>
                 <div class="episode-content">
                     <div class="episode-title">EP1041｜非財金本科系，9彎18拐闖進投信，甘苦談！放棄發言人職位，如何當上最懂產業的操盤手？ft.國家級基金操盤手 黄豐凱</div>
                     <div class="episode-preview">本集透過國家級操盤手凱哥的職涯轉折，揭示了深度產業研究、價值投資的心理修煉，以及如何透過「教人釣魚」的心態在充滿寶藏的股市中穩健獲利。...</div>
@@ -766,7 +793,7 @@
 
         <footer class="footer">
             <p class="footer-text">
-                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
             </p>
         </footer>
     </div>

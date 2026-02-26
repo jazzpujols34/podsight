@@ -502,6 +502,102 @@
             text-decoration: none;
         }
 
+        /* Episode Navigation */
+        .episode-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .ep-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .ep-nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .ep-nav-prev { justify-content: flex-start; }
+        .ep-nav-next { justify-content: flex-end; text-align: right; }
+
+        .ep-nav-btn svg { width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0; }
+        .ep-nav-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .ep-nav-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+        .ep-nav-disabled { visibility: hidden; }
+
+        .ep-nav-prev .ep-nav-label,
+        .ep-nav-prev .ep-nav-title { display: block; }
+        .ep-nav-next .ep-nav-label,
+        .ep-nav-next .ep-nav-title { display: block; }
+
+        /* Table of Contents */
+        .toc {
+            position: fixed;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .toc-link {
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .toc-link:hover,
+        .toc-link.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        /* Clickable stock tags */
+        .stock-tag {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a.stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .toc { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .episode-nav { flex-direction: column; }
+            .ep-nav-btn { max-width: 100%; }
+            .ep-nav-next { flex-direction: row-reverse; text-align: left; }
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -595,14 +691,14 @@
 
         <main class="content">
             
-            <div class="tldr-box animate-in">
+            <div class="tldr-box animate-in" id="tldr">
                 <div class="tldr-label">一句話總結</div>
                 <div class="tldr-text">台積電法說會釋出極佳展望帶動大盤暴漲近 600 點，市場焦點從半導體外溢至重電、記憶體及載板族群，專家建議採取「擇優而抱」與「ETF 配置」策略應對 32,000 點行情。</div>
             </div>
             
 
             
-            <section class="section">
+            <section class="section" id="topics">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="message-square"></i>
@@ -615,14 +711,70 @@
                         <div class="topic-title">1. 台積電法說後的市場驗證與外溢效應</div>
                         <div class="topic-content">詳細說明：台積電法說會繳出超預期成績單，盤中股價創下 1750 元歷史新高。儘管美國 ADR 出現高檔爆量與長上影線的「利多實現」疑慮，但台股現貨表現強勁，顯示法人持股結構穩固。台積電強調先進製程需求極旺，導致訂單外溢至成熟製程代工廠。 市場背景與影響：市場原先擔憂資本支出是否達標，最終定案於 520-560 億美元，化解疑慮。此舉帶動整體 AI 供應鏈與半導體設備商的信心。</div>
                     </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 02</div>
+                        <div class="topic-title">2. AI 的終極瓶頸：電力與重電族群回歸</div>
+                        <div class="topic-content">詳細說明：台積電魏哲家董事長提到，產能並非最大問題，電力供應才是。這引發市場對重電族群的重新關注。不僅華城表現強勢，連長期低迷的大同也因接獲美國訂單及內部利空出盡（認賠華映大陸虧損）而出現逆轉契機。 市場背景與影響：川普要求 AI 大廠自備電力，微軟等巨頭增加能源投資，使台灣重電外銷美國題材再度升溫。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 03</div>
+                        <div class="topic-title">3. 景氣循環股的爆發：記憶體與載板</div>
+                        <div class="topic-content">詳細說明：記憶體報價預計仍有半年漲幅，威剛、十銓等通路商在高庫存與 CP 發行背景下人氣旺盛。載板部分，NVIDIA GB300 認證成為關鍵，欣興已通過，景碩正在認證中，南電則受惠於 Apple 強奪產能傳聞而亮燈漲停。 市場背景與影響：這類股票屬於「景氣回溫初期」，股價領先反映業績改善，而非反映高 EPS，通常第一波漲勢最為兇猛。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 04</div>
+                        <div class="topic-title">4. 關稅政策定案與傳統產業反彈</div>
+                        <div class="topic-content">詳細說明：美國確定對台徵收 15% 關稅並要求 5000 億美元投資，市場對此已產生免疫力。工具機與汽車零件族群因過去一年基期極低，在關稅利空出盡後出現補漲反彈。 市場背景與影響：K 型經濟持續，傳產雖有反彈但成長動能仍遜於 AI 產業，建議以「委屈鬼」反彈視之。</div>
+                    </div>
                 </div>
             </section>
             
 
             
+            <section class="section" id="strategies">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h2 class="section-title">操作心法與建議</h2>
+                </div>
+                <div class="strategy-list">
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="strategy-text">黃峰凱 (凱哥)：國家基金前操盤手，擅長產業趨勢分析與籌碼追蹤。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="layers"></i>
+                        </div>
+                        <div class="strategy-text">高手的操作心法與作法*：</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="shield"></i>
+                        </div>
+                        <div class="strategy-text">進出場策略： 觀察「均價線」與「大量區低點」。若股價跌破大量區低點必須減碼；若未站上當日均價線則不加碼。 針對強勢股（如記憶體、載板），只要法人與主力籌碼未鬆動，震盪皆視為休息而非轉單。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="eye"></i>
+                        </div>
+                        <div class="strategy-text">選股邏輯： 「買最強的或買控股公司」：若不敢追逐如威剛、南亞科等飆股，可轉向買進其母公司或關聯控股（如南亞、華新麗華），雖然漲幅較慢但相對安心。 「擇優而報」：認清產業是「升級漲價」還是「純反彈」。載板與記憶體屬於產業升級，應耐心持有至 EPS 完全爆發。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="percent"></i>
+                        </div>
+                        <div class="strategy-text">風險控管方法：不要單押一支股票，若輪動節奏抓不準，建議配置市值型或半導體 ETF，避免「入寶山而賠錢」。</div>
+                    </div>
+                </div>
+            </section>
+            
 
             
-            <section class="section">
+            <section class="section" id="stocks">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="bar-chart-2"></i>
@@ -630,65 +782,122 @@
                     <h2 class="section-title">提到的股票 / ETF</h2>
                 </div>
                 <div class="stock-grid">
-                    <div class="stock-tag">
+                    <a href="/stocks/?q=台積電" class="stock-tag">
                         <span class="stock-symbol">台積電 (2330)</span>
                         <span class="stock-name">歷史新高</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=威剛" class="stock-tag">
                         <span class="stock-symbol">威剛 (3260)</span>
                         <span class="stock-name">記憶體人氣指標</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=十銓" class="stock-tag">
                         <span class="stock-symbol">十銓 (4967)</span>
                         <span class="stock-name">記憶體族群</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=欣興" class="stock-tag">
                         <span class="stock-symbol">欣興 (3037)</span>
                         <span class="stock-name">已通過 GB300 認證</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=景碩" class="stock-tag">
                         <span class="stock-symbol">景碩 (3189)</span>
                         <span class="stock-name">正在認證 GB300</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=南電" class="stock-tag">
                         <span class="stock-symbol">南電 (8046)</span>
                         <span class="stock-name">傳受惠 Apple 搶產能</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=華城" class="stock-tag">
                         <span class="stock-symbol">華城 (1513)</span>
                         <span class="stock-name">重電領頭羊</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=大同" class="stock-tag">
                         <span class="stock-symbol">大同 (2371)</span>
                         <span class="stock-name">利空出盡</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=宇隆" class="stock-tag">
                         <span class="stock-symbol">宇隆 (2233)</span>
                         <span class="stock-name">兼具汽車零件與機器人題材</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=0052" class="stock-tag">
                         <span class="stock-symbol">0052 (富邦科技)</span>
                         <span class="stock-name">內含 72% 台積電</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=00993A" class="stock-tag">
                         <span class="stock-symbol">00993A (安聯主動式ETF)</span>
                         <span class="stock-name">討論高檔發行後的操盤挑戰</span>
+                    </a>
+                </div>
+            </section>
+            
+
+            
+            <section class="section" id="quotes">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="quote"></i>
+                    </div>
+                    <h2 class="section-title">金句摘錄</h2>
+                </div>
+                <div class="quote-list">
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">你要克服那種心情，不要等漲了才相信是真的，跌了就懷疑產業會掉單。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">越關越大尾（處置股），關出來可能跌一跤就繼續漲，因為籌碼被鎖住了。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">不要單押一支，要有一檔主力的賺大錢，其他小賺小賺，心情才穩。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">如果你不敢用個股，就用 ETF 幫自己配置，不要如入寶山卻賠錢離開。</p>
                     </div>
                 </div>
             </section>
             
 
             
-
+            <section class="section" id="risks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="alert-triangle"></i>
+                    </div>
+                    <h2 class="section-title">風險提醒</h2>
+                </div>
+                <div class="risk-list">
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">後市看法：台股目前處於帶量上攻階段，32,000 點目標明確。台積電供應鏈將貫穿整個 2026 年，不只是年初行情。</span>
+                    </div>
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">操作建議： 1. 避開「土方之亂」類型的投機股：資金已從小型投機股回流至 AI 與重電主流。 2. 分階持有：針對景氣循環股（載板、記憶體），應在 EPS 真正大爆發前持有，等到高 EPS 報紙都在刊登時反而是利多出盡之時。 3. 利用 ETF 分散壓力：若在高檔（31,500點）感到恐懼，可選擇市值型或主動式 ETF，讓專業團隊處理選股輪動。</span>
+                    </div>
+                </div>
+            </section>
             
+            <nav class="episode-nav"><a href="/zhaohua/1020/" class="ep-nav-btn ep-nav-prev">
+                <i data-lucide="chevron-left"></i>
+                <span class="ep-nav-label">上一集</span>
+                <span class="ep-nav-title">EP1020｜台股近32000，有過熱現象嗎？緯創獲利創高大</span>
+            </a><a href="/zhaohua/1018/" class="ep-nav-btn ep-nav-next">
+                <span class="ep-nav-label">下一集</span>
+                <span class="ep-nav-title">EP1018｜台積電法說已是「不可思議」，Q1估毛利率65%</span>
+                <i data-lucide="chevron-right"></i>
+            </a></nav>
         </main>
 
         <footer class="footer">
             <p class="footer-text">
-                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
             </p>
         </footer>
     </div>
+
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#strategies" class="toc-link" data-section="strategies">心法</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a><a href="#risks" class="toc-link" data-section="risks">風險</a></nav>
 
     <script>
         lucide.createIcons();
@@ -698,6 +907,25 @@
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (scrollTop / docHeight) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
+
+            // TOC active state
+            const sections = document.querySelectorAll('.section[id], .tldr-box[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (scrollTop >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>

@@ -1,0 +1,3233 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>股票搜尋 - PodSight</title>
+    <meta name="description" content="搜尋 Podcast 中提到的股票">
+
+    <link rel="icon" type="image/jpeg" href="/assets/PodSight-Logo-cropped.jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <style>
+        :root {
+            --bg-primary: #050508;
+            --bg-secondary: #0a0a0f;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --bg-card-hover: rgba(255, 255, 255, 0.06);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.4);
+            --accent-primary: #4DB8E8;
+            --accent-bg: rgba(77, 184, 232, 0.12);
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Noto Sans TC', 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .nav {
+            padding: 24px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-back {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover { color: var(--text-primary); }
+        .nav-back svg { width: 18px; height: 18px; }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .nav-logo-icon {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .nav-logo-icon img { width: 100%; height: 100%; object-fit: cover; }
+        .nav-logo-text { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 600; }
+
+        .page-header {
+            text-align: center;
+            padding: 60px 0;
+        }
+
+        .page-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--accent-primary), #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        .search-box {
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto 48px;
+        }
+
+        .search-box svg {
+            position: absolute;
+            left: 20px; top: 50%;
+            transform: translateY(-50%);
+            width: 20px; height: 20px;
+            color: var(--text-muted);
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 18px 24px 18px 56px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .search-box input::placeholder { color: var(--text-muted); }
+        .search-box input:focus { outline: none; border-color: var(--accent-primary); }
+
+        .stock-count {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+        }
+
+        .stock-index {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .stock-index-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.2s;
+        }
+
+        .stock-index-item:hover {
+            border-color: var(--accent-primary);
+            background: var(--bg-card-hover);
+        }
+
+        .stock-index-item.hidden { display: none; }
+
+        .stock-index-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--accent-primary);
+            margin-bottom: 8px;
+        }
+
+        .stock-index-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .stock-podcast-badge {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            background: var(--accent-bg);
+            border-radius: 4px;
+            color: var(--text-secondary);
+        }
+
+        .stock-index-count {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .stock-index-episodes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .stock-episode-link {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 6px 12px;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .stock-episode-link:hover {
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .stock-more {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            padding: 6px 12px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 0;
+            color: var(--text-muted);
+            display: none;
+        }
+
+        .footer {
+            padding: 48px 0;
+            border-top: 1px solid var(--border-subtle);
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .footer-text { font-size: 0.85rem; color: var(--text-muted); }
+        .footer-text a { color: var(--text-secondary); text-decoration: none; }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 16px; }
+            .page-header { padding: 40px 0; }
+            .page-header h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="nav">
+            <a href="/" class="nav-back">
+                <i data-lucide="arrow-left"></i>
+                返回首頁
+            </a>
+            <a href="/" class="nav-logo">
+                <div class="nav-logo-icon">
+                    <img src="/assets/PodSight-Logo-cropped.jpeg" alt="PodSight">
+                </div>
+                <span class="nav-logo-text">PodSight 聲見</span>
+            </a>
+        </nav>
+
+        <header class="page-header">
+            <h1>股票搜尋</h1>
+            <p>搜尋 Podcast 中提到的股票與 ETF</p>
+        </header>
+
+        <div class="search-box">
+            <i data-lucide="search"></i>
+            <input type="text" placeholder="搜尋股票名稱或代號..." id="stockSearch">
+        </div>
+
+        <div class="stock-count">
+            共 <strong>272</strong> 檔股票 / ETF
+        </div>
+
+        <div class="stock-index" id="stockIndex">
+            <div class="stock-index-item" data-stock="0050">
+                <div class="stock-index-name">0050</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">財經皓角</span> <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">4 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0633/" class="stock-episode-link">EP633 | 🪢</a>
+                    <a href="/yutinghao/2026-02-24/" class="stock-episode-link">軟體股股災 AI受害股 為何越來越多 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-06/" class="stock-episode-link">台積電狂飆 年底衝2000 台股上三萬 外資卻跑了 早晨財經速解讀 </a>
+                    <a href="/zhaohua/1039/" class="stock-episode-link">EP1039｜幫女兒存股14年，從0050到00850，會加入主動式ETF嗎？孩</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="0050 / 0052">
+                <div class="stock-index-name">0050 / 0052</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1017/" class="stock-episode-link">EP1017｜1400多家上漲，低價股噴出終於讓散戶有感？如何判斷是瘋狂還是續漲</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="0050 / 006208">
+                <div class="stock-index-name">0050 / 006208</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1036/" class="stock-episode-link">EP1036｜台股衝破33000，台積電營收歷史新高，提早拉貨？華邦電Q4三降，</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="0050 / 006208 / 006204">
+                <div class="stock-index-name">0050 / 006208 / 006204</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0635/" class="stock-episode-link">EP635 | 🌴</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="0050 / 大盤 etf">
+                <div class="stock-index-name">0050 / 大盤 ETF</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-11/" class="stock-episode-link">黃金漲幅榜首 一路贏到年底 台股封關 該抱股過年 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="0050 / 指數">
+                <div class="stock-index-name">0050 / 指數</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0623/" class="stock-episode-link">EP623 | 🎆</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="0050 等市值型/主動型 etf">
+                <div class="stock-index-name">0050 等市值型/主動型 ETF</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1027/" class="stock-episode-link">EP1027｜兆元資金狂潮，台積電登上1820元，記憶體續創高，低位階IC設計、</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="0052">
+                <div class="stock-index-name">0052</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">7 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1044/" class="stock-episode-link">EP1044｜台積電2000元達陣，鴻海、廣達回神，爆史上最大成交量！中小熱門股</a>
+                    <a href="/zhaohua/1035/" class="stock-episode-link">EP1035｜川普喊道瓊10萬點，台美股大復活！漲了才覺得可以抱股過年？蛇年ET</a>
+                    <a href="/zhaohua/1026/" class="stock-episode-link">EP1026｜南韓被提高關稅卻噴漲，台股大戶和散戶撐盤？CPO回來了，記憶體跌就</a>
+                    <a href="/zhaohua/1020/" class="stock-episode-link">EP1020｜台股近32000，有過熱現象嗎？緯創獲利創高大跌，沒獲利的低價股卻</a>
+                    <a href="/zhaohua/1019/" class="stock-episode-link">EP1019｜關稅拍定15%、積情600點，記憶體、電力、載板也歡慶，開始覺得買</a><span class="stock-more">+2 更多</span>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="00631l">
+                <div class="stock-index-name">00631L</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1039/" class="stock-episode-link">EP1039｜幫女兒存股14年，從0050到00850，會加入主動式ETF嗎？孩</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="00662">
+                <div class="stock-index-name">00662</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1033/" class="stock-episode-link">EP1033｜Google好財報卻下跌，美股AI回收疑慮擴大？太陽能鈣鈦礦電池是</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="00663l">
+                <div class="stock-index-name">00663L</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1039/" class="stock-episode-link">EP1039｜幫女兒存股14年，從0050到00850，會加入主動式ETF嗎？孩</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="00830">
+                <div class="stock-index-name">00830</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1037/" class="stock-episode-link">EP1037｜史上最強封關日！台積電領軍，PCB、記憶體、CPO、低軌衛星主軸延</a>
+                    <a href="/zhaohua/1010/" class="stock-episode-link">台股歷史性攻上三萬點大關，由「神山」台積電領軍噴發，市場呈現極端的「K型走勢」，</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="00830 / 00911">
+                <div class="stock-index-name">00830 / 00911</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1031/" class="stock-episode-link">EP1031｜大跌又大漲，美國製造業復甦，基本面化解AI疑慮？記憶體機會和風險的</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="00850">
+                <div class="stock-index-name">00850</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1039/" class="stock-episode-link">EP1039｜幫女兒存股14年，從0050到00850，會加入主動式ETF嗎？孩</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="00911">
+                <div class="stock-index-name">00911</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1015/" class="stock-episode-link">台股攻上三萬點新高，資金在川普政見與 AI 題材推動下，由半導體擴散至記憶體、低</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="00922">
+                <div class="stock-index-name">00922</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1039/" class="stock-episode-link">EP1039｜幫女兒存股14年，從0050到00850，會加入主動式ETF嗎？孩</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="00922、00923">
+                <div class="stock-index-name">00922、00923</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1035/" class="stock-episode-link">EP1035｜川普喊道瓊10萬點，台美股大復活！漲了才覺得可以抱股過年？蛇年ET</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="00923">
+                <div class="stock-index-name">00923</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1032/" class="stock-episode-link">EP1032｜美科技股震盪，台股依舊世界強，低軌、PCB、散熱、記憶體、CPO，</a>
+                    <a href="/zhaohua/1031/" class="stock-episode-link">EP1031｜大跌又大漲，美國製造業復甦，基本面化解AI疑慮？記憶體機會和風險的</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="00947">
+                <div class="stock-index-name">00947</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1020/" class="stock-episode-link">EP1020｜台股近32000，有過熱現象嗎？緯創獲利創高大跌，沒獲利的低價股卻</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="00955">
+                <div class="stock-index-name">00955</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1037/" class="stock-episode-link">EP1037｜史上最強封關日！台積電領軍，PCB、記憶體、CPO、低軌衛星主軸延</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="00981a">
+                <div class="stock-index-name">00981A</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span> <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">4 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-06/" class="stock-episode-link">台積電狂飆 年底衝2000 台股上三萬 外資卻跑了 早晨財經速解讀 </a>
+                    <a href="/zhaohua/1039/" class="stock-episode-link">EP1039｜幫女兒存股14年，從0050到00850，會加入主動式ETF嗎？孩</a>
+                    <a href="/zhaohua/1023/" class="stock-episode-link">EP1023｜川普投顧說股市再翻倍？不武取格陵蘭，台股又創高！電力四射，台達電、</a>
+                    <a href="/zhaohua/1017/" class="stock-episode-link">EP1017｜1400多家上漲，低價股噴出終於讓散戶有感？如何判斷是瘋狂還是續漲</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="00981a、00985a">
+                <div class="stock-index-name">00981A、00985A</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1029/" class="stock-episode-link">EP1029｜連2天爆量回檔，是年前換手，還是AI又生變？封關前怕漲完，記憶體、</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="00981a、00985a、00995a">
+                <div class="stock-index-name">00981A、00985A、00995A</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1011/" class="stock-episode-link">台股站穩三萬點大關，冠軍操盤手雲翔哥分享如何透過「看高做低」與「順勢交易」策略，</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="00982a">
+                <div class="stock-index-name">00982A</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1043/" class="stock-episode-link">EP1043｜台股逼近35000點！為何台韓與美股脫鉤？關稅架構下，GDP預估還</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="00982a 群益台股主動式 etf">
+                <div class="stock-index-name">00982A 群益台股主動式 ETF</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1042/" class="stock-episode-link">EP1042｜馬年開紅盤，川普關稅違法怎看，台股該喜還憂？載板、矽光子、玻纖布、</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="00985a">
+                <div class="stock-index-name">00985A</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1037/" class="stock-episode-link">EP1037｜史上最強封關日！台積電領軍，PCB、記憶體、CPO、低軌衛星主軸延</a>
+                    <a href="/zhaohua/1017/" class="stock-episode-link">EP1017｜1400多家上漲，低價股噴出終於讓散戶有感？如何判斷是瘋狂還是續漲</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="00985a / 00981a / 00982a">
+                <div class="stock-index-name">00985A / 00981A / 00982A</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1030/" class="stock-episode-link">EP1030｜台股回月線，是買點嗎？誰影響最大：FED新主席華許、金銀保證金提高</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="00993a">
+                <div class="stock-index-name">00993A</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1019/" class="stock-episode-link">EP1019｜關稅拍定15%、積情600點，記憶體、電力、載板也歡慶，開始覺得買</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="0965">
+                <div class="stock-index-name">0965</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1022/" class="stock-episode-link">EP1022｜格陵蘭事件影響美股，台股只跌今天，還是今天起跌？勇敢撿記憶體，還是</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="aes-ky">
+                <div class="stock-index-name">AES-KY</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1024/" class="stock-episode-link">EP1024｜32000來了，封關前要漲去哪？Spacex來台密訪？聯發科沾到也</a>
+                    <a href="/zhaohua/1022/" class="stock-episode-link">EP1022｜格陵蘭事件影響美股，台股只跌今天，還是今天起跌？勇敢撿記憶體，還是</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="ai 相關科技股">
+                <div class="stock-index-name">AI 相關科技股</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1038/" class="stock-episode-link">EP1038｜從小看父親參加投顧賠錢，自己卻成為投顧分析師！「特殊行業」的祕密？</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="amd">
+                <div class="stock-index-name">AMD</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-25/" class="stock-episode-link">美股追得上 台股漲幅嗎 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-02-05/" class="stock-episode-link">硬體股也擋不住 AMD下殺17 美股重挫 買點到了嗎 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="ast spacemobile">
+                <div class="stock-index-name">AST SpaceMobile</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0631/" class="stock-episode-link">EP631 | 🎁</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="asts">
+                <div class="stock-index-name">ASTS</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0630/" class="stock-episode-link">EP630 | ⭐</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="adobe">
+                <div class="stock-index-name">Adobe</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-25/" class="stock-episode-link">美股追得上 台股漲幅嗎 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-02-05/" class="stock-episode-link">硬體股也擋不住 AMD下殺17 美股重挫 買點到了嗎 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="alphabet">
+                <div class="stock-index-name">Alphabet</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">6 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-10/" class="stock-episode-link">道瓊再創史高 修正結束了 谷歌大發債 科技股迎十字路口 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-02-06/" class="stock-episode-link">6 5 萬美元失守 比特幣大崩盤 美股要跌到 什麼時候 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-29/" class="stock-episode-link">鮑爾抗川普 美元先破底 七巨頭財報開跑 資本支出還有戲 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-23/" class="stock-episode-link">Robotaxi上路 自駕AI大爆發 2026還能 買七巨頭嗎 早晨財經速</a>
+                    <a href="/yutinghao/2026-01-09/" class="stock-episode-link">台股市值 衝全球第七 AI熱退燒 記憶體撐盤 七巨頭為何 漲不動了 早晨財經</a><span class="stock-more">+1 更多</span>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="amazon">
+                <div class="stock-index-name">Amazon</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">3 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0634/" class="stock-episode-link">EP634 | 👻</a>
+                    <a href="/gooaye/0619/" class="stock-episode-link">EP619 | 🛰️</a>
+                    <a href="/yutinghao/2026-02-06/" class="stock-episode-link">6 5 萬美元失守 比特幣大崩盤 美股要跌到 什麼時候 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="amkor">
+                <div class="stock-index-name">Amkor</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0616/" class="stock-episode-link">EP616 | 🥚</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="amphenol">
+                <div class="stock-index-name">Amphenol</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0623/" class="stock-episode-link">EP623 | 🎆</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="apple">
+                <div class="stock-index-name">Apple</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0633/" class="stock-episode-link">EP633 | 🪢</a>
+                    <a href="/yutinghao/2026-01-09/" class="stock-episode-link">台股市值 衝全球第七 AI熱退燒 記憶體撐盤 七巨頭為何 漲不動了 早晨財經</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="astera labs">
+                <div class="stock-index-name">Astera Labs</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0616/" class="stock-episode-link">EP616 | 🥚</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="bito">
+                <div class="stock-index-name">BITO</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-06/" class="stock-episode-link">6 5 萬美元失守 比特幣大崩盤 美股要跌到 什麼時候 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="broadcom">
+                <div class="stock-index-name">Broadcom</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">3 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0629/" class="stock-episode-link">EP629 | ⏳</a>
+                    <a href="/gooaye/0619/" class="stock-episode-link">EP619 | 🛰️</a>
+                    <a href="/gooaye/0615/" class="stock-episode-link">EP615 | 🌶️</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="celestica">
+                <div class="stock-index-name">Celestica</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0634/" class="stock-episode-link">EP634 | 👻</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="cloudflare">
+                <div class="stock-index-name">Cloudflare</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0621/" class="stock-episode-link">EP621 | 🎄</a>
+                    <a href="/gooaye/0617/" class="stock-episode-link">EP617 | 👾</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="coherent">
+                <div class="stock-index-name">Coherent</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0617/" class="stock-episode-link">EP617 | 👾</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="confluent">
+                <div class="stock-index-name">Confluent</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0621/" class="stock-episode-link">EP621 | 🎄</a>
+                    <a href="/gooaye/0617/" class="stock-episode-link">EP617 | 👾</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="credo">
+                <div class="stock-index-name">Credo</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0616/" class="stock-episode-link">EP616 | 🥚</a>
+                    <a href="/gooaye/0615/" class="stock-episode-link">EP615 | 🌶️</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="d-link">
+                <div class="stock-index-name">D-Link</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1041/" class="stock-episode-link">EP1041｜非財金本科系，9彎18拐闖進投信，甘苦談！放棄發言人職位，如何當上</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="figure ai">
+                <div class="stock-index-name">Figure AI</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-14/" class="stock-episode-link">展示走向工廠 2026 AI機器人 戰場開打了 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="google">
+                <div class="stock-index-name">Google</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">5 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0634/" class="stock-episode-link">EP634 | 👻</a>
+                    <a href="/yutinghao/2026-02-11/" class="stock-episode-link">黃金漲幅榜首 一路贏到年底 台股封關 該抱股過年 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-02-05/" class="stock-episode-link">硬體股也擋不住 AMD下殺17 美股重挫 買點到了嗎 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-20/" class="stock-episode-link">財報季開跑 七巨頭何時回神 法人賣壓止不住 台股到底誰在買 早晨財經速解讀</a>
+                    <a href="/yutinghao/2026-01-02/" class="stock-episode-link">2026AI 如何變現 過去一年 七巨頭只有 三支贏大盤 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="ibm">
+                <div class="stock-index-name">IBM</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-24/" class="stock-episode-link">軟體股股災 AI受害股 為何越來越多 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="igv">
+                <div class="stock-index-name">IGV</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">3 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-10/" class="stock-episode-link">道瓊再創史高 修正結束了 谷歌大發債 科技股迎十字路口 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-02-06/" class="stock-episode-link">6 5 萬美元失守 比特幣大崩盤 美股要跌到 什麼時候 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-02-04/" class="stock-episode-link">現在買股票 會是壞時機 軟體股逃殺 還沒結束 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="impinj">
+                <div class="stock-index-name">Impinj</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0622/" class="stock-episode-link">EP622 | 🕯️</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="intel">
+                <div class="stock-index-name">Intel</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">3 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0617/" class="stock-episode-link">EP617 | 👾</a>
+                    <a href="/gooaye/0616/" class="stock-episode-link">EP616 | 🥚</a>
+                    <a href="/yutinghao/2026-01-15/" class="stock-episode-link">金屬狂飆 市場怕什麼 關稅判決再延 關稅戰未完 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="lemonade">
+                <div class="stock-index-name">Lemonade</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0620/" class="stock-episode-link">EP620 | 🐥</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="lucid">
+                <div class="stock-index-name">Lucid</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-07/" class="stock-episode-link">融資創史高 買股該慌嗎 輝達攻自駕AI 無人車大戰 誰能勝出 早晨財經速解讀</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="lumentum">
+                <div class="stock-index-name">Lumentum</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">4 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0634/" class="stock-episode-link">EP634 | 👻</a>
+                    <a href="/gooaye/0620/" class="stock-episode-link">EP620 | 🐥</a>
+                    <a href="/gooaye/0618/" class="stock-episode-link">EP618 | 🐟</a>
+                    <a href="/zhaohua/1033/" class="stock-episode-link">EP1033｜Google好財報卻下跌，美股AI回收疑慮擴大？太陽能鈣鈦礦電池是</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="m31">
+                <div class="stock-index-name">M31</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1024/" class="stock-episode-link">EP1024｜32000來了，封關前要漲去哪？Spacex來台密訪？聯發科沾到也</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="msci 全球指數">
+                <div class="stock-index-name">MSCI 全球指數</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-02/" class="stock-episode-link">2026AI 如何變現 過去一年 七巨頭只有 三支贏大盤 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="msci 新興市場指數">
+                <div class="stock-index-name">MSCI 新興市場指數</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-13/" class="stock-episode-link">市場觀察 2026台灣人如何迎接AI時代 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="macnica">
+                <div class="stock-index-name">Macnica</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0635/" class="stock-episode-link">EP635 | 🌴</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="marvell">
+                <div class="stock-index-name">Marvell</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0635/" class="stock-episode-link">EP635 | 🌴</a>
+                    <a href="/gooaye/0617/" class="stock-episode-link">EP617 | 👾</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="meiko">
+                <div class="stock-index-name">Meiko</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0631/" class="stock-episode-link">EP631 | 🎁</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="meta">
+                <div class="stock-index-name">Meta</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">3 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0634/" class="stock-episode-link">EP634 | 👻</a>
+                    <a href="/yutinghao/2026-01-21/" class="stock-episode-link">川普執政週年 TACO交易還在 美股重挫 回檔是買點 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-20/" class="stock-episode-link">財報季開跑 七巨頭何時回神 法人賣壓止不住 台股到底誰在買 早晨財經速解讀</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="microsoft">
+                <div class="stock-index-name">Microsoft</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0634/" class="stock-episode-link">EP634 | 👻</a>
+                    <a href="/yutinghao/2026-02-10/" class="stock-episode-link">道瓊再創史高 修正結束了 谷歌大發債 科技股迎十字路口 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="nvidia">
+                <div class="stock-index-name">NVIDIA</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">6 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0635/" class="stock-episode-link">EP635 | 🌴</a>
+                    <a href="/gooaye/0629/" class="stock-episode-link">EP629 | ⏳</a>
+                    <a href="/gooaye/0622/" class="stock-episode-link">EP622 | 🕯️</a>
+                    <a href="/gooaye/0615/" class="stock-episode-link">EP615 | 🌶️</a>
+                    <a href="/yutinghao/2026-01-20/" class="stock-episode-link">財報季開跑 七巨頭何時回神 法人賣壓止不住 台股到底誰在買 早晨財經速解讀</a><span class="stock-more">+1 更多</span>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="nvidia">
+                <div class="stock-index-name">Nvidia</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-02/" class="stock-episode-link">2026AI 如何變現 過去一年 七巨頭只有 三支贏大盤 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="owl">
+                <div class="stock-index-name">OWL</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-04/" class="stock-episode-link">現在買股票 會是壞時機 軟體股逃殺 還沒結束 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="openai / spacex">
+                <div class="stock-index-name">OpenAI / SpaceX</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-02/" class="stock-episode-link">2026AI 如何變現 過去一年 七巨頭只有 三支贏大盤 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="oracle">
+                <div class="stock-index-name">Oracle</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-10/" class="stock-episode-link">道瓊再創史高 修正結束了 谷歌大發債 科技股迎十字路口 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="palantir">
+                <div class="stock-index-name">Palantir</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">3 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0633/" class="stock-episode-link">EP633 | 🪢</a>
+                    <a href="/gooaye/0617/" class="stock-episode-link">EP617 | 👾</a>
+                    <a href="/yutinghao/2026-02-04/" class="stock-episode-link">現在買股票 會是壞時機 軟體股逃殺 還沒結束 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="qqq">
+                <div class="stock-index-name">QQQ</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0618/" class="stock-episode-link">EP618 | 🐟</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="sk 海力士">
+                <div class="stock-index-name">SK 海力士</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-25/" class="stock-episode-link">美股追得上 台股漲幅嗎 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-15/" class="stock-episode-link">金屬狂飆 市場怕什麼 關稅判決再延 關稅戰未完 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="sk 海力士、三星">
+                <div class="stock-index-name">SK 海力士、三星</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-30/" class="stock-episode-link">微軟暴跌近10 美股該修正了嗎 2026誰能 跑贏標普 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="soxx / qqq">
+                <div class="stock-index-name">SOXX / QQQ</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-20/" class="stock-episode-link">財報季開跑 七巨頭何時回神 法人賣壓止不住 台股到底誰在買 早晨財經速解讀</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="sony / 東京威力科創">
+                <div class="stock-index-name">Sony / 東京威力科創</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-09/" class="stock-episode-link">川普喊話拉股市 高市交易完全執政 日股再起飛 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="spacex">
+                <div class="stock-index-name">SpaceX</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-29/" class="stock-episode-link">鮑爾抗川普 美元先破底 七巨頭財報開跑 資本支出還有戲 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="spacex / xai">
+                <div class="stock-index-name">SpaceX / XAI</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-10/" class="stock-episode-link">道瓊再創史高 修正結束了 谷歌大發債 科技股迎十字路口 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="toto">
+                <div class="stock-index-name">TOTO</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-30/" class="stock-episode-link">微軟暴跌近10 美股該修正了嗎 2026誰能 跑贏標普 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="tsmc">
+                <div class="stock-index-name">TSMC</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0629/" class="stock-episode-link">EP629 | ⏳</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="tesla">
+                <div class="stock-index-name">Tesla</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">5 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0631/" class="stock-episode-link">EP631 | 🎁</a>
+                    <a href="/gooaye/0623/" class="stock-episode-link">EP623 | 🎆</a>
+                    <a href="/gooaye/0621/" class="stock-episode-link">EP621 | 🎄</a>
+                    <a href="/gooaye/0620/" class="stock-episode-link">EP620 | 🐥</a>
+                    <a href="/yutinghao/2026-01-02/" class="stock-episode-link">2026AI 如何變現 過去一年 七巨頭只有 三支贏大盤 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="vertiv">
+                <div class="stock-index-name">Vertiv</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0616/" class="stock-episode-link">EP616 | 🥚</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="xlk">
+                <div class="stock-index-name">XLK</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-10/" class="stock-episode-link">道瓊再創史高 修正結束了 谷歌大發債 科技股迎十字路口 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="xmag">
+                <div class="stock-index-name">XMAG</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-09/" class="stock-episode-link">台股市值 衝全球第七 AI熱退燒 記憶體撐盤 七巨頭為何 漲不動了 早晨財經</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="三商餐飲">
+                <div class="stock-index-name">三商餐飲</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-12/" class="stock-episode-link">市場觀察 2026台灣人如何迎接少子化海嘯 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="三星">
+                <div class="stock-index-name">三星</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-04/" class="stock-episode-link">現在買股票 會是壞時機 軟體股逃殺 還沒結束 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-28/" class="stock-episode-link">歐印貿易協議簽訂 強權聯手 能擋住川普 景氣燈轉紅 榮景又來了 早晨財經速</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="三星電子">
+                <div class="stock-index-name">三星電子</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-09/" class="stock-episode-link">台股市值 衝全球第七 AI熱退燒 記憶體撐盤 七巨頭為何 漲不動了 早晨財經</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="三菱重工">
+                <div class="stock-index-name">三菱重工</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-09/" class="stock-episode-link">川普喊話拉股市 高市交易完全執政 日股再起飛 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="上緯投控">
+                <div class="stock-index-name">上緯投控</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1015/" class="stock-episode-link">台股攻上三萬點新高，資金在川普政見與 AI 題材推動下，由半導體擴散至記憶體、低</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="上銀">
+                <div class="stock-index-name">上銀</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">3 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0629/" class="stock-episode-link">EP629 | ⏳</a>
+                    <a href="/zhaohua/1042/" class="stock-episode-link">EP1042｜馬年開紅盤，川普關稅違法怎看，台股該喜還憂？載板、矽光子、玻纖布、</a>
+                    <a href="/zhaohua/1015/" class="stock-episode-link">台股攻上三萬點新高，資金在川普政見與 AI 題材推動下，由半導體擴散至記憶體、低</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="世界先進">
+                <div class="stock-index-name">世界先進</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">3 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1032/" class="stock-episode-link">EP1032｜美科技股震盪，台股依舊世界強，低軌、PCB、散熱、記憶體、CPO，</a>
+                    <a href="/zhaohua/1031/" class="stock-episode-link">EP1031｜大跌又大漲，美國製造業復甦，基本面化解AI疑慮？記憶體機會和風險的</a>
+                    <a href="/zhaohua/1028/" class="stock-episode-link">EP1028｜黃金5600美元，台股成交量1.16兆！價格通膨是硬道理？微軟加持</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="世芯-ky">
+                <div class="stock-index-name">世芯-KY</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">4 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0639/" class="stock-episode-link">EP639 | 🐗</a>
+                    <a href="/gooaye/0616/" class="stock-episode-link">EP616 | 🥚</a>
+                    <a href="/gooaye/0615/" class="stock-episode-link">EP615 | 🌶️</a>
+                    <a href="/zhaohua/1024/" class="stock-episode-link">EP1024｜32000來了，封關前要漲去哪？Spacex來台密訪？聯發科沾到也</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="中砂">
+                <div class="stock-index-name">中砂</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1010/" class="stock-episode-link">台股歷史性攻上三萬點大關，由「神山」台積電領軍噴發，市場呈現極端的「K型走勢」，</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="中興電">
+                <div class="stock-index-name">中興電</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">3 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1023/" class="stock-episode-link">EP1023｜川普投顧說股市再翻倍？不武取格陵蘭，台股又創高！電力四射，台達電、</a>
+                    <a href="/zhaohua/1018/" class="stock-episode-link">EP1018｜台積電法說已是「不可思議」，Q1估毛利率65%封神！選設備股還是P</a>
+                    <a href="/zhaohua/1017/" class="stock-episode-link">EP1017｜1400多家上漲，低價股噴出終於讓散戶有感？如何判斷是瘋狂還是續漲</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="中鋼">
+                <div class="stock-index-name">中鋼</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1028/" class="stock-episode-link">EP1028｜黃金5600美元，台股成交量1.16兆！價格通膨是硬道理？微軟加持</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="主動式 etf">
+                <div class="stock-index-name">主動式 ETF</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1044/" class="stock-episode-link">EP1044｜台積電2000元達陣，鴻海、廣達回神，爆史上最大成交量！中小熱門股</a>
+                    <a href="/zhaohua/1034/" class="stock-episode-link">EP1034｜美股怎麼了？亞馬遜資本支出2000億美元卻崩，台股殺到月線下再站回</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="亞翔">
+                <div class="stock-index-name">亞翔</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1028/" class="stock-episode-link">EP1028｜黃金5600美元，台股成交量1.16兆！價格通膨是硬道理？微軟加持</a>
+                    <a href="/zhaohua/1027/" class="stock-episode-link">EP1027｜兆元資金狂潮，台積電登上1820元，記憶體續創高，低位階IC設計、</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="亞馬遜">
+                <div class="stock-index-name">亞馬遜</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-23/" class="stock-episode-link">Robotaxi上路 自駕AI大爆發 2026還能 買七巨頭嗎 早晨財經速</a>
+                    <a href="/yutinghao/2026-01-14/" class="stock-episode-link">展示走向工廠 2026 AI機器人 戰場開打了 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="低軌道衛星">
+                <div class="stock-index-name">低軌道衛星</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0634/" class="stock-episode-link">EP634 | 👻</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="佳澤">
+                <div class="stock-index-name">佳澤</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0617/" class="stock-episode-link">EP617 | 👾</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="保瑞">
+                <div class="stock-index-name">保瑞</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1013/" class="stock-episode-link">台股站上三萬點大關後爆出史上天量，資金由高價 AI 股轉向低價同板股與位階較低的</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="信紘科">
+                <div class="stock-index-name">信紘科</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1042/" class="stock-episode-link">EP1042｜馬年開紅盤，川普關稅違法怎看，台股該喜還憂？載板、矽光子、玻纖布、</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="信華">
+                <div class="stock-index-name">信華</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1015/" class="stock-episode-link">台股攻上三萬點新高，資金在川普政見與 AI 題材推動下，由半導體擴散至記憶體、低</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="健策">
+                <div class="stock-index-name">健策</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0635/" class="stock-episode-link">EP635 | 🌴</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="元大台灣 50">
+                <div class="stock-index-name">元大台灣 50</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0615/" class="stock-episode-link">EP615 | 🌶️</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="元大台灣 50 正 2">
+                <div class="stock-index-name">元大台灣 50 正 2</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0615/" class="stock-episode-link">EP615 | 🌶️</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="元大台灣50">
+                <div class="stock-index-name">元大台灣50</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">3 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0629/" class="stock-episode-link">EP629 | ⏳</a>
+                    <a href="/yutinghao/2026-01-20/" class="stock-episode-link">財報季開跑 七巨頭何時回神 法人賣壓止不住 台股到底誰在買 早晨財經速解讀</a>
+                    <a href="/yutinghao/2026-01-07/" class="stock-episode-link">融資創史高 買股該慌嗎 輝達攻自駕AI 無人車大戰 誰能勝出 早晨財經速解讀</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="元晶">
+                <div class="stock-index-name">元晶</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0639/" class="stock-episode-link">EP639 | 🐗</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="元泰科技">
+                <div class="stock-index-name">元泰科技</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1024/" class="stock-episode-link">EP1024｜32000來了，封關前要漲去哪？Spacex來台密訪？聯發科沾到也</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="兆赫">
+                <div class="stock-index-name">兆赫</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1036/" class="stock-episode-link">EP1036｜台股衝破33000，台積電營收歷史新高，提早拉貨？華邦電Q4三降，</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="光寶科">
+                <div class="stock-index-name">光寶科</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1023/" class="stock-episode-link">EP1023｜川普投顧說股市再翻倍？不武取格陵蘭，台股又創高！電力四射，台達電、</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="光盛">
+                <div class="stock-index-name">光盛</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1036/" class="stock-episode-link">EP1036｜台股衝破33000，台積電營收歷史新高，提早拉貨？華邦電Q4三降，</a>
+                    <a href="/zhaohua/1028/" class="stock-episode-link">EP1028｜黃金5600美元，台股成交量1.16兆！價格通膨是硬道理？微軟加持</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="光聖">
+                <div class="stock-index-name">光聖</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1031/" class="stock-episode-link">EP1031｜大跌又大漲，美國製造業復甦，基本面化解AI疑慮？記憶體機會和風險的</a>
+                    <a href="/zhaohua/1026/" class="stock-episode-link">EP1026｜南韓被提高關稅卻噴漲，台股大戶和散戶撐盤？CPO回來了，記憶體跌就</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="全球傳動">
+                <div class="stock-index-name">全球傳動</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0629/" class="stock-episode-link">EP629 | ⏳</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="八方雲集">
+                <div class="stock-index-name">八方雲集</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-12/" class="stock-episode-link">市場觀察 2026台灣人如何迎接少子化海嘯 </a>
+                    <a href="/yutinghao/2025-12-31/" class="stock-episode-link">台商遷徙潮 2026台股 三萬穩了嗎 台灣關稅 還在等川普 早晨財經速解</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="其他提及">
+                <div class="stock-index-name">其他提及</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1021/" class="stock-episode-link">EP1021｜元月是全年縮影，AI、價值都能漲？小心，融資餘額其實已破經8000</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="利普斯">
+                <div class="stock-index-name">利普斯</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-14/" class="stock-episode-link">展示走向工廠 2026 AI機器人 戰場開打了 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="創弘科技">
+                <div class="stock-index-name">創弘科技</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1022/" class="stock-episode-link">EP1022｜格陵蘭事件影響美股，台股只跌今天，還是今天起跌？勇敢撿記憶體，還是</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="創意">
+                <div class="stock-index-name">創意</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1010/" class="stock-episode-link">台股歷史性攻上三萬點大關，由「神山」台積電領軍噴發，市場呈現極端的「K型走勢」，</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="力成">
+                <div class="stock-index-name">力成</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">3 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1016/" class="stock-episode-link">EP1016｜國安賺64億退場！關稅15%談妥了？台積電法說，利多不漲的可能？土</a>
+                    <a href="/zhaohua/1015/" class="stock-episode-link">台股攻上三萬點新高，資金在川普政見與 AI 題材推動下，由半導體擴散至記憶體、低</a>
+                    <a href="/zhaohua/1011/" class="stock-episode-link">台股站穩三萬點大關，冠軍操盤手雲翔哥分享如何透過「看高做低」與「順勢交易」策略，</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="力積電">
+                <div class="stock-index-name">力積電</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">3 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0630/" class="stock-episode-link">EP630 | ⭐</a>
+                    <a href="/zhaohua/1032/" class="stock-episode-link">EP1032｜美科技股震盪，台股依舊世界強，低軌、PCB、散熱、記憶體、CPO，</a>
+                    <a href="/zhaohua/1020/" class="stock-episode-link">EP1020｜台股近32000，有過熱現象嗎？緯創獲利創高大跌，沒獲利的低價股卻</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="十銓">
+                <div class="stock-index-name">十銓</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1019/" class="stock-episode-link">EP1019｜關稅拍定15%、積情600點，記憶體、電力、載板也歡慶，開始覺得買</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="南亞科">
+                <div class="stock-index-name">南亞科</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">財經皓角</span> <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">10 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0627/" class="stock-episode-link">EP627 | 🪸</a>
+                    <a href="/yutinghao/2026-02-03/" class="stock-episode-link">記憶體通膨 何時能降溫 金屬冷卻 通膨危急解除了 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-20/" class="stock-episode-link">財報季開跑 七巨頭何時回神 法人賣壓止不住 台股到底誰在買 早晨財經速解讀</a>
+                    <a href="/zhaohua/1029/" class="stock-episode-link">EP1029｜連2天爆量回檔，是年前換手，還是AI又生變？封關前怕漲完，記憶體、</a>
+                    <a href="/zhaohua/1024/" class="stock-episode-link">EP1024｜32000來了，封關前要漲去哪？Spacex來台密訪？聯發科沾到也</a><span class="stock-more">+5 更多</span>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="南電">
+                <div class="stock-index-name">南電</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">4 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1044/" class="stock-episode-link">EP1044｜台積電2000元達陣，鴻海、廣達回神，爆史上最大成交量！中小熱門股</a>
+                    <a href="/zhaohua/1042/" class="stock-episode-link">EP1042｜馬年開紅盤，川普關稅違法怎看，台股該喜還憂？載板、矽光子、玻纖布、</a>
+                    <a href="/zhaohua/1030/" class="stock-episode-link">EP1030｜台股回月線，是買點嗎？誰影響最大：FED新主席華許、金銀保證金提高</a>
+                    <a href="/zhaohua/1019/" class="stock-episode-link">EP1019｜關稅拍定15%、積情600點，記憶體、電力、載板也歡慶，開始覺得買</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="博智">
+                <div class="stock-index-name">博智</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0631/" class="stock-episode-link">EP631 | 🎁</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="博通">
+                <div class="stock-index-name">博通</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0618/" class="stock-episode-link">EP618 | 🐟</a>
+                    <a href="/gooaye/0616/" class="stock-episode-link">EP616 | 🥚</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="友達">
+                <div class="stock-index-name">友達</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1032/" class="stock-episode-link">EP1032｜美科技股震盪，台股依舊世界強，低軌、PCB、散熱、記憶體、CPO，</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="可口可樂">
+                <div class="stock-index-name">可口可樂</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-05/" class="stock-episode-link">硬體股也擋不住 AMD下殺17 美股重挫 買點到了嗎 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="可寧衛">
+                <div class="stock-index-name">可寧衛</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1025/" class="stock-episode-link">EP1025｜所有人都在討論股票，融資市值比還在半山腰，不怕？記憶體強到年底，價</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="台光電">
+                <div class="stock-index-name">台光電</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">6 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1035/" class="stock-episode-link">EP1035｜川普喊道瓊10萬點，台美股大復活！漲了才覺得可以抱股過年？蛇年ET</a>
+                    <a href="/zhaohua/1032/" class="stock-episode-link">EP1032｜美科技股震盪，台股依舊世界強，低軌、PCB、散熱、記憶體、CPO，</a>
+                    <a href="/zhaohua/1030/" class="stock-episode-link">EP1030｜台股回月線，是買點嗎？誰影響最大：FED新主席華許、金銀保證金提高</a>
+                    <a href="/zhaohua/1018/" class="stock-episode-link">EP1018｜台積電法說已是「不可思議」，Q1估毛利率65%封神！選設備股還是P</a>
+                    <a href="/zhaohua/1013/" class="stock-episode-link">台股站上三萬點大關後爆出史上天量，資金由高價 AI 股轉向低價同板股與位階較低的</a><span class="stock-more">+1 更多</span>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="台塑">
+                <div class="stock-index-name">台塑</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1025/" class="stock-episode-link">EP1025｜所有人都在討論股票，融資市值比還在半山腰，不怕？記憶體強到年底，價</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="台指期正二">
+                <div class="stock-index-name">台指期正二</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0620/" class="stock-episode-link">EP620 | 🐥</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="台星科">
+                <div class="stock-index-name">台星科</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1011/" class="stock-episode-link">台股站穩三萬點大關，冠軍操盤手雲翔哥分享如何透過「看高做低」與「順勢交易」策略，</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="台泥">
+                <div class="stock-index-name">台泥</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span> <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2025-12-31/" class="stock-episode-link">台商遷徙潮 2026台股 三萬穩了嗎 台灣關稅 還在等川普 早晨財經速解</a>
+                    <a href="/zhaohua/1016/" class="stock-episode-link">EP1016｜國安賺64億退場！關稅15%談妥了？台積電法說，利多不漲的可能？土</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="台灣50">
+                <div class="stock-index-name">台灣50</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1040/" class="stock-episode-link">EP1040｜打混到27歲，知道自己找不到工作，振作！社會直接給教訓，咬牙苦讀逆</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="台積電">
+                <div class="stock-index-name">台積電</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">財經皓角</span> <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">41 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0635/" class="stock-episode-link">EP635 | 🌴</a>
+                    <a href="/gooaye/0627/" class="stock-episode-link">EP627 | 🪸</a>
+                    <a href="/gooaye/0622/" class="stock-episode-link">EP622 | 🕯️</a>
+                    <a href="/gooaye/0621/" class="stock-episode-link">EP621 | 🎄</a>
+                    <a href="/gooaye/0620/" class="stock-episode-link">EP620 | 🐥</a><span class="stock-more">+36 更多</span>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="台股 etf">
+                <div class="stock-index-name">台股 ETF</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-15/" class="stock-episode-link">金屬狂飆 市場怕什麼 關稅判決再延 關稅戰未完 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="台股共同基金">
+                <div class="stock-index-name">台股共同基金</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1025/" class="stock-episode-link">EP1025｜所有人都在討論股票，融資市值比還在半山腰，不怕？記憶體強到年底，價</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="台達電">
+                <div class="stock-index-name">台達電</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1037/" class="stock-episode-link">EP1037｜史上最強封關日！台積電領軍，PCB、記憶體、CPO、低軌衛星主軸延</a>
+                    <a href="/zhaohua/1023/" class="stock-episode-link">EP1023｜川普投顧說股市再翻倍？不武取格陵蘭，台股又創高！電力四射，台達電、</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="台郡">
+                <div class="stock-index-name">台郡</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0639/" class="stock-episode-link">EP639 | 🐗</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="國巨">
+                <div class="stock-index-name">國巨</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">3 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0627/" class="stock-episode-link">EP627 | 🪸</a>
+                    <a href="/zhaohua/1042/" class="stock-episode-link">EP1042｜馬年開紅盤，川普關稅違法怎看，台股該喜還憂？載板、矽光子、玻纖布、</a>
+                    <a href="/zhaohua/1031/" class="stock-episode-link">EP1031｜大跌又大漲，美國製造業復甦，基本面化解AI疑慮？記憶體機會和風險的</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="地寶">
+                <div class="stock-index-name">地寶</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1021/" class="stock-episode-link">EP1021｜元月是全年縮影，AI、價值都能漲？小心，融資餘額其實已破經8000</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="埃克森美孚">
+                <div class="stock-index-name">埃克森美孚</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-05/" class="stock-episode-link">2026金銀銅帶頭衝 原物料爆發 活捉馬杜洛 油價還要跌 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="墨西哥市場">
+                <div class="stock-index-name">墨西哥市場</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2025-12-30/" class="stock-episode-link">金銀急殺 股市沒在怕 2026美股 跑得贏黃金 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="大力光">
+                <div class="stock-index-name">大力光</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1016/" class="stock-episode-link">EP1016｜國安賺64億退場！關稅15%談妥了？台積電法說，利多不漲的可能？土</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="大同">
+                <div class="stock-index-name">大同</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1019/" class="stock-episode-link">EP1019｜關稅拍定15%、積情600點，記憶體、電力、載板也歡慶，開始覺得買</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="大立光">
+                <div class="stock-index-name">大立光</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1010/" class="stock-episode-link">台股歷史性攻上三萬點大關，由「神山」台積電領軍噴發，市場呈現極端的「K型走勢」，</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="奇鋐">
+                <div class="stock-index-name">奇鋐</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">4 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1034/" class="stock-episode-link">EP1034｜美股怎麼了？亞馬遜資本支出2000億美元卻崩，台股殺到月線下再站回</a>
+                    <a href="/zhaohua/1031/" class="stock-episode-link">EP1031｜大跌又大漲，美國製造業復甦，基本面化解AI疑慮？記憶體機會和風險的</a>
+                    <a href="/zhaohua/1018/" class="stock-episode-link">EP1018｜台積電法說已是「不可思議」，Q1估毛利率65%封神！選設備股還是P</a>
+                    <a href="/zhaohua/1012/" class="stock-episode-link">本集解析台股創下歷史天量的背後真相，並由 PCB 女王廖婉婷深度駁斥 AI 供應</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="奇錡">
+                <div class="stock-index-name">奇錡</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0630/" class="stock-episode-link">EP630 | ⭐</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="威剛">
+                <div class="stock-index-name">威剛</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1019/" class="stock-episode-link">EP1019｜關稅拍定15%、積情600點，記憶體、電力、載板也歡慶，開始覺得買</a>
+                    <a href="/zhaohua/1014/" class="stock-episode-link">本集聚焦於記憶體族群因處置降溫引發的資金大挪移，並深度解析台積電法說會前的資本支</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="宇隆">
+                <div class="stock-index-name">宇隆</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1019/" class="stock-episode-link">EP1019｜關稅拍定15%、積情600點，記憶體、電力、載板也歡慶，開始覺得買</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="宏達電">
+                <div class="stock-index-name">宏達電</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1041/" class="stock-episode-link">EP1041｜非財金本科系，9彎18拐闖進投信，甘苦談！放棄發言人職位，如何當上</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="家登">
+                <div class="stock-index-name">家登</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0618/" class="stock-episode-link">EP618 | 🐟</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="富僑">
+                <div class="stock-index-name">富僑</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1030/" class="stock-episode-link">EP1030｜台股回月線，是買點嗎？誰影響最大：FED新主席華許、金銀保證金提高</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="富喬">
+                <div class="stock-index-name">富喬</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1037/" class="stock-episode-link">EP1037｜史上最強封關日！台積電領軍，PCB、記憶體、CPO、低軌衛星主軸延</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="富邦科技">
+                <div class="stock-index-name">富邦科技</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1021/" class="stock-episode-link">EP1021｜元月是全年縮影，AI、價值都能漲？小心，融資餘額其實已破經8000</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="寶佳建設">
+                <div class="stock-index-name">寶佳建設</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-28/" class="stock-episode-link">歐印貿易協議簽訂 強權聯手 能擋住川普 景氣燈轉紅 榮景又來了 早晨財經速</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="寶瑞">
+                <div class="stock-index-name">寶瑞</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1029/" class="stock-episode-link">EP1029｜連2天爆量回檔，是年前換手，還是AI又生變？封關前怕漲完，記憶體、</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="川崎重工 / 三菱電機">
+                <div class="stock-index-name">川崎重工 / 三菱電機</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-09/" class="stock-episode-link">川普喊話拉股市 高市交易完全執政 日股再起飛 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="巴西 etf">
+                <div class="stock-index-name">巴西 ETF</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-30/" class="stock-episode-link">微軟暴跌近10 美股該修正了嗎 2026誰能 跑贏標普 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="庸智科技">
+                <div class="stock-index-name">庸智科技</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1035/" class="stock-episode-link">EP1035｜川普喊道瓊10萬點，台美股大復活！漲了才覺得可以抱股過年？蛇年ET</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="建策">
+                <div class="stock-index-name">建策</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0633/" class="stock-episode-link">EP633 | 🪢</a>
+                    <a href="/zhaohua/1023/" class="stock-episode-link">EP1023｜川普投顧說股市再翻倍？不武取格陵蘭，台股又創高！電力四射，台達電、</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="復華台灣科技優選">
+                <div class="stock-index-name">復華台灣科技優選</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1036/" class="stock-episode-link">EP1036｜台股衝破33000，台積電營收歷史新高，提早拉貨？華邦電Q4三降，</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="微軟">
+                <div class="stock-index-name">微軟</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">4 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-24/" class="stock-episode-link">軟體股股災 AI受害股 為何越來越多 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-02-05/" class="stock-episode-link">硬體股也擋不住 AMD下殺17 美股重挫 買點到了嗎 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-29/" class="stock-episode-link">鮑爾抗川普 美元先破底 七巨頭財報開跑 資本支出還有戲 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-20/" class="stock-episode-link">財報季開跑 七巨頭何時回神 法人賣壓止不住 台股到底誰在買 早晨財經速解讀</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="德宏">
+                <div class="stock-index-name">德宏</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1043/" class="stock-episode-link">EP1043｜台股逼近35000點！為何台韓與美股脫鉤？關稅架構下，GDP預估還</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="慶騰">
+                <div class="stock-index-name">慶騰</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1041/" class="stock-episode-link">EP1041｜非財金本科系，9彎18拐闖進投信，甘苦談！放棄發言人職位，如何當上</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="散熱族群">
+                <div class="stock-index-name">散熱族群</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0634/" class="stock-episode-link">EP634 | 👻</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="新興">
+                <div class="stock-index-name">新興</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1020/" class="stock-episode-link">EP1020｜台股近32000，有過熱現象嗎？緯創獲利創高大跌，沒獲利的低價股卻</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="新興市場 etf">
+                <div class="stock-index-name">新興市場 ETF</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-30/" class="stock-episode-link">微軟暴跌近10 美股該修正了嗎 2026誰能 跑贏標普 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="新興市場etf">
+                <div class="stock-index-name">新興市場ETF</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-23/" class="stock-episode-link">台積電ADR續漲 馬年開紅盤 關稅推翻 美股繼續漲 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="新藥股">
+                <div class="stock-index-name">新藥股</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0627/" class="stock-episode-link">EP627 | 🪸</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="日本國債 / 美國國債">
+                <div class="stock-index-name">日本國債 / 美國國債</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-26/" class="stock-episode-link">美元將破底 Fed主席黑馬是誰 日債暴跌 美債也遭殃 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="旺宏">
+                <div class="stock-index-name">旺宏</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1034/" class="stock-episode-link">EP1034｜美股怎麼了？亞馬遜資本支出2000億美元卻崩，台股殺到月線下再站回</a>
+                    <a href="/zhaohua/1028/" class="stock-episode-link">EP1028｜黃金5600美元，台股成交量1.16兆！價格通膨是硬道理？微軟加持</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="旺矽">
+                <div class="stock-index-name">旺矽</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1042/" class="stock-episode-link">EP1042｜馬年開紅盤，川普關稅違法怎看，台股該喜還憂？載板、矽光子、玻纖布、</a>
+                    <a href="/zhaohua/1036/" class="stock-episode-link">EP1036｜台股衝破33000，台積電營收歷史新高，提早拉貨？華邦電Q4三降，</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="昇達科">
+                <div class="stock-index-name">昇達科</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0619/" class="stock-episode-link">EP619 | 🛰️</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="景碩">
+                <div class="stock-index-name">景碩</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">5 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1034/" class="stock-episode-link">EP1034｜美股怎麼了？亞馬遜資本支出2000億美元卻崩，台股殺到月線下再站回</a>
+                    <a href="/zhaohua/1030/" class="stock-episode-link">EP1030｜台股回月線，是買點嗎？誰影響最大：FED新主席華許、金銀保證金提高</a>
+                    <a href="/zhaohua/1027/" class="stock-episode-link">EP1027｜兆元資金狂潮，台積電登上1820元，記憶體續創高，低位階IC設計、</a>
+                    <a href="/zhaohua/1019/" class="stock-episode-link">EP1019｜關稅拍定15%、積情600點，記憶體、電力、載板也歡慶，開始覺得買</a>
+                    <a href="/zhaohua/1012/" class="stock-episode-link">本集解析台股創下歷史天量的背後真相，並由 PCB 女王廖婉婷深度駁斥 AI 供應</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="核能相關類股">
+                <div class="stock-index-name">核能相關類股</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-22/" class="stock-episode-link">外交博弈vs 國內經濟 川普TACO 美股止跌了 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="榮澤">
+                <div class="stock-index-name">榮澤</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1021/" class="stock-episode-link">EP1021｜元月是全年縮影，AI、價值都能漲？小心，融資餘額其實已破經8000</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="榮科">
+                <div class="stock-index-name">榮科</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1018/" class="stock-episode-link">EP1018｜台積電法說已是「不可思議」，Q1估毛利率65%封神！選設備股還是P</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="標普 500 指數">
+                <div class="stock-index-name">標普 500 指數</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">3 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-02/" class="stock-episode-link">金屬風暴 股市跟著跌 Fed新主席沃許 會是鷹皮帥鴿 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-02/" class="stock-episode-link">2026AI 如何變現 過去一年 七巨頭只有 三支贏大盤 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2025-12-30/" class="stock-episode-link">金銀急殺 股市沒在怕 2026美股 跑得贏黃金 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="標普500">
+                <div class="stock-index-name">標普500</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-23/" class="stock-episode-link">台積電ADR續漲 馬年開紅盤 關稅推翻 美股繼續漲 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="欣興">
+                <div class="stock-index-name">欣興</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">4 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1043/" class="stock-episode-link">EP1043｜台股逼近35000點！為何台韓與美股脫鉤？關稅架構下，GDP預估還</a>
+                    <a href="/zhaohua/1034/" class="stock-episode-link">EP1034｜美股怎麼了？亞馬遜資本支出2000億美元卻崩，台股殺到月線下再站回</a>
+                    <a href="/zhaohua/1030/" class="stock-episode-link">EP1030｜台股回月線，是買點嗎？誰影響最大：FED新主席華許、金銀保證金提高</a>
+                    <a href="/zhaohua/1019/" class="stock-episode-link">EP1019｜關稅拍定15%、積情600點，記憶體、電力、載板也歡慶，開始覺得買</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="歐洲國防航太指數">
+                <div class="stock-index-name">歐洲國防航太指數</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-19/" class="stock-episode-link">黃金創高 TACO交易是買點 美歐關稅戰 又開打了 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="歷程">
+                <div class="stock-index-name">歷程</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1028/" class="stock-episode-link">EP1028｜黃金5600美元，台股成交量1.16兆！價格通膨是硬道理？微軟加持</a>
+                    <a href="/zhaohua/1026/" class="stock-episode-link">EP1026｜南韓被提高關稅卻噴漲，台股大戶和散戶撐盤？CPO回來了，記憶體跌就</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="比亞迪">
+                <div class="stock-index-name">比亞迪</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-29/" class="stock-episode-link">鮑爾抗川普 美元先破底 七巨頭財報開跑 資本支出還有戲 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-02/" class="stock-episode-link">2026AI 如何變現 過去一年 七巨頭只有 三支贏大盤 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="比特幣">
+                <div class="stock-index-name">比特幣</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">9 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-25/" class="stock-episode-link">美股追得上 台股漲幅嗎 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-02-24/" class="stock-episode-link">軟體股股災 AI受害股 為何越來越多 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-02-23/" class="stock-episode-link">台積電ADR續漲 馬年開紅盤 關稅推翻 美股繼續漲 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-02-11/" class="stock-episode-link">黃金漲幅榜首 一路贏到年底 台股封關 該抱股過年 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-02-09/" class="stock-episode-link">川普喊話拉股市 高市交易完全執政 日股再起飛 早晨財經速解讀 </a><span class="stock-more">+4 更多</span>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="波若威">
+                <div class="stock-index-name">波若威</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1035/" class="stock-episode-link">EP1035｜川普喊道瓊10萬點，台美股大復活！漲了才覺得可以抱股過年？蛇年ET</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="泰林">
+                <div class="stock-index-name">泰林</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1016/" class="stock-episode-link">EP1016｜國安賺64億退場！關稅15%談妥了？台積電法說，利多不漲的可能？土</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="海力士">
+                <div class="stock-index-name">海力士</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0635/" class="stock-episode-link">EP635 | 🌴</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="深達科">
+                <div class="stock-index-name">深達科</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1032/" class="stock-episode-link">EP1032｜美科技股震盪，台股依舊世界強，低軌、PCB、散熱、記憶體、CPO，</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="漢唐">
+                <div class="stock-index-name">漢唐</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1016/" class="stock-episode-link">EP1016｜國安賺64億退場！關稅15%談妥了？台積電法說，利多不漲的可能？土</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="漢磊">
+                <div class="stock-index-name">漢磊</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1022/" class="stock-episode-link">EP1022｜格陵蘭事件影響美股，台股只跌今天，還是今天起跌？勇敢撿記憶體，還是</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="漢科">
+                <div class="stock-index-name">漢科</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1011/" class="stock-episode-link">台股站穩三萬點大關，冠軍操盤手雲翔哥分享如何透過「看高做低」與「順勢交易」策略，</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="特斯拉">
+                <div class="stock-index-name">特斯拉</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">財經皓角</span> <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">7 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0639/" class="stock-episode-link">EP639 | 🐗</a>
+                    <a href="/yutinghao/2026-01-30/" class="stock-episode-link">微軟暴跌近10 美股該修正了嗎 2026誰能 跑贏標普 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-29/" class="stock-episode-link">鮑爾抗川普 美元先破底 七巨頭財報開跑 資本支出還有戲 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-23/" class="stock-episode-link">Robotaxi上路 自駕AI大爆發 2026還能 買七巨頭嗎 早晨財經速</a>
+                    <a href="/yutinghao/2026-01-14/" class="stock-episode-link">展示走向工廠 2026 AI機器人 戰場開打了 早晨財經速解讀 </a><span class="stock-more">+2 更多</span>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="玉山金">
+                <div class="stock-index-name">玉山金</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-12/" class="stock-episode-link">市場觀察 2026台灣人如何迎接少子化海嘯 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="瑞昱">
+                <div class="stock-index-name">瑞昱</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-13/" class="stock-episode-link">市場觀察 2026台灣人如何迎接AI時代 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="環球晶">
+                <div class="stock-index-name">環球晶</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2025-12-31/" class="stock-episode-link">台商遷徙潮 2026台股 三萬穩了嗎 台灣關稅 還在等川普 早晨財經速解</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="甲骨文">
+                <div class="stock-index-name">甲骨文</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-03/" class="stock-episode-link">記憶體通膨 何時能降溫 金屬冷卻 通膨危急解除了 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-23/" class="stock-episode-link">Robotaxi上路 自駕AI大爆發 2026還能 買七巨頭嗎 早晨財經速</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="白銀">
+                <div class="stock-index-name">白銀</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">3 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-06/" class="stock-episode-link">6 5 萬美元失守 比特幣大崩盤 美股要跌到 什麼時候 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-02-02/" class="stock-episode-link">金屬風暴 股市跟著跌 Fed新主席沃許 會是鷹皮帥鴿 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-19/" class="stock-episode-link">黃金創高 TACO交易是買點 美歐關稅戰 又開打了 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="直得">
+                <div class="stock-index-name">直得</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0629/" class="stock-episode-link">EP629 | ⏳</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="真鼎-ky">
+                <div class="stock-index-name">真鼎-KY</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1032/" class="stock-episode-link">EP1032｜美科技股震盪，台股依舊世界強，低軌、PCB、散熱、記憶體、CPO，</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="碩網">
+                <div class="stock-index-name">碩網</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-14/" class="stock-episode-link">展示走向工廠 2026 AI機器人 戰場開打了 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="秉碩">
+                <div class="stock-index-name">秉碩</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-14/" class="stock-episode-link">展示走向工廠 2026 AI機器人 戰場開打了 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="穎崴">
+                <div class="stock-index-name">穎崴</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1036/" class="stock-episode-link">EP1036｜台股衝破33000，台積電營收歷史新高，提早拉貨？華邦電Q4三降，</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="穩懋">
+                <div class="stock-index-name">穩懋</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0623/" class="stock-episode-link">EP623 | 🎆</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="納斯達克 100">
+                <div class="stock-index-name">納斯達克 100</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-22/" class="stock-episode-link">外交博弈vs 國內經濟 川普TACO 美股止跌了 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="納斯達克 100 指數">
+                <div class="stock-index-name">納斯達克 100 指數</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-02/" class="stock-episode-link">金屬風暴 股市跟著跌 Fed新主席沃許 會是鷹皮帥鴿 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="納斯達克100">
+                <div class="stock-index-name">納斯達克100</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-23/" class="stock-episode-link">台積電ADR續漲 馬年開紅盤 關稅推翻 美股繼續漲 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="維穎">
+                <div class="stock-index-name">維穎</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1015/" class="stock-episode-link">台股攻上三萬點新高，資金在川普政見與 AI 題材推動下，由半導體擴散至記憶體、低</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="緯創">
+                <div class="stock-index-name">緯創</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">3 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0633/" class="stock-episode-link">EP633 | 🪢</a>
+                    <a href="/yutinghao/2026-02-12/" class="stock-episode-link">市場觀察 2026台灣人如何迎接少子化海嘯 </a>
+                    <a href="/yutinghao/2025-12-31/" class="stock-episode-link">台商遷徙潮 2026台股 三萬穩了嗎 台灣關稅 還在等川普 早晨財經速解</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="羅素 2000">
+                <div class="stock-index-name">羅素 2000</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-26/" class="stock-episode-link">美元將破底 Fed主席黑馬是誰 日債暴跌 美債也遭殃 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="羅素2000">
+                <div class="stock-index-name">羅素2000</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-23/" class="stock-episode-link">台積電ADR續漲 馬年開紅盤 關稅推翻 美股繼續漲 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-29/" class="stock-episode-link">鮑爾抗川普 美元先破底 七巨頭財報開跑 資本支出還有戲 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="美光">
+                <div class="stock-index-name">美光</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">5 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0635/" class="stock-episode-link">EP635 | 🌴</a>
+                    <a href="/gooaye/0620/" class="stock-episode-link">EP620 | 🐥</a>
+                    <a href="/yutinghao/2026-01-29/" class="stock-episode-link">鮑爾抗川普 美元先破底 七巨頭財報開跑 資本支出還有戲 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-13/" class="stock-episode-link">Fed收傳票 黃金剎不住 國安基金退場 台美談判有譜 記憶體漲價潮 通膨難</a>
+                    <a href="/yutinghao/2026-01-07/" class="stock-episode-link">融資創史高 買股該慌嗎 輝達攻自駕AI 無人車大戰 誰能勝出 早晨財經速解讀</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="美股七雄">
+                <div class="stock-index-name">美股七雄</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-26/" class="stock-episode-link">美元將破底 Fed主席黑馬是誰 日債暴跌 美債也遭殃 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="群創">
+                <div class="stock-index-name">群創</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">4 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1026/" class="stock-episode-link">EP1026｜南韓被提高關稅卻噴漲，台股大戶和散戶撐盤？CPO回來了，記憶體跌就</a>
+                    <a href="/zhaohua/1020/" class="stock-episode-link">EP1020｜台股近32000，有過熱現象嗎？緯創獲利創高大跌，沒獲利的低價股卻</a>
+                    <a href="/zhaohua/1013/" class="stock-episode-link">台股站上三萬點大關後爆出史上天量，資金由高價 AI 股轉向低價同板股與位階較低的</a>
+                    <a href="/zhaohua/1010/" class="stock-episode-link">台股歷史性攻上三萬點大關，由「神山」台積電領軍噴發，市場呈現極端的「K型走勢」，</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="群益證">
+                <div class="stock-index-name">群益證</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1021/" class="stock-episode-link">EP1021｜元月是全年縮影，AI、價值都能漲？小心，融資餘額其實已破經8000</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="群策">
+                <div class="stock-index-name">群策</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0627/" class="stock-episode-link">EP627 | 🪸</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="群聯">
+                <div class="stock-index-name">群聯</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">7 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0616/" class="stock-episode-link">EP616 | 🥚</a>
+                    <a href="/zhaohua/1044/" class="stock-episode-link">EP1044｜台積電2000元達陣，鴻海、廣達回神，爆史上最大成交量！中小熱門股</a>
+                    <a href="/zhaohua/1034/" class="stock-episode-link">EP1034｜美股怎麼了？亞馬遜資本支出2000億美元卻崩，台股殺到月線下再站回</a>
+                    <a href="/zhaohua/1033/" class="stock-episode-link">EP1033｜Google好財報卻下跌，美股AI回收疑慮擴大？太陽能鈣鈦礦電池是</a>
+                    <a href="/zhaohua/1025/" class="stock-episode-link">EP1025｜所有人都在討論股票，融資市值比還在半山腰，不怕？記憶體強到年底，價</a><span class="stock-more">+2 更多</span>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="耀華">
+                <div class="stock-index-name">耀華</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">5 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0631/" class="stock-episode-link">EP631 | 🎁</a>
+                    <a href="/gooaye/0619/" class="stock-episode-link">EP619 | 🛰️</a>
+                    <a href="/zhaohua/1032/" class="stock-episode-link">EP1032｜美科技股震盪，台股依舊世界強，低軌、PCB、散熱、記憶體、CPO，</a>
+                    <a href="/zhaohua/1015/" class="stock-episode-link">台股攻上三萬點新高，資金在川普政見與 AI 題材推動下，由半導體擴散至記憶體、低</a>
+                    <a href="/zhaohua/1011/" class="stock-episode-link">台股站穩三萬點大關，冠軍操盤手雲翔哥分享如何透過「看高做低」與「順勢交易」策略，</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="聖達科">
+                <div class="stock-index-name">聖達科</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0630/" class="stock-episode-link">EP630 | ⭐</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="聯亞">
+                <div class="stock-index-name">聯亞</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">3 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1037/" class="stock-episode-link">EP1037｜史上最強封關日！台積電領軍，PCB、記憶體、CPO、低軌衛星主軸延</a>
+                    <a href="/zhaohua/1036/" class="stock-episode-link">EP1036｜台股衝破33000，台積電營收歷史新高，提早拉貨？華邦電Q4三降，</a>
+                    <a href="/zhaohua/1021/" class="stock-episode-link">EP1021｜元月是全年縮影，AI、價值都能漲？小心，融資餘額其實已破經8000</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="聯發科">
+                <div class="stock-index-name">聯發科</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">財經皓角</span> <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">8 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0630/" class="stock-episode-link">EP630 | ⭐</a>
+                    <a href="/gooaye/0618/" class="stock-episode-link">EP618 | 🐟</a>
+                    <a href="/gooaye/0617/" class="stock-episode-link">EP617 | 👾</a>
+                    <a href="/yutinghao/2026-02-13/" class="stock-episode-link">市場觀察 2026台灣人如何迎接AI時代 </a>
+                    <a href="/yutinghao/2026-01-16/" class="stock-episode-link">2500億投資 台美關稅15 終於拍板了 法說報喜 台積電衝高 現在還能追</a><span class="stock-more">+3 更多</span>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="聯詠">
+                <div class="stock-index-name">聯詠</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1012/" class="stock-episode-link">本集解析台股創下歷史天量的背後真相，並由 PCB 女王廖婉婷深度駁斥 AI 供應</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="聯電">
+                <div class="stock-index-name">聯電</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span> <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">7 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-03/" class="stock-episode-link">記憶體通膨 何時能降溫 金屬冷卻 通膨危急解除了 早晨財經速解讀 </a>
+                    <a href="/zhaohua/1033/" class="stock-episode-link">EP1033｜Google好財報卻下跌，美股AI回收疑慮擴大？太陽能鈣鈦礦電池是</a>
+                    <a href="/zhaohua/1032/" class="stock-episode-link">EP1032｜美科技股震盪，台股依舊世界強，低軌、PCB、散熱、記憶體、CPO，</a>
+                    <a href="/zhaohua/1031/" class="stock-episode-link">EP1031｜大跌又大漲，美國製造業復甦，基本面化解AI疑慮？記憶體機會和風險的</a>
+                    <a href="/zhaohua/1028/" class="stock-episode-link">EP1028｜黃金5600美元，台股成交量1.16兆！價格通膨是硬道理？微軟加持</a><span class="stock-more">+2 更多</span>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="臺積電">
+                <div class="stock-index-name">臺積電</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-23/" class="stock-episode-link">台積電ADR續漲 馬年開紅盤 關稅推翻 美股繼續漲 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="艾克森美孚">
+                <div class="stock-index-name">艾克森美孚</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-13/" class="stock-episode-link">Fed收傳票 黃金剎不住 國安基金退場 台美談判有譜 記憶體漲價潮 通膨難</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="艾司摩爾">
+                <div class="stock-index-name">艾司摩爾</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-16/" class="stock-episode-link">2500億投資 台美關稅15 終於拍板了 法說報喜 台積電衝高 現在還能追</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="英業達">
+                <div class="stock-index-name">英業達</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1023/" class="stock-episode-link">EP1023｜川普投顧說股市再翻倍？不武取格陵蘭，台股又創高！電力四射，台達電、</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="英特爾">
+                <div class="stock-index-name">英特爾</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">3 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-12/" class="stock-episode-link">台積電年底 能衝2000 美國就業 失去了方向感 川普2026選戰開打 早</a>
+                    <a href="/yutinghao/2026-01-08/" class="stock-episode-link">關稅審判 川普能挺過 再扣押油輪 唐羅主義撐2026 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-06/" class="stock-episode-link">台積電狂飆 年底衝2000 台股上三萬 外資卻跑了 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="華城">
+                <div class="stock-index-name">華城</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">7 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0639/" class="stock-episode-link">EP639 | 🐗</a>
+                    <a href="/zhaohua/1041/" class="stock-episode-link">EP1041｜非財金本科系，9彎18拐闖進投信，甘苦談！放棄發言人職位，如何當上</a>
+                    <a href="/zhaohua/1023/" class="stock-episode-link">EP1023｜川普投顧說股市再翻倍？不武取格陵蘭，台股又創高！電力四射，台達電、</a>
+                    <a href="/zhaohua/1022/" class="stock-episode-link">EP1022｜格陵蘭事件影響美股，台股只跌今天，還是今天起跌？勇敢撿記憶體，還是</a>
+                    <a href="/zhaohua/1019/" class="stock-episode-link">EP1019｜關稅拍定15%、積情600點，記憶體、電力、載板也歡慶，開始覺得買</a><span class="stock-more">+2 更多</span>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="華星光">
+                <div class="stock-index-name">華星光</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1043/" class="stock-episode-link">EP1043｜台股逼近35000點！為何台韓與美股脫鉤？關稅架構下，GDP預估還</a>
+                    <a href="/zhaohua/1042/" class="stock-episode-link">EP1042｜馬年開紅盤，川普關稅違法怎看，台股該喜還憂？載板、矽光子、玻纖布、</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="華景電">
+                <div class="stock-index-name">華景電</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1013/" class="stock-episode-link">台股站上三萬點大關後爆出史上天量，資金由高價 AI 股轉向低價同板股與位階較低的</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="華碩">
+                <div class="stock-index-name">華碩</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">3 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0623/" class="stock-episode-link">EP623 | 🎆</a>
+                    <a href="/gooaye/0622/" class="stock-episode-link">EP622 | 🕯️</a>
+                    <a href="/yutinghao/2026-01-28/" class="stock-episode-link">歐印貿易協議簽訂 強權聯手 能擋住川普 景氣燈轉紅 榮景又來了 早晨財經速</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="華通">
+                <div class="stock-index-name">華通</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">13 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0633/" class="stock-episode-link">EP633 | 🪢</a>
+                    <a href="/gooaye/0631/" class="stock-episode-link">EP631 | 🎁</a>
+                    <a href="/gooaye/0630/" class="stock-episode-link">EP630 | ⭐</a>
+                    <a href="/gooaye/0619/" class="stock-episode-link">EP619 | 🛰️</a>
+                    <a href="/zhaohua/1043/" class="stock-episode-link">EP1043｜台股逼近35000點！為何台韓與美股脫鉤？關稅架構下，GDP預估還</a><span class="stock-more">+8 更多</span>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="華邦電">
+                <div class="stock-index-name">華邦電</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0622/" class="stock-episode-link">EP622 | 🕯️</a>
+                    <a href="/zhaohua/1036/" class="stock-episode-link">EP1036｜台股衝破33000，台積電營收歷史新高，提早拉貨？華邦電Q4三降，</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="蘋果">
+                <div class="stock-index-name">蘋果</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">4 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-24/" class="stock-episode-link">軟體股股災 AI受害股 為何越來越多 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-30/" class="stock-episode-link">微軟暴跌近10 美股該修正了嗎 2026誰能 跑贏標普 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-21/" class="stock-episode-link">川普執政週年 TACO交易還在 美股重挫 回檔是買點 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-08/" class="stock-episode-link">關稅審判 川普能挺過 再扣押油輪 唐羅主義撐2026 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="衝泰">
+                <div class="stock-index-name">衝泰</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-14/" class="stock-episode-link">展示走向工廠 2026 AI機器人 戰場開打了 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="被動元件">
+                <div class="stock-index-name">被動元件</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0634/" class="stock-episode-link">EP634 | 👻</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="西德州原油">
+                <div class="stock-index-name">西德州原油</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-05/" class="stock-episode-link">2026金銀銅帶頭衝 原物料爆發 活捉馬杜洛 油價還要跌 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="記憶體">
+                <div class="stock-index-name">記憶體</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-02/" class="stock-episode-link">金屬風暴 股市跟著跌 Fed新主席沃許 會是鷹皮帥鴿 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="記憶體/航海王">
+                <div class="stock-index-name">記憶體/航海王</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1041/" class="stock-episode-link">EP1041｜非財金本科系，9彎18拐闖進投信，甘苦談！放棄發言人職位，如何當上</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="貝萊德">
+                <div class="stock-index-name">貝萊德</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-12/" class="stock-episode-link">台積電年底 能衝2000 美國就業 失去了方向感 川普2026選戰開打 早</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="費城半導體指數">
+                <div class="stock-index-name">費城半導體指數</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-22/" class="stock-episode-link">外交博弈vs 國內經濟 川普TACO 美股止跌了 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="貿聯-ky">
+                <div class="stock-index-name">貿聯-KY</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0615/" class="stock-episode-link">EP615 | 🌶️</a>
+                    <a href="/zhaohua/1017/" class="stock-episode-link">EP1017｜1400多家上漲，低價股噴出終於讓散戶有感？如何判斷是瘋狂還是續漲</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="軟體股etf">
+                <div class="stock-index-name">軟體股ETF</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-23/" class="stock-episode-link">台積電ADR續漲 馬年開紅盤 關稅推翻 美股繼續漲 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="輝達">
+                <div class="stock-index-name">輝達</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">7 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-24/" class="stock-episode-link">軟體股股災 AI受害股 為何越來越多 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-02-03/" class="stock-episode-link">記憶體通膨 何時能降溫 金屬冷卻 通膨危急解除了 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-21/" class="stock-episode-link">川普執政週年 TACO交易還在 美股重挫 回檔是買點 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-16/" class="stock-episode-link">2500億投資 台美關稅15 終於拍板了 法說報喜 台積電衝高 現在還能追</a>
+                    <a href="/yutinghao/2026-01-08/" class="stock-episode-link">關稅審判 川普能挺過 再扣押油輪 唐羅主義撐2026 早晨財經速解讀 </a><span class="stock-more">+2 更多</span>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="達興材">
+                <div class="stock-index-name">達興材</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1036/" class="stock-episode-link">EP1036｜台股衝破33000，台積電營收歷史新高，提早拉貨？華邦電Q4三降，</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="達興材料">
+                <div class="stock-index-name">達興材料</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1034/" class="stock-episode-link">EP1034｜美股怎麼了？亞馬遜資本支出2000億美元卻崩，台股殺到月線下再站回</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="金像電">
+                <div class="stock-index-name">金像電</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0623/" class="stock-episode-link">EP623 | 🎆</a>
+                    <a href="/zhaohua/1027/" class="stock-episode-link">EP1027｜兆元資金狂潮，台積電登上1820元，記憶體續創高，低位階IC設計、</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="金元電">
+                <div class="stock-index-name">金元電</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1030/" class="stock-episode-link">EP1030｜台股回月線，是買點嗎？誰影響最大：FED新主席華許、金銀保證金提高</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="金居">
+                <div class="stock-index-name">金居</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">4 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0631/" class="stock-episode-link">EP631 | 🎁</a>
+                    <a href="/zhaohua/1043/" class="stock-episode-link">EP1043｜台股逼近35000點！為何台韓與美股脫鉤？關稅架構下，GDP預估還</a>
+                    <a href="/zhaohua/1026/" class="stock-episode-link">EP1026｜南韓被提高關稅卻噴漲，台股大戶和散戶撐盤？CPO回來了，記憶體跌就</a>
+                    <a href="/zhaohua/1012/" class="stock-episode-link">本集解析台股創下歷史天量的背後真相，並由 PCB 女王廖婉婷深度駁斥 AI 供應</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="金山電">
+                <div class="stock-index-name">金山電</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1014/" class="stock-episode-link">本集聚焦於記憶體族群因處置降溫引發的資金大挪移，並深度解析台積電法說會前的資本支</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="金控股/證券股">
+                <div class="stock-index-name">金控股/證券股</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1038/" class="stock-episode-link">EP1038｜從小看父親參加投顧賠錢，自己卻成為投顧分析師！「特殊行業」的祕密？</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="錦碩">
+                <div class="stock-index-name">錦碩</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1029/" class="stock-episode-link">EP1029｜連2天爆量回檔，是年前換手，還是AI又生變？封關前怕漲完，記憶體、</a>
+                    <a href="/zhaohua/1026/" class="stock-episode-link">EP1026｜南韓被提高關稅卻噴漲，台股大戶和散戶撐盤？CPO回來了，記憶體跌就</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="長榮航太">
+                <div class="stock-index-name">長榮航太</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1011/" class="stock-episode-link">台股站穩三萬點大關，冠軍操盤手雲翔哥分享如何透過「看高做低」與「順勢交易」策略，</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="雍智科">
+                <div class="stock-index-name">雍智科</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1029/" class="stock-episode-link">EP1029｜連2天爆量回檔，是年前換手，還是AI又生變？封關前怕漲完，記憶體、</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="雪佛龍">
+                <div class="stock-index-name">雪佛龍</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">4 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-13/" class="stock-episode-link">Fed收傳票 黃金剎不住 國安基金退場 台美談判有譜 記憶體漲價潮 通膨難</a>
+                    <a href="/yutinghao/2026-01-12/" class="stock-episode-link">台積電年底 能衝2000 美國就業 失去了方向感 川普2026選戰開打 早</a>
+                    <a href="/yutinghao/2026-01-08/" class="stock-episode-link">關稅審判 川普能挺過 再扣押油輪 唐羅主義撐2026 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-05/" class="stock-episode-link">2026金銀銅帶頭衝 原物料爆發 活捉馬杜洛 油價還要跌 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="電子五哥">
+                <div class="stock-index-name">電子五哥</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-16/" class="stock-episode-link">2500億投資 台美關稅15 終於拍板了 法說報喜 台積電衝高 現在還能追</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="順達">
+                <div class="stock-index-name">順達</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1023/" class="stock-episode-link">EP1023｜川普投顧說股市再翻倍？不武取格陵蘭，台股又創高！電力四射，台達電、</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="風華高科">
+                <div class="stock-index-name">風華高科</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0627/" class="stock-episode-link">EP627 | 🪸</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="饗食天堂 / 漢來海港">
+                <div class="stock-index-name">饗食天堂 / 漢來海港</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-28/" class="stock-episode-link">歐印貿易協議簽訂 強權聯手 能擋住川普 景氣燈轉紅 榮景又來了 早晨財經速</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="高股息 etf">
+                <div class="stock-index-name">高股息 ETF</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1038/" class="stock-episode-link">EP1038｜從小看父親參加投顧賠錢，自己卻成為投顧分析師！「特殊行業」的祕密？</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="高通">
+                <div class="stock-index-name">高通</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-05/" class="stock-episode-link">硬體股也擋不住 AMD下殺17 美股重挫 買點到了嗎 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="鴻海">
+                <div class="stock-index-name">鴻海</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">股癌</span> <span class="stock-podcast-badge">財經皓角</span> <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">3 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/gooaye/0622/" class="stock-episode-link">EP622 | 🕯️</a>
+                    <a href="/yutinghao/2025-12-31/" class="stock-episode-link">台商遷徙潮 2026台股 三萬穩了嗎 台灣關稅 還在等川普 早晨財經速解</a>
+                    <a href="/zhaohua/1044/" class="stock-episode-link">EP1044｜台積電2000元達陣，鴻海、廣達回神，爆史上最大成交量！中小熱門股</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="鴻海、廣達等 ai 伺服器台廠">
+                <div class="stock-index-name">鴻海、廣達等 AI 伺服器台廠</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-23/" class="stock-episode-link">Robotaxi上路 自駕AI大爆發 2026還能 買七巨頭嗎 早晨財經速</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="黃金">
+                <div class="stock-index-name">黃金</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">5 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-02-11/" class="stock-episode-link">黃金漲幅榜首 一路贏到年底 台股封關 該抱股過年 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-02-02/" class="stock-episode-link">金屬風暴 股市跟著跌 Fed新主席沃許 會是鷹皮帥鴿 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-23/" class="stock-episode-link">Robotaxi上路 自駕AI大爆發 2026還能 買七巨頭嗎 早晨財經速</a>
+                    <a href="/yutinghao/2026-01-22/" class="stock-episode-link">外交博弈vs 國內經濟 川普TACO 美股止跌了 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-19/" class="stock-episode-link">黃金創高 TACO交易是買點 美歐關稅戰 又開打了 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="黃金 / 白銀">
+                <div class="stock-index-name">黃金 / 白銀</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-26/" class="stock-episode-link">美元將破底 Fed主席黑馬是誰 日債暴跌 美債也遭殃 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2025-12-30/" class="stock-episode-link">金銀急殺 股市沒在怕 2026美股 跑得贏黃金 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="黃金 etf">
+                <div class="stock-index-name">黃金 ETF</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1028/" class="stock-episode-link">EP1028｜黃金5600美元，台股成交量1.16兆！價格通膨是硬道理？微軟加持</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="黃金/白銀">
+                <div class="stock-index-name">黃金/白銀</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-21/" class="stock-episode-link">川普執政週年 TACO交易還在 美股重挫 回檔是買點 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-05/" class="stock-episode-link">2026金銀銅帶頭衝 原物料爆發 活捉馬杜洛 油價還要跌 早晨財經速解讀 </a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="黃金/白銀/銅">
+                <div class="stock-index-name">黃金/白銀/銅</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">財經皓角</span>
+                    <span class="stock-index-count">2 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/yutinghao/2026-01-15/" class="stock-episode-link">金屬狂飆 市場怕什麼 關稅判決再延 關稅戰未完 早晨財經速解讀 </a>
+                    <a href="/yutinghao/2026-01-13/" class="stock-episode-link">Fed收傳票 黃金剎不住 國安基金退場 台美談判有譜 記憶體漲價潮 通膨難</a>
+                </div>
+            </div>
+            <div class="stock-index-item" data-stock="龍德造船">
+                <div class="stock-index-name">龍德造船</div>
+                <div class="stock-index-meta">
+                    <span class="stock-podcast-badge">兆華</span>
+                    <span class="stock-index-count">1 集提及</span>
+                </div>
+                <div class="stock-index-episodes">
+                    <a href="/zhaohua/1022/" class="stock-episode-link">EP1022｜格陵蘭事件影響美股，台股只跌今天，還是今天起跌？勇敢撿記憶體，還是</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="no-results" id="noResults">
+            找不到符合的股票
+        </div>
+
+        <footer class="footer">
+            <p class="footer-text">
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const searchInput = document.getElementById('stockSearch');
+        const stockItems = document.querySelectorAll('.stock-index-item');
+        const noResults = document.getElementById('noResults');
+
+        // Check URL params for initial search
+        const urlParams = new URLSearchParams(window.location.search);
+        const initialQuery = urlParams.get('q');
+        if (initialQuery) {
+            searchInput.value = initialQuery;
+            filterStocks(initialQuery);
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            filterStocks(e.target.value);
+        });
+
+        function filterStocks(query) {
+            query = query.toLowerCase().trim();
+            let visibleCount = 0;
+
+            stockItems.forEach(item => {
+                const stockName = item.getAttribute('data-stock');
+                if (!query || stockName.includes(query)) {
+                    item.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+
+            noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+    </script>
+</body>
+</html>

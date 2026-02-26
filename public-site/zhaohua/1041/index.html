@@ -502,6 +502,102 @@
             text-decoration: none;
         }
 
+        /* Episode Navigation */
+        .episode-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .ep-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .ep-nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .ep-nav-prev { justify-content: flex-start; }
+        .ep-nav-next { justify-content: flex-end; text-align: right; }
+
+        .ep-nav-btn svg { width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0; }
+        .ep-nav-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .ep-nav-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+        .ep-nav-disabled { visibility: hidden; }
+
+        .ep-nav-prev .ep-nav-label,
+        .ep-nav-prev .ep-nav-title { display: block; }
+        .ep-nav-next .ep-nav-label,
+        .ep-nav-next .ep-nav-title { display: block; }
+
+        /* Table of Contents */
+        .toc {
+            position: fixed;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .toc-link {
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .toc-link:hover,
+        .toc-link.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        /* Clickable stock tags */
+        .stock-tag {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a.stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .toc { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .episode-nav { flex-direction: column; }
+            .ep-nav-btn { max-width: 100%; }
+            .ep-nav-next { flex-direction: row-reverse; text-align: left; }
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -595,14 +691,14 @@
 
         <main class="content">
             
-            <div class="tldr-box animate-in">
+            <div class="tldr-box animate-in" id="tldr">
                 <div class="tldr-label">一句話總結</div>
                 <div class="tldr-text">本集透過國家級操盤手凱哥的職涯轉折，揭示了深度產業研究、價值投資的心理修煉，以及如何透過「教人釣魚」的心態在充滿寶藏的股市中穩健獲利。</div>
             </div>
             
 
             
-            <section class="section">
+            <section class="section" id="topics">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="message-square"></i>
@@ -612,27 +708,68 @@
                 <div class="topic-list">
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 01</div>
-                        <div class="topic-title">市場背景與影響</div>
-                        <div class="topic-content">早期券商研究員強調「不看股價、只看產業」，培養了極其扎實的基本面功底。 2. 投手與打擊手的換位思考：擔任企業發言人的經歷 凱哥曾短暫離開法人圈，前往慶騰精密（4534）擔任發言人。這段經歷讓他看清「產業端」與「法人圈」的步調落差。法人追求快速變現與反應，但企業端的決策與產能調度需要時間。</div>
+                        <div class="topic-title">1. 跨領域的職涯起點：從不動產估價到金融研究</div>
+                        <div class="topic-content">凱哥分享他並非金融科班出身，研究所主修不動產投資。當時受老師啟發，認為分析師若具備「不動產估價」能力，能更精準判斷企業的底蘊價值（如土地資產）。這份背景讓他進入了台灣研究部的先驅——亞洲證券，開啟了從傳統產業研究跨足電子產業的投資之路。</div>
                     </div>
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 02</div>
-                        <div class="topic-title">市場背景與影響</div>
-                        <div class="topic-content">這種跨領域經驗在市場上極為罕見，使他能從企業內部視角驗證法人的預期是否合理。 3. 操盤手的遺憾與價值投資的修煉 凱哥坦言曾重壓宏達電（2498），卻在 100 多元時賣出，隨後目睹其漲至千元。這次「賣飛」的經驗讓他意識到自己屬於「價值型投資者」。他認為價值型投資者在法人體系（需追求短期績效）較難生存，但在個人部位操作上，只要有堅定的邏輯，就能抱住如華城（1513）這類翻倍的標的。</div>
+                        <div class="topic-title">2. 投手與打擊手的換位思考：擔任企業發言人的經歷</div>
+                        <div class="topic-content">凱哥曾短暫離開法人圈，前往慶騰精密（4534）擔任發言人。這段經歷讓他看清「產業端」與「法人圈」的步調落差。法人追求快速變現與反應，但企業端的決策與產能調度需要時間。</div>
                     </div>
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 03</div>
-                        <div class="topic-title">市場背景與影響</div>
-                        <div class="topic-content">強調投資者需了解自己的性格，決定是要追求短線熱點，還是逐夢踏實的價值佈局。</div>
+                        <div class="topic-title">3. 操盤手的遺憾與價值投資的修煉</div>
+                        <div class="topic-content">凱哥坦言曾重壓宏達電（2498），卻在 100 多元時賣出，隨後目睹其漲至千元。這次「賣飛」的經驗讓他意識到自己屬於「價值型投資者」。他認為價值型投資者在法人體系（需追求短期績效）較難生存，但在個人部位操作上，只要有堅定的邏輯，就能抱住如華城（1513）這類翻倍的標的。</div>
                     </div>
                 </div>
             </section>
             
 
             
+            <section class="section" id="strategies">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h2 class="section-title">操作心法與建議</h2>
+                </div>
+                <div class="strategy-list">
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="strategy-text">姓名：凱哥 (Kevin)</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="layers"></i>
+                        </div>
+                        <div class="strategy-text">專業背景：國家級基金操盤手、投信基金經理人、企業發言人、現為知名投資達人。 高手的操作心法與作法：</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="shield"></i>
+                        </div>
+                        <div class="strategy-text">進出場策略：驗證法：去法說會前必須先做功課，法說會是用來「驗證」自己的想法，而非「聽取」公司的說法，避免被誤導。 加碼邏輯：利用「里程碑（Milestones）」管理，當股價站上特定關鍵位階或公司達成階段性目標時，才進行加碼。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="eye"></i>
+                        </div>
+                        <div class="strategy-text">選股邏輯：跨產業優勢：結合電機背景與不動產估價思維，挑選具備資產價值或技術護城河的科技股。 價值型導向：看重產業的大趨勢（如當年的智慧型手機、現在的重電或記憶體），設定大夢想後，分段執行。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="percent"></i>
+                        </div>
+                        <div class="strategy-text">風險控管方法：守紀律與工具輔助：利用自創的工具（如關鍵黃金K）來判斷進出場點，排除人性的貪婪與恐懼（心魔）。</div>
+                    </div>
+                </div>
+            </section>
+            
 
             
-            <section class="section">
+            <section class="section" id="stocks">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="bar-chart-2"></i>
@@ -640,41 +777,94 @@
                     <h2 class="section-title">提到的股票 / ETF</h2>
                 </div>
                 <div class="stock-grid">
-                    <div class="stock-tag">
+                    <a href="/stocks/?q=宏達電" class="stock-tag">
                         <span class="stock-symbol">宏達電 (2498)</span>
                         <span class="stock-name">凱哥分享早期賣飛的案例</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=慶騰" class="stock-tag">
                         <span class="stock-symbol">慶騰 (4534)</span>
                         <span class="stock-name">凱哥曾任職發言人的公司</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=華城" class="stock-tag">
                         <span class="stock-symbol">華城 (1513)</span>
                         <span class="stock-name">作為價值投資案例</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=D-Link" class="stock-tag">
                         <span class="stock-symbol">D-Link (友訊)</span>
                         <span class="stock-name">提到同學在網通產業的背景</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=記憶體/航海王" class="stock-tag">
                         <span class="stock-symbol">記憶體/航海王</span>
                         <span class="stock-name">舉例說明特定邏輯與堅定信仰在投資大趨勢中的重要性</span>
+                    </a>
+                </div>
+            </section>
+            
+
+            
+            <section class="section" id="quotes">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="quote"></i>
+                    </div>
+                    <h2 class="section-title">金句摘錄</h2>
+                </div>
+                <div class="quote-list">
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">我不是直接給你魚，我是教你怎麼釣魚。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">市場是一個藏寶庫，大家都是來挖寶的，只是有人挖到神燈，有人挖到戒指，這裡沒有敵人。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">不用去羨慕別人，每一檔股票都有它的走法，堅持你門道的人就能賺得久。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">很多經理人有社恐，不敢問問題是因為怕被騙，但其實是你功課做得不夠深。</p>
                     </div>
                 </div>
             </section>
             
 
             
-
+            <section class="section" id="risks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="alert-triangle"></i>
+                    </div>
+                    <h2 class="section-title">風險提醒</h2>
+                </div>
+                <div class="risk-list">
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">操作建議：1. 善用工具：無論是籌碼面、技術面或凱哥的黃金K，找到一套符合自己習性的工具並「信任」它。 2. 克服心魔：投資最大的敵人是自己，該買不敢買、該賣不捨得賣，必須透過紀律來克服。 3. 觀察籌碼流向：如果投信與外資持續賣出，除非有極強的價值信仰，否則短線上應順應趨勢進行調節。 4. 專注熱門族群：在 2025 年的環境下，漲跌分化嚴重，建議集中精力在有量的熱門族群中進行篩選與配置。</span>
+                    </div>
+                </div>
+            </section>
             
+            <nav class="episode-nav"><a href="/zhaohua/1042/" class="ep-nav-btn ep-nav-prev">
+                <i data-lucide="chevron-left"></i>
+                <span class="ep-nav-label">上一集</span>
+                <span class="ep-nav-title">EP1042｜馬年開紅盤，川普關稅違法怎看，台股該喜還憂？載</span>
+            </a><a href="/zhaohua/1040/" class="ep-nav-btn ep-nav-next">
+                <span class="ep-nav-label">下一集</span>
+                <span class="ep-nav-title">EP1040｜打混到27歲，知道自己找不到工作，振作！社會直</span>
+                <i data-lucide="chevron-right"></i>
+            </a></nav>
         </main>
 
         <footer class="footer">
             <p class="footer-text">
-                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
             </p>
         </footer>
     </div>
+
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#strategies" class="toc-link" data-section="strategies">心法</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a><a href="#risks" class="toc-link" data-section="risks">風險</a></nav>
 
     <script>
         lucide.createIcons();
@@ -684,6 +874,25 @@
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (scrollTop / docHeight) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
+
+            // TOC active state
+            const sections = document.querySelectorAll('.section[id], .tldr-box[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (scrollTop >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>

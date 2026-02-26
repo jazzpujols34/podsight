@@ -502,6 +502,102 @@
             text-decoration: none;
         }
 
+        /* Episode Navigation */
+        .episode-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .ep-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .ep-nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .ep-nav-prev { justify-content: flex-start; }
+        .ep-nav-next { justify-content: flex-end; text-align: right; }
+
+        .ep-nav-btn svg { width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0; }
+        .ep-nav-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .ep-nav-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+        .ep-nav-disabled { visibility: hidden; }
+
+        .ep-nav-prev .ep-nav-label,
+        .ep-nav-prev .ep-nav-title { display: block; }
+        .ep-nav-next .ep-nav-label,
+        .ep-nav-next .ep-nav-title { display: block; }
+
+        /* Table of Contents */
+        .toc {
+            position: fixed;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .toc-link {
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .toc-link:hover,
+        .toc-link.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        /* Clickable stock tags */
+        .stock-tag {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a.stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .toc { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .episode-nav { flex-direction: column; }
+            .ep-nav-btn { max-width: 100%; }
+            .ep-nav-next { flex-direction: row-reverse; text-align: left; }
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -595,14 +691,14 @@
 
         <main class="content">
             
-            <div class="tldr-box animate-in">
+            <div class="tldr-box animate-in" id="tldr">
                 <div class="tldr-label">一句話總結</div>
                 <div class="tldr-text">本集聚焦於美股科技股財報後的震盪與台股封關前的配置策略，強調在市場高檔時應區分「正規軍」與「投機股」，並解析主動式 ETF 的操作邏輯。</div>
             </div>
             
 
             
-            <section class="section">
+            <section class="section" id="topics">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="message-square"></i>
@@ -612,37 +708,68 @@
                 <div class="topic-list">
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 01</div>
-                        <div class="topic-title">話題說明</div>
-                        <div class="topic-content">Alphabet（Google）與 AMD 公佈財報後股價重挫。Google 財報數字雖優，但將 2026 年資本支出大幅上調至 1500-1700 億美元（2025 年的兩倍），引發市場對 AI 投資回收期（ROI）的疑慮。AMD 則因第一季營收指引呈現季減，抹殺了市場的成長想像空間。</div>
+                        <div class="topic-title">1. 美股科技巨頭財報解讀：資本支出與利潤的拉鋸</div>
+                        <div class="topic-content">話題說明：Alphabet（Google）與 AMD 公佈財報後股價重挫。Google 財報數字雖優，但將 2026 年資本支出大幅上調至 1500-1700 億美元（2025 年的兩倍），引發市場對 AI 投資回收期（ROI）的疑慮。AMD 則因第一季營收指引呈現季減，抹殺了市場的成長想像空間。</div>
                     </div>
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 02</div>
-                        <div class="topic-title">市場背景與影響</div>
-                        <div class="topic-content">美股納斯達克已跌破季線，市場進入理性的「挑剔期」，不再盲目追求資本支出越高越好，而是檢視利潤回報。資金開始從高估值 AI 股流向防禦型或跌深的龍頭股（如 Apple）。</div>
+                        <div class="topic-title">2. 鈣鈦礦（Perovskite）：低軌衛星帶動的能源新寵</div>
+                        <div class="topic-content">話題說明：鈣鈦礦被視為下一代太陽能材料，其轉換效率理論極限高於傳統多晶矽，且可像墨水般印刷生產，製程溫度低（100-150度）。過去因怕水、怕氧的弱點難以商用，但在無水無氧的「太空環境」中卻是完美方案。</div>
                     </div>
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 03</div>
-                        <div class="topic-title">話題說明</div>
-                        <div class="topic-content">鈣鈦礦被視為下一代太陽能材料，其轉換效率理論極限高於傳統多晶矽，且可像墨水般印刷生產，製程溫度低（100-150度）。過去因怕水、怕氧的弱點難以商用，但在無水無氧的「太空環境」中卻是完美方案。</div>
-                    </div>
-                    <div class="topic-card">
-                        <div class="topic-number">TOPIC 04</div>
-                        <div class="topic-title">市場背景與影響</div>
-                        <div class="topic-content">隨著 SpaceX 與馬斯克推動低軌衛星與 XAI 發展，衛星發電需求讓鈣鈦礦成為市場熱點。</div>
-                    </div>
-                    <div class="topic-card">
-                        <div class="topic-number">TOPIC 05</div>
-                        <div class="topic-title">話題說明</div>
-                        <div class="topic-content">觀眾質疑主動式 ETF 為何持有防禦性的中華電信。兆華解釋，主動式 ETF 追求「絕對績效」，在台股三萬二高檔掛牌且面臨封關震盪時，經理人的策略是「不輸就是贏」。</div>
+                        <div class="topic-title">3. 主動式 ETF 的生存之道：為什麼 00993A 買中華電？</div>
+                        <div class="topic-content">話題說明：觀眾質疑主動式 ETF 為何持有防禦性的中華電信。兆華解釋，主動式 ETF 追求「絕對績效」，在台股三萬二高檔掛牌且面臨封關震盪時，經理人的策略是「不輸就是贏」。</div>
                     </div>
                 </div>
             </section>
             
 
             
+            <section class="section" id="strategies">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h2 class="section-title">操作心法與建議</h2>
+                </div>
+                <div class="strategy-list">
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="strategy-text">紀緯明 (小明同學)：股期雙分析師，擅長總經分析與產業趨勢研判。 高手的操作心法與作法：</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="layers"></i>
+                        </div>
+                        <div class="strategy-text">進出場策略：回後買上漲：當強勢產業（如細光子、低軌衛星）回檔 15-20% 且止跌時，是理性的減便宜機會。 封關配置：持股水位若高於八成，應在封關前調節至八成以下，保留資金彈性；若持股低於五成，則可趁回檔建立長期部位。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="shield"></i>
+                        </div>
+                        <div class="strategy-text">選股邏輯：正規軍 vs. 投機股：建議「抱正規軍過年」。所謂正規軍是指具備技術護城河、基本面紮實的龍頭股（如華通、森達科）。投機股（如部分太陽能、蹭題材的同板股）則建議逢高停利，不宜久抱。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="eye"></i>
+                        </div>
+                        <div class="strategy-text">風險控管：強調「對策」重於「預測」。無法預知明天漲跌，但可以透過熟悉持股特質來決定配置比例。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="percent"></i>
+                        </div>
+                        <div class="strategy-text">對當前市場的判斷：雖然美股納指破季線，但台股仍相對強勁。目前景氣處於全面擴張（包含傳產恢復），並非崩盤前兆，應視為多頭市場的良性修正。</div>
+                    </div>
+                </div>
+            </section>
+            
 
             
-            <section class="section">
+            <section class="section" id="stocks">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="bar-chart-2"></i>
@@ -650,41 +777,98 @@
                     <h2 class="section-title">提到的股票 / ETF</h2>
                 </div>
                 <div class="stock-grid">
-                    <div class="stock-tag">
+                    <a href="/stocks/?q=群聯" class="stock-tag">
                         <span class="stock-symbol">群聯 (8299)</span>
                         <span class="stock-name">記憶體龍頭</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=聯電" class="stock-tag">
                         <span class="stock-symbol">聯電 (2303) / 世界先進 (5347)</span>
                         <span class="stock-name">成熟製程法說變「法會」</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=華通" class="stock-tag">
                         <span class="stock-symbol">華通 (2313) / 森達科 (3491)</span>
                         <span class="stock-name">低軌衛星正規軍</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=00662" class="stock-tag">
                         <span class="stock-symbol">00662 (富華納斯達克) / 00980 (新發行納指ETF)</span>
                         <span class="stock-name">納指破季線時的加碼工具</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=Lumentum" class="stock-tag">
                         <span class="stock-symbol">Lumentum (LITE)</span>
                         <span class="stock-name">美股細光子龍頭</span>
+                    </a>
+                </div>
+            </section>
+            
+
+            
+            <section class="section" id="quotes">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="quote"></i>
+                    </div>
+                    <h2 class="section-title">金句摘錄</h2>
+                </div>
+                <div class="quote-list">
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">主動式 ETF 就像選馬，你只要看哪匹馬跑得快，不用管牠跑步的姿勢或用哪隻腳。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">在震盪市場中，你的眼裡容不下一粒沙，任何利多只要不夠完美都會被當利空。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">現在不輸就是贏，中華電信在積極型基金裡是為了在震盪中幫你守住血本。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">觀念無價，一個觀念轉過去，你會發現股市的路好走很多。</p>
                     </div>
                 </div>
             </section>
             
 
             
-
+            <section class="section" id="risks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="alert-triangle"></i>
+                    </div>
+                    <h2 class="section-title">風險提醒</h2>
+                </div>
+                <div class="risk-list">
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">短期展望：封關前四個交易日量能將持續萎縮，市場情緒受美股科技股波動影響。</span>
+                    </div>
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">具體操作建議：1. 汰弱留強：將不漲或跌破出場點的股票（如東元）果斷停損，將資金轉往具備超額報酬空間的熱門題材。 2. ETF 配置：若不擅長選股，可利用回檔加碼市值型或主動式 ETF，利用其換股機制規避個股風險。 3. 持股水位：建議不要滿倉過年，維持 70-80% 水位最為理想，以應對春節期間美股可能的震盪。</span>
+                    </div>
+                </div>
+            </section>
             
+            <nav class="episode-nav"><a href="/zhaohua/1034/" class="ep-nav-btn ep-nav-prev">
+                <i data-lucide="chevron-left"></i>
+                <span class="ep-nav-label">上一集</span>
+                <span class="ep-nav-title">EP1034｜美股怎麼了？亞馬遜資本支出2000億美元卻崩，</span>
+            </a><a href="/zhaohua/1032/" class="ep-nav-btn ep-nav-next">
+                <span class="ep-nav-label">下一集</span>
+                <span class="ep-nav-title">EP1032｜美科技股震盪，台股依舊世界強，低軌、PCB、散</span>
+                <i data-lucide="chevron-right"></i>
+            </a></nav>
         </main>
 
         <footer class="footer">
             <p class="footer-text">
-                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
             </p>
         </footer>
     </div>
+
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#strategies" class="toc-link" data-section="strategies">心法</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a><a href="#risks" class="toc-link" data-section="risks">風險</a></nav>
 
     <script>
         lucide.createIcons();
@@ -694,6 +878,25 @@
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (scrollTop / docHeight) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
+
+            // TOC active state
+            const sections = document.querySelectorAll('.section[id], .tldr-box[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (scrollTop >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>

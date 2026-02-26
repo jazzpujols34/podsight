@@ -8,8 +8,8 @@ import json
 import os
 import re
 from pathlib import Path
-from datetime import datetime
-from typing import Optional
+from datetime import datetime, timedelta
+from typing import Optional, List, Dict, Tuple
 
 # Paths (project root is parent of src/)
 BASE_DIR = Path(__file__).parent.parent.parent
@@ -108,6 +108,69 @@ PODCASTS = {
 }
 
 
+def parse_rfc_date(date_str: str) -> Optional[str]:
+    """Parse RFC 2822 date format to YYYY-MM-DD."""
+    if not date_str:
+        return None
+    try:
+        # Format: "Wed, 25 Feb 2026 08:29:59 GMT"
+        from email.utils import parsedate_to_datetime
+        dt = parsedate_to_datetime(date_str)
+        return dt.strftime("%Y-%m-%d")
+    except:
+        return None
+
+
+def get_freshness_label(date_str: str) -> Tuple[str, str]:
+    """Get freshness label and CSS class for a date string.
+    Returns (label, css_class) or (None, None) if not recent."""
+    try:
+        today = datetime.now().date()
+
+        # Try to parse date
+        if re.match(r"\d{4}-\d{2}-\d{2}", date_str):
+            ep_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+        else:
+            return None, None
+
+        days_ago = (today - ep_date).days
+
+        if days_ago == 0:
+            return "今天", "fresh-today"
+        elif days_ago == 1:
+            return "昨天", "fresh-yesterday"
+        elif days_ago <= 7:
+            return "本週", "fresh-week"
+        else:
+            return None, None
+    except:
+        return None, None
+
+
+def extract_episode_date(episode_id: str, podcast_id: str, filename: str = "") -> Optional[str]:
+    """Extract or estimate episode date in YYYY-MM-DD format."""
+    if podcast_id == "yutinghao":
+        # Already in date format
+        return episode_id
+
+    # For numbered podcasts, try to get from filename or estimate
+    # We'll use file modification time as fallback
+    if filename:
+        match = re.match(r"(\d{4})_(\d{1,2})_(\d{1,2})_", filename)
+        if match:
+            year, month, day = match.groups()
+            return f"{year}-{int(month):02d}-{int(day):02d}"
+
+    return None
+
+
+def normalize_stock_symbol(symbol: str) -> str:
+    """Normalize stock symbol for consistent indexing."""
+    # Remove parentheses content for matching
+    clean = re.sub(r"\s*\([^)]+\)", "", symbol).strip()
+    return clean.lower()
+
+
 def get_sort_key(filename: str, podcast_id: str):
     """Get sort key for a summary file. Returns tuple for proper sorting."""
     name = filename.replace("_summary.txt", "")
@@ -174,28 +237,40 @@ def parse_summary(content: str) -> dict:
 
     # Extract topics (主要討論話題) - handle ### **Title** or ### Title formats
     topics_match = re.search(
-        r"###\s*\*?\*?主要討論話題\*?\*?\s*\n+(.+?)(?=\n---|\n###\s*\*?\*?(?!主要))", content, re.DOTALL
+        r"###\s*\*?\*?主要討論話題\*?\*?\s*\n+(.+?)(?=\n---|\n###)", content, re.DOTALL
     )
     if topics_match:
         topics_text = topics_match.group(1)
         # Parse each topic block - handle various formats
-        # Format 1: **話題名稱：XXX** followed by content
-        # Format 2: **XXX** followed by content
+        # Format 1: **話題名稱：XXX** followed by content with sub-bullets
+        # Format 2: **1. Title**\nContent (simple format without sub-bullets)
         # Format 3: *   **Topic Title:** content (EP636 format)
+
+        # Try simpler numbered format first: **1. Title**\nContent\n\n**2. Title**
         topic_blocks = re.findall(
-            r"\*\*(?:話題名稱：)?([^*\n：:]+)[：:]?\*\*[：:\s]*\n?\s*(?:\*\s*\*\*詳細說明：?\*\*\s*)?(.+?)(?=\n\s*\*\s*\*\*[^詳相利]|\n\s*---|\n\s*###|$)",
+            r"\*\*(\d+\.\s*[^*\n]+)\*\*\s*\n(.+?)(?=\n\n\*\*\d+\.|\n---|\n###|$)",
             topics_text,
             re.DOTALL,
         )
+
+        # If no matches, try format with sub-bullets (詳細說明)
+        if not topic_blocks:
+            topic_blocks = re.findall(
+                r"\*\*(?:話題名稱：)?([^*\n：:]+)[：:]?\*\*[：:\s]*\n?\s*(?:\*\s*\*\*詳細說明：?\*\*\s*)?(.+?)(?=\n\s*\*\s*\*\*[^詳相利]|\n\s*---|\n\s*###|$)",
+                topics_text,
+                re.DOTALL,
+            )
+
         for title, content_text in topic_blocks:
             # Clean up content - remove related stocks section and bullet sub-items
             content_clean = re.sub(r"\s*\*?\s*\*?\*?相關標的.*", "", content_text, flags=re.DOTALL)
             content_clean = re.sub(r"\s*\*\s*\*\*利[多空]因素.*", "", content_clean, flags=re.DOTALL)
+            content_clean = re.sub(r"\s*\*\s*\*\*市場背景.*", "", content_clean, flags=re.DOTALL)
             content_clean = strip_markdown(content_clean)
             if title and content_clean and len(content_clean) > 20:
                 sections["topics"].append({"title": strip_markdown(title), "content": content_clean})
 
-    # Extract strategies (操作心法) - handle ### **Title** or ### Title formats
+    # Extract strategies (操作心法) - handle multiple section names
     strategies_match = re.search(
         r"###\s*\*?\*?(?:MK\s*的\s*)?操作心法[與和]?作法?\*?\*?\s*\n+(.+?)(?=\n---|\n###)",
         content,
@@ -204,6 +279,11 @@ def parse_summary(content: str) -> dict:
     if not strategies_match:
         strategies_match = re.search(
             r"###\s*\*?\*?(?:兆華的)?操作建議\*?\*?\s*\n+(.+?)(?=\n---|\n###)", content, re.DOTALL
+        )
+    if not strategies_match:
+        # Try zhaohua format: 本集來賓與高手觀點
+        strategies_match = re.search(
+            r"###\s*\*?\*?本集來賓與高手觀點\*?\*?\s*\n+(.+?)(?=\n---|\n###)", content, re.DOTALL
         )
     if strategies_match:
         strategies_text = strategies_match.group(1)
@@ -230,9 +310,9 @@ def parse_summary(content: str) -> dict:
     )
     if stocks_match:
         stocks_text = stocks_match.group(1)
-        # Parse stock entries: **symbol** - name or * **symbol** - name
+        # Parse stock entries: **symbol** - name or * **symbol**: name (支援 - 和 ：)
         stock_items = re.findall(
-            r"\*?\s*\*\*([^*]+)\*\*\s*[\-–]\s*(.+?)(?=\n|$)", stocks_text
+            r"\*?\s*\*\*([^*]+)\*\*\s*[\-–：:]\s*(.+?)(?=\n|$)", stocks_text
         )
         if stock_items:
             for symbol, name in stock_items:
@@ -243,9 +323,9 @@ def parse_summary(content: str) -> dict:
                 if symbol_clean:
                     sections["stocks"].append({"symbol": symbol_clean, "name": name_clean})
 
-    # Extract quotes (金句) - handle ### **Title** or ### Title formats
+    # Extract quotes (金句) - handle ### **Title** or ### Title formats and 觀點金句
     quotes_match = re.search(
-        r"###\s*\*?\*?(?:謝孟恭.*?)?(?:的\s*)?(?:觀點或)?金句.*?\*?\*?\s*\n+(.+?)(?=\n---|\n###|$)",
+        r"###\s*\*?\*?(?:謝孟恭|兆華)?.*?(?:的\s*)?(?:觀點[或與]?)?金句.*?\*?\*?\s*\n+(.+?)(?=\n---|\n###|$)",
         content,
         re.DOTALL,
     )
@@ -266,8 +346,11 @@ def parse_summary(content: str) -> dict:
                 quote_items = re.findall(r"[•\-\*]\s*(.+?)(?=\n[•\-\*]|\n\n|$)", quotes_text)
                 sections["quotes"] = [strip_markdown(q) for q in quote_items if len(q.strip()) > 10]
 
-    # Extract risks (風險提醒) - handle ### **Title** or ### Title formats
+    # Extract risks (風險提醒) or 市場展望與操作建議 - handle ### **Title** or ### Title formats
     risks_match = re.search(r"###\s*\*?\*?風險提醒\*?\*?\s*\n+(.+?)(?=\n---|\n###|$)", content, re.DOTALL)
+    if not risks_match:
+        # Try zhaohua format: 市場展望與操作建議
+        risks_match = re.search(r"###\s*\*?\*?市場展望與操作建議\*?\*?\s*\n+(.+?)(?=\n---|\n###|$)", content, re.DOTALL)
     if risks_match:
         risks_text = risks_match.group(1)
         # Parse risks - look for **title:** content or simple bullets
@@ -319,7 +402,8 @@ def get_episode_title(filename: str, podcast: str) -> str:
 
 
 def generate_episode_html(
-    podcast_id: str, episode_id: str, sections: dict, episode_info: dict
+    podcast_id: str, episode_id: str, sections: dict, episode_info: dict,
+    prev_episode: Optional[dict] = None, next_episode: Optional[dict] = None
 ) -> str:
     """Generate HTML for an episode page."""
     config = PODCASTS[podcast_id]
@@ -336,6 +420,55 @@ def generate_episode_html(
     else:
         # Try to get from episode_info
         date_display = episode_info.get("date", "")
+
+    # Build prev/next navigation HTML
+    nav_html = ""
+    if prev_episode or next_episode:
+        prev_btn = ""
+        next_btn = ""
+        if prev_episode:
+            prev_id = prev_episode["id"]
+            prev_title = prev_episode.get("title", f"{config['episode_prefix']}{prev_id}")[:30]
+            prev_btn = f'''<a href="/{podcast_id}/{prev_id}/" class="ep-nav-btn ep-nav-prev">
+                <i data-lucide="chevron-left"></i>
+                <span class="ep-nav-label">上一集</span>
+                <span class="ep-nav-title">{html_escape(prev_title)}</span>
+            </a>'''
+        else:
+            prev_btn = '<div class="ep-nav-btn ep-nav-disabled"></div>'
+
+        if next_episode:
+            next_id = next_episode["id"]
+            next_title = next_episode.get("title", f"{config['episode_prefix']}{next_id}")[:30]
+            next_btn = f'''<a href="/{podcast_id}/{next_id}/" class="ep-nav-btn ep-nav-next">
+                <span class="ep-nav-label">下一集</span>
+                <span class="ep-nav-title">{html_escape(next_title)}</span>
+                <i data-lucide="chevron-right"></i>
+            </a>'''
+        else:
+            next_btn = '<div class="ep-nav-btn ep-nav-disabled"></div>'
+
+        nav_html = f'''<nav class="episode-nav">{prev_btn}{next_btn}</nav>'''
+
+    # Build TOC items based on available sections
+    toc_items = []
+    if sections["tldr"]:
+        toc_items.append(("tldr", "摘要"))
+    if sections["topics"]:
+        toc_items.append(("topics", "話題"))
+    if sections["strategies"]:
+        toc_items.append(("strategies", "心法"))
+    if sections["stocks"]:
+        toc_items.append(("stocks", "股票"))
+    if sections["quotes"]:
+        toc_items.append(("quotes", "金句"))
+    if sections["risks"]:
+        toc_items.append(("risks", "風險"))
+
+    toc_html = ""
+    if len(toc_items) > 2:
+        toc_links = "".join([f'<a href="#{id}" class="toc-link" data-section="{id}">{label}</a>' for id, label in toc_items])
+        toc_html = f'''<nav class="toc">{toc_links}</nav>'''
 
     # Build topics HTML
     topics_html = ""
@@ -360,14 +493,15 @@ def generate_episode_html(
                         <div class="strategy-text">{html_escape(strategy)}</div>
                     </div>"""
 
-    # Build stocks HTML
+    # Build stocks HTML (clickable links to stock search)
     stocks_html = ""
     for stock in sections["stocks"][:12]:
+        stock_query = html_escape(stock['symbol'].split('(')[0].strip())
         stocks_html += f"""
-                    <div class="stock-tag">
+                    <a href="/stocks/?q={stock_query}" class="stock-tag">
                         <span class="stock-symbol">{html_escape(stock['symbol'])}</span>
                         <span class="stock-name">{html_escape(stock['name'])}</span>
-                    </div>"""
+                    </a>"""
 
     # Build quotes HTML
     quotes_html = ""
@@ -880,6 +1014,102 @@ def generate_episode_html(
             text-decoration: none;
         }}
 
+        /* Episode Navigation */
+        .episode-nav {{
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-subtle);
+        }}
+
+        .ep-nav-btn {{
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 45%;
+        }}
+
+        .ep-nav-btn:hover {{
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }}
+
+        .ep-nav-prev {{ justify-content: flex-start; }}
+        .ep-nav-next {{ justify-content: flex-end; text-align: right; }}
+
+        .ep-nav-btn svg {{ width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0; }}
+        .ep-nav-label {{ font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }}
+        .ep-nav-title {{ font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }}
+        .ep-nav-disabled {{ visibility: hidden; }}
+
+        .ep-nav-prev .ep-nav-label,
+        .ep-nav-prev .ep-nav-title {{ display: block; }}
+        .ep-nav-next .ep-nav-label,
+        .ep-nav-next .ep-nav-title {{ display: block; }}
+
+        /* Table of Contents */
+        .toc {{
+            position: fixed;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }}
+
+        .toc-link {{
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }}
+
+        .toc-link:hover,
+        .toc-link.active {{
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }}
+
+        /* Clickable stock tags */
+        .stock-tag {{
+            cursor: pointer;
+            text-decoration: none;
+        }}
+
+        a.stock-tag:hover {{
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+            transform: translateY(-2px);
+        }}
+
+        @media (max-width: 1200px) {{
+            .toc {{ display: none; }}
+        }}
+
+        @media (max-width: 768px) {{
+            .episode-nav {{ flex-direction: column; }}
+            .ep-nav-btn {{ max-width: 100%; }}
+            .ep-nav-next {{ flex-direction: row-reverse; text-align: left; }}
+        }}
+
         @keyframes fadeInUp {{
             from {{
                 opacity: 0;
@@ -973,14 +1203,14 @@ def generate_episode_html(
 
         <main class="content">
             {"" if not sections['tldr'] else f'''
-            <div class="tldr-box animate-in">
+            <div class="tldr-box animate-in" id="tldr">
                 <div class="tldr-label">一句話總結</div>
                 <div class="tldr-text">{html_escape(sections['tldr'])}</div>
             </div>
             '''}
 
             {"" if not sections['topics'] else f'''
-            <section class="section">
+            <section class="section" id="topics">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="message-square"></i>
@@ -993,7 +1223,7 @@ def generate_episode_html(
             '''}
 
             {"" if not sections['strategies'] else f'''
-            <section class="section">
+            <section class="section" id="strategies">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="compass"></i>
@@ -1006,7 +1236,7 @@ def generate_episode_html(
             '''}
 
             {"" if not sections['stocks'] else f'''
-            <section class="section">
+            <section class="section" id="stocks">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="bar-chart-2"></i>
@@ -1019,7 +1249,7 @@ def generate_episode_html(
             '''}
 
             {"" if not sections['quotes'] else f'''
-            <section class="section">
+            <section class="section" id="quotes">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="quote"></i>
@@ -1032,7 +1262,7 @@ def generate_episode_html(
             '''}
 
             {"" if not sections['risks'] else f'''
-            <section class="section">
+            <section class="section" id="risks">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="alert-triangle"></i>
@@ -1043,14 +1273,17 @@ def generate_episode_html(
                 </div>
             </section>
             '''}
+            {nav_html}
         </main>
 
         <footer class="footer">
             <p class="footer-text">
-                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
             </p>
         </footer>
     </div>
+
+    {toc_html}
 
     <script>
         lucide.createIcons();
@@ -1060,6 +1293,25 @@ def generate_episode_html(
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (scrollTop / docHeight) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
+
+            // TOC active state
+            const sections = document.querySelectorAll('.section[id], .tldr-box[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            let currentSection = '';
+
+            sections.forEach(section => {{
+                const sectionTop = section.offsetTop - 150;
+                if (scrollTop >= sectionTop) {{
+                    currentSection = section.getAttribute('id');
+                }}
+            }});
+
+            tocLinks.forEach(link => {{
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {{
+                    link.classList.add('active');
+                }}
+            }});
         }});
     </script>
 </body>
@@ -1077,6 +1329,7 @@ def generate_listing_html(podcast_id: str, episodes: list) -> str:
         ep_id = ep["id"]
         ep_title = ep.get("title", f"{config['episode_prefix']}{ep_id}")
         ep_preview = ep.get("preview", "AI 智慧摘要...")
+        ep_date = ep.get("date_str", ep_id if podcast_id == "yutinghao" else "")
 
         # Format date display
         if podcast_id == "yutinghao":
@@ -1085,12 +1338,16 @@ def generate_listing_html(podcast_id: str, episodes: list) -> str:
         else:
             date_display = f"{config['episode_prefix']}{ep_id}"
 
+        # Freshness badge
+        fresh_label, fresh_class = get_freshness_label(ep_date)
+        fresh_badge = f'<span class="fresh-badge {fresh_class}">{fresh_label}</span>' if fresh_label else ""
+
         # Truncate title nicely - try to cut at a good point
         truncated_title = ep_title[:100] if len(ep_title) <= 100 else ep_title[:97] + "..."
 
         episodes_html += f"""
             <a href="/{podcast_id}/{ep_id}/" class="episode-card">
-                <span class="episode-date-badge">{date_display}</span>
+                <span class="episode-date-badge">{date_display}{fresh_badge}</span>
                 <div class="episode-content">
                     <div class="episode-title">{html_escape(truncated_title)}</div>
                     <div class="episode-preview">{html_escape(ep_preview[:100])}...</div>
@@ -1318,6 +1575,33 @@ def generate_listing_html(podcast_id: str, episodes: list) -> str:
             min-width: 80px;
             text-align: center;
             border: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }}
+
+        .fresh-badge {{
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }}
+
+        .fresh-today {{
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }}
+
+        .fresh-yesterday {{
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }}
+
+        .fresh-week {{
+            background: rgba(168, 85, 247, 0.15);
+            color: #a855f7;
         }}
 
         .episode-content {{ flex: 1; min-width: 0; }}
@@ -1501,7 +1785,7 @@ def generate_listing_html(podcast_id: str, episodes: list) -> str:
 
         <footer class="footer">
             <p class="footer-text">
-                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
             </p>
         </footer>
     </div>
@@ -1601,8 +1885,33 @@ def generate_listing_html(podcast_id: str, episodes: list) -> str:
     return html
 
 
-def generate_homepage(podcast_counts: dict) -> str:
+def generate_homepage(podcast_counts: dict, latest_episodes: List[dict] = None) -> str:
     """Generate the main homepage."""
+    # Build latest episodes HTML
+    latest_html = ""
+    if latest_episodes:
+        for ep in latest_episodes[:6]:
+            podcast_id = ep.get("podcast_id", "")
+            ep_id = ep.get("id", "")
+            ep_title = ep.get("title", "")[:50]
+            ep_preview = ep.get("preview", "")[:80]
+            podcast_name = PODCASTS.get(podcast_id, {}).get("short_name", podcast_id)
+            ep_date = ep.get("date_str", "")
+
+            # Freshness badge
+            fresh_label, fresh_class = get_freshness_label(ep_date)
+            fresh_badge = f'<span class="fresh-badge {fresh_class}">{fresh_label}</span>' if fresh_label else ""
+
+            latest_html += f'''
+                <a href="/{podcast_id}/{ep_id}/" class="latest-card">
+                    <div class="latest-meta">
+                        <span class="latest-podcast">{podcast_name}</span>
+                        {fresh_badge}
+                    </div>
+                    <div class="latest-title">{html_escape(ep_title)}</div>
+                    <div class="latest-preview">{html_escape(ep_preview)}...</div>
+                </a>'''
+
     html = f"""<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -1950,10 +2259,115 @@ def generate_homepage(podcast_counts: dict) -> str:
         .delay-3 {{ animation-delay: 0.3s; }}
         .delay-4 {{ animation-delay: 0.4s; }}
 
+        /* Latest Episodes Section */
+        .latest-section {{
+            padding: 0 0 80px;
+        }}
+
+        .latest-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+        }}
+
+        .latest-card {{
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 24px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s var(--transition-smooth);
+        }}
+
+        .latest-card:hover {{
+            transform: translateY(-4px);
+            border-color: rgba(255,255,255,0.15);
+            background: var(--bg-card-hover);
+        }}
+
+        .latest-meta {{
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }}
+
+        .latest-podcast {{
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }}
+
+        .latest-title {{
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            line-height: 1.4;
+        }}
+
+        .latest-preview {{
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }}
+
+        /* Freshness badges */
+        .fresh-badge {{
+            font-size: 0.65rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }}
+
+        .fresh-today {{
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }}
+
+        .fresh-yesterday {{
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }}
+
+        .fresh-week {{
+            background: rgba(168, 85, 247, 0.15);
+            color: #a855f7;
+        }}
+
+        /* Telegram CTA */
+        .telegram-cta {{
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: rgba(0, 136, 204, 0.15);
+            border: 1px solid rgba(0, 136, 204, 0.3);
+            border-radius: 100px;
+            color: #0088cc;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-top: 32px;
+        }}
+
+        .telegram-cta:hover {{
+            background: rgba(0, 136, 204, 0.25);
+            transform: translateY(-2px);
+        }}
+
+        .telegram-cta svg {{ width: 18px; height: 18px; }}
+
         @media (max-width: 768px) {{
             .container {{ padding: 0 16px; }}
             .hero {{ padding: 60px 0 80px; }}
             .podcast-grid {{ grid-template-columns: 1fr; }}
+            .latest-grid {{ grid-template-columns: 1fr; }}
             .orb {{ opacity: 0.25; }}
         }}
     </style>
@@ -1987,6 +2401,14 @@ def generate_homepage(podcast_counts: dict) -> str:
                 台灣財經 Podcast 智慧摘要，快速掌握每集精華內容、投資觀點與市場分析。
             </p>
         </section>
+
+        {"" if not latest_html else f'''
+        <section class="latest-section">
+            <div class="section-label animate-in delay-2">最新摘要</div>
+            <div class="latest-grid animate-in delay-3">{latest_html}
+            </div>
+        </section>
+        '''}
 
         <section class="podcasts-section">
             <div class="section-label animate-in delay-3">收錄節目</div>
@@ -2055,7 +2477,11 @@ def generate_homepage(podcast_counts: dict) -> str:
         </section>
 
         <footer class="footer">
-            <p class="footer-text">
+            <a href="https://t.me/podsight" target="_blank" class="telegram-cta">
+                <i data-lucide="send"></i>
+                訂閱 Telegram 頻道
+            </a>
+            <p class="footer-text" style="margin-top: 24px;">
                 摘要由 AI 自動生成，僅供參考 · PodSight
             </p>
         </footer>
@@ -2066,6 +2492,364 @@ def generate_homepage(podcast_counts: dict) -> str:
     </script>
 </body>
 </html>"""
+    return html
+
+
+def generate_stock_search_page(stock_index: Dict[str, List[dict]]) -> str:
+    """Generate the stock search page."""
+    # Sort stocks alphabetically
+    sorted_stocks = sorted(stock_index.keys())
+
+    # Build stock list HTML
+    stocks_html = ""
+    for stock_name in sorted_stocks:
+        episodes = stock_index[stock_name]
+        ep_count = len(episodes)
+        # Get unique podcasts
+        podcasts = list(set([ep["podcast_id"] for ep in episodes]))
+        podcast_badges = " ".join([f'<span class="stock-podcast-badge">{PODCASTS.get(p, {}).get("short_name", p)}</span>' for p in podcasts[:3]])
+
+        stocks_html += f'''
+            <div class="stock-index-item" data-stock="{html_escape(stock_name.lower())}">
+                <div class="stock-index-name">{html_escape(stock_name)}</div>
+                <div class="stock-index-meta">
+                    {podcast_badges}
+                    <span class="stock-index-count">{ep_count} 集提及</span>
+                </div>
+                <div class="stock-index-episodes">'''
+
+        for ep in episodes[:5]:
+            podcast_id = ep["podcast_id"]
+            ep_id = ep["id"]
+            ep_title = ep.get("title", "")[:40]
+            stocks_html += f'''
+                    <a href="/{podcast_id}/{ep_id}/" class="stock-episode-link">{html_escape(ep_title)}</a>'''
+
+        if ep_count > 5:
+            stocks_html += f'<span class="stock-more">+{ep_count - 5} 更多</span>'
+
+        stocks_html += '''
+                </div>
+            </div>'''
+
+    html = f'''<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>股票搜尋 - PodSight</title>
+    <meta name="description" content="搜尋 Podcast 中提到的股票">
+
+    <link rel="icon" type="image/jpeg" href="/assets/PodSight-Logo-cropped.jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <style>
+        :root {{
+            --bg-primary: #050508;
+            --bg-secondary: #0a0a0f;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --bg-card-hover: rgba(255, 255, 255, 0.06);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.4);
+            --accent-primary: #4DB8E8;
+            --accent-bg: rgba(77, 184, 232, 0.12);
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }}
+
+        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+        body {{
+            font-family: 'Noto Sans TC', 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }}
+
+        .container {{
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }}
+
+        .nav {{
+            padding: 24px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }}
+
+        .nav-back {{
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }}
+
+        .nav-back:hover {{ color: var(--text-primary); }}
+        .nav-back svg {{ width: 18px; height: 18px; }}
+
+        .nav-logo {{
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: inherit;
+        }}
+
+        .nav-logo-icon {{
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            overflow: hidden;
+        }}
+
+        .nav-logo-icon img {{ width: 100%; height: 100%; object-fit: cover; }}
+        .nav-logo-text {{ font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 600; }}
+
+        .page-header {{
+            text-align: center;
+            padding: 60px 0;
+        }}
+
+        .page-header h1 {{
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--accent-primary), #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }}
+
+        .page-header p {{
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }}
+
+        .search-box {{
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto 48px;
+        }}
+
+        .search-box svg {{
+            position: absolute;
+            left: 20px; top: 50%;
+            transform: translateY(-50%);
+            width: 20px; height: 20px;
+            color: var(--text-muted);
+        }}
+
+        .search-box input {{
+            width: 100%;
+            padding: 18px 24px 18px 56px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.2s;
+        }}
+
+        .search-box input::placeholder {{ color: var(--text-muted); }}
+        .search-box input:focus {{ outline: none; border-color: var(--accent-primary); }}
+
+        .stock-count {{
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+        }}
+
+        .stock-index {{
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }}
+
+        .stock-index-item {{
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.2s;
+        }}
+
+        .stock-index-item:hover {{
+            border-color: var(--accent-primary);
+            background: var(--bg-card-hover);
+        }}
+
+        .stock-index-item.hidden {{ display: none; }}
+
+        .stock-index-name {{
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--accent-primary);
+            margin-bottom: 8px;
+        }}
+
+        .stock-index-meta {{
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }}
+
+        .stock-podcast-badge {{
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            background: var(--accent-bg);
+            border-radius: 4px;
+            color: var(--text-secondary);
+        }}
+
+        .stock-index-count {{
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }}
+
+        .stock-index-episodes {{
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }}
+
+        .stock-episode-link {{
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 6px 12px;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            transition: all 0.2s;
+        }}
+
+        .stock-episode-link:hover {{
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }}
+
+        .stock-more {{
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            padding: 6px 12px;
+        }}
+
+        .no-results {{
+            text-align: center;
+            padding: 60px 0;
+            color: var(--text-muted);
+            display: none;
+        }}
+
+        .footer {{
+            padding: 48px 0;
+            border-top: 1px solid var(--border-subtle);
+            text-align: center;
+            margin-top: 60px;
+        }}
+
+        .footer-text {{ font-size: 0.85rem; color: var(--text-muted); }}
+        .footer-text a {{ color: var(--text-secondary); text-decoration: none; }}
+
+        @media (max-width: 768px) {{
+            .container {{ padding: 0 16px; }}
+            .page-header {{ padding: 40px 0; }}
+            .page-header h1 {{ font-size: 2rem; }}
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="nav">
+            <a href="/" class="nav-back">
+                <i data-lucide="arrow-left"></i>
+                返回首頁
+            </a>
+            <a href="/" class="nav-logo">
+                <div class="nav-logo-icon">
+                    <img src="/assets/PodSight-Logo-cropped.jpeg" alt="PodSight">
+                </div>
+                <span class="nav-logo-text">PodSight 聲見</span>
+            </a>
+        </nav>
+
+        <header class="page-header">
+            <h1>股票搜尋</h1>
+            <p>搜尋 Podcast 中提到的股票與 ETF</p>
+        </header>
+
+        <div class="search-box">
+            <i data-lucide="search"></i>
+            <input type="text" placeholder="搜尋股票名稱或代號..." id="stockSearch">
+        </div>
+
+        <div class="stock-count">
+            共 <strong>{len(stock_index)}</strong> 檔股票 / ETF
+        </div>
+
+        <div class="stock-index" id="stockIndex">{stocks_html}
+        </div>
+
+        <div class="no-results" id="noResults">
+            找不到符合的股票
+        </div>
+
+        <footer class="footer">
+            <p class="footer-text">
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const searchInput = document.getElementById('stockSearch');
+        const stockItems = document.querySelectorAll('.stock-index-item');
+        const noResults = document.getElementById('noResults');
+
+        // Check URL params for initial search
+        const urlParams = new URLSearchParams(window.location.search);
+        const initialQuery = urlParams.get('q');
+        if (initialQuery) {{
+            searchInput.value = initialQuery;
+            filterStocks(initialQuery);
+        }}
+
+        searchInput.addEventListener('input', (e) => {{
+            filterStocks(e.target.value);
+        }});
+
+        function filterStocks(query) {{
+            query = query.toLowerCase().trim();
+            let visibleCount = 0;
+
+            stockItems.forEach(item => {{
+                const stockName = item.getAttribute('data-stock');
+                if (!query || stockName.includes(query)) {{
+                    item.classList.remove('hidden');
+                    visibleCount++;
+                }} else {{
+                    item.classList.add('hidden');
+                }}
+            }});
+
+            noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+        }}
+    </script>
+</body>
+</html>'''
     return html
 
 
@@ -2101,9 +2885,14 @@ def main():
     """Generate the complete public site."""
     print("Generating PodSight public site...")
 
-    # Track counts
+    # Track counts and collect data
     podcast_counts = {}
     total_episodes = 0
+    all_episodes = []  # For "latest" feed
+    stock_index = {}  # For stock search
+
+    # First pass: collect all episode data
+    all_podcast_episodes = {}
 
     for podcast_id, config in PODCASTS.items():
         print(f"\nProcessing {config['name']}...")
@@ -2121,6 +2910,7 @@ def main():
         print(f"  Found {len(summary_files)} summaries")
 
         episodes = []
+        episodes_with_sections = []  # Store sections for second pass
 
         # Sort by proper key (date for yutinghao, episode number for others)
         sorted_files = sorted(
@@ -2143,18 +2933,26 @@ def main():
 
             # Get original episode title from episodes.json
             title = None
+            pub_date = None
             if podcast_id in ["gooaye", "zhaohua"]:
                 # Numbered episodes - look up by episode number
                 ep_num = int(episode_id) if episode_id.isdigit() else None
                 if ep_num and ep_num in episodes_data:
                     title = episodes_data[ep_num].get("title", "")
+                    # Parse RFC 2822 date format to YYYY-MM-DD
+                    raw_date = episodes_data[ep_num].get("published", "")
+                    pub_date = parse_rfc_date(raw_date) or ""
             else:
                 # Date-based (yutinghao) - use filename title
                 title = get_episode_title(summary_file.name, podcast_id)
+                pub_date = episode_id  # Episode ID is the date
 
             # Fallback to TLDR if no title found
             if not title and sections["tldr"]:
                 title = sections["tldr"][:50]
+
+            # Get date string for freshness
+            date_str = extract_episode_date(episode_id, podcast_id, summary_file.name) or pub_date or ""
 
             # Create episode info
             episode_info = {
@@ -2162,11 +2960,64 @@ def main():
                 "title": title or f"{config['episode_prefix']}{episode_id}",
                 "preview": sections["tldr"][:100] if sections["tldr"] else "",
                 "date": episode_id if podcast_id == "yutinghao" else "",
+                "date_str": date_str,
+                "podcast_id": podcast_id,
             }
             episodes.append(episode_info)
+            episodes_with_sections.append((episode_info, sections, summary_file.name))
 
-            # Generate episode page
-            episode_html = generate_episode_html(podcast_id, episode_id, sections, episode_info)
+            # Add to all_episodes for "latest" feed
+            all_episodes.append(episode_info)
+
+            # Build stock index
+            for stock in sections.get("stocks", []):
+                stock_name = stock.get("symbol", "").split("(")[0].strip()
+                if stock_name:
+                    if stock_name not in stock_index:
+                        stock_index[stock_name] = []
+                    stock_index[stock_name].append({
+                        "podcast_id": podcast_id,
+                        "id": episode_id,
+                        "title": title or episode_id,
+                    })
+
+        all_podcast_episodes[podcast_id] = episodes_with_sections
+        podcast_counts[podcast_id] = len(episodes)
+        total_episodes += len(episodes)
+
+    # Build balanced "latest" feed - interleaved for grid: 股癌, YTH, 兆華, 股癌, YTH, 兆華
+    latest_by_podcast = {}
+    for podcast_id in ["gooaye", "yutinghao", "zhaohua"]:
+        latest_by_podcast[podcast_id] = [ep for ep in all_episodes if ep.get("podcast_id") == podcast_id][:2]
+
+    # Interleave: position 0,3 = gooaye, 1,4 = yth, 2,5 = zhaohua
+    latest_balanced = [
+        latest_by_podcast["gooaye"][0] if latest_by_podcast["gooaye"] else None,
+        latest_by_podcast["yutinghao"][0] if latest_by_podcast["yutinghao"] else None,
+        latest_by_podcast["zhaohua"][0] if latest_by_podcast["zhaohua"] else None,
+        latest_by_podcast["gooaye"][1] if len(latest_by_podcast["gooaye"]) > 1 else None,
+        latest_by_podcast["yutinghao"][1] if len(latest_by_podcast["yutinghao"]) > 1 else None,
+        latest_by_podcast["zhaohua"][1] if len(latest_by_podcast["zhaohua"]) > 1 else None,
+    ]
+    latest_balanced = [ep for ep in latest_balanced if ep]  # Remove None entries
+
+    # Second pass: generate episode pages with prev/next navigation
+    for podcast_id, episodes_with_sections in all_podcast_episodes.items():
+        config = PODCASTS[podcast_id]
+        episodes = [e[0] for e in episodes_with_sections]
+
+        for i, (episode_info, sections, filename) in enumerate(episodes_with_sections):
+            episode_id = episode_info["id"]
+
+            # Determine prev/next episodes (prev = newer, next = older in our sorted list)
+            prev_episode = episodes[i - 1] if i > 0 else None
+            next_episode = episodes[i + 1] if i < len(episodes) - 1 else None
+
+            # Generate episode page with navigation
+            episode_html = generate_episode_html(
+                podcast_id, episode_id, sections, episode_info,
+                prev_episode=prev_episode, next_episode=next_episode
+            )
 
             # Write episode page
             episode_dir = OUTPUT_DIR / podcast_id / episode_id
@@ -2180,12 +3031,18 @@ def main():
             listing_dir.mkdir(parents=True, exist_ok=True)
             (listing_dir / "index.html").write_text(listing_html, encoding="utf-8")
 
-        podcast_counts[podcast_id] = len(episodes)
-        total_episodes += len(episodes)
         print(f"  Generated {len(episodes)} episode pages")
 
-    # Generate homepage
-    homepage_html = generate_homepage(podcast_counts)
+    # Generate stock search page
+    if stock_index:
+        print(f"\nGenerating stock search page ({len(stock_index)} stocks)...")
+        stock_html = generate_stock_search_page(stock_index)
+        stock_dir = OUTPUT_DIR / "stocks"
+        stock_dir.mkdir(parents=True, exist_ok=True)
+        (stock_dir / "index.html").write_text(stock_html, encoding="utf-8")
+
+    # Generate homepage with latest episodes (balanced: 2 from each podcast)
+    homepage_html = generate_homepage(podcast_counts, latest_episodes=latest_balanced[:6])
     (OUTPUT_DIR / "index.html").write_text(homepage_html, encoding="utf-8")
     print(f"\nGenerated homepage")
 

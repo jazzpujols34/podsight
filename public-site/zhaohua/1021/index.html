@@ -502,6 +502,102 @@
             text-decoration: none;
         }
 
+        /* Episode Navigation */
+        .episode-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .ep-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .ep-nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .ep-nav-prev { justify-content: flex-start; }
+        .ep-nav-next { justify-content: flex-end; text-align: right; }
+
+        .ep-nav-btn svg { width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0; }
+        .ep-nav-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .ep-nav-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+        .ep-nav-disabled { visibility: hidden; }
+
+        .ep-nav-prev .ep-nav-label,
+        .ep-nav-prev .ep-nav-title { display: block; }
+        .ep-nav-next .ep-nav-label,
+        .ep-nav-next .ep-nav-title { display: block; }
+
+        /* Table of Contents */
+        .toc {
+            position: fixed;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .toc-link {
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .toc-link:hover,
+        .toc-link.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        /* Clickable stock tags */
+        .stock-tag {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a.stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .toc { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .episode-nav { flex-direction: column; }
+            .ep-nav-btn { max-width: 100%; }
+            .ep-nav-next { flex-direction: row-reverse; text-align: left; }
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -595,14 +691,14 @@
 
         <main class="content">
             
-            <div class="tldr-box animate-in">
+            <div class="tldr-box animate-in" id="tldr">
                 <div class="tldr-label">一句話總結</div>
                 <div class="tldr-text">本集核心在於探討 2026 年「價值股翻身」的投資主軸，並透過 1 月份的市場表現預測全年縮影，同時警示投資人應關注融資過高與熱門股回檔的風險訊號。</div>
             </div>
             
 
             
-            <section class="section">
+            <section class="section" id="topics">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="message-square"></i>
@@ -617,33 +713,142 @@
                     </div>
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 02</div>
-                        <div class="topic-title">市場背景與影響</div>
-                        <div class="topic-content">融資餘額逼近 5000 億大關，若加上股票質押等「不限用途貸款」，資金槓桿已超越 1999 年網路泡沫時期。日均成交量從去年的 4200 億翻倍至 7000-8000 億，顯示結構性資金極度充沛。</div>
+                        <div class="topic-title">2. 2026 投資關鍵字：「翻」——價值股的平反</div>
+                        <div class="topic-content">來賓富旭哥分享其 2026 年的操作核心為「翻」，意即等待長期受冷落的價值股翻身。他認為 1 月份的市場表現往往是全年的縮影，目前看到去年弱勢的價值股與高股息 ETF 已開始集體復活。</div>
                     </div>
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 03</div>
-                        <div class="topic-title">市場背景與影響</div>
-                        <div class="topic-content">資金開始從高本益比的熱門題材股（如 AI）部分獲利了結，轉向低基期、具備配息能力的價值股。</div>
+                        <div class="topic-title">3. 關稅政策下的產業受惠與誤區</div>
+                        <div class="topic-content">針對美國關稅調整，市場出現錯殺與誤解。富旭哥深度解析汽車零件業為何是真正的受惠者，而紡織與部分代工業則不然。 詳細說明：汽車零件（AM 市場）如地寶、提維西，生產基地多在台灣且銷往美國，關稅降低直接減輕企業負擔；反之，紡織業如儒鴻、聚陽生產基地在越南，台灣關稅調降對其直接益處有限。</div>
                     </div>
                 </div>
             </section>
             
 
             
-
+            <section class="section" id="strategies">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h2 class="section-title">操作心法與建議</h2>
+                </div>
+                <div class="strategy-list">
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="strategy-text">富旭哥：知名「存股總編」，擅長價值投資、基本面分析與長線佈局。 高手的操作心法與作法： 1. 進出場策略： 1 月縮影論：觀察 1 月最強勢的族群，通常即為全年的主流。 停利心法：今年操作要「拿得住」，不要因為小賺就賣出，避免「賣飛」後續的大行情（如群益證今年已漲 15% 但他仍持有）。 2. 選股邏輯： 尋找「右下角起漲」的低基期標的。 優先選擇生產基地在台灣、且美國市場營收佔比高（35% 以上）的企業，以實質受惠關稅調降。 跨領域學習：富旭哥反思巴菲特「不碰不懂的產業」觀點，認為平凡人若想翻身，必須努力研究 AI、半導體等新趨勢，因此近期開始配置 0052（含高比例台積電）。 3. 風險控管方法（關鍵訊號）： 20% 回檔準則：建立 50 檔「正派熱門領頭羊」自選清單。若清單中超過一半的標的從高點回落 20%，即使自己持有的價值股沒跌，也會減碼 1-2 成以避開可能的系統性風險。 4. 對當前市場判斷： 雖然成交量與融資驚人，但有國際資金（從中港撤出轉入台日韓）的結構性因素支撐，不宜盲目看空，但需保持警覺。</div>
+                    </div>
+                </div>
+            </section>
             
 
             
+            <section class="section" id="stocks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="bar-chart-2"></i>
+                    </div>
+                    <h2 class="section-title">提到的股票 / ETF</h2>
+                </div>
+                <div class="stock-grid">
+                    <a href="/stocks/?q=台積電" class="stock-tag">
+                        <span class="stock-symbol">台積電 (2330)</span>
+                        <span class="stock-name">盤中來到 1775 元</span>
+                    </a>
+                    <a href="/stocks/?q=群益證" class="stock-tag">
+                        <span class="stock-symbol">群益證 (6005)</span>
+                        <span class="stock-name">富旭哥第一大持股</span>
+                    </a>
+                    <a href="/stocks/?q=地寶" class="stock-tag">
+                        <span class="stock-symbol">地寶 (6605)</span>
+                        <span class="stock-name">富旭哥第二大持股</span>
+                    </a>
+                    <a href="/stocks/?q=聯亞" class="stock-tag">
+                        <span class="stock-symbol">聯亞 (3081)</span>
+                        <span class="stock-name">矽光子指標</span>
+                    </a>
+                    <a href="/stocks/?q=富邦科技" class="stock-tag">
+                        <span class="stock-symbol">富邦科技 (0052)</span>
+                        <span class="stock-name">富旭哥近期加碼標的</span>
+                    </a>
+                    <a href="/stocks/?q=榮澤" class="stock-tag">
+                        <span class="stock-symbol">榮澤 (2041)</span>
+                        <span class="stock-name">工具機指標</span>
+                    </a>
+                    <a href="/stocks/?q=其他提及" class="stock-tag">
+                        <span class="stock-symbol">其他提及</span>
+                        <span class="stock-name">華星光 (4979)、尼克森 (3317)、台玻 (1802)、聯詠 (3034)、00919</span>
+                    </a>
+                </div>
+            </section>
+            
 
             
+            <section class="section" id="quotes">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="quote"></i>
+                    </div>
+                    <h2 class="section-title">金句摘錄</h2>
+                </div>
+                <div class="quote-list">
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">一月份在股市老手的眼中，可能是全年的縮影。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">覆巢之下無完卵，當熱門股集體轉空，價值股也難免受到衝擊。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">現在的盤是熱門也漲、右下角也漲，大家的心情會越來越浮動，想要趕快加入。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">平凡人想要靠投資翻身，不懂的東西反而要努力一點去看能不能搞懂。</p>
+                    </div>
+                </div>
+            </section>
+            
+
+            
+            <section class="section" id="risks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="alert-triangle"></i>
+                    </div>
+                    <h2 class="section-title">風險提醒</h2>
+                </div>
+                <div class="risk-list">
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">操作建議*：目前市場處於「百花齊放」階段，建議投資人不要頻繁換股，應守住具備基本面的價值股，並適度配置市值型或科技型 ETF（如 0052、0050）以跟上大盤漲幅。 2. 避險警訊：緊盯熱門領頭羊股價，若出現集體性大幅回檔（&gt;20%），應立即降低整體部位，而非單純轉入價值股避險。 3. 節奏掌握：農曆年關將近，若成本夠低且屬於長線價值投資，無需為了短期休市而大幅砍單。汽車零件股未來 3-6 個月因關稅與價格落差，毛利率有提升空間，值得持續關注。</span>
+                    </div>
+                </div>
+            </section>
+            
+            <nav class="episode-nav"><a href="/zhaohua/1022/" class="ep-nav-btn ep-nav-prev">
+                <i data-lucide="chevron-left"></i>
+                <span class="ep-nav-label">上一集</span>
+                <span class="ep-nav-title">EP1022｜格陵蘭事件影響美股，台股只跌今天，還是今天起跌</span>
+            </a><a href="/zhaohua/1020/" class="ep-nav-btn ep-nav-next">
+                <span class="ep-nav-label">下一集</span>
+                <span class="ep-nav-title">EP1020｜台股近32000，有過熱現象嗎？緯創獲利創高大</span>
+                <i data-lucide="chevron-right"></i>
+            </a></nav>
         </main>
 
         <footer class="footer">
             <p class="footer-text">
-                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
             </p>
         </footer>
     </div>
+
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#strategies" class="toc-link" data-section="strategies">心法</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a><a href="#risks" class="toc-link" data-section="risks">風險</a></nav>
 
     <script>
         lucide.createIcons();
@@ -653,6 +858,25 @@
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (scrollTop / docHeight) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
+
+            // TOC active state
+            const sections = document.querySelectorAll('.section[id], .tldr-box[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (scrollTop >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>

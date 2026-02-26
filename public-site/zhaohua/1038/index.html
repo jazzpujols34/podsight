@@ -502,6 +502,102 @@
             text-decoration: none;
         }
 
+        /* Episode Navigation */
+        .episode-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .ep-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .ep-nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .ep-nav-prev { justify-content: flex-start; }
+        .ep-nav-next { justify-content: flex-end; text-align: right; }
+
+        .ep-nav-btn svg { width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0; }
+        .ep-nav-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .ep-nav-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+        .ep-nav-disabled { visibility: hidden; }
+
+        .ep-nav-prev .ep-nav-label,
+        .ep-nav-prev .ep-nav-title { display: block; }
+        .ep-nav-next .ep-nav-label,
+        .ep-nav-next .ep-nav-title { display: block; }
+
+        /* Table of Contents */
+        .toc {
+            position: fixed;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .toc-link {
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .toc-link:hover,
+        .toc-link.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        /* Clickable stock tags */
+        .stock-tag {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a.stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .toc { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .episode-nav { flex-direction: column; }
+            .ep-nav-btn { max-width: 100%; }
+            .ep-nav-next { flex-direction: row-reverse; text-align: left; }
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -595,14 +691,14 @@
 
         <main class="content">
             
-            <div class="tldr-box animate-in">
+            <div class="tldr-box animate-in" id="tldr">
                 <div class="tldr-label">一句話總結</div>
                 <div class="tldr-text">本集由主持人兆華與分析師艾倫（Alan）深入對談，揭露投顧產業的職涯抉擇內幕，並強調投資應如同選職，需順應熱門產業趨勢並透過長期佈局累積複利。</div>
             </div>
             
 
             
-            <section class="section">
+            <section class="section" id="topics">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="message-square"></i>
@@ -613,42 +709,158 @@
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 01</div>
                         <div class="topic-title">1. 投顧分析師的職涯轉折與心路歷程</div>
-                        <div class="topic-content">：來賓艾倫宣布從顧德投顧轉職至大華國際投顧，並分享他在兩年合約到期後的思想鬥爭。他坦言過去對投顧老師有負面成見，但在自媒體起家後，決定以「正直、誠實」的形象重新定義這個職業。他強調帶會員的壓力並非來自自身損益，而是源於對會員資產的責任感，曾在自我懷疑與職業誘因中不斷磨合。</div>
+                        <div class="topic-content">詳細說明：來賓艾倫宣布從顧德投顧轉職至大華國際投顧，並分享他在兩年合約到期後的思想鬥爭。他坦言過去對投顧老師有負面成見，但在自媒體起家後，決定以「正直、誠實」的形象重新定義這個職業。他強調帶會員的壓力並非來自自身損益，而是源於對會員資產的責任感，曾在自我懷疑與職業誘因中不斷磨合。</div>
                     </div>
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 02</div>
-                        <div class="topic-title">市場背景與影響</div>
-                        <div class="topic-content">投顧產業在台灣屬特許行業，近期隨台股行情火熱，市場對專業分析師的需求與關注度大幅提升。 2. 投顧經營模式的創新：誠實面對虧損 詳細說明：傳統投顧多採「報喜不報憂」的策略，但艾倫選擇公開透明的操作方式，不論是獲利或停損、是全體會員參與還是特定級別標的，皆在直播中如實交代。他認為透過「把話說在前頭」並開放直播留言互動，能有效降低內耗，與會員建立平等的夥伴關係，而非高高在上的老師。</div>
+                        <div class="topic-title">2. 投顧經營模式的創新：誠實面對虧損</div>
+                        <div class="topic-content">詳細說明：傳統投顧多採「報喜不報憂」的策略，但艾倫選擇公開透明的操作方式，不論是獲利或停損、是全體會員參與還是特定級別標的，皆在直播中如實交代。他認為透過「把話說在前頭」並開放直播留言互動，能有效降低內耗，與會員建立平等的夥伴關係，而非高高在上的老師。</div>
                     </div>
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 03</div>
-                        <div class="topic-title">市場背景與影響</div>
-                        <div class="topic-content">在資訊透明的自媒體時代，傳統遮掩虧損的作法已難獲得投資人信任，誠實經營反而能凝聚忠實粉絲。 3. 選職如選股：熱門產業的動能邏輯 詳細說明：艾倫提出「選職業與選股票邏輯一致」的觀點。他留在投顧業是因為看好台灣目前最強勁的兩大熱門產業：科技業（AI 相關）與證券金融業。只要產業動能未退（未跌破五日均線），就應留在趨勢中。他認為進入金融業不一定要有頂尖學歷，但「證照」是法律門檻，而「抗壓性」則是生存關鍵。</div>
-                    </div>
-                    <div class="topic-card">
-                        <div class="topic-number">TOPIC 04</div>
-                        <div class="topic-title">市場背景與影響</div>
-                        <div class="topic-content">AI 浪潮帶動台股成交量與點數噴發，直接受益者即為證券商與投顧產業。</div>
+                        <div class="topic-title">3. 選職如選股：熱門產業的動能邏輯</div>
+                        <div class="topic-content">詳細說明：艾倫提出「選職業與選股票邏輯一致」的觀點。他留在投顧業是因為看好台灣目前最強勁的兩大熱門產業：科技業（AI 相關）與證券金融業。只要產業動能未退（未跌破五日均線），就應留在趨勢中。他認為進入金融業不一定要有頂尖學歷，但「證照」是法律門檻，而「抗壓性」則是生存關鍵。</div>
                     </div>
                 </div>
             </section>
             
 
             
-
+            <section class="section" id="strategies">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h2 class="section-title">操作心法與建議</h2>
+                </div>
+                <div class="strategy-list">
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="strategy-text">艾倫 (劉雨倫)：大華國際投顧分析師，經濟系背景，從 Instagram 自媒體起家，擅長高股息 ETF 與產業趨勢分析。 高手的操作心法與作法：</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="layers"></i>
+                        </div>
+                        <div class="strategy-text">選股邏輯：尋找具備「動能」的熱門產業。他認為資金會往最有生產力的地方流動，例如目前的 AI 科技與受惠大行情的金融證券。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="shield"></i>
+                        </div>
+                        <div class="strategy-text">風險控管方法：強調「風險控制在不會破產的狀態」。在帶領會員時，首重情緒管理與預期管理，透過承認錯誤來降低操作上的心理壓力。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="eye"></i>
+                        </div>
+                        <div class="strategy-text">實戰經驗分享：艾倫分享自己是「矛盾的結合體」，個性保守、不愛社交，卻在需要高度互動的投顧業生存下來。他建議投資人不要怕高點，但更要「勇敢買低點」。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="percent"></i>
+                        </div>
+                        <div class="strategy-text">對當前市場判斷：台股長線往右上角走，雖然會有高低波動，但只要留在市場內，透過時間堆疊即可產生複利。</div>
+                    </div>
+                </div>
+            </section>
             
 
             
+            <section class="section" id="stocks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="bar-chart-2"></i>
+                    </div>
+                    <h2 class="section-title">提到的股票 / ETF</h2>
+                </div>
+                <div class="stock-grid">
+                    <a href="/stocks/?q=高股息 ETF" class="stock-tag">
+                        <span class="stock-symbol">高股息 ETF</span>
+                        <span class="stock-name">艾倫起家的標的</span>
+                    </a>
+                    <a href="/stocks/?q=AI 相關科技股" class="stock-tag">
+                        <span class="stock-symbol">AI 相關科技股</span>
+                        <span class="stock-name">當前市場的動能核心</span>
+                    </a>
+                    <a href="/stocks/?q=金控股/證券股" class="stock-tag">
+                        <span class="stock-symbol">金控股/證券股</span>
+                        <span class="stock-name">受惠於台股成交量大增與行情熱絡</span>
+                    </a>
+                </div>
+            </section>
+            
 
             
+            <section class="section" id="quotes">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="quote"></i>
+                    </div>
+                    <h2 class="section-title">金句摘錄</h2>
+                </div>
+                <div class="quote-list">
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">決定留在投顧業的原因很直白：收入遠遠大於內耗。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">選職業跟選股票一樣，要找熱門產業才有動能。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">把握回檔的機會，有時候比把握上漲的機會還要重要。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">理財是最基本的事情，不要覺得三萬兩萬（小錢）就無法動手。</p>
+                    </div>
+                </div>
+            </section>
+            
+
+            
+            <section class="section" id="risks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="alert-triangle"></i>
+                    </div>
+                    <h2 class="section-title">風險提醒</h2>
+                </div>
+                <div class="risk-list">
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">後市看法：美股與台股等積極市場，長線趨勢皆為向上，不應因短期高檔而恐懼，但需隨時做好面對修正的心理準備。</span>
+                    </div>
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">具體操作建議：1. 定期定量買進：不論市場高低都要參與，高點買一點，低點更要勇敢多買一點，以平滑長期成本。 2. 專注優質標的：選擇具備長期成長動能的「好股票」，避免投機性強的雜牌股。 3. 耐心等待複利：理財是長時間的堆疊，把握三四十年一遇的大行情，關鍵在於修正時是否能守住部位並加碼。</span>
+                    </div>
+                </div>
+            </section>
+            
+            <nav class="episode-nav"><a href="/zhaohua/1039/" class="ep-nav-btn ep-nav-prev">
+                <i data-lucide="chevron-left"></i>
+                <span class="ep-nav-label">上一集</span>
+                <span class="ep-nav-title">EP1039｜幫女兒存股14年，從0050到00850，會加</span>
+            </a><a href="/zhaohua/1037/" class="ep-nav-btn ep-nav-next">
+                <span class="ep-nav-label">下一集</span>
+                <span class="ep-nav-title">EP1037｜史上最強封關日！台積電領軍，PCB、記憶體、C</span>
+                <i data-lucide="chevron-right"></i>
+            </a></nav>
         </main>
 
         <footer class="footer">
             <p class="footer-text">
-                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
             </p>
         </footer>
     </div>
+
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#strategies" class="toc-link" data-section="strategies">心法</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a><a href="#risks" class="toc-link" data-section="risks">風險</a></nav>
 
     <script>
         lucide.createIcons();
@@ -658,6 +870,25 @@
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (scrollTop / docHeight) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
+
+            // TOC active state
+            const sections = document.querySelectorAll('.section[id], .tldr-box[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (scrollTop >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>

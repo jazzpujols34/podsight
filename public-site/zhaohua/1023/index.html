@@ -502,6 +502,102 @@
             text-decoration: none;
         }
 
+        /* Episode Navigation */
+        .episode-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .ep-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .ep-nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .ep-nav-prev { justify-content: flex-start; }
+        .ep-nav-next { justify-content: flex-end; text-align: right; }
+
+        .ep-nav-btn svg { width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0; }
+        .ep-nav-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .ep-nav-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+        .ep-nav-disabled { visibility: hidden; }
+
+        .ep-nav-prev .ep-nav-label,
+        .ep-nav-prev .ep-nav-title { display: block; }
+        .ep-nav-next .ep-nav-label,
+        .ep-nav-next .ep-nav-title { display: block; }
+
+        /* Table of Contents */
+        .toc {
+            position: fixed;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .toc-link {
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .toc-link:hover,
+        .toc-link.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        /* Clickable stock tags */
+        .stock-tag {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a.stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .toc { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .episode-nav { flex-direction: column; }
+            .ep-nav-btn { max-width: 100%; }
+            .ep-nav-next { flex-direction: row-reverse; text-align: left; }
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -595,14 +691,14 @@
 
         <main class="content">
             
-            <div class="tldr-box animate-in">
+            <div class="tldr-box animate-in" id="tldr">
                 <div class="tldr-label">一句話總結</div>
                 <div class="tldr-text">川普針對格林蘭事件的轉折性發言引發全球股市強彈，台股在AI、電力基礎設施及BBU族群百花齊放帶動下，衝上31,890點歷史新高。</div>
             </div>
             
 
             
-            <section class="section">
+            <section class="section" id="topics">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="message-square"></i>
@@ -613,31 +709,67 @@
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 01</div>
                         <div class="topic-title">1. 川普格林蘭事件與市場反轉</div>
-                        <div class="topic-content">：川普先前對格林蘭島的強硬表態引發歐美貿易戰擔憂，導致台股曾重挫500點。然而，川普在達沃斯論壇與黃仁勳同台演說時改口，承諾不會動用武力奪取格林蘭，並稱先前的下跌是「微不足道的小事」。這番話讓美股與台股夜盤直線拉升，市場情緒從極度恐慌轉為極度樂觀。</div>
+                        <div class="topic-content">詳細說明：川普先前對格林蘭島的強硬表態引發歐美貿易戰擔憂，導致台股曾重挫500點。然而，川普在達沃斯論壇與黃仁勳同台演說時改口，承諾不會動用武力奪取格林蘭，並稱先前的下跌是「微不足道的小事」。這番話讓美股與台股夜盤直線拉升，市場情緒從極度恐慌轉為極度樂觀。</div>
                     </div>
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 02</div>
-                        <div class="topic-title">市場背景與影響</div>
-                        <div class="topic-content">反映出川普任期內「口水治市」的特色，金融市場（債市、匯市、股市）對其言論極度敏感。</div>
+                        <div class="topic-title">2. AI 電力需求與重電族群的長線邏輯</div>
+                        <div class="topic-content">詳細說明：AI基礎建設對電力的需求是「不得不發展」的趨勢，馬斯克甚至表示要自建電廠以跳過政府緩慢的進度。這帶動了變壓器、配電盤、電線電纜等重電設備的剛性需求。目前市場呈現「指標股領頭、二線股輪漲」的態勢，華城作為精神指標持續創高。</div>
                     </div>
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 03</div>
-                        <div class="topic-title">市場背景與影響</div>
-                        <div class="topic-content">電力被視為2026年投資的「標配」，供需結構失衡將導致相關廠商議價能力提升。</div>
-                    </div>
-                    <div class="topic-card">
-                        <div class="topic-number">TOPIC 04</div>
-                        <div class="topic-title">市場背景與影響</div>
-                        <div class="topic-content">BBU從過去的低壓轉向高壓，測試難度與技術門檻大幅提高，有利於具備高壓經驗的龍頭。</div>
+                        <div class="topic-title">3. BBU (電池備援模組) 的產業洗牌與 HVDC 趨勢</div>
+                        <div class="topic-content">詳細說明：BBU產業正處於HVDC（高壓直流電，800V以上）架構轉換的分水嶺。由於新一代規格由台達電與英偉達共同制定，市場正重新洗牌。雖然2026年產能多已訂滿，但誰能拿到HVDC認證將決定未來的勝負，目前多數廠商仍處於送樣階段，預計五、六月名單才會明朗。</div>
                     </div>
                 </div>
             </section>
             
 
             
+            <section class="section" id="strategies">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h2 class="section-title">操作心法與建議</h2>
+                </div>
+                <div class="strategy-list">
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="strategy-text">來賓姓名：韋泰 (陳唯泰)</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="layers"></i>
+                        </div>
+                        <div class="strategy-text">專業背景：選股教練、資深產業分析師，擅長從基本面出發尋找「黃金右下角」標的。 高手的操作心法與作法：</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="shield"></i>
+                        </div>
+                        <div class="strategy-text">進出場策略：強調不要過度追高，尤其在市場極熱時，個股往往連漲兩天就休息三四天。建議利用「動能交易」觀察形態，或在股價回撤至重要均線（如半年線）止跌時再考慮佈局。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="eye"></i>
+                        </div>
+                        <div class="strategy-text">選股邏輯：1. 尋找精神指標：如台達電創高能帶動族群信心。 2. 右下角思維：關注體質優良但近期股價受壓抑的「倒霉鬼」，如建策、奇鋐等 AI 機優股。 3. 產業純度：在儲能領域，他更看好純度較高的萊寶、萊穎。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="percent"></i>
+                        </div>
+                        <div class="strategy-text">風險控管方法：留意大股東賣股警訊（如榮科事件），並透過法人籌碼（尤其是投信）來幫忙篩選具備業績支撐的標的。</div>
+                    </div>
+                </div>
+            </section>
+            
 
             
-            <section class="section">
+            <section class="section" id="stocks">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="bar-chart-2"></i>
@@ -645,53 +777,110 @@
                     <h2 class="section-title">提到的股票 / ETF</h2>
                 </div>
                 <div class="stock-grid">
-                    <div class="stock-tag">
+                    <a href="/stocks/?q=台達電" class="stock-tag">
                         <span class="stock-symbol">台達電 (2308)</span>
                         <span class="stock-name">產業龍頭</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=光寶科" class="stock-tag">
                         <span class="stock-symbol">光寶科 (2301)</span>
                         <span class="stock-name">落後補漲</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=華城" class="stock-tag">
                         <span class="stock-symbol">華城 (1513)</span>
                         <span class="stock-name">重電精神指標</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=中興電" class="stock-tag">
                         <span class="stock-symbol">中興電 (1513)</span>
                         <span class="stock-name">韋泰看好其本益比相對低、訂單多且有氫能佈局</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=順達" class="stock-tag">
                         <span class="stock-symbol">順達 (3211)</span>
                         <span class="stock-name">BBU族群中深受法人青睞的標的</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=建策" class="stock-tag">
                         <span class="stock-symbol">建策 (3653)</span>
                         <span class="stock-name">散熱族群</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=英業達" class="stock-tag">
                         <span class="stock-symbol">英業達 (2356)</span>
                         <span class="stock-name">受惠尾牙釋出AI伺服器與ESC利多</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=00981A" class="stock-tag">
                         <span class="stock-symbol">00981A (主動式ETF)</span>
                         <span class="stock-name">兆華提及其單日漲幅逾3%</span>
+                    </a>
+                </div>
+            </section>
+            
+
+            
+            <section class="section" id="quotes">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="quote"></i>
+                    </div>
+                    <h2 class="section-title">金句摘錄</h2>
+                </div>
+                <div class="quote-list">
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">現在的盤面不是垃圾盤，而是百花齊放。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">電力相關個股應視為2026年中長線持股的『標配』。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">龍頭的好處在於，新的遊戲規則通常是它定的。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">有時候公司派賣股票是賣在半山腰，後面的山是主力幫忙爬完的。</p>
                     </div>
                 </div>
             </section>
             
 
             
-
+            <section class="section" id="risks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="alert-triangle"></i>
+                    </div>
+                    <h2 class="section-title">風險提醒</h2>
+                </div>
+                <div class="risk-list">
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">後市看法：AI、電力與消費性電子（如華碩、微星）將持續輪動。即便漲幅可能不如去年的200-300%，但上行趨勢未變。</span>
+                    </div>
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">具體建議：1. 耐心換空間：對於像光寶科這種委屈的績優股，需要用耐心等待表態。 2. 善用法人篩選：觀察投信是否重新回補BBU或散熱族群，讓專業機構先幫你「摳公司」確認業績。 3. 紀律配置：若擔心個股波動，可利用ETF參與行情，避免在震盪中被甩下車。</span>
+                    </div>
+                </div>
+            </section>
             
+            <nav class="episode-nav"><a href="/zhaohua/1024/" class="ep-nav-btn ep-nav-prev">
+                <i data-lucide="chevron-left"></i>
+                <span class="ep-nav-label">上一集</span>
+                <span class="ep-nav-title">EP1024｜32000來了，封關前要漲去哪？Spacex來</span>
+            </a><a href="/zhaohua/1022/" class="ep-nav-btn ep-nav-next">
+                <span class="ep-nav-label">下一集</span>
+                <span class="ep-nav-title">EP1022｜格陵蘭事件影響美股，台股只跌今天，還是今天起跌</span>
+                <i data-lucide="chevron-right"></i>
+            </a></nav>
         </main>
 
         <footer class="footer">
             <p class="footer-text">
-                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
             </p>
         </footer>
     </div>
+
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#strategies" class="toc-link" data-section="strategies">心法</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a><a href="#risks" class="toc-link" data-section="risks">風險</a></nav>
 
     <script>
         lucide.createIcons();
@@ -701,6 +890,25 @@
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (scrollTop / docHeight) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
+
+            // TOC active state
+            const sections = document.querySelectorAll('.section[id], .tldr-box[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (scrollTop >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>

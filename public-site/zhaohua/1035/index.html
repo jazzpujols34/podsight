@@ -502,6 +502,102 @@
             text-decoration: none;
         }
 
+        /* Episode Navigation */
+        .episode-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .ep-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .ep-nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .ep-nav-prev { justify-content: flex-start; }
+        .ep-nav-next { justify-content: flex-end; text-align: right; }
+
+        .ep-nav-btn svg { width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0; }
+        .ep-nav-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .ep-nav-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+        .ep-nav-disabled { visibility: hidden; }
+
+        .ep-nav-prev .ep-nav-label,
+        .ep-nav-prev .ep-nav-title { display: block; }
+        .ep-nav-next .ep-nav-label,
+        .ep-nav-next .ep-nav-title { display: block; }
+
+        /* Table of Contents */
+        .toc {
+            position: fixed;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .toc-link {
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .toc-link:hover,
+        .toc-link.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        /* Clickable stock tags */
+        .stock-tag {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a.stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .toc { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .episode-nav { flex-direction: column; }
+            .ep-nav-btn { max-width: 100%; }
+            .ep-nav-next { flex-direction: row-reverse; text-align: left; }
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -595,14 +691,14 @@
 
         <main class="content">
             
-            <div class="tldr-box animate-in">
+            <div class="tldr-box animate-in" id="tldr">
                 <div class="tldr-label">一句話總結</div>
                 <div class="tldr-text">面對農曆年前封關行情，投資人應把握川普激勵與 AI 資本支出利多，運用「看高做低」策略並搭配 ETF 配置，實現主動報股過年的目標。</div>
             </div>
             
 
             
-            <section class="section">
+            <section class="section" id="topics">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="message-square"></i>
@@ -613,42 +709,151 @@
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 01</div>
                         <div class="topic-title">1. 封關前的盤勢與資金心理</div>
-                        <div class="topic-content">：台股在封關前三個交易日迎來大漲，盤中一度漲逾 800 點，終場收漲 621 點。儘管量能因大戶提前休兵而縮減至 6300 億左右，但市場信心受川普「道瓊十萬點」喊話及美股科技巨頭財報利多激勵。兆華提醒，投資人不應隨盤面大幅震盪而患得患失，應冷靜思考持股的調整。</div>
+                        <div class="topic-content">詳細說明：台股在封關前三個交易日迎來大漲，盤中一度漲逾 800 點，終場收漲 621 點。儘管量能因大戶提前休兵而縮減至 6300 億左右，但市場信心受川普「道瓊十萬點」喊話及美股科技巨頭財報利多激勵。兆華提醒，投資人不應隨盤面大幅震盪而患得患失，應冷靜思考持股的調整。</div>
                     </div>
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 02</div>
-                        <div class="topic-title">市場背景與影響</div>
-                        <div class="topic-content">美股 Google、Amazon 雖因資本支出過高一度引發疑慮，但市場隨即轉向正面解讀 AI 投資的回收潛力。加上日本高市早苗勝選帶動亞股資金回流，市場多頭氛圍濃厚。</div>
+                        <div class="topic-title">2. AI 資本支出的實質受惠：看高做低策略</div>
+                        <div class="topic-content">詳細說明：科技巨頭共計 6600 億美元的資本支出，將在 2026 年第一、二季轉化為台股供應鏈的實質訂單。操作上建議觀察「名門正派」的龍頭股（如台光電、聯發科）創新高後的比價效應。當一線股過貴時，資金會流向同產業中獲利佳但位階較低的「老二、老三」。</div>
                     </div>
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 03</div>
-                        <div class="topic-title">市場背景與影響</div>
-                        <div class="topic-content">強者恆強是當前特色，但高價股（如探針三雄）令散戶卻步。此時「看高做低」或透過 ETF 持有，是降低心理壓力的有效方法。</div>
-                    </div>
-                    <div class="topic-card">
-                        <div class="topic-number">TOPIC 04</div>
-                        <div class="topic-title">市場背景與影響</div>
-                        <div class="topic-content">半導體檢測需求隨 AI 晶片複雜化而暴增，帶動整體族群本益比上修。</div>
+                        <div class="topic-title">3. 探針卡產業的輪動範例</div>
+                        <div class="topic-content">詳細說明：以探針卡族群為例，穎崴、精測與旺矽因 AI 伺服器訂單最純而領漲。隨後資金轉向與聯發科關係深厚、本益比更合理的庸智科技，甚至擴散至消費電子比重較高的中探針。這證明了只要產業趨勢向上，落後補漲股終會「還其公道」。</div>
                     </div>
                 </div>
             </section>
             
 
             
-
+            <section class="section" id="strategies">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h2 class="section-title">操作心法與建議</h2>
+                </div>
+                <div class="strategy-list">
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="strategy-text">林漢偉 (漢偉哥)：題材獵人，擅長從國際趨勢與產業題材中捕捉強勢領先股。 高手的操作心法與作法：</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="layers"></i>
+                        </div>
+                        <div class="strategy-text">報股過年策略：將投資人分為「主動型」與「被動型」。 主動型：持股獲利中，可選擇汰弱留強，加碼有趨勢的產業。 被動型：持股套牢中，應趁封關前反彈調整。若反彈無力，建議換股至主動型 ETF，由經理人代為選股，避免死守弱勢股。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="shield"></i>
+                        </div>
+                        <div class="strategy-text">選股邏輯：強調「資金有限，強者恆強」。與 AI 相關性越高、資本支出受惠越直接的產業（如矽光子、HBM），勝率越高。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="eye"></i>
+                        </div>
+                        <div class="strategy-text">風險控管：若個股價格過高或波動過大，漢偉哥建議透過 ETF 參與。例如 0052 等市值型或科技型 ETF，能有效分散單一公司技術卡關或籌碼鬆動的風險。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="percent"></i>
+                        </div>
+                        <div class="strategy-text">對市場判斷：川普傾向降息且好大喜功，只要不出現黑天鵝事件，急殺皆是買點。</div>
+                    </div>
+                </div>
+            </section>
             
 
             
+            <section class="section" id="stocks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="bar-chart-2"></i>
+                    </div>
+                    <h2 class="section-title">提到的股票 / ETF</h2>
+                </div>
+                <div class="stock-grid">
+                    <a href="/stocks/?q=台光電" class="stock-tag">
+                        <span class="stock-symbol">台光電 (2383)</span>
+                        <span class="stock-name">CCL 龍頭</span>
+                    </a>
+                    <a href="/stocks/?q=聯發科" class="stock-tag">
+                        <span class="stock-symbol">聯發科 (2454)</span>
+                        <span class="stock-name">法說雖保守但股價創高</span>
+                    </a>
+                    <a href="/stocks/?q=庸智科技" class="stock-tag">
+                        <span class="stock-symbol">庸智科技 (3587)</span>
+                        <span class="stock-name">探針卡落後補漲代表</span>
+                    </a>
+                    <a href="/stocks/?q=波若威" class="stock-tag">
+                        <span class="stock-symbol">波若威 (3363)、光聖 (6442)</span>
+                        <span class="stock-name">矽光子熱門標的</span>
+                    </a>
+                    <a href="/stocks/?q=0052" class="stock-tag">
+                        <span class="stock-symbol">0052 (富邦科技)</span>
+                        <span class="stock-name">被稱為「小台積電」</span>
+                    </a>
+                    <a href="/stocks/?q=00922、00923" class="stock-tag">
+                        <span class="stock-symbol">00922、00923</span>
+                        <span class="stock-name">市值型與 ESG 低碳配置標的</span>
+                    </a>
+                </div>
+            </section>
+            
 
             
+            <section class="section" id="quotes">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="quote"></i>
+                    </div>
+                    <h2 class="section-title">金句摘錄</h2>
+                </div>
+                <div class="quote-list">
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">電力就是算力，馬年就聽馬斯克。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">去蹲點弱勢產業的弱勢股，不是聰明的選擇，因為資金是有限的。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">投資可以這麼不慌不忙，前提是你要先有目標、先去做，最後再根據底氣做調整。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">唯有擁有更足的底氣，你才能做更多你想做的事。</p>
+                    </div>
+                </div>
+            </section>
+            
+
+            
+            <nav class="episode-nav"><a href="/zhaohua/1036/" class="ep-nav-btn ep-nav-prev">
+                <i data-lucide="chevron-left"></i>
+                <span class="ep-nav-label">上一集</span>
+                <span class="ep-nav-title">EP1036｜台股衝破33000，台積電營收歷史新高，提早拉</span>
+            </a><a href="/zhaohua/1034/" class="ep-nav-btn ep-nav-next">
+                <span class="ep-nav-label">下一集</span>
+                <span class="ep-nav-title">EP1034｜美股怎麼了？亞馬遜資本支出2000億美元卻崩，</span>
+                <i data-lucide="chevron-right"></i>
+            </a></nav>
         </main>
 
         <footer class="footer">
             <p class="footer-text">
-                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
             </p>
         </footer>
     </div>
+
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#strategies" class="toc-link" data-section="strategies">心法</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a></nav>
 
     <script>
         lucide.createIcons();
@@ -658,6 +863,25 @@
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (scrollTop / docHeight) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
+
+            // TOC active state
+            const sections = document.querySelectorAll('.section[id], .tldr-box[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (scrollTop >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>

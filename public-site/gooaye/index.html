@@ -233,6 +233,33 @@
             min-width: 80px;
             text-align: center;
             border: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .fresh-badge {
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .fresh-today {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+
+        .fresh-yesterday {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .fresh-week {
+            background: rgba(168, 85, 247, 0.15);
+            color: #a855f7;
         }
 
         .episode-content { flex: 1; min-width: 0; }
@@ -411,7 +438,7 @@
 
         <div class="episode-list" id="episodeList">
             <a href="/gooaye/0639/" class="episode-card">
-                <span class="episode-date-badge">EP0639</span>
+                <span class="episode-date-badge">EP0639<span class="fresh-badge fresh-yesterday">昨天</span></span>
                 <div class="episode-content">
                     <div class="episode-title">EP639 | 🐗</div>
                     <div class="episode-preview">台、日股近期表現強於美股，投資者應理解市場的「呼吸輪動」並關注 AI 帶動的能源需求，特別是太陽能產業在「去中化」趨勢下的轉機。...</div>
@@ -421,7 +448,7 @@
                 </div>
             </a>
             <a href="/gooaye/0638/" class="episode-card">
-                <span class="episode-date-badge">EP0638</span>
+                <span class="episode-date-badge">EP0638<span class="fresh-badge fresh-week">本週</span></span>
                 <div class="episode-content">
                     <div class="episode-title">EP638 | 🐈‍⬛</div>
                     <div class="episode-preview">MK 分享了近年最悠閒的農曆年假心得，並針對美股資安板塊震盪、川普關稅不確定性及中東地緣政治風險提出警示，同時觀察到亞股（日、台）異常強勁的走勢。...</div>
@@ -666,7 +693,7 @@
 
         <footer class="footer">
             <p class="footer-text">
-                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
             </p>
         </footer>
     </div>

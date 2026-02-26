@@ -502,6 +502,102 @@
             text-decoration: none;
         }
 
+        /* Episode Navigation */
+        .episode-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .ep-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .ep-nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .ep-nav-prev { justify-content: flex-start; }
+        .ep-nav-next { justify-content: flex-end; text-align: right; }
+
+        .ep-nav-btn svg { width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0; }
+        .ep-nav-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .ep-nav-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+        .ep-nav-disabled { visibility: hidden; }
+
+        .ep-nav-prev .ep-nav-label,
+        .ep-nav-prev .ep-nav-title { display: block; }
+        .ep-nav-next .ep-nav-label,
+        .ep-nav-next .ep-nav-title { display: block; }
+
+        /* Table of Contents */
+        .toc {
+            position: fixed;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .toc-link {
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .toc-link:hover,
+        .toc-link.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        /* Clickable stock tags */
+        .stock-tag {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a.stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .toc { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .episode-nav { flex-direction: column; }
+            .ep-nav-btn { max-width: 100%; }
+            .ep-nav-next { flex-direction: row-reverse; text-align: left; }
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -595,14 +691,14 @@
 
         <main class="content">
             
-            <div class="tldr-box animate-in">
+            <div class="tldr-box animate-in" id="tldr">
                 <div class="tldr-label">一句話總結</div>
                 <div class="tldr-text">本集探討在全球原物料暴跌、聯準會人事變動及 AI 資金鏈疑慮引發的市場大回檔中，投資人應如何透過產業趨勢（如載板規格升級）與資產配置來應對恐慌。</div>
             </div>
             
 
             
-            <section class="section">
+            <section class="section" id="topics">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="message-square"></i>
@@ -635,20 +731,157 @@
             
 
             
-
+            <section class="section" id="strategies">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h2 class="section-title">操作心法與建議</h2>
+                </div>
+                <div class="strategy-list">
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="strategy-text">廖婉婷 (婉婷)：統一投顧總經理，業界知名的 PCB 與電子產業分析專家。 高手的操作心法與作法：</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="layers"></i>
+                        </div>
+                        <div class="strategy-text">進出場策略：利用「乖離率」修正來找買點。婉婷認為正乖離過大時甩回月線是好事，修正並不代表翻空，而是資金的正常挪移。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="shield"></i>
+                        </div>
+                        <div class="strategy-text">選股邏輯：堅持「趨勢選股」。例如載板產業因 Rubin 晶片面積放大而受惠，這種結構性改變不會因短期股價波動而消失。對於 CCL（銅箔基板），則看好高階產品因產能吃緊而具備漲價動能。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="eye"></i>
+                        </div>
+                        <div class="strategy-text">風險控管：理解法人的「月結帳」與「停損機制」。一月漲多後，法人二月為了守住獲利會傾向減碼，散戶應理解此籌碼面因素而非恐慌產業變差。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="percent"></i>
+                        </div>
+                        <div class="strategy-text">對當前市場判斷：目前屬於「短空長多」。新任聯準會主席華許雖被視為鷹派，但其縮表動作是為了讓銀行端更活絡（貨幣乘數效果），長遠對市場流動性未必是壞事。</div>
+                    </div>
+                </div>
+            </section>
             
 
             
+            <section class="section" id="stocks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="bar-chart-2"></i>
+                    </div>
+                    <h2 class="section-title">提到的股票 / ETF</h2>
+                </div>
+                <div class="stock-grid">
+                    <a href="/stocks/?q=台積電" class="stock-tag">
+                        <span class="stock-symbol">台積電 (2330)</span>
+                        <span class="stock-name">相對抗跌</span>
+                    </a>
+                    <a href="/stocks/?q=金元電" class="stock-tag">
+                        <span class="stock-symbol">金元電 (2449)</span>
+                        <span class="stock-name">兆華分享在 300 元停利</span>
+                    </a>
+                    <a href="/stocks/?q=欣興" class="stock-tag">
+                        <span class="stock-symbol">欣興 (3037)</span>
+                        <span class="stock-name">婉婷認為其 ABF 技術與規模為長線 AI 最大受惠者</span>
+                    </a>
+                    <a href="/stocks/?q=南電" class="stock-tag">
+                        <span class="stock-symbol">南電 (8046)</span>
+                        <span class="stock-name">短線獲利動能可能因轉嫁能力優於欣興而較強</span>
+                    </a>
+                    <a href="/stocks/?q=景碩" class="stock-tag">
+                        <span class="stock-symbol">景碩 (3189)</span>
+                        <span class="stock-name">BT 載板佔比高</span>
+                    </a>
+                    <a href="/stocks/?q=台光電" class="stock-tag">
+                        <span class="stock-symbol">台光電 (2383) / 台燿 (6274)</span>
+                        <span class="stock-name">訂單極佳</span>
+                    </a>
+                    <a href="/stocks/?q=富僑" class="stock-tag">
+                        <span class="stock-symbol">富僑 (1815)</span>
+                        <span class="stock-name">玻纖布營收稍顯疲弱</span>
+                    </a>
+                    <a href="/stocks/?q=00985A / 00981A / 00982A" class="stock-tag">
+                        <span class="stock-symbol">00985A / 00981A / 00982A</span>
+                        <span class="stock-name">兆華提到的主動型或市值型 ETF</span>
+                    </a>
+                </div>
+            </section>
+            
 
             
+            <section class="section" id="quotes">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="quote"></i>
+                    </div>
+                    <h2 class="section-title">金句摘錄</h2>
+                </div>
+                <div class="quote-list">
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">雖然我現在不喜歡講債券，但你可以看到在這一波，它還是擔任著避險資產的角色。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">不管短線上漲跌，長線上回來看，你就會知道現在（台積電）很便宜。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">休息是為了走更長遠的路，正乖離的修正通常是好事而非翻空。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">投資要建立起讓你會覺得舒服的部位，才有辦法在市場長久。</p>
+                    </div>
+                </div>
+            </section>
+            
+
+            
+            <section class="section" id="risks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="alert-triangle"></i>
+                    </div>
+                    <h2 class="section-title">風險提醒</h2>
+                </div>
+                <div class="risk-list">
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">分批佈局科技股*：大盤回測月線是第一道關卡，建議利用 ETF（如市值型或半導體型）向下分批建立部位，降低 FOMO（恐慌性跟單）心理壓力。 2. 適度停利與資產配置：兆華強調「20% 停利法」，將獲利落袋後繼續定期定額，並配置穩定資產（如美債、高股息）來支撐高波動科技股的心理抗壓性。 3. 觀察年後關鍵事件：留意 NVIDIA 財報、GTC 大會及三月 FOMC 會議。目前產業景氣無虞，回檔主因是資金面與籌碼面整理，無須過度恐慌。</span>
+                    </div>
+                </div>
+            </section>
+            
+            <nav class="episode-nav"><a href="/zhaohua/1031/" class="ep-nav-btn ep-nav-prev">
+                <i data-lucide="chevron-left"></i>
+                <span class="ep-nav-label">上一集</span>
+                <span class="ep-nav-title">EP1031｜大跌又大漲，美國製造業復甦，基本面化解AI疑慮</span>
+            </a><a href="/zhaohua/1029/" class="ep-nav-btn ep-nav-next">
+                <span class="ep-nav-label">下一集</span>
+                <span class="ep-nav-title">EP1029｜連2天爆量回檔，是年前換手，還是AI又生變？封</span>
+                <i data-lucide="chevron-right"></i>
+            </a></nav>
         </main>
 
         <footer class="footer">
             <p class="footer-text">
-                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
             </p>
         </footer>
     </div>
+
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#strategies" class="toc-link" data-section="strategies">心法</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a><a href="#risks" class="toc-link" data-section="risks">風險</a></nav>
 
     <script>
         lucide.createIcons();
@@ -658,6 +891,25 @@
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (scrollTop / docHeight) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
+
+            // TOC active state
+            const sections = document.querySelectorAll('.section[id], .tldr-box[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (scrollTop >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>

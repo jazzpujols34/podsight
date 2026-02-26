@@ -502,6 +502,102 @@
             text-decoration: none;
         }
 
+        /* Episode Navigation */
+        .episode-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .ep-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .ep-nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .ep-nav-prev { justify-content: flex-start; }
+        .ep-nav-next { justify-content: flex-end; text-align: right; }
+
+        .ep-nav-btn svg { width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0; }
+        .ep-nav-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .ep-nav-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+        .ep-nav-disabled { visibility: hidden; }
+
+        .ep-nav-prev .ep-nav-label,
+        .ep-nav-prev .ep-nav-title { display: block; }
+        .ep-nav-next .ep-nav-label,
+        .ep-nav-next .ep-nav-title { display: block; }
+
+        /* Table of Contents */
+        .toc {
+            position: fixed;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .toc-link {
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .toc-link:hover,
+        .toc-link.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        /* Clickable stock tags */
+        .stock-tag {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a.stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .toc { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .episode-nav { flex-direction: column; }
+            .ep-nav-btn { max-width: 100%; }
+            .ep-nav-next { flex-direction: row-reverse; text-align: left; }
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -595,14 +691,14 @@
 
         <main class="content">
             
-            <div class="tldr-box animate-in">
+            <div class="tldr-box animate-in" id="tldr">
                 <div class="tldr-label">一句話總結</div>
                 <div class="tldr-text">2026 年馬年開紅盤台股站上三萬四千點，資金呈現「大盤穩、櫃買強」的輪動態勢，投資人應聚焦具實質 AI 基本面的 ABF 載板與被動元件，並留意川普關稅與記憶體規格轉換的變數。</div>
             </div>
             
 
             
-            <section class="section">
+            <section class="section" id="topics">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="message-square"></i>
@@ -615,14 +711,70 @@
                         <div class="topic-title">1. 馬年開紅盤與川普關稅衝擊</div>
                         <div class="topic-content">詳細說明：2026 年 2 月 23 日為馬年開工首日，台股受過年期間韓股大漲 9% 及復台期指引，原本預期漲 800 點，最終因川普「對等關稅」被判違法但改以「貿易法 122 條」課徵 15% 全球關稅的利空干擾，收漲 167 點。市場情緒雖受關稅戰干擾，但呈現「管他的，先漲再說」的強韌多頭氣氛。 市場背景與影響：川普關稅對半導體（台積電）影響相對小，但對傳統產業與工具機造成心理壓力。</div>
                     </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 02</div>
+                        <div class="topic-title">2. 記憶體市場的潛在隱憂</div>
+                        <div class="topic-content">詳細說明：雖然美光、三星因 HBM 需求大漲，但台灣廠商多集中在 DDR4。隨著中國產能開出及廠商將產品規格改向 DDR5，DDR4 雖在上半年因缺貨漲價，但下半年可能面臨「價格比 DDR5 貴卻賣不掉」的兩頭難困境。 市場背景與影響：HBM 是實質 AI 需求，而 DDR4 屬於消費型產品，兩者連動性已減弱。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 03</div>
+                        <div class="topic-title">3. ABF 載板族群的強勢回歸</div>
+                        <div class="topic-content">詳細說明：大摩（Morgan Stanley）大幅調升 ABF 族群評等，將欣興、南電目標價喊上 500 元以上。凱哥認為 ABF 在 2026 年的角色就像當年的 HBM，是 AI 發展中不可或缺的實質零組件，氣勢已成。 市場背景與影響：外資集體調升目標價帶動資金湧入，族群性極強。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 04</div>
+                        <div class="topic-title">4. 被動元件漲價潮</div>
+                        <div class="topic-content">詳細說明：受日本春田製造所 (Murata) 漲價帶動，國巨與華新科開盤即鎖漲停。凱哥指出，國巨已將 AI 相關元件整併齊全，雖然股性較牛，但在漲價趨勢確立下，位階相對低，具補漲空間。 市場背景與影響：日本龍頭廠漲價為產業景氣復甦的明確信號。</div>
+                    </div>
                 </div>
             </section>
             
 
             
+            <section class="section" id="strategies">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h2 class="section-title">操作心法與建議</h2>
+                </div>
+                <div class="strategy-list">
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="strategy-text">黃峰凱（凱哥）：國家級基金操盤手，擅長從國際產業鏈變動判斷資金流向，對中小型股有深度實戰經驗。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="layers"></i>
+                        </div>
+                        <div class="strategy-text">高手的操作心法與作法*：</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="shield"></i>
+                        </div>
+                        <div class="strategy-text">進出場策略（分盤交易操作法）：凱哥分享了一個獨特的實戰技巧——「買在分盤交易的第二天」。他認為強勢股進入分盤交易後，量縮反而讓大戶跑不掉，價格容易往上跳。建議「越關越大尾」時持有，但在「快出關前」順勢下車，避免出關後的賣壓。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="eye"></i>
+                        </div>
+                        <div class="strategy-text">選股邏輯：強調「實質 AI」與「無雜音族群」。例如細光子、低軌衛星目前無負面雜音，資金便會選擇此類標的進攻。同時利用「人跟小狗理論」：當大盤（人）走太快，資金會回頭拉抬櫃買中小型股（小狗）。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="percent"></i>
+                        </div>
+                        <div class="strategy-text">風險控管：嚴格觀察「五日均價線 (5MA)」。若股價連續三天破 5MA，代表有人趁利多悄悄下車，必須謹慎。</div>
+                    </div>
+                </div>
+            </section>
+            
 
             
-            <section class="section">
+            <section class="section" id="stocks">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="bar-chart-2"></i>
@@ -630,49 +782,98 @@
                     <h2 class="section-title">提到的股票 / ETF</h2>
                 </div>
                 <div class="stock-grid">
-                    <div class="stock-tag">
+                    <a href="/stocks/?q=00982A 群益台股主動式 ETF" class="stock-tag">
                         <span class="stock-symbol">00982A 群益台股主動式 ETF</span>
                         <span class="stock-name">今年第一檔公告配息的主動型 ETF</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=國巨" class="stock-tag">
                         <span class="stock-symbol">國巨 (2327)</span>
                         <span class="stock-name">被動元件龍頭</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=南電" class="stock-tag">
                         <span class="stock-symbol">南電 (8046)</span>
                         <span class="stock-name">ABF 載板代表</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=旺矽" class="stock-tag">
                         <span class="stock-symbol">旺矽 (6223)</span>
                         <span class="stock-name">探針卡大廠</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=信紘科" class="stock-tag">
                         <span class="stock-symbol">信紘科 (6667)</span>
                         <span class="stock-name">機器人/半導體設備相關</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=上銀" class="stock-tag">
                         <span class="stock-symbol">上銀 (2049)、和大 (1536)</span>
                         <span class="stock-name">機器人族群中</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=華星光" class="stock-tag">
                         <span class="stock-symbol">華星光 (4979)、上詮 (3363)</span>
                         <span class="stock-name">細光子熱門標的</span>
+                    </a>
+                </div>
+            </section>
+            
+
+            
+            <section class="section" id="quotes">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="quote"></i>
+                    </div>
+                    <h2 class="section-title">金句摘錄</h2>
+                </div>
+                <div class="quote-list">
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">人跟小狗理論，人走在前面，小狗（中小型股）還在後面，資金勢必會往中小型股去。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">越關越大尾！分盤交易第二天反而是好的介入點。</p>
                     </div>
                 </div>
             </section>
             
 
             
-
+            <section class="section" id="risks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="alert-triangle"></i>
+                    </div>
+                    <h2 class="section-title">風險提醒</h2>
+                </div>
+                <div class="risk-list">
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">短線操作*：大盤若無法站回當日均價線 33982，資金將持續停留在櫃買市場（OTC），可積極操作中小型熱門標的（細光子、載板、低軌衛星）。 2. 中線避險：留意 DDR4 記憶體族群在第二季的高點，建議逢高分批獲利了結，轉向 DDR5 或 HBM 相關實質 AI 鏈。 3. 配置建議：馬年多頭格局未變，不要因手上的股票沒漲而懊惱。建議進行「台美日配置」，部分轉向市值型或與 AI 緊密相關的標的（如台積電、主動式 ETF），確保資產能跟上大盤漲幅。</span>
+                    </div>
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">字數統計：約 780 字*</span>
+                    </div>
+                </div>
+            </section>
             
+            <nav class="episode-nav"><a href="/zhaohua/1043/" class="ep-nav-btn ep-nav-prev">
+                <i data-lucide="chevron-left"></i>
+                <span class="ep-nav-label">上一集</span>
+                <span class="ep-nav-title">EP1043｜台股逼近35000點！為何台韓與美股脫鉤？關稅</span>
+            </a><a href="/zhaohua/1041/" class="ep-nav-btn ep-nav-next">
+                <span class="ep-nav-label">下一集</span>
+                <span class="ep-nav-title">EP1041｜非財金本科系，9彎18拐闖進投信，甘苦談！放棄</span>
+                <i data-lucide="chevron-right"></i>
+            </a></nav>
         </main>
 
         <footer class="footer">
             <p class="footer-text">
-                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
             </p>
         </footer>
     </div>
+
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#strategies" class="toc-link" data-section="strategies">心法</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a><a href="#risks" class="toc-link" data-section="risks">風險</a></nav>
 
     <script>
         lucide.createIcons();
@@ -682,6 +883,25 @@
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (scrollTop / docHeight) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
+
+            // TOC active state
+            const sections = document.querySelectorAll('.section[id], .tldr-box[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (scrollTop >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>

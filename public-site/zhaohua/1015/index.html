@@ -502,6 +502,102 @@
             text-decoration: none;
         }
 
+        /* Episode Navigation */
+        .episode-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .ep-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .ep-nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .ep-nav-prev { justify-content: flex-start; }
+        .ep-nav-next { justify-content: flex-end; text-align: right; }
+
+        .ep-nav-btn svg { width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0; }
+        .ep-nav-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .ep-nav-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+        .ep-nav-disabled { visibility: hidden; }
+
+        .ep-nav-prev .ep-nav-label,
+        .ep-nav-prev .ep-nav-title { display: block; }
+        .ep-nav-next .ep-nav-label,
+        .ep-nav-next .ep-nav-title { display: block; }
+
+        /* Table of Contents */
+        .toc {
+            position: fixed;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .toc-link {
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .toc-link:hover,
+        .toc-link.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        /* Clickable stock tags */
+        .stock-tag {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a.stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .toc { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .episode-nav { flex-direction: column; }
+            .ep-nav-btn { max-width: 100%; }
+            .ep-nav-next { flex-direction: row-reverse; text-align: left; }
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -595,14 +691,14 @@
 
         <main class="content">
             
-            <div class="tldr-box animate-in">
+            <div class="tldr-box animate-in" id="tldr">
                 <div class="tldr-label">一句話總結</div>
                 <div class="tldr-text">台股攻上三萬點新高，資金在川普政見與 AI 題材推動下，由半導體擴散至記憶體、低軌衛星及機器人，呈現百花齊放的「做夢行情」。</div>
             </div>
             
 
             
-            <section class="section">
+            <section class="section" id="topics">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="message-square"></i>
@@ -615,25 +711,167 @@
                         <div class="topic-title">1. 台股突破三萬點與川普的「粗暴降息」</div>
                         <div class="topic-content">詳細說明：台股日盤現貨創下 30,681 點歷史新高，櫃買指數也創下 2000 年以來新高。市場原預期美國高等法院會針對川普關稅案宣判，結果案件延期，利空暫時消失。同時，川普透過社交平台宣佈推動「川普版 QE」，要求機構購買抵押貸款證券（MBS）並限制信用卡利率上限（10%）。 市場背景與影響：川普的手段被視為「總統級的直接降息」，繞過聯準會釋放資金活水，強烈刺激消費與房地產市場。這導致資金極度充沛，市場不願預設指數天花板，投機與做夢行情並行。</div>
                     </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 02</div>
+                        <div class="topic-title">2. 記憶體族群的韌性與報價上漲</div>
+                        <div class="topic-content">詳細說明：雖然多檔記憶體股被列入處置（關禁閉），但受美股美光、SanDisk 大漲激勵，台股記憶體族群表現極其強韌。黃仁勳曾點名記憶體是 AI 的隱藏背板，加上 NAND Flash 傳出賣方市場強勢，要求現金交易且縮短票期，顯示供不應求。 市場背景與影響：記憶體成為當前主流中的主流，漲價題材從 NAND 延伸到相關封測與材料。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 03</div>
+                        <div class="topic-title">3. 低軌衛星與太空太陽能題材</div>
+                        <div class="topic-content">詳細說明：隨著 SpaceX 可能在 2026 下半年 IPO 的預期，低軌衛星題材熱度不減。市場開始討論「太空算力」與「太空太陽能」，認為在太空發電可解決 AI 算力的能源問題。這帶動了生化鎵（PA）與相關板材的需求。 市場背景與影響：低軌衛星指標股股價已逼近千元，帶動二、三線標的補漲。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 04</div>
+                        <div class="topic-title">4. 機器人與矽光子的產業循環</div>
+                        <div class="topic-content">詳細說明：機器人族群預計將複製去年矽光子的走勢，從單純的題材進入實質出貨期。上銀 12 月營收創 26 個月新高，顯示工具機與半導體裝置需求回溫。馬斯克的 Optimus 機器人若能如期出貨，將帶動台灣供應鏈。 市場背景與影響：機器人族群目前位階相對低、籌碼乾淨，是農曆年前資金尋找「底部轉強」標的的優選。</div>
+                    </div>
                 </div>
             </section>
             
 
             
-
+            <section class="section" id="strategies">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h2 class="section-title">操作心法與建議</h2>
+                </div>
+                <div class="strategy-list">
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="strategy-text">漢瑋哥：題材獵人，擅長追蹤市場輪動、挖掘新興題材與產業趨勢。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="layers"></i>
+                        </div>
+                        <div class="strategy-text">高手的操作心法與作法*： 1. 「大哥、二哥、三哥」排序邏輯： 操作時先認清產業地位。大哥（龍頭）通常業績最紮實、法人最認同、股價最先創高（如華通）。 二哥、三哥（如耀華、晉鵬）會跟漲，但報酬率可能較低，適合不敢追高的人用「時間換取空間」。 2. 進出場策略： 處置股操作：記憶體等被關禁閉的股票，建議「買黑賣紅」，因為流動性受限，很難出現連續性噴發，適合區間操作。 底部轉強訊號：觀察長期低迷的標的（如機器人、面板、光學），若底部爆出大量且股價止跌，即是有人勇敢進場的訊號。 3. 風險控管與財報檢視： 第四季是企業「清帳」或「做帳」的關鍵期。需留意三率三降（如維穎）是否為一次性成本（如建廠）或結構性惡化。 警惕零組件漲價（記憶體、被動元件）對下游組裝廠（老 AI）毛利的壓縮。</div>
+                    </div>
+                </div>
+            </section>
             
 
             
+            <section class="section" id="stocks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="bar-chart-2"></i>
+                    </div>
+                    <h2 class="section-title">提到的股票 / ETF</h2>
+                </div>
+                <div class="stock-grid">
+                    <a href="/stocks/?q=台積電" class="stock-tag">
+                        <span class="stock-symbol">台積電 (2330)</span>
+                        <span class="stock-name">法說會在即</span>
+                    </a>
+                    <a href="/stocks/?q=信華" class="stock-tag">
+                        <span class="stock-symbol">信華 (5274)</span>
+                        <span class="stock-name">股王站上 8000 元</span>
+                    </a>
+                    <a href="/stocks/?q=群聯" class="stock-tag">
+                        <span class="stock-symbol">群聯 (8299)</span>
+                        <span class="stock-name">記憶體指標</span>
+                    </a>
+                    <a href="/stocks/?q=力成" class="stock-tag">
+                        <span class="stock-symbol">力成 (6239)</span>
+                        <span class="stock-name">記憶體封測龍頭</span>
+                    </a>
+                    <a href="/stocks/?q=華通" class="stock-tag">
+                        <span class="stock-symbol">華通 (2313)</span>
+                        <span class="stock-name">低軌衛星大哥</span>
+                    </a>
+                    <a href="/stocks/?q=耀華" class="stock-tag">
+                        <span class="stock-symbol">耀華 (2367)</span>
+                        <span class="stock-name">低軌衛星二哥</span>
+                    </a>
+                    <a href="/stocks/?q=上銀" class="stock-tag">
+                        <span class="stock-symbol">上銀 (2049)</span>
+                        <span class="stock-name">機器人指標</span>
+                    </a>
+                    <a href="/stocks/?q=上緯投控" class="stock-tag">
+                        <span class="stock-symbol">上緯投控 (3708)</span>
+                        <span class="stock-name">因子公司上緯新材切入機器人供應鏈</span>
+                    </a>
+                    <a href="/stocks/?q=維穎" class="stock-tag">
+                        <span class="stock-symbol">維穎 (6669)</span>
+                        <span class="stock-name">受第四季毛利下滑影響</span>
+                    </a>
+                    <a href="/stocks/?q=00911" class="stock-tag">
+                        <span class="stock-symbol">00911 (兆華誤指，應為太空衛星相關 ETF)</span>
+                        <span class="stock-name">反映太空科技熱度</span>
+                    </a>
+                </div>
+            </section>
+            
 
             
+            <section class="section" id="quotes">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="quote"></i>
+                    </div>
+                    <h2 class="section-title">金句摘錄</h2>
+                </div>
+                <div class="quote-list">
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">台股就算三萬點了，這種百花齊放的韌性，簡直是在夾縫中開出花來。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">台股如果要攻三萬六千點，一定會出現一萬塊的股王。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">川普的手段非常直接粗暴，這就是總統級的降息，資金是市場最恐怖的東西。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">漲得慢的股票肯定有其可憐之處，但只要大哥夠強，二哥三哥早晚會跟上。</p>
+                    </div>
+                </div>
+            </section>
+            
+
+            
+            <section class="section" id="risks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="alert-triangle"></i>
+                    </div>
+                    <h2 class="section-title">風險提醒</h2>
+                </div>
+                <div class="risk-list">
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">後市看法*：目前市場處於「全員暴走中」，利空不跌、利多助漲。在資金活水氾濫下，不建議預設高點，但需保持警覺。 2. 具體建議： 持股過年：若不敢重押個股，可配置於產業型 ETF（如半導體、軍工、太空衛星）。 選股方向：優先選擇有獲利支撐的領頭羊；若追求位階安全，可尋找機器人、載板等剛從谷底復甦的產業。 警訊監測：密切觀察台積電法說會指引，以及記憶體報價是否出現鬆動（若記憶體跌，消費性電子才有毛利復甦空間）。</span>
+                    </div>
+                </div>
+            </section>
+            
+            <nav class="episode-nav"><a href="/zhaohua/1016/" class="ep-nav-btn ep-nav-prev">
+                <i data-lucide="chevron-left"></i>
+                <span class="ep-nav-label">上一集</span>
+                <span class="ep-nav-title">EP1016｜國安賺64億退場！關稅15%談妥了？台積電法說</span>
+            </a><a href="/zhaohua/1014/" class="ep-nav-btn ep-nav-next">
+                <span class="ep-nav-label">下一集</span>
+                <span class="ep-nav-title">本集聚焦於記憶體族群因處置降溫引發的資金大挪移，並深度解析台</span>
+                <i data-lucide="chevron-right"></i>
+            </a></nav>
         </main>
 
         <footer class="footer">
             <p class="footer-text">
-                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
             </p>
         </footer>
     </div>
+
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#strategies" class="toc-link" data-section="strategies">心法</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a><a href="#risks" class="toc-link" data-section="risks">風險</a></nav>
 
     <script>
         lucide.createIcons();
@@ -643,6 +881,25 @@
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (scrollTop / docHeight) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
+
+            // TOC active state
+            const sections = document.querySelectorAll('.section[id], .tldr-box[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (scrollTop >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>

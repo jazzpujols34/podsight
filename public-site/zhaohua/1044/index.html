@@ -502,6 +502,102 @@
             text-decoration: none;
         }
 
+        /* Episode Navigation */
+        .episode-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .ep-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .ep-nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .ep-nav-prev { justify-content: flex-start; }
+        .ep-nav-next { justify-content: flex-end; text-align: right; }
+
+        .ep-nav-btn svg { width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0; }
+        .ep-nav-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .ep-nav-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+        .ep-nav-disabled { visibility: hidden; }
+
+        .ep-nav-prev .ep-nav-label,
+        .ep-nav-prev .ep-nav-title { display: block; }
+        .ep-nav-next .ep-nav-label,
+        .ep-nav-next .ep-nav-title { display: block; }
+
+        /* Table of Contents */
+        .toc {
+            position: fixed;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .toc-link {
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .toc-link:hover,
+        .toc-link.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        /* Clickable stock tags */
+        .stock-tag {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a.stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .toc { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .episode-nav { flex-direction: column; }
+            .ep-nav-btn { max-width: 100%; }
+            .ep-nav-next { flex-direction: row-reverse; text-align: left; }
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -595,14 +691,14 @@
 
         <main class="content">
             
-            <div class="tldr-box animate-in">
+            <div class="tldr-box animate-in" id="tldr">
                 <div class="tldr-label">一句話總結</div>
                 <div class="tldr-text">台股馬年開春強勢站上 35,000 點大關，在 AI 硬體需求實質支撐下，資金由美轉亞，投資人應透過「資產配置」與「順勢而為」參與這場史無前例的大多頭。</div>
             </div>
             
 
             
-            <section class="section">
+            <section class="section" id="topics">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="message-square"></i>
@@ -613,27 +709,162 @@
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 01</div>
                         <div class="topic-title">1. 台股站上 35K 的瘋狂行情與市場迷思</div>
-                        <div class="topic-content">本集節目背景設定在 2026 年馬年開春，台股出現單日漲點動輒七、八百點的驚人走勢，指數正式突破 35,000 點。兆華指出，隨著台積電股價突破 2,000 元，投資人必須習慣「百點漲跌是常態」，不應被絕對點數嚇到，而應觀察漲幅百分比。目前市場成交量已逼近一兆元，顯示資金極度活躍。 2. 全球資金流向：由美轉亞的硬體熱潮 漢偉哥分析，美股近期雖有震盪，但台、韓、日股卻異常強勁。這主因是美國四大科技巨頭今年資本支出超過 6,000 億美元，資金流向實質獲利的 AI 硬體供應鏈。韓國三星、海力士今年前兩個月漲幅驚人（約 40-60%），台股作為接單王者，正處於「有稽之談」的實質獲利成長期。 3. 老 AI 股復活與族群輪動邏輯 在台積電、台達電等權值股領漲後，資金開始轉向「老 AI」族群（如鴻海、廣達）。這反映了資金在極高位階下的風險考量：押寶低位階的老 AI，即便利多不漲，回檔風險也相對較小。此外，載板、矽光子、記憶體等次族群呈現健康輪動。</div>
+                        <div class="topic-content">本集節目背景設定在 2026 年馬年開春，台股出現單日漲點動輒七、八百點的驚人走勢，指數正式突破 35,000 點。兆華指出，隨著台積電股價突破 2,000 元，投資人必須習慣「百點漲跌是常態」，不應被絕對點數嚇到，而應觀察漲幅百分比。目前市場成交量已逼近一兆元，顯示資金極度活躍。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 02</div>
+                        <div class="topic-title">2. 全球資金流向：由美轉亞的硬體熱潮</div>
+                        <div class="topic-content">漢偉哥分析，美股近期雖有震盪，但台、韓、日股卻異常強勁。這主因是美國四大科技巨頭今年資本支出超過 6,000 億美元，資金流向實質獲利的 AI 硬體供應鏈。韓國三星、海力士今年前兩個月漲幅驚人（約 40-60%），台股作為接單王者，正處於「有稽之談」的實質獲利成長期。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 03</div>
+                        <div class="topic-title">3. 老 AI 股復活與族群輪動邏輯</div>
+                        <div class="topic-content">在台積電、台達電等權值股領漲後，資金開始轉向「老 AI」族群（如鴻海、廣達）。這反映了資金在極高位階下的風險考量：押寶低位階的老 AI，即便利多不漲，回檔風險也相對較小。此外，載板、矽光子、記憶體等次族群呈現健康輪動。</div>
                     </div>
                 </div>
             </section>
             
 
             
-
+            <section class="section" id="strategies">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h2 class="section-title">操作心法與建議</h2>
+                </div>
+                <div class="strategy-list">
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="strategy-text">漢偉哥：題材獵人，具備深厚的法人操作背景與產業獵金經驗。 高手的操作心法與作法：</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="layers"></i>
+                        </div>
+                        <div class="strategy-text">進出場策略：強調「不預設高點」。目前日、周、月 KD 指標雖皆處於高檔鈍化，但在趨勢力量未改變前，背離不代表崩盤。漢偉哥建議以「韓國股市」與「日本指標股（如日東紡）」作為台股的領先指標，若亞股龍頭未重挫，台股多方形態就不變。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="shield"></i>
+                        </div>
+                        <div class="strategy-text">選股邏輯：聚焦「漲價缺貨題材」與「領頭羊效應」。他看好矽光子、載板（南電、欣興、景碩）與 PCB 上游，因為這些產業具備「族群通膨」特色，只要龍頭股持續創高，二三線標的就有補漲空間。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="eye"></i>
+                        </div>
+                        <div class="strategy-text">風險控管：主張「資產配置」而非「全押單一標的」。面對高位階，若擔心賣飛可先獲利了結 2-3 成資金，保留核心部位。對於空手者，不建議追逐已噴發的強勢股，應等待回檔至月線或透過 ETF 布局。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="percent"></i>
+                        </div>
+                        <div class="strategy-text">對市場判斷：這是一場由「被動型基金」與「主權基金」驅動的實質補貨潮，並非純粹泡沫。</div>
+                    </div>
+                </div>
+            </section>
             
 
             
+            <section class="section" id="stocks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="bar-chart-2"></i>
+                    </div>
+                    <h2 class="section-title">提到的股票 / ETF</h2>
+                </div>
+                <div class="stock-grid">
+                    <a href="/stocks/?q=台積電" class="stock-tag">
+                        <span class="stock-symbol">台積電 (2330)</span>
+                        <span class="stock-name">AI 代工龍頭</span>
+                    </a>
+                    <a href="/stocks/?q=鴻海" class="stock-tag">
+                        <span class="stock-symbol">鴻海 (2317)、廣達 (2382)、緯創 (3231)</span>
+                        <span class="stock-name">老 AI 代表</span>
+                    </a>
+                    <a href="/stocks/?q=南電" class="stock-tag">
+                        <span class="stock-symbol">南電 (8046)、欣興 (3037)、景碩 (3189)</span>
+                        <span class="stock-name">載板三雄</span>
+                    </a>
+                    <a href="/stocks/?q=群聯" class="stock-tag">
+                        <span class="stock-symbol">群聯 (8299)</span>
+                        <span class="stock-name">記憶體指標</span>
+                    </a>
+                    <a href="/stocks/?q=0052" class="stock-tag">
+                        <span class="stock-symbol">0052 (富邦科技)</span>
+                        <span class="stock-name">台積電占比高</span>
+                    </a>
+                    <a href="/stocks/?q=主動式 ETF" class="stock-tag">
+                        <span class="stock-symbol">主動式 ETF</span>
+                        <span class="stock-name">如安聯、統一等投信發行的商品</span>
+                    </a>
+                </div>
+            </section>
+            
 
             
+            <section class="section" id="quotes">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="quote"></i>
+                    </div>
+                    <h2 class="section-title">金句摘錄</h2>
+                </div>
+                <div class="quote-list">
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">幸福來得有點突然，這是一個有稽之談的多頭，只是資金青睞讓它驗證了。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">現在是整個 AI 產業『一龍俱龍』，只要輝達好，所有相關產業都會輪到它的一天。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">不要因為賺太多而害怕，只要趨勢沒變，賣飛了反而更難追回來。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">長也害怕，跌也害怕，這樣投資沒有意義。要做到長也開心，跌也開心（因為有配置）。</p>
+                    </div>
+                </div>
+            </section>
+            
+
+            
+            <section class="section" id="risks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="alert-triangle"></i>
+                    </div>
+                    <h2 class="section-title">風險提醒</h2>
+                </div>
+                <div class="risk-list">
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">持股高者：適度減碼 20% 讓心理舒服，其餘順勢續抱。 空手或低持股者：尋找回到「月線」支撐的績優股（如近期回檔的記憶體族群），或利用主動式 ETF 配置。 避險配置：兆華建議保留部分債券部位，作為市場萬一出現「估值修正」時的避震器，確保心態穩定。 3. 後市判斷：短期聚焦輝達（NVIDIA）財報，目前市場預期極為樂觀，硬體股仍是貫穿全年的主軸。</span>
+                    </div>
+                </div>
+            </section>
+            
+            <nav class="episode-nav"><div class="ep-nav-btn ep-nav-disabled"></div><a href="/zhaohua/1043/" class="ep-nav-btn ep-nav-next">
+                <span class="ep-nav-label">下一集</span>
+                <span class="ep-nav-title">EP1043｜台股逼近35000點！為何台韓與美股脫鉤？關稅</span>
+                <i data-lucide="chevron-right"></i>
+            </a></nav>
         </main>
 
         <footer class="footer">
             <p class="footer-text">
-                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
             </p>
         </footer>
     </div>
+
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#strategies" class="toc-link" data-section="strategies">心法</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a><a href="#risks" class="toc-link" data-section="risks">風險</a></nav>
 
     <script>
         lucide.createIcons();
@@ -643,6 +874,25 @@
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (scrollTop / docHeight) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
+
+            // TOC active state
+            const sections = document.querySelectorAll('.section[id], .tldr-box[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (scrollTop >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>

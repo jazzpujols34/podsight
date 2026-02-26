@@ -502,6 +502,102 @@
             text-decoration: none;
         }
 
+        /* Episode Navigation */
+        .episode-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .ep-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .ep-nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .ep-nav-prev { justify-content: flex-start; }
+        .ep-nav-next { justify-content: flex-end; text-align: right; }
+
+        .ep-nav-btn svg { width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0; }
+        .ep-nav-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .ep-nav-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+        .ep-nav-disabled { visibility: hidden; }
+
+        .ep-nav-prev .ep-nav-label,
+        .ep-nav-prev .ep-nav-title { display: block; }
+        .ep-nav-next .ep-nav-label,
+        .ep-nav-next .ep-nav-title { display: block; }
+
+        /* Table of Contents */
+        .toc {
+            position: fixed;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .toc-link {
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .toc-link:hover,
+        .toc-link.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        /* Clickable stock tags */
+        .stock-tag {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a.stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .toc { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .episode-nav { flex-direction: column; }
+            .ep-nav-btn { max-width: 100%; }
+            .ep-nav-next { flex-direction: row-reverse; text-align: left; }
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -595,14 +691,14 @@
 
         <main class="content">
             
-            <div class="tldr-box animate-in">
+            <div class="tldr-box animate-in" id="tldr">
                 <div class="tldr-label">一句話總結</div>
                 <div class="tldr-text">台積電法說會交出毛利率與資本支出雙爆表的「不可思議」成績單，確立 AI 長線成長趨勢，但在股價與過熱氛圍下，高手建議採取「拉回佈局、不追高」的穩健策略。</div>
             </div>
             
 
             
-            <section class="section">
+            <section class="section" id="topics">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="message-square"></i>
@@ -612,28 +708,145 @@
                 <div class="topic-list">
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 01</div>
-                        <div class="topic-title">詳細說明</div>
-                        <div class="topic-content">台積電 2025 年第四季毛利率高達 62.3%，而 2026 年第一季毛利率高標更上看 65%，完全化解了市場對海外設廠拖累毛利的擔憂。資本支出給出 520 億至 560 億美元的驚人區間，超越所有外資預期。 市場背景與影響：法說會前市場情緒壓抑，擔心利多出盡。但數據公佈後，ADR 盤前大漲，顯示台積電在 AI 領域的獨霸地位與議價能力極強。</div>
+                        <div class="topic-title">1. 台積電法說會：數據的「不可思議」</div>
+                        <div class="topic-content">詳細說明：台積電 2025 年第四季毛利率高達 62.3%，而 2026 年第一季毛利率高標更上看 65%，完全化解了市場對海外設廠拖累毛利的擔憂。資本支出給出 520 億至 560 億美元的驚人區間，超越所有外資預期。 市場背景與影響：法說會前市場情緒壓抑，擔心利多出盡。但數據公佈後，ADR 盤前大漲，顯示台積電在 AI 領域的獨霸地位與議價能力極強。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 02</div>
+                        <div class="topic-title">2. AI 泡沫論與電力短缺瓶頸</div>
+                        <div class="topic-content">詳細說明：董事長魏哲嘉以「投入鉅額資本支出」直接回應泡沫質疑，強調客戶比台積電更有錢且需求強勁。針對電力問題，台積電坦言電力是產能擴充的挑戰，但高毛利企業具備更高的電價承受力。 市場背景與影響：全球 AI 發展面臨能源壓力，但這也推動了重電、綠電族群的長線題材。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 03</div>
+                        <div class="topic-title">3. 散熱族群的誤解與轉機</div>
+                        <div class="topic-content">詳細說明：近期散熱股表現疲軟，主因黃仁勳提到「Rubin 系統效能更高但成本更低」，讓市場擔心水冷需求降規。明翰協理澄清，所謂「45度熱水循環」是指系統容忍度提高，不代表不需要散熱，且相關降溫機器並非台廠主要業務，目前是「利空錯殺」。 市場背景與影響：市場對規格變動過度敏感，導致績優散熱股回檔。</div>
                     </div>
                 </div>
             </section>
             
 
             
-
+            <section class="section" id="strategies">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h2 class="section-title">操作心法與建議</h2>
+                </div>
+                <div class="strategy-list">
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="strategy-text">蔡明翰：國泰證券協理，資深市場分析專家，擅長從基本面與心理面剖析產業趨勢。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="layers"></i>
+                        </div>
+                        <div class="strategy-text">高手的操作心法與作法*： 1. 「主人與小狗」理論： 明翰協理認為 EPS 是主人，股價是小狗。目前台積電數據（主人）持續往前跑，但股價（小狗）有時衝太快繩子拉太緊。當小狗衝太遠時不要追，等繩子放鬆（拉回量縮）才是買點。 2. 選股邏輯：區分「健康增長」與「報價推升」： 健康型 (Q增加)：如台積電，靠產量與市佔擴張。 警覺型 (P增加)：如 PCB 上游、記憶體。目前是因為「供給不足」導致報價上漲（P），而非需求大爆發。這類族群漲勢雖猛，但拐點一到反轉極快，操作需以「技術面」為準，一旦轉弱必須果斷離場。 3. 風險控管方法： 針對近期狂飆的低價股或轉機股（如榮科），建議「小資金參與、不看基本面自欺欺人」。這類股票由主力驅動，技術面轉弱即是逃命點，切勿在下跌時用基本面說服自己加碼。 4. 對當前市場判斷： AI 依然是 2025-2027 年的主旋律。台積電是市場龍頭，只要「第二名（Intel、三星）追不上」，任何因雜音導致的破線回檔都是甜美買點。</div>
+                    </div>
+                </div>
+            </section>
             
 
             
+            <section class="section" id="stocks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="bar-chart-2"></i>
+                    </div>
+                    <h2 class="section-title">提到的股票 / ETF</h2>
+                </div>
+                <div class="stock-grid">
+                    <a href="/stocks/?q=台積電" class="stock-tag">
+                        <span class="stock-symbol">台積電 (2330)</span>
+                        <span class="stock-name">數據無懈可擊</span>
+                    </a>
+                    <a href="/stocks/?q=奇鋐" class="stock-tag">
+                        <span class="stock-symbol">奇鋐 (3017) / 雙鴻 (3324)</span>
+                        <span class="stock-name">散熱族群</span>
+                    </a>
+                    <a href="/stocks/?q=台光電" class="stock-tag">
+                        <span class="stock-symbol">台光電 (2383)</span>
+                        <span class="stock-name">受 Rubin 系統規格傳聞影響被打壓</span>
+                    </a>
+                    <a href="/stocks/?q=榮科" class="stock-tag">
+                        <span class="stock-symbol">榮科 (8048)</span>
+                        <span class="stock-name">銅箔族群</span>
+                    </a>
+                    <a href="/stocks/?q=中興電" class="stock-tag">
+                        <span class="stock-symbol">中興電 (1513) / 華城 (1519)</span>
+                        <span class="stock-name">重電族群</span>
+                    </a>
+                </div>
+            </section>
+            
 
             
+            <section class="section" id="quotes">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="quote"></i>
+                    </div>
+                    <h2 class="section-title">金句摘錄</h2>
+                </div>
+                <div class="quote-list">
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">在台積電眼裡，沒有『淡季』這兩個字。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">當大家都跟你講好到不可思議、不買可惜的時候，你要忍住等它休息。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">投資龍頭股很簡單，你只要關注第二名追上來了沒。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">台積電破線是給你買的，它是市場上最獨特的存在。</p>
+                    </div>
+                </div>
+            </section>
+            
+
+            
+            <section class="section" id="risks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="alert-triangle"></i>
+                    </div>
+                    <h2 class="section-title">風險提醒</h2>
+                </div>
+                <div class="risk-list">
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">台積電策略*：法說會後通常會有一到兩週的激情消化期，不建議在明日開高時追進。若出現系統性風險回檔或量縮整理，才是更好的中長線切入點。 2. AI 佈局：檢視持股中的「AI 純度」。大資金應壓在風險低的龍頭（如台積電），小資金再分配給高波動的漲價題材股。 3. 避開陷阱：對於消費性電子（手機、PC）仍持保守態度，因記憶體等零組件漲價導致成本難以轉嫁，2026 年開局依然艱難。</span>
+                    </div>
+                </div>
+            </section>
+            
+            <nav class="episode-nav"><a href="/zhaohua/1019/" class="ep-nav-btn ep-nav-prev">
+                <i data-lucide="chevron-left"></i>
+                <span class="ep-nav-label">上一集</span>
+                <span class="ep-nav-title">EP1019｜關稅拍定15%、積情600點，記憶體、電力、載</span>
+            </a><a href="/zhaohua/1017/" class="ep-nav-btn ep-nav-next">
+                <span class="ep-nav-label">下一集</span>
+                <span class="ep-nav-title">EP1017｜1400多家上漲，低價股噴出終於讓散戶有感？如</span>
+                <i data-lucide="chevron-right"></i>
+            </a></nav>
         </main>
 
         <footer class="footer">
             <p class="footer-text">
-                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
             </p>
         </footer>
     </div>
+
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#strategies" class="toc-link" data-section="strategies">心法</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a><a href="#risks" class="toc-link" data-section="risks">風險</a></nav>
 
     <script>
         lucide.createIcons();
@@ -643,6 +856,25 @@
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (scrollTop / docHeight) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
+
+            // TOC active state
+            const sections = document.querySelectorAll('.section[id], .tldr-box[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (scrollTop >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>

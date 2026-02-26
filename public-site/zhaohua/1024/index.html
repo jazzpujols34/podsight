@@ -502,6 +502,102 @@
             text-decoration: none;
         }
 
+        /* Episode Navigation */
+        .episode-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .ep-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .ep-nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .ep-nav-prev { justify-content: flex-start; }
+        .ep-nav-next { justify-content: flex-end; text-align: right; }
+
+        .ep-nav-btn svg { width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0; }
+        .ep-nav-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .ep-nav-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+        .ep-nav-disabled { visibility: hidden; }
+
+        .ep-nav-prev .ep-nav-label,
+        .ep-nav-prev .ep-nav-title { display: block; }
+        .ep-nav-next .ep-nav-label,
+        .ep-nav-next .ep-nav-title { display: block; }
+
+        /* Table of Contents */
+        .toc {
+            position: fixed;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .toc-link {
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .toc-link:hover,
+        .toc-link.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        /* Clickable stock tags */
+        .stock-tag {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a.stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .toc { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .episode-nav { flex-direction: column; }
+            .ep-nav-btn { max-width: 100%; }
+            .ep-nav-next { flex-direction: row-reverse; text-align: left; }
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -595,14 +691,14 @@
 
         <main class="content">
             
-            <div class="tldr-box animate-in">
+            <div class="tldr-box animate-in" id="tldr">
                 <div class="tldr-label">一句話總結</div>
                 <div class="tldr-text">台股在元月噴發摸到三萬二千點大關，由 SpaceX 即將 IPO 帶動的「低軌衛星」與「AI 擴散效應」成為盤面核心，高手建議順勢而為，並以「大量支撐位」作為不預設高點的防守準則。</div>
             </div>
             
 
             
-            <section class="section">
+            <section class="section" id="topics">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="message-square"></i>
@@ -635,20 +731,153 @@
             
 
             
-
+            <section class="section" id="strategies">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h2 class="section-title">操作心法與建議</h2>
+                </div>
+                <div class="strategy-list">
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="strategy-text">黃峰凱（凱哥）：產業達人萬事通，前國家基金操盤手，具備深厚的投信與法人圈背景。 高手的操作心法與作法：</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="layers"></i>
+                        </div>
+                        <div class="strategy-text">進出場策略：凱哥強調「大量高低點」是關鍵指標。只要股價守住「大量區的支撐位」，就不要自己嚇自己、隨意撤退。目前的盤勢是「多頭疊層」，應維持 Hold 住部位直到反轉訊號出現。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="shield"></i>
+                        </div>
+                        <div class="strategy-text">選股邏輯：喜新厭舊：市場永遠喜歡「新東西」。新掛牌、新題材（如低軌衛星、新散熱方案）的壓力小，容易噴發。 本益比比較法：如華通即便漲到 170 元，對比 AI 族群 30 倍以上的本益比，華通 2026 年預估賺 7 元，其本益比仍具吸引力，目標看 200 元以上。 觀察籌碼角力：若投信買、外資賣（如 AES-KY、世芯），建議先觀望「路死誰手」，等一方力道竭盡或籌碼好轉再進場。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="eye"></i>
+                        </div>
+                        <div class="strategy-text">風險控管方法：不要摸頭：在強勁資金盤中，空軍容易變成燃料。即便覺得過熱，也不應逆勢放空。 ETF 配置：若個股節奏難抓（兩頭落空），凱哥建議直接配置「主動式 ETF」或「市值型 ETF」，讓法人幫你全市場撒網。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="percent"></i>
+                        </div>
+                        <div class="strategy-text">對當前市場的判斷：目前是妥妥的「資金盤」，利多不囉唆、馬上點火。台積電法說後雖然股價整理，但釋出的資金在盤面上到處放煙火，多頭趨勢尚未終結。</div>
+                    </div>
+                </div>
+            </section>
             
 
             
+            <section class="section" id="stocks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="bar-chart-2"></i>
+                    </div>
+                    <h2 class="section-title">提到的股票 / ETF</h2>
+                </div>
+                <div class="stock-grid">
+                    <a href="/stocks/?q=聯發科" class="stock-tag">
+                        <span class="stock-symbol">聯發科 (2454)</span>
+                        <span class="stock-name">低軌衛星晶片題材</span>
+                    </a>
+                    <a href="/stocks/?q=華通" class="stock-tag">
+                        <span class="stock-symbol">華通 (2313)</span>
+                        <span class="stock-name">衛星 PCB 龍頭</span>
+                    </a>
+                    <a href="/stocks/?q=南亞科" class="stock-tag">
+                        <span class="stock-symbol">南亞科 (2408) / 福茂科 (6239)</span>
+                        <span class="stock-name">市場傳言與台積電合作 CoWoS 封測</span>
+                    </a>
+                    <a href="/stocks/?q=AES-KY" class="stock-tag">
+                        <span class="stock-symbol">AES-KY (6781)</span>
+                        <span class="stock-name">BBU 龍頭</span>
+                    </a>
+                    <a href="/stocks/?q=世芯-KY" class="stock-tag">
+                        <span class="stock-symbol">世芯-KY (3661)</span>
+                        <span class="stock-name">12 月營收雖慘</span>
+                    </a>
+                    <a href="/stocks/?q=元泰科技" class="stock-tag">
+                        <span class="stock-symbol">元泰科技 (新掛牌)</span>
+                        <span class="stock-name">由廣運團隊出身、緯創加持的全方位散熱標的</span>
+                    </a>
+                    <a href="/stocks/?q=M31" class="stock-tag">
+                        <span class="stock-symbol">M31 (6643)</span>
+                        <span class="stock-name">與 Intel 綁定過深</span>
+                    </a>
+                </div>
+            </section>
+            
 
             
+            <section class="section" id="quotes">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="quote"></i>
+                    </div>
+                    <h2 class="section-title">金句摘錄</h2>
+                </div>
+                <div class="quote-list">
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">現在的禮拜五都不禮拜五了（不休息），天天都在兆元成交量附近晃來晃去。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">多頭的時候，看到一個影子，它就會長出一棵樹出來。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">大量支撐沒有跌破，就不要自己嚇自己，讓獲利滿滿地留下來。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">現在是利多不囉唆，馬上先跟你反應，這就是資金盤的特徵。</p>
+                    </div>
+                </div>
+            </section>
+            
+
+            
+            <section class="section" id="risks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="alert-triangle"></i>
+                    </div>
+                    <h2 class="section-title">風險提醒</h2>
+                </div>
+                <div class="risk-list">
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">操作建議*：不建議「逆勢接刀」或「猜頭放空」。對於沒 AI 題材的績優股（如普瑞-KY），可少量建立基本持股蹲點，但要有耐心等待市場目光轉回。 2. 後市觀察：下週五的創意 (3443) 法說會是 IP 股的重要指標。 3. 心理建設：賣飛強勢股（如華通、光聖）不要太在意，只要設定好自己的停損停利準則即可。若心臟不夠大，選擇「高股息」或「市值型」ETF 也是今年息差雙收的好選擇。</span>
+                    </div>
+                </div>
+            </section>
+            
+            <nav class="episode-nav"><a href="/zhaohua/1025/" class="ep-nav-btn ep-nav-prev">
+                <i data-lucide="chevron-left"></i>
+                <span class="ep-nav-label">上一集</span>
+                <span class="ep-nav-title">EP1025｜所有人都在討論股票，融資市值比還在半山腰，不怕</span>
+            </a><a href="/zhaohua/1023/" class="ep-nav-btn ep-nav-next">
+                <span class="ep-nav-label">下一集</span>
+                <span class="ep-nav-title">EP1023｜川普投顧說股市再翻倍？不武取格陵蘭，台股又創高</span>
+                <i data-lucide="chevron-right"></i>
+            </a></nav>
         </main>
 
         <footer class="footer">
             <p class="footer-text">
-                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
             </p>
         </footer>
     </div>
+
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#strategies" class="toc-link" data-section="strategies">心法</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a><a href="#risks" class="toc-link" data-section="risks">風險</a></nav>
 
     <script>
         lucide.createIcons();
@@ -658,6 +887,25 @@
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (scrollTop / docHeight) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
+
+            // TOC active state
+            const sections = document.querySelectorAll('.section[id], .tldr-box[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (scrollTop >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>

@@ -502,6 +502,102 @@
             text-decoration: none;
         }
 
+        /* Episode Navigation */
+        .episode-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .ep-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .ep-nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .ep-nav-prev { justify-content: flex-start; }
+        .ep-nav-next { justify-content: flex-end; text-align: right; }
+
+        .ep-nav-btn svg { width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0; }
+        .ep-nav-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .ep-nav-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+        .ep-nav-disabled { visibility: hidden; }
+
+        .ep-nav-prev .ep-nav-label,
+        .ep-nav-prev .ep-nav-title { display: block; }
+        .ep-nav-next .ep-nav-label,
+        .ep-nav-next .ep-nav-title { display: block; }
+
+        /* Table of Contents */
+        .toc {
+            position: fixed;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .toc-link {
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .toc-link:hover,
+        .toc-link.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        /* Clickable stock tags */
+        .stock-tag {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a.stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .toc { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .episode-nav { flex-direction: column; }
+            .ep-nav-btn { max-width: 100%; }
+            .ep-nav-next { flex-direction: row-reverse; text-align: left; }
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -595,14 +691,14 @@
 
         <main class="content">
             
-            <div class="tldr-box animate-in">
+            <div class="tldr-box animate-in" id="tldr">
                 <div class="tldr-label">一句話總結</div>
                 <div class="tldr-text">日本高市政權迎來史詩級權力擴張，將透過「大減稅」與「強國防」驅動日股結構性轉型，但也正面臨財政赤字與高通膨的嚴峻考驗。</div>
             </div>
             
 
             
-            <section class="section">
+            <section class="section" id="topics">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="message-square"></i>
@@ -612,8 +708,18 @@
                 <div class="topic-list">
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 01</div>
-                        <div class="topic-title">詳細說明</div>
-                        <div class="topic-content">自民黨執政聯盟在眾議院拿下352席的壓倒性勝利，遠超修憲門檻。這代表高市早苗的政策授權前所未有的集中，未來包括食品消費稅兩年歸零、擴張性財政政策及強硬的外交立場，都將在權力通道中暢通無阻。 市場影響： 日經指數出現「高市行情」大漲千點，市場押注政府將加強支出並放慢升息節奏，呈現「日股強、日圓弱、債券沉壓」的格局。 2. 國防與半導體：地緣政治下的產業紅利 詳細說明： 高市計畫將國防預算提升至GDP的2%，並與美方軍售新秩序（戰略價值高者優先）接軌。同時，台積電九州廠（JASM）的快速進展帶動了Sony、三菱電機等半導體聚落，形成「九州矽島」效應。 投資啟示： 資金將從傳統高股息、低成長的防禦性標的，轉向軍事工業、先進製造、電力及出口相關族群。 3. 日本社會陰暗面：高通膨與「下流老人」危機 詳細說明： 日本告別30年通縮，但薪資增幅趕不上物價上漲，實質薪資持續萎縮。退休金不足加上醫療租金上漲，導致60歲以上老人破產比例激增，形成「下流老人」社會問題。 市場影響： 若高市無法透過供給側改革抑制通膨，日債拋售潮將持續，十年期公債殖利率若持續攀升，將侵蝕股市的相對吸引力。</div>
+                        <div class="topic-title">1. 日本眾議院大選：高市政權的「絕對多數」時代</div>
+                        <div class="topic-content">詳細說明： 自民黨執政聯盟在眾議院拿下352席的壓倒性勝利，遠超修憲門檻。這代表高市早苗的政策授權前所未有的集中，未來包括食品消費稅兩年歸零、擴張性財政政策及強硬的外交立場，都將在權力通道中暢通無阻。 市場影響： 日經指數出現「高市行情」大漲千點，市場押注政府將加強支出並放慢升息節奏，呈現「日股強、日圓弱、債券沉壓」的格局。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 02</div>
+                        <div class="topic-title">2. 國防與半導體：地緣政治下的產業紅利</div>
+                        <div class="topic-content">詳細說明： 高市計畫將國防預算提升至GDP的2%，並與美方軍售新秩序（戰略價值高者優先）接軌。同時，台積電九州廠（JASM）的快速進展帶動了Sony、三菱電機等半導體聚落，形成「九州矽島」效應。 投資啟示： 資金將從傳統高股息、低成長的防禦性標的，轉向軍事工業、先進製造、電力及出口相關族群。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 03</div>
+                        <div class="topic-title">3. 日本社會陰暗面：高通膨與「下流老人」危機</div>
+                        <div class="topic-content">詳細說明： 日本告別30年通縮，但薪資增幅趕不上物價上漲，實質薪資持續萎縮。退休金不足加上醫療租金上漲，導致60歲以上老人破產比例激增，形成「下流老人」社會問題。 市場影響： 若高市無法透過供給側改革抑制通膨，日債拋售潮將持續，十年期公債殖利率若持續攀升，將侵蝕股市的相對吸引力。</div>
                     </div>
                 </div>
             </section>
@@ -622,7 +728,7 @@
             
 
             
-            <section class="section">
+            <section class="section" id="stocks">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="bar-chart-2"></i>
@@ -630,41 +736,75 @@
                     <h2 class="section-title">提到的股票 / ETF</h2>
                 </div>
                 <div class="stock-grid">
-                    <div class="stock-tag">
+                    <a href="/stocks/?q=三菱重工" class="stock-tag">
                         <span class="stock-symbol">三菱重工 (7011)</span>
                         <span class="stock-name">日本國防採購龍頭</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=川崎重工 / 三菱電機" class="stock-tag">
                         <span class="stock-symbol">川崎重工 / 三菱電機</span>
                         <span class="stock-name">國防與電力裝置關鍵供應商</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=台積電" class="stock-tag">
                         <span class="stock-symbol">台積電 (2330)</span>
                         <span class="stock-name">九州半導體聚落的核心帶動者</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=Sony / 東京威力科創" class="stock-tag">
                         <span class="stock-symbol">Sony / 東京威力科創</span>
                         <span class="stock-name">日本本土半導體與影像感測大廠</span>
-                    </div>
-                    <div class="stock-tag">
+                    </a>
+                    <a href="/stocks/?q=比特幣" class="stock-tag">
                         <span class="stock-symbol">比特幣</span>
                         <span class="stock-name">守住上行通道</span>
+                    </a>
+                </div>
+            </section>
+            
+
+            
+            <section class="section" id="quotes">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="quote"></i>
+                    </div>
+                    <h2 class="section-title">金句摘錄</h2>
+                </div>
+                <div class="quote-list">
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">高市政權是『贏在票箱，難在治理』，現在迎來的是結構性帳單的集中到期。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">日本現在面對的不是蜜月期，而是一場關於通膨體感溫度的生存戰。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">台灣的勞動力市場與薪資增幅，目前看起來其實比日本還要健康。</p>
                     </div>
                 </div>
             </section>
             
 
             
-
-            
+            <nav class="episode-nav"><a href="/yutinghao/2026-02-10/" class="ep-nav-btn ep-nav-prev">
+                <i data-lucide="chevron-left"></i>
+                <span class="ep-nav-label">上一集</span>
+                <span class="ep-nav-title">道瓊再創史高 修正結束了 谷歌大發債 科技股迎十字路口 早晨</span>
+            </a><a href="/yutinghao/2026-02-06/" class="ep-nav-btn ep-nav-next">
+                <span class="ep-nav-label">下一集</span>
+                <span class="ep-nav-title">6 5 萬美元失守 比特幣大崩盤 美股要跌到 什麼時候 早晨</span>
+                <i data-lucide="chevron-right"></i>
+            </a></nav>
         </main>
 
         <footer class="footer">
             <p class="footer-text">
-                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
             </p>
         </footer>
     </div>
+
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a></nav>
 
     <script>
         lucide.createIcons();
@@ -674,6 +814,25 @@
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (scrollTop / docHeight) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
+
+            // TOC active state
+            const sections = document.querySelectorAll('.section[id], .tldr-box[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (scrollTop >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>

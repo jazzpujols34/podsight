@@ -502,6 +502,102 @@
             text-decoration: none;
         }
 
+        /* Episode Navigation */
+        .episode-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .ep-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .ep-nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .ep-nav-prev { justify-content: flex-start; }
+        .ep-nav-next { justify-content: flex-end; text-align: right; }
+
+        .ep-nav-btn svg { width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0; }
+        .ep-nav-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .ep-nav-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+        .ep-nav-disabled { visibility: hidden; }
+
+        .ep-nav-prev .ep-nav-label,
+        .ep-nav-prev .ep-nav-title { display: block; }
+        .ep-nav-next .ep-nav-label,
+        .ep-nav-next .ep-nav-title { display: block; }
+
+        /* Table of Contents */
+        .toc {
+            position: fixed;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .toc-link {
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .toc-link:hover,
+        .toc-link.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        /* Clickable stock tags */
+        .stock-tag {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a.stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .toc { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .episode-nav { flex-direction: column; }
+            .ep-nav-btn { max-width: 100%; }
+            .ep-nav-next { flex-direction: row-reverse; text-align: left; }
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -595,14 +691,14 @@
 
         <main class="content">
             
-            <div class="tldr-box animate-in">
+            <div class="tldr-box animate-in" id="tldr">
                 <div class="tldr-label">一句話總結</div>
                 <div class="tldr-text">台股蛇年以 33,707 點歷史新高強勢封關，AI 依舊是 2026 馬年的核心主軸，投資者應透過資產配置與產業輪動參與大多頭行情。</div>
             </div>
             
 
             
-            <section class="section">
+            <section class="section" id="topics">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="message-square"></i>
@@ -615,25 +711,168 @@
                         <div class="topic-title">1. 蛇年封關日史詩級表現</div>
                         <div class="topic-content">說明：2026 年 2 月 11 日為台股蛇年封關日，大盤終場大漲 532 點，收在 33,605 點，盤中最高觸及 33,707 點，創下歷史新高。成交量爆出 6,740 億元，顯示市場情緒極度沸騰，打破過往封關日前交投冷清的慣例。 市場背景與影響：主要由台積電 1 月營收創歷史新高的強勁動能帶動。兆華提醒，1 月營收有提早拉貨效應，2 月因天數少，建議將 1、2 月營收合併觀察較為準確。</div>
                     </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 02</div>
+                        <div class="topic-title">2. AI 產業的五大延伸主軸</div>
+                        <div class="topic-content">說明：幸福哥認為 2026 年將延續 AI 主題，並擴散至多個細分領域。包含晶圓代工與先進封裝、記憶體超級循環、PCB 上游材料（玻纖紗布）、細光子（CPO）以及電力供應系統。 市場背景與影響：NVIDIA 下半年將推 Rubin 平台，帶動 PCB 層數增加與面積擴大，且傳輸速度需求提升使 2026 年成為 CPO 元年。此外，「算力即國力」帶動電力需求，新式核能亦成為討論選項。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 03</div>
+                        <div class="topic-title">3. 投資心態與資產配置轉換</div>
+                        <div class="topic-content">說明：針對許多投資人在大多頭市場仍虧損或產生「相對剝奪感」，節目深入討論「個股 vs ETF」的配置。強調若工作繁忙無法緊盯盤面，應轉向市值型或主動型 ETF，避免頻繁交易產生的損耗。 市場背景與影響：疫情後產業分化嚴重，非 AI 產業（如傳統傳產、NB/PC）表現疲軟，買錯標的即便大盤創新高也無法獲利。</div>
+                    </div>
                 </div>
             </section>
             
 
             
-
+            <section class="section" id="strategies">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h2 class="section-title">操作心法與建議</h2>
+                </div>
+                <div class="strategy-list">
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="strategy-text">幸福哥（報價天王）：專業投資高手，擅長追蹤產業報價與法人動向，近期剛離開投顧界休息。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="layers"></i>
+                        </div>
+                        <div class="strategy-text">高手的操作心法與作法*：</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="shield"></i>
+                        </div>
+                        <div class="strategy-text">進出場策略：建議採取「季節性節奏」操作。5 月報稅季大股東可能申報轉讓，以及 8-9 月通常有季節性拉回，是較好的調節或買進時點。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="eye"></i>
+                        </div>
+                        <div class="strategy-text">選股邏輯：緊扣 AI 實質貢獻。看好記憶體是因為新產能增加有限，超級循環尚未結束；看好玻纖紗布（如富喬）是因為 Rubin 平台對 PCB 規格的升級需求。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="percent"></i>
+                        </div>
+                        <div class="strategy-text">風險控網方法（馬桶汙垢理論）：幸福哥強調「停損」的重要性。停損就像廁所汙垢，越早處理越容易刷掉，放任不管只會變成沉重負擔，最後淪為「傳家寶」是不智之舉。</div>
+                    </div>
+                </div>
+            </section>
             
 
             
+            <section class="section" id="stocks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="bar-chart-2"></i>
+                    </div>
+                    <h2 class="section-title">提到的股票 / ETF</h2>
+                </div>
+                <div class="stock-grid">
+                    <a href="/stocks/?q=台積電" class="stock-tag">
+                        <span class="stock-symbol">台積電 (2330)</span>
+                        <span class="stock-name">1月營收創高</span>
+                    </a>
+                    <a href="/stocks/?q=富喬" class="stock-tag">
+                        <span class="stock-symbol">富喬 (1815)、台玻 (1802)</span>
+                        <span class="stock-name">PCB 上游玻纖材料</span>
+                    </a>
+                    <a href="/stocks/?q=聯亞" class="stock-tag">
+                        <span class="stock-symbol">聯亞 (3081)、華星光 (4979)</span>
+                        <span class="stock-name">細光子 (CPO) 題材</span>
+                    </a>
+                    <a href="/stocks/?q=台達電" class="stock-tag">
+                        <span class="stock-symbol">台達電 (2308)、高力 (8996)</span>
+                        <span class="stock-name">電力與散熱需求</span>
+                    </a>
+                    <a href="/stocks/?q=00955" class="stock-tag">
+                        <span class="stock-symbol">00955 (中信日本商社)</span>
+                        <span class="stock-name">兆華提醒封關日出現大幅溢價（約 5%）</span>
+                    </a>
+                    <a href="/stocks/?q=00985A" class="stock-tag">
+                        <span class="stock-symbol">00985A (復華台灣科技優選)</span>
+                        <span class="stock-name">更正其選股池為市值前 150 大</span>
+                    </a>
+                    <a href="/stocks/?q=00830" class="stock-tag">
+                        <span class="stock-symbol">00830 (費城半導體)</span>
+                        <span class="stock-name">曾出現因配息過高導致大幅溢價的案例</span>
+                    </a>
+                </div>
+            </section>
+            
 
             
+            <section class="section" id="quotes">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="quote"></i>
+                    </div>
+                    <h2 class="section-title">金句摘錄</h2>
+                </div>
+                <div class="quote-list">
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">停損就像馬桶裡的汙垢，越早處理越好刷，放久了就要花很大力氣才刷得掉。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">投資是生活的一部分，但不是生活的全部。做好配置，不要讓心情隨著漲跌而失落。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">即便你不選股，買 0050 今年報酬率也有 50% 以上，重點在於你有沒有參與這個資產增值的過程。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">在大跌或回撤月季線時，一定要記得布局，這能大幅降低你的相對剝奪感。</p>
+                    </div>
+                </div>
+            </section>
+            
+
+            
+            <section class="section" id="risks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="alert-triangle"></i>
+                    </div>
+                    <h2 class="section-title">風險提醒</h2>
+                </div>
+                <div class="risk-list">
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">年後展望*：美股與日股在台股春節期間照常交易，需密切觀察美股重量級財報後的解讀。目前美股對 AI 資本支出的正面解讀有利於台股接單。 2. 具體建議： 保留現金：建議隨時保有 30% 現金，大漲大跌都能心安，才有理性思考空間。 分批布局：若台積電等個股太貴買不下手，可利用年後市場恐慌或回測月線時，以零股或相關 ETF（如 0052）分批進場。 斷捨離：趁農曆年假檢視帳單，將長線不長、短線不短且無趨勢支撐的賠錢貨換到市值型標的，迎接馬年行情。</span>
+                    </div>
+                </div>
+            </section>
+            
+            <nav class="episode-nav"><a href="/zhaohua/1038/" class="ep-nav-btn ep-nav-prev">
+                <i data-lucide="chevron-left"></i>
+                <span class="ep-nav-label">上一集</span>
+                <span class="ep-nav-title">EP1038｜從小看父親參加投顧賠錢，自己卻成為投顧分析師！</span>
+            </a><a href="/zhaohua/1036/" class="ep-nav-btn ep-nav-next">
+                <span class="ep-nav-label">下一集</span>
+                <span class="ep-nav-title">EP1036｜台股衝破33000，台積電營收歷史新高，提早拉</span>
+                <i data-lucide="chevron-right"></i>
+            </a></nav>
         </main>
 
         <footer class="footer">
             <p class="footer-text">
-                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
             </p>
         </footer>
     </div>
+
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#strategies" class="toc-link" data-section="strategies">心法</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a><a href="#risks" class="toc-link" data-section="risks">風險</a></nav>
 
     <script>
         lucide.createIcons();
@@ -643,6 +882,25 @@
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (scrollTop / docHeight) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
+
+            // TOC active state
+            const sections = document.querySelectorAll('.section[id], .tldr-box[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (scrollTop >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>

@@ -502,6 +502,102 @@
             text-decoration: none;
         }
 
+        /* Episode Navigation */
+        .episode-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .ep-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .ep-nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .ep-nav-prev { justify-content: flex-start; }
+        .ep-nav-next { justify-content: flex-end; text-align: right; }
+
+        .ep-nav-btn svg { width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0; }
+        .ep-nav-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .ep-nav-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+        .ep-nav-disabled { visibility: hidden; }
+
+        .ep-nav-prev .ep-nav-label,
+        .ep-nav-prev .ep-nav-title { display: block; }
+        .ep-nav-next .ep-nav-label,
+        .ep-nav-next .ep-nav-title { display: block; }
+
+        /* Table of Contents */
+        .toc {
+            position: fixed;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .toc-link {
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .toc-link:hover,
+        .toc-link.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        /* Clickable stock tags */
+        .stock-tag {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a.stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .toc { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .episode-nav { flex-direction: column; }
+            .ep-nav-btn { max-width: 100%; }
+            .ep-nav-next { flex-direction: row-reverse; text-align: left; }
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -595,14 +691,14 @@
 
         <main class="content">
             
-            <div class="tldr-box animate-in">
+            <div class="tldr-box animate-in" id="tldr">
                 <div class="tldr-label">一句話總結</div>
                 <div class="tldr-text">台股大跌 513 點宣告「不會跌的病」痊癒，市場進入「凌晨一點的賭場」階段，投資人應把握低位階補漲與政策題材，並在農曆年前適時獲利了結。</div>
             </div>
             
 
             
-            <section class="section">
+            <section class="section" id="topics">
                 <div class="section-header">
                     <div class="section-icon">
                         <i data-lucide="message-square"></i>
@@ -615,25 +711,168 @@
                         <div class="topic-title">1. 台股爆量重挫與地緣政治利空</div>
                         <div class="topic-content">詳細說明：台股當日重挫 513 點，上市櫃總成交量突破一兆元創下新高。跌勢起因於川普欲購買格陵蘭引發與丹麥及歐盟的糾紛，丹麥威脅拋售美債導致美債殖利率攀升，美股高檔震盪連帶影響台股。 市場背景與影響：市場體感轉差，尤其是記憶體族群出現「人踩人」的團滅現象。然而，盤面上軍工、重電、CPO 等題材仍有零星火花，顯示資金正在進行高低位階轉換。</div>
                     </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 02</div>
+                        <div class="topic-title">2. 記憶體族群的結構性調整</div>
+                        <div class="topic-content">詳細說明：記憶體成為重災區，主因是多檔個股如群聯、鈺創解禁出關後引發獲利了結。法人對南亞科等個股的 2026/2027 年 EPS 預估出現歧見，導致股價波動劇烈。 市場背景與影響：HBM 與 DDR5 需求排擠了 DDR4 產能，造成報價倒掛。雖然趨勢仍向上，但短線籌碼混亂，市場進入訊息面主導階段。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 03</div>
+                        <div class="topic-title">3. 軍工與重電：長線政策紅利</div>
+                        <div class="topic-content">詳細說明：國防部公布 1.25 兆軍購案，激勵軍工股轉強。重電族群則受惠於美國電網汰換需求（平均使用 30-40 年）與 AI 帶動的電力渴望，華城因外銷美國比重高、毛利佳，穩坐股王地位。 市場背景與影響：這類族群過去一年多處於中期整理，目前底型漂亮。軍工股需挑選「純度高」且有實質標案經驗的公司；重電股則看好外銷能力。</div>
+                    </div>
                 </div>
             </section>
             
 
             
-
+            <section class="section" id="strategies">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h2 class="section-title">操作心法與建議</h2>
+                </div>
+                <div class="strategy-list">
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="strategy-text">來賓姓名：威良哥</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="layers"></i>
+                        </div>
+                        <div class="strategy-text">專業背景：知名投資分析師、型男股神</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="shield"></i>
+                        </div>
+                        <div class="strategy-text">高手的操作心法與作法*：</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="eye"></i>
+                        </div>
+                        <div class="strategy-text">市場判斷（凌晨一點的賭場）：威良形容當前盤勢如同凌晨一點的賭場，熱鬧依舊，但早鳥已賺飽離場。真正危險在凌晨三點（接近封關），現在是「做夢小型股」最活潑的時候，認真看基本面就輸了，應看重題材。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="percent"></i>
+                        </div>
+                        <div class="strategy-text">選股邏輯： 1. 記憶體評價法：不建議給予超過美光 (Micron) 的評價。可用「股價淨值比 (P/B)」3 倍或「本益比 (PE)」9 倍作為合理目標價考量。 2. 軍工股挑選：優先選擇有實質 EPS、曾得標過國家級計畫（如無人船、無人機）的純軍工標的。 3. 尋找委屈股：如 BBU (電池備援模組) 族群，基本面好但受資金移轉影響被殺低，應等止跌沉澱、底部爆量再布局。</div>
+                    </div>
+                </div>
+            </section>
             
 
             
+            <section class="section" id="stocks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="bar-chart-2"></i>
+                    </div>
+                    <h2 class="section-title">提到的股票 / ETF</h2>
+                </div>
+                <div class="stock-grid">
+                    <a href="/stocks/?q=南亞科" class="stock-tag">
+                        <span class="stock-symbol">南亞科 (2408)</span>
+                        <span class="stock-name">法說後法人評價兩極</span>
+                    </a>
+                    <a href="/stocks/?q=華城" class="stock-tag">
+                        <span class="stock-symbol">華城 (1513)</span>
+                        <span class="stock-name">重電千金股王</span>
+                    </a>
+                    <a href="/stocks/?q=龍德造船" class="stock-tag">
+                        <span class="stock-symbol">龍德造船 (6753)</span>
+                        <span class="stock-name">有無人船標案想像空間</span>
+                    </a>
+                    <a href="/stocks/?q=創弘科技" class="stock-tag">
+                        <span class="stock-symbol">創弘科技 (7714)</span>
+                        <span class="stock-name">代理以色列反制無人機系統</span>
+                    </a>
+                    <a href="/stocks/?q=AES-KY" class="stock-tag">
+                        <span class="stock-symbol">AES-KY (6781)</span>
+                        <span class="stock-name">BBU 龍頭</span>
+                    </a>
+                    <a href="/stocks/?q=漢磊" class="stock-tag">
+                        <span class="stock-symbol">漢磊 (3707)、家晶 (3059)</span>
+                        <span class="stock-name">受惠成熟製程漲價與低位階補漲</span>
+                    </a>
+                    <a href="/stocks/?q=0965" class="stock-tag">
+                        <span class="stock-symbol">0965 (iShares 美國航太與國防 ETF)</span>
+                        <span class="stock-name">國際軍工指標</span>
+                    </a>
+                </div>
+            </section>
+            
 
             
+            <section class="section" id="quotes">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="quote"></i>
+                    </div>
+                    <h2 class="section-title">金句摘錄</h2>
+                </div>
+                <div class="quote-list">
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">如果你羨慕台積電漲了一倍，卻在回檔時不敢買，那你就是自我矛盾。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">一月份中低價位做夢股最活潑，認真（看基本面）你就輸了。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">現在是凌晨一點的賭場，凌晨三點天快亮（封關）前，記得買單走人。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">不要在股價往右下角掉的時候硬去接刀，要等它沉澱、量縮、止跌。</p>
+                    </div>
+                </div>
+            </section>
+            
+
+            
+            <section class="section" id="risks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="alert-triangle"></i>
+                    </div>
+                    <h2 class="section-title">風險提醒</h2>
+                </div>
+                <div class="risk-list">
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">短線避險*：資金流入黃金與低位階題材，避開籌碼過熱的記憶體高檔區。 2. 布局方向：關注「有產能者得天下」的成熟製程補漲股（漢磊、茂矽），以及具備外銷實力的重電股與政策加持的軍工股。 3. 封關思維：農曆年前建議降低部位，避免地緣政治非經濟因素在長假期間造成波動。對於「委屈股」（如 BBU）可觀察底部爆量訊號，但不急於現階段接刀。</span>
+                    </div>
+                </div>
+            </section>
+            
+            <nav class="episode-nav"><a href="/zhaohua/1023/" class="ep-nav-btn ep-nav-prev">
+                <i data-lucide="chevron-left"></i>
+                <span class="ep-nav-label">上一集</span>
+                <span class="ep-nav-title">EP1023｜川普投顧說股市再翻倍？不武取格陵蘭，台股又創高</span>
+            </a><a href="/zhaohua/1021/" class="ep-nav-btn ep-nav-next">
+                <span class="ep-nav-label">下一集</span>
+                <span class="ep-nav-title">EP1021｜元月是全年縮影，AI、價值都能漲？小心，融資餘</span>
+                <i data-lucide="chevron-right"></i>
+            </a></nav>
         </main>
 
         <footer class="footer">
             <p class="footer-text">
-                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a>
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
             </p>
         </footer>
     </div>
+
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#strategies" class="toc-link" data-section="strategies">心法</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a><a href="#risks" class="toc-link" data-section="risks">風險</a></nav>
 
     <script>
         lucide.createIcons();
@@ -643,6 +882,25 @@
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = (scrollTop / docHeight) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
+
+            // TOC active state
+            const sections = document.querySelectorAll('.section[id], .tldr-box[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (scrollTop >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>
