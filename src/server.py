@@ -1002,7 +1002,8 @@ def run_script_async(step: str | int, podcast_slug: str, providers: dict = None)
                 add_output(f"{'='*40}", "info")
 
                 process = subprocess.Popen(
-                    [sys.executable, str(script)],
+                    [sys.executable, "-u", str(script)],  # -u for unbuffered
+                    stdin=subprocess.DEVNULL,  # Prevent stdin blocking
                     stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT,
                     text=True,
@@ -1037,7 +1038,8 @@ def run_script_async(step: str | int, podcast_slug: str, providers: dict = None)
 
         # Run single script
         process = subprocess.Popen(
-            [sys.executable, str(script)],
+            [sys.executable, "-u", str(script)],  # -u for unbuffered
+            stdin=subprocess.DEVNULL,  # Prevent stdin blocking
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
