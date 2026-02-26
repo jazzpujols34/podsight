@@ -1077,7 +1077,8 @@ async def stop_pipeline():
     global pipeline_state
 
     if not pipeline_state["running"]:
-        raise HTTPException(status_code=400, detail="No pipeline is running")
+        # Return success even if not running - more graceful for UI
+        return {"status": "ok", "message": "No pipeline is running"}
 
     if pipeline_state["process"]:
         import signal
@@ -1107,6 +1108,31 @@ async def stop_pipeline():
     pipeline_state["finished_at"] = datetime.now().isoformat()
     pipeline_state["exit_code"] = -1
     return {"status": "stopped"}
+
+
+@app.post("/run/reset")
+async def reset_pipeline():
+    """Force reset pipeline state (use when stuck)."""
+    global pipeline_state
+
+    # Kill any running process
+    if pipeline_state["process"]:
+        try:
+            pipeline_state["process"].kill()
+        except:
+            pass
+
+    pipeline_state = {
+        "running": False,
+        "current_step": None,
+        "current_podcast": None,
+        "output": [],
+        "started_at": None,
+        "finished_at": None,
+        "exit_code": None,
+        "process": None
+    }
+    return {"status": "reset", "message": "Pipeline state has been reset"}
 
 
 @app.post("/run/{step}")
