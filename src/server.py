@@ -20,20 +20,23 @@ Requirements:
     pip install fastapi uvicorn pyyaml python-dotenv
 """
 
-# Load .env file first (for API keys)
+# Add project root to path for imports
+import sys
 from pathlib import Path
+PROJECT_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
+# Load .env file
 from dotenv import load_dotenv
-load_dotenv(Path(__file__).parent.parent / ".env")
+load_dotenv(PROJECT_ROOT / ".env")
 
 import argparse
 import json
 import os
 import re
 import subprocess
-import sys
 import threading
 import time
-from pathlib import Path
 from typing import Optional
 from datetime import datetime
 
@@ -45,8 +48,8 @@ from pydantic import BaseModel
 
 from src.config import DATA_DIR, get_podcast_config, list_podcasts, DEFAULT_PODCAST
 
-# Project root directory (parent of src/)
-PROJECT_DIR = Path(__file__).parent.parent
+# Project root directory (already defined above as PROJECT_ROOT)
+PROJECT_DIR = PROJECT_ROOT
 UI_DIR = PROJECT_DIR / "ui"
 SCRIPT_DIR = Path(__file__).parent / "pipeline"
 
