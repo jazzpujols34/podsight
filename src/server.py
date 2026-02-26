@@ -968,7 +968,8 @@ def run_script_async(step: str | int, podcast_slug: str, providers: dict = None)
         **os.environ,
         'PODCAST': podcast_slug,
         'WHISPER_PROVIDER': providers.get("transcribe", "groq"),
-        'SUMMARY_PROVIDER': providers.get("summary", "gemini")
+        'SUMMARY_PROVIDER': providers.get("summary", "gemini"),
+        'PYTHONUNBUFFERED': '1',  # Force unbuffered output for real-time streaming
     }
 
     def add_output(line: str, level: str = "info"):
