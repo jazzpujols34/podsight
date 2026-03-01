@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Automated pipeline for PodSight.
-Checks for new episodes, runs full pipeline, and pushes to Telegram.
+Checks for new episodes, runs full pipeline.
+Telegram push is handled separately by push_telegram_batch.py (after Vercel deploys).
 """
 
 import os
@@ -24,7 +25,9 @@ PODCASTS = ["gooaye", "yutinghao", "zhaohua"]
 
 # Required environment variables
 REQUIRED_ENV = ["GROQ_API_KEY", "GEMINI_API_KEY"]
-OPTIONAL_ENV = ["TELEGRAM_BOT_TOKEN", "TELEGRAM_CHAT_ID"]
+
+# File to store episodes pending Telegram push
+PENDING_TG_FILE = DATA_DIR / ".pending_telegram.json"
 
 
 def log(msg: str):
@@ -135,49 +138,15 @@ def get_published_episodes(podcast: str) -> set:
     return set(published_file.read_text().strip().split("\n"))
 
 
-def mark_published(podcast: str, episode_id: str):
-    """Mark an episode as published to Telegram."""
-    published_file = DATA_DIR / podcast / "social_drafts" / ".telegram_published"
-    with open(published_file, "a", encoding="utf-8") as f:
-        f.write(f"{episode_id}\n")
-
-
-def push_telegram(podcast: str, episode_id: str) -> bool:
-    """Push a single episode to Telegram (with deduplication)."""
-    # Check if already published
-    if episode_id in get_published_episodes(podcast):
-        log(f"  Skipping {episode_id} (already published to Telegram)")
-        return False
-
-    draft_file = DATA_DIR / podcast / "social_drafts" / episode_id / "telegram.json"
-
-    if not draft_file.exists():
-        log(f"  No Telegram draft for {episode_id}")
-        return False
-
-    try:
-        from social.publishers.telegram import TelegramPublisher
-
-        with open(draft_file, "r", encoding="utf-8") as f:
-            content = json.load(f)
-
-        pub = TelegramPublisher()
-        result = pub.publish(content)
-
-        if result.success:
-            mark_published(podcast, episode_id)  # Track successful publish
-            log(f"  Pushed to Telegram: {episode_id} (URL: {result.url})")
-            return True
-        else:
-            log(f"  Telegram push failed: {episode_id} - {result.error}")
-            return False
-    except Exception as e:
-        log(f"  Telegram error: {e}")
-        return False
+def save_pending_telegram(pending: list):
+    """Save episodes pending Telegram push to a file."""
+    with open(PENDING_TG_FILE, "w", encoding="utf-8") as f:
+        json.dump(pending, f, indent=2)
+    log(f"Saved {len(pending)} episode(s) pending Telegram push")
 
 
 def process_podcast(podcast: str) -> dict:
-    """Run full pipeline for a podcast. Returns stats."""
+    """Run full pipeline for a podcast. Returns stats including pending TG episodes."""
     log(f"Processing {podcast}...")
 
     stats = {
@@ -185,7 +154,7 @@ def process_podcast(podcast: str) -> dict:
         "new_episodes": 0,
         "transcribed": 0,
         "summarized": 0,
-        "telegram_pushed": 0,
+        "pending_telegram": [],  # Episodes to push after Vercel deploys
         "errors": []
     }
 
@@ -202,9 +171,9 @@ def process_podcast(podcast: str) -> dict:
         unpublished = get_unpublished_episodes(podcast)
         if unpublished:
             log(f"  Found {len(unpublished)} unpublished episode(s)")
+            # Add to pending list (will be pushed after Vercel deploys)
             for ep_id in sorted(unpublished)[-5:]:
-                if push_telegram(podcast, ep_id):
-                    stats["telegram_pushed"] += 1
+                stats["pending_telegram"].append({"podcast": podcast, "episode_id": ep_id})
         return stats
 
     stats["new_episodes"] = len(need_processing)
@@ -237,20 +206,18 @@ def process_podcast(podcast: str) -> dict:
     if not run_script("05_generate_social.py", podcast):
         stats["errors"].append("Social draft generation failed")
 
-    # Push to Telegram for newly summarized episodes
+    # Collect episodes for Telegram (will be pushed after Vercel deploys)
     if new_summaries:
-        log(f"  Pushing {len(new_summaries)} new episode(s) to Telegram...")
+        log(f"  Queuing {len(new_summaries)} episode(s) for Telegram...")
         for ep_id in sorted(new_summaries)[-5:]:  # Limit to 5 most recent
-            if push_telegram(podcast, ep_id):
-                stats["telegram_pushed"] += 1
+            stats["pending_telegram"].append({"podcast": podcast, "episode_id": ep_id})
     else:
-        # Check for any unpublished episodes (summaries exist but not pushed)
+        # Check for any unpublished episodes
         unpublished = get_unpublished_episodes(podcast)
         if unpublished:
             log(f"  Found {len(unpublished)} unpublished episode(s)")
             for ep_id in sorted(unpublished)[-5:]:
-                if push_telegram(podcast, ep_id):
-                    stats["telegram_pushed"] += 1
+                stats["pending_telegram"].append({"podcast": podcast, "episode_id": ep_id})
 
     return stats
 
@@ -267,19 +234,16 @@ def main():
         log("Please set these in your .env file or GitHub Actions secrets")
         return 1
 
-    # Log which optional vars are available
-    for var in OPTIONAL_ENV:
-        status = "✓" if os.environ.get(var) else "✗"
-        log(f"  {var}: {status}")
-
     all_stats = []
     total_new = 0
+    all_pending_tg = []
 
     # Process each podcast
     for podcast in PODCASTS:
         stats = process_podcast(podcast)
         all_stats.append(stats)
         total_new += stats["new_episodes"]
+        all_pending_tg.extend(stats["pending_telegram"])
 
     # Generate public site if there were any new episodes
     if total_new > 0:
@@ -295,6 +259,14 @@ def main():
         except subprocess.CalledProcessError as e:
             log(f"Public site generation failed: {e.stderr[:500]}")
 
+    # Save pending Telegram episodes to file (will be pushed after Vercel deploys)
+    if all_pending_tg:
+        save_pending_telegram(all_pending_tg)
+    else:
+        # Clear any stale pending file
+        if PENDING_TG_FILE.exists():
+            PENDING_TG_FILE.unlink()
+
     # Print summary
     log("=" * 60)
     log("Summary")
@@ -305,13 +277,14 @@ def main():
         log(f"  New episodes: {stats['new_episodes']}")
         log(f"  Transcribed: {stats['transcribed']}")
         log(f"  Summarized: {stats['summarized']}")
-        log(f"  Telegram pushed: {stats['telegram_pushed']}")
+        log(f"  Pending Telegram: {len(stats['pending_telegram'])}")
         if stats['errors']:
             log(f"  Errors: {', '.join(stats['errors'])}")
 
     log("=" * 60)
     log(f"Total new episodes: {total_new}")
-    log("Pipeline complete!")
+    log(f"Total pending Telegram: {len(all_pending_tg)}")
+    log("Pipeline complete! (Telegram push will run after Vercel deploy)")
 
     return 0 if total_new >= 0 else 1
 

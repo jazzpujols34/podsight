@@ -35,10 +35,19 @@ jobs:
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
           python src/pipeline/auto_pipeline.py
+
+      - name: Check for pending Telegram posts
+        id: check_pending
+        run: |
+          if [ -f "data/.pending_telegram.json" ]; then
+            echo "has_pending=true" >> $GITHUB_OUTPUT
+            echo "Found pending Telegram posts"
+          else
+            echo "has_pending=false" >> $GITHUB_OUTPUT
+            echo "No pending Telegram posts"
+          fi
 
       - name: Commit and push changes
         run: |
@@ -58,3 +67,17 @@ jobs:
             git pull --rebase origin main
             git push
           fi
+
+      - name: Wait for Vercel deployment
+        if: steps.check_pending.outputs.has_pending == 'true'
+        run: |
+          echo "Waiting 3 minutes for Vercel to deploy..."
+          sleep 180
+
+      - name: Push to Telegram
+        if: steps.check_pending.outputs.has_pending == 'true'
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python src/pipeline/push_telegram_batch.py
