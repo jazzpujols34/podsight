@@ -369,7 +369,7 @@ def main():
         print("Using Groq API (whisper-large-v3)")
         if not os.environ.get("GROQ_API_KEY"):
             print("Error: GROQ_API_KEY environment variable not set")
-            return
+            sys.exit(1)  # Exit with error code
         transcribe_fn = transcribe_with_groq
     elif WHISPER_PROVIDER == "openai":
         print("Using OpenAI Whisper API (whisper-1)")

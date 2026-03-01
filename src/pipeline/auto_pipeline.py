@@ -22,6 +22,10 @@ load_dotenv(BASE_DIR / ".env")
 DATA_DIR = BASE_DIR / "data"
 PODCASTS = ["gooaye", "yutinghao", "zhaohua"]
 
+# Required environment variables
+REQUIRED_ENV = ["GROQ_API_KEY", "GEMINI_API_KEY"]
+OPTIONAL_ENV = ["TELEGRAM_BOT_TOKEN", "TELEGRAM_CHAT_ID"]
+
 
 def log(msg: str):
     """Print timestamped log message."""
@@ -46,7 +50,11 @@ def run_script(script_name: str, podcast: str, env_vars: dict = None) -> bool:
             timeout=600  # 10 min timeout
         )
         if result.returncode != 0:
-            log(f"  Error in {script_name}: {result.stderr[:500]}")
+            log(f"  Error in {script_name} (exit code {result.returncode}):")
+            if result.stderr:
+                log(f"    stderr: {result.stderr[:500]}")
+            if result.stdout:
+                log(f"    stdout: {result.stdout[-500:]}")  # Last 500 chars
             return False
         return True
     except subprocess.TimeoutExpired:
@@ -195,6 +203,18 @@ def main():
     log("=" * 60)
     log("PodSight Auto Pipeline")
     log("=" * 60)
+
+    # Check required environment variables
+    missing = [var for var in REQUIRED_ENV if not os.environ.get(var)]
+    if missing:
+        log(f"ERROR: Missing required environment variables: {', '.join(missing)}")
+        log("Please set these in your .env file or GitHub Actions secrets")
+        return 1
+
+    # Log which optional vars are available
+    for var in OPTIONAL_ENV:
+        status = "✓" if os.environ.get(var) else "✗"
+        log(f"  {var}: {status}")
 
     all_stats = []
     total_new = 0
