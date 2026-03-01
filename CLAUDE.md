@@ -50,6 +50,138 @@ API keys are loaded from `.env` via python-dotenv:
 
 ## Deployment
 
-- **Site:** Vercel (auto-deploy on push)
+- **Site:** Vercel (auto-deploy on push) - https://podsight.vercel.app
 - **Pipeline:** GitHub Actions (10 AM + 7 PM Taiwan daily)
-- **Telegram:** @podsight
+- **Telegram:** @podsight channel
+
+## Pipeline Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                 auto_pipeline.py Flow                        │
+├─────────────────────────────────────────────────────────────┤
+│ For each podcast:                                            │
+│   1. Parse RSS (01_parse_rss.py)                            │
+│   2. Detect new episodes (RSS episodes - existing summaries)│
+│   3. Download audio (02_download_audio.py)                  │
+│   4. Transcribe (03_transcribe.py) - uses Groq Whisper      │
+│   5. Summarize (04_summarize.py) - uses Gemini              │
+│   6. Generate social drafts (05_generate_social.py)         │
+│                                                              │
+│ Then:                                                        │
+│   7. Generate public site (generate_public_site.py)         │
+│   8. Save pending Telegram episodes to JSON                 │
+└─────────────────────────────────────────────────────────────┘
+```
+
+## GitHub Actions Workflow
+
+The workflow is split to ensure Telegram notifications link to LIVE pages:
+
+```
+1. Run pipeline (process episodes, generate site)
+2. Git commit/push → triggers Vercel deployment
+3. Wait 3 minutes (Vercel build time)
+4. Verify URL is live (from telegram.json)
+5. Push to Telegram
+6. Commit .telegram_published tracking
+```
+
+**Key files:**
+- `.github/workflows/auto-pipeline.yml` - Main workflow
+- `src/pipeline/auto_pipeline.py` - Pipeline orchestration
+- `src/pipeline/push_telegram_batch.py` - Delayed Telegram push
+
+## Data Structure
+
+```
+data/
+├── gooaye/
+│   ├── episodes.json          # RSS metadata
+│   ├── audio/                 # .mp3 files (gitignored)
+│   ├── transcripts/           # .txt files (tracked)
+│   ├── summaries/             # _summary.txt files (tracked)
+│   └── social_drafts/
+│       ├── EP0640/
+│       │   └── telegram.json  # Draft with message + URL
+│       └── .telegram_published # Tracks pushed episodes
+├── yutinghao/                 # Same structure, date-based IDs
+├── zhaohua/                   # Same structure, EP#### IDs
+└── .pending_telegram.json     # Temp file (gitignored)
+```
+
+## Episode ID Formats
+
+| Podcast   | ID Format                    | URL Format                |
+|-----------|------------------------------|---------------------------|
+| gooaye    | `EP0640`                     | `/gooaye/0640/`           |
+| zhaohua   | `EP1044`                     | `/zhaohua/1044/`          |
+| yutinghao | `2026_1_12_一_標題...`       | `/yutinghao/2026-01-12/`  |
+
+## Learned Rules
+
+### Rule 1: New Episode Detection Must Compare RSS vs Summaries
+- **Trigger:** GH Actions ran successfully but processed 0 episodes (1.5 min runs)
+- **Root cause:** Detection counted audio files before/after download. But transcripts/summaries are in git, so GH Actions sees existing transcripts → skips everything.
+- **Fix:** Compare RSS feed episodes against existing summaries, not audio file counts.
+- **Date:** 2026-03-01
+
+### Rule 2: Telegram Push Must Wait for Vercel Deployment
+- **Trigger:** Users clicked Telegram link → 404 because Vercel hadn't deployed yet
+- **Root cause:** Telegram push happened BEFORE git push (which triggers Vercel)
+- **Fix:** Split into two phases: (1) pipeline + git push, (2) wait 3 min + verify URL + push TG
+- **Date:** 2026-03-01
+
+### Rule 3: Track Published Episodes to Prevent Duplicates
+- **Trigger:** Same episode pushed to Telegram multiple times
+- **Root cause:** `.telegram_published` file updated after TG push but not committed
+- **Fix:** Add final git commit step after Telegram push to save tracking file
+- **Date:** 2026-03-01
+
+### Rule 4: Extract URLs from telegram.json, Don't Generate
+- **Trigger:** URL verification failed for yutinghao (different ID format)
+- **Root cause:** Code generated URLs assuming EP#### format, but yutinghao uses dates
+- **Fix:** Extract URL from `href` in the telegram.json message itself
+- **Date:** 2026-03-01
+
+### Rule 5: Scripts Must Exit with Error Codes
+- **Trigger:** Pipeline reported success but transcription actually failed (missing API key)
+- **Root cause:** Script used `return` instead of `sys.exit(1)` on error
+- **Fix:** Always use `sys.exit(1)` for errors so subprocess.run() sees non-zero exit code
+- **Date:** 2026-03-01
+
+## Debugging Tips
+
+```bash
+# Check what episodes need processing
+./venv/bin/python -c "
+import sys; sys.path.insert(0, 'src')
+from pipeline.auto_pipeline import get_episodes_needing_summary, get_unpublished_episodes
+for p in ['gooaye', 'yutinghao', 'zhaohua']:
+    need = get_episodes_needing_summary(p)
+    unpub = get_unpublished_episodes(p)
+    print(f'{p}: {len(need)} need summary, {len(unpub)} unpublished')
+"
+
+# Test Telegram URL extraction
+./venv/bin/python -c "
+import sys; sys.path.insert(0, 'src')
+from pipeline.push_telegram_batch import get_episode_url_from_draft
+print(get_episode_url_from_draft('gooaye', 'EP0640'))
+"
+
+# Check GH Actions run status
+gh run list --limit 5
+gh run view <run-id> --log
+```
+
+## Git Tracking Strategy
+
+| Content | Tracked | Reason |
+|---------|---------|--------|
+| Transcripts | Yes | Text files, needed for GH Actions to detect existing |
+| Summaries | Yes | Text files, needed for GH Actions to detect existing |
+| Audio | No | Large binary files, re-downloaded as needed |
+| Social drafts | Yes | Contains Telegram message templates |
+| .telegram_published | Yes | Prevents duplicate TG pushes |
+| .pending_telegram.json | No | Temp file, cleared after TG push |
