@@ -73,6 +73,47 @@ def get_episode_count(podcast: str, folder: str) -> int:
     return len(list(path.glob("*")))
 
 
+def get_unpublished_episodes(podcast: str) -> list:
+    """Get list of episodes that have summaries but not published to Telegram."""
+    summaries = get_summary_episodes(podcast)
+    published = get_published_episodes(podcast)
+    unpublished = summaries - published
+    return sorted(list(unpublished))
+
+
+def get_episodes_from_rss(podcast: str) -> set:
+    """Get episode IDs from RSS feed (episodes.json)."""
+    episodes_file = DATA_DIR / podcast / "episodes.json"
+    if not episodes_file.exists():
+        return set()
+
+    import json
+    with open(episodes_file) as f:
+        episodes = json.load(f)
+
+    eps = set()
+    for ep in episodes:
+        ep_num = ep.get("episode_number")
+        if ep_num:
+            eps.add(f"EP{ep_num:04d}")
+    return eps
+
+
+def get_episodes_needing_summary(podcast: str) -> set:
+    """Get episodes that are in RSS but don't have summaries."""
+    from src.config import get_podcast_config
+    config = get_podcast_config(podcast)
+
+    rss_eps = get_episodes_from_rss(podcast)
+    summaries = get_summary_episodes(podcast)
+
+    # Filter by episode_start if set
+    if config.episode_start:
+        rss_eps = {ep for ep in rss_eps if int(ep.replace("EP", "")) >= config.episode_start}
+
+    return rss_eps - summaries
+
+
 def get_summary_episodes(podcast: str) -> set:
     """Get set of all episode IDs that have summaries."""
     summaries_dir = DATA_DIR / podcast / "summaries"
@@ -150,22 +191,29 @@ def process_podcast(podcast: str) -> dict:
 
     # Step 1: Parse RSS (detect new episodes)
     log(f"  Step 1: Parsing RSS...")
-    before_eps = get_episode_count(podcast, "audio")
     if not run_script("01_parse_rss.py", podcast):
         stats["errors"].append("RSS parse failed")
 
-    # Step 2: Download audio
+    # Check for episodes needing processing (in RSS but no summary)
+    need_processing = get_episodes_needing_summary(podcast)
+    if not need_processing:
+        log(f"  No new episodes for {podcast}")
+        # Still check for unpublished episodes
+        unpublished = get_unpublished_episodes(podcast)
+        if unpublished:
+            log(f"  Found {len(unpublished)} unpublished episode(s)")
+            for ep_id in sorted(unpublished)[-5:]:
+                if push_telegram(podcast, ep_id):
+                    stats["telegram_pushed"] += 1
+        return stats
+
+    stats["new_episodes"] = len(need_processing)
+    log(f"  Found {stats['new_episodes']} episode(s) needing processing: {sorted(need_processing)[-3:]}")
+
+    # Step 2: Download audio for episodes that need it
     log(f"  Step 2: Downloading audio...")
     if not run_script("02_download_audio.py", podcast):
         stats["errors"].append("Download failed")
-    after_eps = get_episode_count(podcast, "audio")
-    stats["new_episodes"] = after_eps - before_eps
-
-    if stats["new_episodes"] == 0:
-        log(f"  No new episodes for {podcast}")
-        return stats
-
-    log(f"  Found {stats['new_episodes']} new episode(s)")
 
     # Step 3: Transcribe
     log(f"  Step 3: Transcribing...")
@@ -195,6 +243,14 @@ def process_podcast(podcast: str) -> dict:
         for ep_id in sorted(new_summaries)[-5:]:  # Limit to 5 most recent
             if push_telegram(podcast, ep_id):
                 stats["telegram_pushed"] += 1
+    else:
+        # Check for any unpublished episodes (summaries exist but not pushed)
+        unpublished = get_unpublished_episodes(podcast)
+        if unpublished:
+            log(f"  Found {len(unpublished)} unpublished episode(s)")
+            for ep_id in sorted(unpublished)[-5:]:
+                if push_telegram(podcast, ep_id):
+                    stats["telegram_pushed"] += 1
 
     return stats
 
