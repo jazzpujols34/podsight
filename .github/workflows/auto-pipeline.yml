@@ -81,3 +81,15 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
           python src/pipeline/push_telegram_batch.py
+
+      - name: Commit Telegram publish tracking
+        if: steps.check_pending.outputs.has_pending == 'true'
+        run: |
+          git add data/**/social_drafts/.telegram_published
+          if git diff --staged --quiet; then
+            echo "No Telegram tracking changes to commit"
+          else
+            git commit -m "chore: update Telegram publish tracking [skip ci]"
+            git pull --rebase origin main
+            git push
+          fi

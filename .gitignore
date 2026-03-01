@@ -36,3 +36,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Pipeline temp files
+data/.pending_telegram.json

@@ -22,7 +22,6 @@ load_dotenv(BASE_DIR / ".env")
 
 DATA_DIR = BASE_DIR / "data"
 PENDING_TG_FILE = DATA_DIR / ".pending_telegram.json"
-FRONTEND_BASE_URL = "https://podsight.vercel.app"
 
 
 def log(msg: str):
@@ -30,11 +29,21 @@ def log(msg: str):
     print(f"[{datetime.now().strftime('%H:%M:%S')}] {msg}")
 
 
-def get_episode_url(podcast: str, episode_id: str) -> str:
-    """Get the frontend URL for an episode."""
-    # Episode ID format: EP0640 -> 0640
-    ep_num = episode_id.replace("EP", "")
-    return f"{FRONTEND_BASE_URL}/{podcast}/{ep_num}/"
+def get_episode_url_from_draft(podcast: str, episode_id: str) -> str | None:
+    """Extract the frontend URL from the telegram draft file."""
+    import re
+    draft_file = DATA_DIR / podcast / "social_drafts" / episode_id / "telegram.json"
+    if not draft_file.exists():
+        return None
+
+    with open(draft_file, "r", encoding="utf-8") as f:
+        content = json.load(f)
+
+    # Extract URL from href in message
+    match = re.search(r'href="(https://[^"]+)"', content.get("message", ""))
+    if match:
+        return match.group(1)
+    return None
 
 
 def verify_url_live(url: str, max_retries: int = 5, retry_delay: int = 30) -> bool:
@@ -132,15 +141,19 @@ def main():
 
     # Verify first URL is live (confirms Vercel deployed)
     first_ep = pending[0]
-    first_url = get_episode_url(first_ep["podcast"], first_ep["episode_id"])
-    log(f"Verifying Vercel deployment: {first_url}")
+    first_url = get_episode_url_from_draft(first_ep["podcast"], first_ep["episode_id"])
 
-    if not verify_url_live(first_url):
-        log("ERROR: Frontend not deployed yet. Aborting Telegram push.")
-        log("Episodes will be pushed on next pipeline run.")
-        return 1
+    if first_url:
+        log(f"Verifying Vercel deployment: {first_url}")
+        if not verify_url_live(first_url):
+            log("ERROR: Frontend not deployed yet. Aborting Telegram push.")
+            log("Episodes will be pushed on next pipeline run.")
+            return 1
+        log("Frontend is live!")
+    else:
+        log("WARNING: Could not extract URL from draft, skipping verification")
 
-    log("Frontend is live! Pushing to Telegram...")
+    log("Pushing to Telegram...")
 
     # Push all pending episodes
     pushed = 0
