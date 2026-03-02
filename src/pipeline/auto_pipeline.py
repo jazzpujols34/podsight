@@ -86,19 +86,30 @@ def get_unpublished_episodes(podcast: str) -> list:
 
 def get_episodes_from_rss(podcast: str) -> set:
     """Get episode IDs from RSS feed (episodes.json)."""
+    import re
+
     episodes_file = DATA_DIR / podcast / "episodes.json"
     if not episodes_file.exists():
         return set()
 
-    import json
     with open(episodes_file) as f:
         episodes = json.load(f)
 
     eps = set()
     for ep in episodes:
         ep_num = ep.get("episode_number")
+        title = ep.get("title", "")
+
         if ep_num:
+            # gooaye, zhaohua: use episode number
             eps.add(f"EP{ep_num:04d}")
+        elif podcast == "yutinghao" and title:
+            # yutinghao: extract date from title like "2026/3/2(一)中東大戰..."
+            match = re.match(r"(\d{4})/(\d{1,2})/(\d{1,2})", title)
+            if match:
+                year, month, day = match.groups()
+                # Format to match summary filename prefix: 2026_3_2_
+                eps.add(f"{year}_{month}_{day}_")
     return eps
 
 
@@ -119,14 +130,27 @@ def get_episodes_needing_summary(podcast: str) -> set:
 
 def get_summary_episodes(podcast: str) -> set:
     """Get set of all episode IDs that have summaries."""
+    import re
+
     summaries_dir = DATA_DIR / podcast / "summaries"
     if not summaries_dir.exists():
         return set()
 
     eps = set()
     for summary_file in summaries_dir.glob("*_summary.txt"):
-        ep_id = summary_file.stem.replace("_summary", "")
-        eps.add(ep_id)
+        filename = summary_file.stem.replace("_summary", "")
+
+        if podcast == "yutinghao":
+            # Extract date prefix: 2026_3_2_一_... -> 2026_3_2_
+            match = re.match(r"(\d{4}_\d{1,2}_\d{1,2}_)", filename)
+            if match:
+                eps.add(match.group(1))
+            else:
+                # Non-date format (like _市場觀察_) - use full name
+                eps.add(filename)
+        else:
+            # gooaye, zhaohua: EP0640
+            eps.add(filename)
     return eps
 
 
