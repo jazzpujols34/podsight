@@ -150,6 +150,24 @@ data/
 - **Fix:** Always use `sys.exit(1)` for errors so subprocess.run() sees non-zero exit code
 - **Date:** 2026-03-01
 
+### Rule 6: Pre-populate Telegram Tracking Files
+- **Trigger:** GH Actions pushed 15 old episodes to Telegram (EP0630-0634, etc.)
+- **Root cause:** `.telegram_published` only tracked recent pushes, so ALL old summaries appeared "unpublished"
+- **Fix:** Pre-populate tracking files with ALL existing episode IDs before enabling automation
+- **Date:** 2026-03-02
+
+### Rule 7: yutinghao Uses Date Prefix for Episode Detection
+- **Trigger:** yutinghao new episodes not detected ("No new episodes")
+- **Root cause:** `get_episodes_from_rss()` only handled `episode_number`, yutinghao has None
+- **Fix:** Extract date from title (`2026/3/2(一)...` → `2026_3_2_`) and match against summary filenames
+- **Date:** 2026-03-02
+
+### Rule 8: yutinghao Draft Folders Use Full Titles
+- **Trigger:** "No Telegram draft for 2026_3_2_" error
+- **Root cause:** Detection uses date prefix but draft folders have full title
+- **Fix:** `find_draft_folder()` searches for folders starting with date prefix
+- **Date:** 2026-03-02
+
 ## Debugging Tips
 
 ```bash
