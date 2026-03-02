@@ -80,6 +80,25 @@ def mark_published(podcast: str, episode_id: str):
         f.write(f"{episode_id}\n")
 
 
+def find_draft_folder(podcast: str, episode_id: str) -> Path | None:
+    """Find the draft folder for an episode ID (handles date prefix matching)."""
+    drafts_dir = DATA_DIR / podcast / "social_drafts"
+
+    # Direct match first
+    direct = drafts_dir / episode_id / "telegram.json"
+    if direct.exists():
+        return drafts_dir / episode_id
+
+    # For yutinghao date prefixes (2026_3_2_), find folder starting with prefix
+    if podcast == "yutinghao" and episode_id.endswith("_"):
+        for folder in drafts_dir.iterdir():
+            if folder.is_dir() and folder.name.startswith(episode_id):
+                if (folder / "telegram.json").exists():
+                    return folder
+
+    return None
+
+
 def push_telegram(podcast: str, episode_id: str) -> bool:
     """Push a single episode to Telegram."""
     # Check if already published
@@ -87,11 +106,12 @@ def push_telegram(podcast: str, episode_id: str) -> bool:
         log(f"  Skipping {episode_id} (already published)")
         return False
 
-    draft_file = DATA_DIR / podcast / "social_drafts" / episode_id / "telegram.json"
-
-    if not draft_file.exists():
+    draft_folder = find_draft_folder(podcast, episode_id)
+    if not draft_folder:
         log(f"  No Telegram draft for {episode_id}")
         return False
+
+    draft_file = draft_folder / "telegram.json"
 
     try:
         from social.publishers.telegram import TelegramPublisher
