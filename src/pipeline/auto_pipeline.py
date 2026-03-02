@@ -104,7 +104,7 @@ def get_episodes_from_rss(podcast: str) -> set:
 
 def get_episodes_needing_summary(podcast: str) -> set:
     """Get episodes that are in RSS but don't have summaries."""
-    from src.config import get_podcast_config
+    from config import get_podcast_config
     config = get_podcast_config(podcast)
 
     rss_eps = get_episodes_from_rss(podcast)
