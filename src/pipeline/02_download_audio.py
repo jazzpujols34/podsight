@@ -82,7 +82,7 @@ def main():
     # Load episodes
     if not podcast.episodes_file.exists():
         print(f"Error: {podcast.episodes_file} not found. Run 01_parse_rss.py first.")
-        return
+        sys.exit(1)
 
     with open(podcast.episodes_file, 'r', encoding='utf-8') as f:
         episodes = json.load(f)
@@ -164,6 +164,9 @@ def main():
         if (podcast.audio_dir / sanitize_filename(e['title'], e.get('episode_number'))).exists()
     )
     print(f"\nTotal audio size: {total_size / (1024**3):.2f} GB")
+
+    if results['failed'] > 0:
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()

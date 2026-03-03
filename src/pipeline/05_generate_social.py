@@ -220,6 +220,9 @@ def main():
     print(f"Complete: {success_count} succeeded, {error_count} failed")
     print(f"Drafts saved to: {podcast.data_dir / 'social_drafts'}")
 
+    if error_count > 0:
+        sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

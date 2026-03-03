@@ -410,6 +410,9 @@ def main():
     print(f"Time: {elapsed:.1f}s ({elapsed/max(1,success_count+error_count):.1f}s per episode)")
     print(f"Summaries saved to: {podcast.summary_dir}")
 
+    if error_count > 0:
+        sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

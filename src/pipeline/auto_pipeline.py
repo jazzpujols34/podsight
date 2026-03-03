@@ -52,12 +52,18 @@ def run_script(script_name: str, podcast: str, env_vars: dict = None) -> bool:
             text=True,
             timeout=600  # 10 min timeout
         )
+
+        # Always show last few lines of output for CI debugging
+        if result.stdout:
+            lines = result.stdout.strip().split('\n')
+            # Show last 5 lines of stdout
+            for line in lines[-5:]:
+                log(f"    | {line}")
+
         if result.returncode != 0:
-            log(f"  Error in {script_name} (exit code {result.returncode}):")
+            log(f"  ERROR in {script_name} (exit code {result.returncode})")
             if result.stderr:
                 log(f"    stderr: {result.stderr[:500]}")
-            if result.stdout:
-                log(f"    stdout: {result.stdout[-500:]}")  # Last 500 chars
             return False
         return True
     except subprocess.TimeoutExpired:
@@ -223,20 +229,32 @@ def process_podcast(podcast: str) -> dict:
     log(f"  Step 2: Downloading audio...")
     if not run_script("02_download_audio.py", podcast):
         stats["errors"].append("Download failed")
+        log(f"  Skipping remaining steps due to download failure")
+        return stats
 
     # Step 3: Transcribe
     log(f"  Step 3: Transcribing...")
     before_trans = get_episode_count(podcast, "transcripts")
     if not run_script("03_transcribe.py", podcast):
         stats["errors"].append("Transcription failed")
+        log(f"  Skipping remaining steps due to transcription failure")
+        return stats
     after_trans = get_episode_count(podcast, "transcripts")
     stats["transcribed"] = after_trans - before_trans
+
+    # Verify transcripts were actually created
+    if stats["transcribed"] == 0:
+        log(f"  WARNING: Transcription returned success but created 0 new transcripts")
+        stats["errors"].append("Transcription produced no output")
+        # Continue anyway — summarization will check for transcripts
 
     # Step 4: Summarize
     log(f"  Step 4: Summarizing...")
     before_summaries = get_summary_episodes(podcast)
     if not run_script("04_summarize.py", podcast):
         stats["errors"].append("Summarization failed")
+        log(f"  Skipping social drafts due to summarization failure")
+        return stats
     after_summaries = get_summary_episodes(podcast)
     new_summaries = after_summaries - before_summaries
     stats["summarized"] = len(new_summaries)
@@ -326,7 +344,11 @@ def main():
     log(f"Total pending Telegram: {len(all_pending_tg)}")
     log("Pipeline complete! (Telegram push will run after Vercel deploy)")
 
-    return 0 if total_new >= 0 else 1
+    # Return non-zero if any podcast had errors
+    has_errors = any(stats['errors'] for stats in all_stats)
+    if has_errors:
+        log("WARNING: Some steps had errors (see above)")
+    return 1 if has_errors and total_new > 0 else 0
 
 
 if __name__ == "__main__":

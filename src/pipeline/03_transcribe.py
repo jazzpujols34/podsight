@@ -313,7 +313,7 @@ def main():
     if not audio_files:
         print(f"Error: No MP3 files found in {podcast.audio_dir}")
         print("Run 02_download_audio.py first.")
-        return
+        sys.exit(1)
 
     print(f"Found {len(audio_files)} audio files")
 
@@ -359,7 +359,7 @@ def main():
     
     if not to_process:
         print("All episodes already transcribed!")
-        return
+        return  # Not an error — exit 0
 
     # Setup transcription function based on provider
     print(f"\nProvider: {WHISPER_PROVIDER}")
@@ -471,6 +471,7 @@ def main():
         print(f"\nFailed files:")
         for f in failed[:5]:
             print(f"  - {f['file']}: {f['error'][:50]}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
