@@ -453,6 +453,52 @@
             height: 24px;
         }
 
+        .humor-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .humor-card {
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .humor-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-card-hover);
+        }
+
+        .humor-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-secondary);
+            background: var(--accent-bg);
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+
+        .humor-quote {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .humor-context {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
         .risk-list {
             display: flex;
             flex-direction: column;
@@ -726,6 +772,23 @@
             
 
             
+            <section class="section" id="strategies">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h2 class="section-title">操作心法與建議</h2>
+                </div>
+                <div class="strategy-list">
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="strategy-text">川普的談判賽道*：川普不擅長制度化協商，他最擅長的是「製造不確定性」。他把戰場拉到短期衝擊與政治壓力上，逼對手讓步，再把對手的讓步變成自己的收割。 2. 邏輯的前提：引用愛因斯坦的煙囪寓言，強調投資邏輯永遠依賴前提。當 M2 貨幣增量與市場結構改變，過去 100% 準確的週期指標（如金銀比）隨時可能失效。 3. 美國的四大支柱：高科技、美軍、美元、文化霸權。川普正善用這些優勢，將全球變成一張可以反覆加價的談判桌。</div>
+                    </div>
+                </div>
+            </section>
+            
 
             
             <section class="section" id="stocks">
@@ -782,6 +845,39 @@
             
 
             
+            <section class="section" id="humor">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="smile"></i>
+                    </div>
+                    <h2 class="section-title">冷笑話 / 幽默金句</h2>
+                </div>
+                <div class="humor-list">
+                    <div class="humor-card">
+                        <span class="humor-label">關於國防</span>
+                        <p class="humor-quote">「丹麥的防衛力量只有兩輛狗拉雪橇，其中一輛還是最近才添購的。美軍派海豹部隊去跟哈士奇對戰，搞不好川普哪天會指控北極熊販毒。」</p>
+                    </div>
+                    <div class="humor-card">
+                        <span class="humor-label">關於照片</span>
+                        <p class="humor-quote">「川普在社群媒體發了一張黑白個人照自封『關稅之王』。在華人文化裡，發黑白照通常是有人走了，但在美國這叫 Image。」</p>
+                    </div>
+                    <div class="humor-card">
+                        <span class="humor-label">關於和平獎</span>
+                        <p class="humor-quote">「川普拿到了委內瑞拉送的二手和平獎。他的和平獎是核子武器的『核』，踏平一切的『平』。」</p>
+                    </div>
+                    <div class="humor-card">
+                        <span class="humor-label">關於男女關係（犀利段子）</span>
+                        <p class="humor-quote">「女的問男的：『在一起後你會家暴我嗎？』男的說：『只要妳喜歡，我可以學。』」</p>
+                    </div>
+                    <div class="humor-card">
+                        <span class="humor-label">本集最冷（黃色幽默）</span>
+                        <p class="humor-quote">「李敖說過，一個男人遇到喜歡的女孩子，通常是有的地方硬，有的地方軟。當全身都軟了，只剩下一個地方是硬的。這就是川普的策略：該硬的時候硬，該軟的時候不逞強，收割完馬上走人。」</p>
+                    </div>
+                </div>
+            </section>
+            
+
+            
             <nav class="episode-nav"><a href="/yutinghao/2026-01-20/" class="ep-nav-btn ep-nav-prev">
                 <i data-lucide="chevron-left"></i>
                 <span class="ep-nav-label">上一集</span>
@@ -800,7 +896,7 @@
         </footer>
     </div>
 
-    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a></nav>
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#strategies" class="toc-link" data-section="strategies">心法</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a><a href="#humor" class="toc-link" data-section="humor">幽默</a></nav>
 
     <script>
         lucide.createIcons();

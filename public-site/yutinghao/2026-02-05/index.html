@@ -453,6 +453,52 @@
             height: 24px;
         }
 
+        .humor-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .humor-card {
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .humor-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-card-hover);
+        }
+
+        .humor-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-secondary);
+            background: var(--accent-bg);
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+
+        .humor-quote {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .humor-context {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
         .risk-list {
             display: flex;
             flex-direction: column;
@@ -726,6 +772,29 @@
             
 
             
+            <section class="section" id="strategies">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h2 class="section-title">操作心法與建議</h2>
+                </div>
+                <div class="strategy-list">
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="strategy-text">對市場的看法：目前的下跌是「中期回撥」，通常為期一個季度。雖然科技股頭部形成（如微軟的 M 頭變蝙蝠俠），但這有利於牛市長線發展，讓過熱的估值回歸理性。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="layers"></i>
+                        </div>
+                        <div class="strategy-text">投資建議：強調「本業收入」的重要性，有穩定的現金流才能在股市「大特價」時彎腰撿鑽石。投資人應先確定自己是「價值型」還是「成長型」，不要漲時追成長、跌時改價值，否則報酬會被磨光。</div>
+                    </div>
+                </div>
+            </section>
+            
 
             
             <section class="section" id="stocks">
@@ -790,6 +859,35 @@
             
 
             
+            <section class="section" id="humor">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="smile"></i>
+                    </div>
+                    <h2 class="section-title">冷笑話 / 幽默金句</h2>
+                </div>
+                <div class="humor-list">
+                    <div class="humor-card">
+                        <span class="humor-label">微軟變蝙蝠俠</span>
+                        <p class="humor-quote">「形容微軟股價線型：「這個 M 頭真的變成蝙蝠俠了，真的不是微軟，是『超級軟』，完全硬不起來！」」</p>
+                    </div>
+                    <div class="humor-card">
+                        <span class="humor-label">愛因斯坦找車票</span>
+                        <p class="humor-quote">「愛因斯坦在火車上找不到車票，列車長說認識他沒關係，愛因斯坦激動說：「我知道我是誰，但我不知道我要去哪裡！」（比喻投資人常忘了自己的投資初衷與路線）。」</p>
+                    </div>
+                    <div class="humor-card">
+                        <span class="humor-label">四川人的香港腳（諧音梗）</span>
+                        <p class="humor-quote">「一個女孩去四川交友，問男方：「今天晚上要不要來我家過夜？」 進門脫鞋時，女孩聞到異味問：「你香港腳（四川話諧音：你相剛交）嗎？」 男的愣住回答：「我...我還沒有試過。」 （以此比喻：同一個資料、同一句話，在不同語境下會有完全不同的解讀）。」</p>
+                    </div>
+                    <div class="humor-card">
+                        <span class="humor-label">人生哲理</span>
+                        <p class="humor-quote">「在談到地緣政治與川普時，順便調侃了愛波斯坦（ Epstein），隨即改口「沒有愛波斯坦，不好意思」。」</p>
+                    </div>
+                </div>
+            </section>
+            
+
+            
             <nav class="episode-nav"><a href="/yutinghao/2026-02-06/" class="ep-nav-btn ep-nav-prev">
                 <i data-lucide="chevron-left"></i>
                 <span class="ep-nav-label">上一集</span>
@@ -808,7 +906,7 @@
         </footer>
     </div>
 
-    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a></nav>
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#strategies" class="toc-link" data-section="strategies">心法</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a><a href="#humor" class="toc-link" data-section="humor">幽默</a></nav>
 
     <script>
         lucide.createIcons();

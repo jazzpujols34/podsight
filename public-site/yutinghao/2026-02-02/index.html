@@ -453,6 +453,52 @@
             height: 24px;
         }
 
+        .humor-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .humor-card {
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .humor-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-card-hover);
+        }
+
+        .humor-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-secondary);
+            background: var(--accent-bg);
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+
+        .humor-quote {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .humor-context {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
         .risk-list {
             display: flex;
             flex-direction: column;
@@ -726,6 +772,35 @@
             
 
             
+            <section class="section" id="strategies">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h2 class="section-title">操作心法與建議</h2>
+                </div>
+                <div class="strategy-list">
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="strategy-text">對當前市場看法： 標普 500 雖然盤整，但仍處於創高格局，反觀納斯達克（七巨頭）已盤整兩三個月。目前市場呈現「傳產漲、科技跌」的輪動，能源與原物料板塊表現強勁。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="layers"></i>
+                        </div>
+                        <div class="strategy-text">投資建議： 庭皓強調「看對趨勢是不會輸的，但會死在波動」。在資產配置中，黃金仍是應對地緣政治與貨幣貶值的核心資產。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="shield"></i>
+                        </div>
+                        <div class="strategy-text">警示： 絕對不要在「高估值」的時候「放大槓桿」。這不是投資，而是跟波動對賭，一旦被平倉，連等反彈的資格都沒有。</div>
+                    </div>
+                </div>
+            </section>
+            
 
             
             <section class="section" id="stocks">
@@ -790,6 +865,8 @@
             
 
             
+
+            
             <nav class="episode-nav"><a href="/yutinghao/2026-02-03/" class="ep-nav-btn ep-nav-prev">
                 <i data-lucide="chevron-left"></i>
                 <span class="ep-nav-label">上一集</span>
@@ -808,7 +885,7 @@
         </footer>
     </div>
 
-    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a></nav>
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#strategies" class="toc-link" data-section="strategies">心法</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a></nav>
 
     <script>
         lucide.createIcons();

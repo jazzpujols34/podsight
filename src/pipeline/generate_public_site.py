@@ -228,6 +228,7 @@ def parse_summary(content: str) -> dict:
         "stocks": [],
         "quotes": [],
         "risks": [],
+        "humor": [],
     }
 
     # Extract TLDR (一句話總結) - handle ### **Title** or ### Title formats
@@ -292,6 +293,11 @@ def parse_summary(content: str) -> dict:
         # Try zhaohua format: 本集來賓與高手觀點
         strategies_match = re.search(
             r"###\s*\*?\*?本集來賓與高手觀點\*?\*?\s*\n+(.+?)(?=\n---|\n###)", content, re.DOTALL
+        )
+    if not strategies_match:
+        # Try yutinghao format: 財經觀點與分析
+        strategies_match = re.search(
+            r"###\s*\*?\*?財經觀點與分析\*?\*?\s*\n+(.+?)(?=\n---|\n###)", content, re.DOTALL
         )
     if strategies_match:
         strategies_text = strategies_match.group(1)
@@ -397,6 +403,32 @@ def parse_summary(content: str) -> dict:
             risk_items = re.findall(r"[•\-\*]\s*(.+?)(?=\n[•\-\*]|\n\n|$)", risks_text, re.DOTALL)
             sections["risks"] = [strip_markdown(r) for r in risk_items if r.strip() and len(r.strip()) > 10]
 
+    # Extract humor (冷笑話 / 幽默金句)
+    humor_match = re.search(
+        r"###\s*\*?\*?冷笑話\s*[/／]\s*幽默金句\*?\*?\s*\n+(.+?)(?=\n---|\n###|$)", content, re.DOTALL
+    )
+    if humor_match:
+        humor_text = humor_match.group(1)
+        # Parse humor items - format: *   **Label**：「Quote」(Context)
+        humor_items = re.findall(
+            r"\*\s+\*\*([^*]+)\*\*[：:]\s*[「「]([^」」]+)[」」](?:\s*（([^）]+)）)?",
+            humor_text
+        )
+        if humor_items:
+            for label, quote, context in humor_items:
+                item = {"label": strip_markdown(label), "quote": strip_markdown(quote)}
+                if context:
+                    item["context"] = strip_markdown(context)
+                sections["humor"].append(item)
+        else:
+            # Fallback: simple bullet format
+            bullets = re.findall(r"\*\s+\*\*([^*]+)\*\*[：:]\s*(.+?)(?=\n\*\s+\*\*|\n---|$)", humor_text, re.DOTALL)
+            for label, content_text in bullets:
+                sections["humor"].append({
+                    "label": strip_markdown(label),
+                    "quote": strip_markdown(content_text)
+                })
+
     return sections
 
 
@@ -494,6 +526,8 @@ def generate_episode_html(
         toc_items.append(("stocks", "股票"))
     if sections["quotes"]:
         toc_items.append(("quotes", "金句"))
+    if sections["humor"]:
+        toc_items.append(("humor", "幽默"))
     if sections["risks"]:
         toc_items.append(("risks", "風險"))
 
@@ -551,6 +585,16 @@ def generate_episode_html(
                     <div class="risk-item">
                         <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
                         <span class="risk-text">{html_escape(risk)}</span>
+                    </div>"""
+
+    # Build humor HTML
+    humor_html = ""
+    for item in sections["humor"][:6]:
+        context_html = f'<span class="humor-context">（{html_escape(item.get("context", ""))}）</span>' if item.get("context") else ""
+        humor_html += f"""
+                    <div class="humor-card">
+                        <span class="humor-label">{html_escape(item['label'])}</span>
+                        <p class="humor-quote">「{html_escape(item['quote'])}」{context_html}</p>
                     </div>"""
 
     # Episode title for display
@@ -997,6 +1041,52 @@ def generate_episode_html(
             height: 24px;
         }}
 
+        .humor-list {{
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }}
+
+        .humor-card {{
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }}
+
+        .humor-card:hover {{
+            border-color: var(--accent-border);
+            background: var(--bg-card-hover);
+        }}
+
+        .humor-label {{
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-secondary);
+            background: var(--accent-bg);
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }}
+
+        .humor-quote {{
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }}
+
+        .humor-context {{
+            display: block;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }}
+
         .risk-list {{
             display: flex;
             flex-direction: column;
@@ -1289,6 +1379,19 @@ def generate_episode_html(
                     <h2 class="section-title">金句摘錄</h2>
                 </div>
                 <div class="quote-list">{quotes_html}
+                </div>
+            </section>
+            '''}
+
+            {"" if not sections['humor'] else f'''
+            <section class="section" id="humor">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="smile"></i>
+                    </div>
+                    <h2 class="section-title">冷笑話 / 幽默金句</h2>
+                </div>
+                <div class="humor-list">{humor_html}
                 </div>
             </section>
             '''}

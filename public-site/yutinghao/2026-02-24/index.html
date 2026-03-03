@@ -453,6 +453,52 @@
             height: 24px;
         }
 
+        .humor-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .humor-card {
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .humor-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-card-hover);
+        }
+
+        .humor-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-secondary);
+            background: var(--accent-bg);
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+
+        .humor-quote {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .humor-context {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
         .risk-list {
             display: flex;
             flex-direction: column;
@@ -731,6 +777,35 @@
             
 
             
+            <section class="section" id="strategies">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h2 class="section-title">操作心法與建議</h2>
+                </div>
+                <div class="strategy-list">
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="strategy-text">對市場的看法： 美股目前處於「原地踏步」與「乖離回撥」的過程，尤其是微軟失守 400 美元生命線，形成大型頭部，心理陰影沉重。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="layers"></i>
+                        </div>
+                        <div class="strategy-text">對 AI 的解讀： AI 的方向是確定的，但最終冠軍是誰已不確定。決勝點在於：誰能守住利潤、誰能將支出轉為現金流、誰能解決電力成本。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="shield"></i>
+                        </div>
+                        <div class="strategy-text">投資建議： 採取「週期投資法」，不壓單一明星股，而是透過 ETF 分散風險，在馬（爆發力）、驢（耐操）、騾（平衡）之間取得投資組合的適應性。</div>
+                    </div>
+                </div>
+            </section>
+            
 
             
             <section class="section" id="stocks">
@@ -795,6 +870,8 @@
             
 
             
+
+            
             <nav class="episode-nav"><a href="/yutinghao/2026-02-25/" class="ep-nav-btn ep-nav-prev">
                 <i data-lucide="chevron-left"></i>
                 <span class="ep-nav-label">上一集</span>
@@ -813,7 +890,7 @@
         </footer>
     </div>
 
-    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a></nav>
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#strategies" class="toc-link" data-section="strategies">心法</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a></nav>
 
     <script>
         lucide.createIcons();
