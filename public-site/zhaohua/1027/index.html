@@ -532,6 +532,52 @@
             line-height: 1.7;
         }
 
+        .conclusion-box {
+            display: flex;
+            gap: 20px;
+            padding: 28px;
+            background: linear-gradient(135deg, var(--accent-bg) 0%, rgba(255,255,255,0.03) 100%);
+            border: 1px solid var(--accent-border);
+            border-radius: 16px;
+        }
+
+        .conclusion-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-primary);
+            flex-shrink: 0;
+        }
+
+        .conclusion-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .conclusion-content {
+            flex: 1;
+        }
+
+        .conclusion-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--accent-primary);
+            margin-bottom: 8px;
+        }
+
+        .conclusion-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
         .footer {
             padding: 40px 0;
             text-align: center;
@@ -901,6 +947,8 @@
                     </div>
                 </div>
             </section>
+            
+
             
             <nav class="episode-nav"><a href="/zhaohua/1028/" class="ep-nav-btn ep-nav-prev">
                 <i data-lucide="chevron-left"></i>

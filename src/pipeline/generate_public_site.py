@@ -229,6 +229,7 @@ def parse_summary(content: str) -> dict:
         "quotes": [],
         "risks": [],
         "humor": [],
+        "conclusion": "",
     }
 
     # Extract TLDR (一句話總結) - handle ### **Title** or ### Title formats
@@ -429,6 +430,13 @@ def parse_summary(content: str) -> dict:
                     "quote": strip_markdown(content_text)
                 })
 
+    # Extract conclusion (本集結論)
+    conclusion_match = re.search(
+        r"\*\*本集結論[：:]\*\*\s*(.+?)(?=\n\n|$)", content, re.DOTALL
+    )
+    if conclusion_match:
+        sections["conclusion"] = strip_markdown(conclusion_match.group(1))
+
     return sections
 
 
@@ -530,6 +538,8 @@ def generate_episode_html(
         toc_items.append(("humor", "幽默"))
     if sections["risks"]:
         toc_items.append(("risks", "風險"))
+    if sections["conclusion"]:
+        toc_items.append(("conclusion", "結論"))
 
     toc_html = ""
     if len(toc_items) > 2:
@@ -1120,6 +1130,52 @@ def generate_episode_html(
             line-height: 1.7;
         }}
 
+        .conclusion-box {{
+            display: flex;
+            gap: 20px;
+            padding: 28px;
+            background: linear-gradient(135deg, var(--accent-bg) 0%, rgba(255,255,255,0.03) 100%);
+            border: 1px solid var(--accent-border);
+            border-radius: 16px;
+        }}
+
+        .conclusion-icon {{
+            width: 48px;
+            height: 48px;
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-primary);
+            flex-shrink: 0;
+        }}
+
+        .conclusion-icon svg {{
+            width: 24px;
+            height: 24px;
+        }}
+
+        .conclusion-content {{
+            flex: 1;
+        }}
+
+        .conclusion-label {{
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--accent-primary);
+            margin-bottom: 8px;
+        }}
+
+        .conclusion-text {{
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }}
+
         .footer {{
             padding: 40px 0;
             text-align: center;
@@ -1405,6 +1461,20 @@ def generate_episode_html(
                     <h2 class="section-title">風險提醒</h2>
                 </div>
                 <div class="risk-list">{risks_html}
+                </div>
+            </section>
+            '''}
+
+            {"" if not sections['conclusion'] else f'''
+            <section class="section" id="conclusion">
+                <div class="conclusion-box">
+                    <div class="conclusion-icon">
+                        <i data-lucide="flag"></i>
+                    </div>
+                    <div class="conclusion-content">
+                        <div class="conclusion-label">本集結論</div>
+                        <p class="conclusion-text">{html_escape(sections['conclusion'])}</p>
+                    </div>
                 </div>
             </section>
             '''}
