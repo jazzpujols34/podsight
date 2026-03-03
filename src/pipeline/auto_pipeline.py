@@ -156,10 +156,26 @@ def get_summary_episodes(podcast: str) -> set:
 
 def get_published_episodes(podcast: str) -> set:
     """Get set of episode IDs already published to Telegram."""
+    import re
     published_file = DATA_DIR / podcast / "social_drafts" / ".telegram_published"
     if not published_file.exists():
         return set()
-    return set(published_file.read_text().strip().split("\n"))
+
+    eps = set()
+    for line in published_file.read_text().strip().split("\n"):
+        line = line.strip()
+        if not line:
+            continue
+        if podcast == "yutinghao":
+            # Extract date prefix from full folder name or date prefix
+            match = re.match(r"(\d{4}_\d{1,2}_\d{1,2}_)", line)
+            if match:
+                eps.add(match.group(1))
+            else:
+                eps.add(line)  # Non-date format like _市場觀察_
+        else:
+            eps.add(line)
+    return eps
 
 
 def save_pending_telegram(pending: list):
