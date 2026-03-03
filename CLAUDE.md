@@ -168,6 +168,12 @@ data/
 - **Fix:** `find_draft_folder()` searches for folders starting with date prefix
 - **Date:** 2026-03-02
 
+### Rule 9: Normalize ID Formats When Reading Tracking Files
+- **Trigger:** GH Actions pushed 5 old yutinghao episodes (0204, 0205, 0206, 0209, 0302)
+- **Root cause:** `.telegram_published` had full folder names, but `get_summary_episodes()` returns date prefixes - they never matched
+- **Fix:** `get_published_episodes()` extracts date prefix from full folder names for yutinghao
+- **Date:** 2026-03-03
+
 ## Debugging Tips
 
 ```bash
