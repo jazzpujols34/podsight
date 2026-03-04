@@ -344,11 +344,13 @@ def main():
     log(f"Total pending Telegram: {len(all_pending_tg)}")
     log("Pipeline complete! (Telegram push will run after Vercel deploy)")
 
-    # Return non-zero if any podcast had errors
+    # Log warnings but don't fail the pipeline — individual script failures
+    # already stop the chain for that podcast. The orchestrator should always
+    # complete so downstream steps (commit, TG push) can still run.
     has_errors = any(stats['errors'] for stats in all_stats)
     if has_errors:
-        log("WARNING: Some steps had errors (see above)")
-    return 1 if has_errors and total_new > 0 else 0
+        log("WARNING: Some podcasts had errors (see above)")
+    return 0
 
 
 if __name__ == "__main__":
