@@ -410,25 +410,26 @@ def parse_summary(content: str) -> dict:
     )
     if humor_match:
         humor_text = humor_match.group(1)
-        # Parse humor items - format: *   **Label**：「Quote」(Context)
-        humor_items = re.findall(
-            r"\*\s+\*\*([^*]+)\*\*[：:]\s*[「「]([^」」]+)[」」](?:\s*（([^）]+)）)?",
-            humor_text
+        # Extract all bold-labeled bullet items, then parse quotes from each
+        # Handles: **Label**：「Q」, **Label：**「Q」, **Label**：plain text
+        bullets = re.findall(
+            r"\*\s+\*\*([^*]+?)[：:]?\*\*[：:]?\s*(.+?)(?=\n\*\s+\*\*|\n---|$)",
+            humor_text, re.DOTALL
         )
-        if humor_items:
-            for label, quote, context in humor_items:
-                item = {"label": strip_markdown(label), "quote": strip_markdown(quote)}
-                if context:
-                    item["context"] = strip_markdown(context)
-                sections["humor"].append(item)
-        else:
-            # Fallback: simple bullet format
-            bullets = re.findall(r"\*\s+\*\*([^*]+)\*\*[：:]\s*(.+?)(?=\n\*\s+\*\*|\n---|$)", humor_text, re.DOTALL)
-            for label, content_text in bullets:
-                sections["humor"].append({
-                    "label": strip_markdown(label),
-                    "quote": strip_markdown(content_text)
-                })
+        for label, content_text in bullets:
+            label = strip_markdown(label.rstrip("：:"))
+            content_text = content_text.strip()
+            # Try to extract quote in「」brackets
+            quote_match = re.search(r"[「「]([^」」]+)[」」]", content_text)
+            # Try to extract context in（）brackets
+            context_match = re.search(r"（([^）]+)）", content_text)
+            item = {
+                "label": label,
+                "quote": strip_markdown(quote_match.group(1) if quote_match else content_text)
+            }
+            if context_match:
+                item["context"] = strip_markdown(context_match.group(1))
+            sections["humor"].append(item)
 
     # Extract conclusion (本集結論)
     conclusion_match = re.search(
