@@ -13,7 +13,7 @@
     詳細解析 Amazon、Google、Meta 及 Microsoft 的資本支出。四大巨頭合計支出接近 7000 億美元。市場目前因擔心過度投資侵蝕現金流而殺盤，但 MK 認為這反而是對 AI 趨勢最真實的信心表態，尤其是 Google TPU 需求遠超市場供給。
     *   相關標的：AMZN, GOOGL, META, MSFT
 *   **AI 供應鏈與 ASIC 趨勢**
-    討論各巨頭的自研晶片進度，如 Amazon 的 Tranium、Google 的 TPU 以及 Microsoft 正在趕工的 Maya。這些自研晶片（ASIC）將帶動相關的設計合作夥伴、板子、CCL 與組裝廠。
+    討論各巨頭的自研晶片進度，如 Amazon 的 Trainium、Google 的 TPU 以及 Microsoft 正在趕工的 Maia。這些自研晶片（ASIC）將帶動相關的設計合作夥伴、板子、CCL 與組裝廠。
     *   相關標的：NVIDIA (NVDA), AMD, Celestica (CLS), Lumentum (LITE), Flex, 鴻海 (2317)
 *   **被動元件獲利結構改善**
     觀察到被動元件因銀價漲價而調升售價，但當原物料價格回落時，售價往往「回不去了」。這將導致相關廠商在存貨迭代後，毛利與獲利結構顯著改善。
@@ -39,7 +39,7 @@
 *   **Amazon (AMZN)** - CAPEX 達 200B，包含 AI、機器人、物流及低軌衛星。
 *   **Google (GOOGL)** - CAPEX 達 185B，自研 TPU 需求極強。
 *   **Meta (META)** - CAPEX 達 135B，目前以採購通用 GPU 為主。
-*   **Microsoft (MSFT)** - 積極推進 Maya 自研晶片。
+*   **Microsoft (MSFT)** - 積極推進 Maia 自研晶片。
 *   **Celestica (CLS)** - Google 供應鏈，先前漲幅驚人。
 *   **Lumentum (LITE)** - Google OCS 光通訊供應鏈，走勢逆勢轉強。
 *   **散熱族群 (3653 健策、3324 雙鴻、3017 奇鋐)** - 作為操作案例提及，目前仍有佈局。
