@@ -988,7 +988,7 @@ def run_script_async(step: str | int, podcast_slug: str, providers: dict = None)
     try:
         # Determine which script to run
         if step == "check":
-            script = SCRIPT_DIR / "auto_check_new_episodes.py"
+            script = SCRIPT_DIR / "auto_pipeline.py"
             add_output(f"開始執行: 檢查新集數", "info")
         elif step == "all":
             # Run all steps sequentially (including social draft generation)
