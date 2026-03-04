@@ -94,21 +94,20 @@ def get_episode_number_from_filename(filename: str) -> Optional[int]:
     return int(match.group(1)) if match else None
 
 
+def parse_episode_range(range_str: str) -> tuple[Optional[int], Optional[int]]:
+    """Parse episode range like '620-625' or '620'. Used by multiple scripts."""
+    if '-' in range_str:
+        parts = range_str.split('-')
+        return int(parts[0]), int(parts[1])
+    else:
+        ep = int(range_str)
+        return ep, ep
+
+
 def list_podcasts() -> dict:
     """Return all available podcasts."""
     return {slug: p['name'] for slug, p in PODCASTS.items()}
 
-
-# -------------------------------------------
-# Legacy exports for backwards compatibility
-# These use the default podcast (gooaye)
-# -------------------------------------------
-_default = get_podcast_config()
-
-RSS_URL = _default.rss_url
-AUDIO_DIR = _default.audio_dir
-TRANSCRIPT_DIR = _default.transcript_dir
-EPISODES_FILE = _default.episodes_file
 
 # Whisper settings (from global config, env var overrides)
 WHISPER_MODEL = WHISPER_CONFIG['model']
@@ -119,10 +118,6 @@ WHISPER_PROVIDER = os.environ.get('WHISPER_PROVIDER') or WHISPER_CONFIG.get('pro
 # Download settings
 DOWNLOAD_WORKERS = DOWNLOAD_CONFIG.get('workers', 4)
 DOWNLOAD_RETRY = DOWNLOAD_CONFIG.get('retry', 3)
-
-# Episode filtering (for default podcast)
-EPISODE_START = _default.episode_start
-EPISODE_END = _default.episode_end
 
 # Output format
 TIMESTAMP_FORMAT = "[{minutes:02d}:{seconds:02d}]"

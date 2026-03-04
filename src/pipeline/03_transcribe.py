@@ -38,7 +38,7 @@ GROQ_DELAY_SECONDS = int(os.environ.get("GROQ_DELAY_SECONDS", "60"))
 GROQ_MAX_RETRIES = 5  # More retries for rate limits
 
 from src.config import (
-    get_podcast_config,
+    get_podcast_config, get_episode_number_from_filename,
     WHISPER_MODEL, WHISPER_LANGUAGE, WHISPER_DEVICE,
     TIMESTAMP_FORMAT, WHISPER_PROVIDER
 )
@@ -288,14 +288,6 @@ def format_transcript(segments: list[dict], style: str = 'spotscribe') -> str:
         return '\n'.join(seg['text'] for seg in segments if seg['text'])
 
 
-def get_episode_number_from_filename(filename: str) -> int | None:
-    """Extract episode number from filename like 'EP0621.mp3'."""
-    match = re.search(r'EP(\d+)', filename, re.IGNORECASE)
-    if match:
-        return int(match.group(1))
-    return None
-
-
 def main():
     parser = argparse.ArgumentParser(description="Transcribe podcast audio files")
     parser.add_argument('--force', action='store_true',
@@ -375,7 +367,7 @@ def main():
         print("Using OpenAI Whisper API (whisper-1)")
         if not os.environ.get("OPENAI_API_KEY"):
             print("Error: OPENAI_API_KEY environment variable not set")
-            return
+            sys.exit(1)
         transcribe_fn = transcribe_with_openai_api
     else:
         # Local whisper

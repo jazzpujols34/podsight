@@ -26,9 +26,12 @@ from typing import Generator
 # Add project root to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from src.config import DATA_DIR, TRANSCRIPT_DIR
+from src.config import get_podcast_config, get_episode_number_from_filename, parse_episode_range
 
-SUMMARY_DIR = DATA_DIR / "summaries"
+# Default to gooaye podcast for backwards compatibility
+_default = get_podcast_config()
+TRANSCRIPT_DIR = _default.transcript_dir
+SUMMARY_DIR = _default.summary_dir
 
 # ANSI colors for terminal output
 HIGHLIGHT_START = "\033[1;33m"  # Bold yellow
@@ -43,12 +46,6 @@ class SearchResult:
     text: str
     matched_text: str
     source: str  # "transcript" or "summary"
-
-
-def get_episode_number_from_filename(filename: str) -> int | None:
-    """Extract episode number from filename like EP0621.txt"""
-    match = re.search(r'EP(\d+)', filename)
-    return int(match.group(1)) if match else None
 
 
 def parse_timestamp(line: str) -> str:
@@ -191,16 +188,6 @@ def format_results_json(results: list[SearchResult]) -> str:
         for r in results
     ]
     return json.dumps(output, ensure_ascii=False, indent=2)
-
-
-def parse_episode_range(range_str: str) -> tuple[int | None, int | None]:
-    """Parse episode range like '620-625' or '620'."""
-    if '-' in range_str:
-        parts = range_str.split('-')
-        return int(parts[0]), int(parts[1])
-    else:
-        ep = int(range_str)
-        return ep, ep
 
 
 def main():

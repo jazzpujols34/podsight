@@ -31,7 +31,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from dotenv import load_dotenv
 load_dotenv(PROJECT_ROOT / ".env")
 
-from src.config import get_podcast_config
+from src.config import get_podcast_config, get_episode_number_from_filename, parse_episode_range
 
 # Get podcast config (from env or default)
 podcast = get_podcast_config()
@@ -83,12 +83,6 @@ Aim for 400-500 words. Be detailed but concise.
 
 Transcript:
 {transcript}"""
-
-
-def get_episode_number_from_filename(filename: str) -> int | None:
-    """Extract episode number from filename like EP0621.txt"""
-    match = re.search(r'EP(\d+)', filename)
-    return int(match.group(1)) if match else None
 
 
 def get_transcripts_to_process(ep_start: int | None = None, ep_end: int | None = None) -> list[Path]:
@@ -232,16 +226,6 @@ def summarize_transcript(transcript_path: Path, provider: str, model: str) -> st
         return summarize_with_gemini(transcript, model)
     else:
         raise ValueError(f"Unknown provider: {provider}")
-
-
-def parse_episode_range(range_str: str) -> tuple[int | None, int | None]:
-    """Parse episode range like '620-625' or '620'."""
-    if '-' in range_str:
-        parts = range_str.split('-')
-        return int(parts[0]), int(parts[1])
-    else:
-        ep = int(range_str)
-        return ep, ep
 
 
 def process_single_transcript(

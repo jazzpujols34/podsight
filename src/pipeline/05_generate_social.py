@@ -22,7 +22,7 @@ from pathlib import Path
 # Add project root to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from src.config import get_podcast_config, get_episode_number_from_filename
+from src.config import get_podcast_config, get_episode_number_from_filename, parse_episode_range
 from src.social.formatters import TwitterFormatter, ThreadsFormatter, LineFormatter, InstagramFormatter, TelegramFormatter
 from src.social.formatters.base import SummaryContent
 from src.social.draft import DraftManager, SocialDraft
@@ -141,16 +141,6 @@ def generate_drafts(summary_path: Path) -> SocialDraft | None:
     # Save draft metadata
     draft_manager.save_draft(draft)
     return draft
-
-
-def parse_episode_range(range_str: str) -> tuple[int | None, int | None]:
-    """Parse episode range like '620-625' or '620'."""
-    if '-' in range_str:
-        parts = range_str.split('-')
-        return int(parts[0]), int(parts[1])
-    else:
-        ep = int(range_str)
-        return ep, ep
 
 
 def main():
