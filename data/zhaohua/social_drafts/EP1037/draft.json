@@ -1,8 +1,8 @@
 {
   "episode_id": "EP1037",
   "podcast": "zhaohua",
-  "created_at": "2026-02-24T22:18:21.682203",
-  "summary_hash": "bbfe08ab8846",
+  "created_at": "2026-03-05T11:34:34.688922",
+  "summary_hash": "60b48baab62d",
   "status": "pending",
   "platforms": {
     "twitter": {
@@ -35,7 +35,7 @@
     "instagram": {
       "status": "pending",
       "content_file": "instagram.json",
-      "image_file": "instagram_card.png",
+      "image_file": null,
       "published_at": null,
       "post_ids": [],
       "error": null,

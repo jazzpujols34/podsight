@@ -1,8 +1,8 @@
 {
   "episode_id": "EP1016",
   "podcast": "zhaohua",
-  "created_at": "2026-02-24T22:18:22.295815",
-  "summary_hash": "63312e5a8e4e",
+  "created_at": "2026-03-05T11:34:34.730264",
+  "summary_hash": "57941b706898",
   "status": "pending",
   "platforms": {
     "twitter": {
@@ -35,7 +35,7 @@
     "instagram": {
       "status": "pending",
       "content_file": "instagram.json",
-      "image_file": "instagram_card.png",
+      "image_file": null,
       "published_at": null,
       "post_ids": [],
       "error": null,
