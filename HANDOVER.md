@@ -1,72 +1,82 @@
 # Session Handover - PodSight Pipeline
 
-**Date:** 2026-03-03
-**File Path:** `/Users/jazz.lien/Desktop/jazz/0_GitHub/Repositories/17_ultimate_Claude/gooaye_pipeline/HANDOVER.md`
+**Date:** 2026-03-05
+**Status:** Pipeline WORKING. Major cleanup + name/ticker accuracy fixes shipped.
 
-## Current Status
+## What We Did This Session
 
-**Pipeline is WORKING** - GH Actions successfully detects and processes new episodes for all 3 podcasts.
+### Phase 1: Codebase Cleanup
+- Deleted dead code: `04_transcribe_gcp.py`, `auto_check_new_episodes.py`, `docs/gcp/`
+- Fixed `server.py` reference to deleted script → now uses `auto_pipeline.py`
+- **Commit:** `abdc512`
 
-### Recent Fixes Applied (This Session)
+### Phase 2: Code Deduplication
+- Extracted `parse_episode_range()` and `get_episode_number_from_filename()` into `config.py` (were duplicated in 3-4 scripts)
+- Removed unused legacy config exports (`RSS_URL`, `AUDIO_DIR`, etc.)
+- Fixed `sys.exit(1)` consistency in `03_transcribe.py` OpenAI branch
+- **Commit:** `01b62dc`
 
-| Issue | Root Cause | Fix | Commit |
-|-------|------------|-----|--------|
-| GH Actions 37s failure | `from src.config` wrong import | Changed to `from config` | `be3450c` |
-| yutinghao not detected | `get_episodes_from_rss()` only handled `episode_number` | Added date extraction from title | `435255b` |
-| yutinghao TG push failed | Date prefix didn't match full folder name | Added `find_draft_folder()` with prefix search | `19e59fa` |
-| 15 old episodes pushed | `.telegram_published` not pre-populated | Pre-populated with all 103 episodes | `2d6b835` |
-| 5 old yutinghao re-pushed | ID format mismatch (full names vs date prefix) | `get_published_episodes()` now extracts date prefix | `64e9c6d` |
+### Phase 3: CLAUDE.md Rewrite
+- Complete folder structure diagram, conventions, GH Actions docs
+- Added Rule 10: don't duplicate shared utilities
+- **Commit:** `1eb3181`
 
-### Episodes Processed Today
-- yutinghao 2026-03-03 → https://t.me/podsight/53
-- zhaohua EP1046 → https://t.me/podsight/47
+### Phase 4: Name & Ticker Accuracy Audit (BIG ONE)
 
-## Key Files Modified
+**Guest name audit (zhaohua):** 55% error rate across summaries.
+Fixed 19 files:
 
-1. **`src/pipeline/auto_pipeline.py`**
-   - `get_episodes_from_rss()` - handles yutinghao date format
-   - `get_summary_episodes()` - extracts date prefix for yutinghao
-   - `get_published_episodes()` - normalizes ID format when reading tracking file
+| Guest | Wrong | Correct | Episodes |
+|-------|-------|---------|----------|
+| 黃豐凱 | 黃峰凱 | 黃豐凱 | 7 eps |
+| 林信富 | 幸福哥/林幸福 | 林信富 | 3 eps (incl EP1048) |
+| 陳唯泰 | 韋泰 | 陳唯泰 | 4 eps |
+| 股魚 | 古魚 | 股魚 | 2 eps |
+| + 紀緯明, 艾綸, 林漢偉 | | | 3 eps |
 
-2. **`src/pipeline/push_telegram_batch.py`**
-   - `find_draft_folder()` - searches by date prefix for yutinghao
+**Stock ticker audit:** 53 corrections across 24 files in all 3 podcasts.
+Critical: AOI→AAOI, 華城 1513→1519, Grok→Groq, plus 12+ wrong TW company names.
 
-3. **`.github/workflows/auto-pipeline.yml`**
-   - Split workflow: process → git push → wait 3min → TG push → commit tracking
+**Commits:** `6bdbe54`, `33f6cb2`, `6d7519a`
 
-4. **`CLAUDE.md`** - Added 9 learned rules from debugging
+### Prevention: Custom Prompts Updated
 
-## Known Issues / Warnings
+All 3 `custom_prompt.txt` files now have:
+1. **Correction tables** — known guest names + stock names that Whisper gets wrong
+2. **寧可省略不可瞎猜 rule** — if AI isn't sure about a name/ticker, omit it or use sector name ("CPO 族群"). Wrong info is worse than no info.
+3. **Transcription artifact warning** — don't copy nonsense names from transcript
 
-1. **GH Actions transcription can timeout** - If transcription takes too long, it fails silently with `Transcribed: 0`. Episodes need to be processed locally when this happens.
+## What to Watch
 
-2. **yutinghao ID complexity** - Three different formats in play:
-   - Detection: `2026_3_3_` (date prefix)
-   - Folders: `2026_3_3_二_黃金衝高 中東之亂...` (full title)
-   - Tracking: Mixed (code now handles both)
+### Immediate (next few days)
+- **Monitor next GH Actions runs** — do the updated prompts actually prevent name errors?
+- EP1048 was the last episode with old prompts. EP1049+ should use the new ones.
+- If names are still wrong, the correction table in the prompt may need to be more aggressive, or we may need a post-processing step.
 
-## Next Actions
+### Known Remaining Issues
+1. **Hallucinated company names from transcription** — The "omit if unsure" rule should help, but Gemini might still pass through garbage names from Whisper transcripts. If this keeps happening, consider adding a post-processing validation step that checks company names against a known-good list.
+2. **yutinghao ID complexity** — Three different formats still in play (date prefix, full title, tracking). Works but fragile.
+3. **GH Actions transcription timeouts** — If Groq rate-limits, transcription silently produces 0 output. Monitor.
 
-1. **Monitor next GH Actions run** (7 PM Taiwan = 11:00 UTC)
-   - Should only push NEW episodes
-   - Check logs if any issues
+### Product Readiness
+Jazz is preparing to reach out to podcasters. The summaries must be bulletproof — no wrong names, no fake companies. The custom prompt updates are the first defense. If errors persist, consider:
+- A **post-summarization validation** script that checks names/tickers against a whitelist
+- **Human review queue** — flag new summaries for quick review before TG push
 
-2. **If episodes fail to process in GH Actions**, run locally:
-   ```bash
-   GROQ_API_KEY=gsk_... GEMINI_API_KEY=AIza... ./venv/bin/python src/pipeline/auto_pipeline.py
-   ```
+## Key Files Changed
 
-3. **To manually push to Telegram after local processing:**
-   ```bash
-   TELEGRAM_BOT_TOKEN=... TELEGRAM_CHAT_ID=... ./venv/bin/python src/pipeline/push_telegram_batch.py
-   ```
-
-## Cron Schedule
-
-| Time (Taiwan) | UTC | Podcasts |
-|---------------|-----|----------|
-| 10:00 AM | 02:00 | yutinghao (morning upload) |
-| 7:00 PM | 11:00 | zhaohua (afternoon) + gooaye (Wed/Sat) |
+| File | What changed |
+|------|-------------|
+| `src/config.py` | Added `parse_episode_range()`, removed legacy exports |
+| `src/pipeline/03_transcribe.py` | Fixed `sys.exit(1)`, removed duplicate util |
+| `src/pipeline/04_summarize.py` | Removed duplicate utils, imports from config |
+| `src/pipeline/05_generate_social.py` | Same dedup |
+| `src/pipeline/search.py` | Same dedup |
+| `src/server.py` | Fixed reference to deleted script |
+| `data/*/custom_prompt.txt` | Added correction tables + omit-if-unsure rule |
+| `data/zhaohua/summaries/EP1014-1048` | Fixed guest names |
+| `data/*/summaries/*` | Fixed stock tickers (24 files) |
+| `CLAUDE.md` | Full rewrite with folder structure + conventions |
 
 ## Quick Debug Commands
 
@@ -84,9 +94,15 @@ for p in ['gooaye', 'yutinghao', 'zhaohua']:
 # Check GH Actions
 gh run list --limit 5
 gh run view <run-id> --log | grep -E "Processing|Error|Pushed"
+
+# Verify a new summary has correct names
+grep -n "峰凱\|幸福\|韋泰\|古魚\|文明\|漢維\|漢瑋" data/zhaohua/summaries/EP1049_summary.txt
+# (should return nothing if prompts worked)
 ```
 
-## Documentation
+## Cron Schedule
 
-- Full learned rules: `CLAUDE.md` (9 rules documented)
-- Pipeline architecture diagram in `CLAUDE.md`
+| Time (Taiwan) | UTC | Podcasts |
+|---------------|-----|----------|
+| 10:00 AM | 02:00 | yutinghao (morning upload) |
+| 7:00 PM | 11:00 | zhaohua (afternoon) + gooaye (Wed/Sat) |
