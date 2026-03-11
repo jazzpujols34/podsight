@@ -238,6 +238,17 @@
             height: 16px;
         }
 
+        .listen-btn {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .listen-btn:hover {
+            background: var(--accent-primary);
+            color: #fff;
+        }
+
         .content {
             padding: 60px 0;
         }
@@ -770,6 +781,7 @@
             <p class="episode-subtitle">台股無視川普加徵關稅利空，在大戶融資與散戶 FOMO 情緒推升下，指數直逼 32,000 點歷史新高，市場資金由老 AI 族群轉向記憶體與低位階中低價股。</p>
 
             <div class="share-buttons">
+                
                 <a href="#" class="share-btn" onclick="navigator.share({title: document.title, url: window.location.href}); return false;">
                     <i data-lucide="share-2"></i>
                     分享

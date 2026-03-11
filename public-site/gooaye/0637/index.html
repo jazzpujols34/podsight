@@ -238,6 +238,17 @@
             height: 16px;
         }
 
+        .listen-btn {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .listen-btn:hover {
+            background: var(--accent-primary);
+            color: #fff;
+        }
+
         .content {
             padding: 60px 0;
         }
@@ -770,6 +781,10 @@
             <p class="episode-subtitle">MK 認為近期美股軟體股正經歷市場過度恐慌的「通殺」（Overshoot），投資者應識別具備實質 AI 流量紅利與資安防禦剛需的標的，並看好硬體終端（如蘋果）在 AI Agent 時代的長期優勢。</p>
 
             <div class="share-buttons">
+                <a href="https://player.soundon.fm/p/954689a5-3096-43a4-a80b-7810b219cef3/episodes/7ce8b868-cf8f-44ec-8157-b33fd99eaa39" class="share-btn listen-btn" target="_blank" rel="noopener">
+                    <i data-lucide="headphones"></i>
+                    收聽原節目
+                </a>
                 <a href="#" class="share-btn" onclick="navigator.share({title: document.title, url: window.location.href}); return false;">
                     <i data-lucide="share-2"></i>
                     分享

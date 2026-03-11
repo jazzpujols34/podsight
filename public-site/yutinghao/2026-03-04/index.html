@@ -238,6 +238,17 @@
             height: 16px;
         }
 
+        .listen-btn {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .listen-btn:hover {
+            background: var(--accent-primary);
+            color: #fff;
+        }
+
         .content {
             padding: 60px 0;
         }
@@ -770,6 +781,10 @@
             <p class="episode-subtitle">戰爭只是市場大跌的引信，真正的火藥是「流動性風險」與「利率預期」，而川普正試圖用海軍與保險護航來強行壓制油價這頭怪獸。</p>
 
             <div class="share-buttons">
+                <a href="https://soundcloud.com/l9j0totnyhgh/2026-3-4-ai" class="share-btn listen-btn" target="_blank" rel="noopener">
+                    <i data-lucide="headphones"></i>
+                    收聽原節目
+                </a>
                 <a href="#" class="share-btn" onclick="navigator.share({title: document.title, url: window.location.href}); return false;">
                     <i data-lucide="share-2"></i>
                     分享

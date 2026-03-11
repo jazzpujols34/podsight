@@ -238,6 +238,17 @@
             height: 16px;
         }
 
+        .listen-btn {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .listen-btn:hover {
+            background: var(--accent-primary);
+            color: #fff;
+        }
+
         .content {
             padding: 60px 0;
         }
@@ -770,6 +781,10 @@
             <p class="episode-subtitle">本集核心在於探討台積電產能外溢引發的封測與 Intel EMIB 轉單機會，並分享 MK 如何在動能地獄中轉向「槓鈴策略」以應對市場震盪。</p>
 
             <div class="share-buttons">
+                <a href="https://player.soundon.fm/p/954689a5-3096-43a4-a80b-7810b219cef3/episodes/39afa2ae-e12b-4979-9a84-bc8518a48ea1" class="share-btn listen-btn" target="_blank" rel="noopener">
+                    <i data-lucide="headphones"></i>
+                    收聽原節目
+                </a>
                 <a href="#" class="share-btn" onclick="navigator.share({title: document.title, url: window.location.href}); return false;">
                     <i data-lucide="share-2"></i>
                     分享

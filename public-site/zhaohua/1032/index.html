@@ -238,6 +238,17 @@
             height: 16px;
         }
 
+        .listen-btn {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .listen-btn:hover {
+            background: var(--accent-primary);
+            color: #fff;
+        }
+
         .content {
             padding: 60px 0;
         }
@@ -770,6 +781,10 @@
             <p class="episode-subtitle">本集聚焦於農曆年前封關的操作節奏，透過「三大族群分類法」剖析 AI 長線成長、題材轉機與記憶體波動的操作邏輯，並強調紀律與無痛換股的重要性。</p>
 
             <div class="share-buttons">
+                <a href="https://player.soundon.fm/p/91be014b-9f55-4bf3-a910-b232eda82d11/episodes/06ed7e1d-011d-4f48-814c-4fe148269c17" class="share-btn listen-btn" target="_blank" rel="noopener">
+                    <i data-lucide="headphones"></i>
+                    收聽原節目
+                </a>
                 <a href="#" class="share-btn" onclick="navigator.share({title: document.title, url: window.location.href}); return false;">
                     <i data-lucide="share-2"></i>
                     分享

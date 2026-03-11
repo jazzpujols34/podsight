@@ -238,6 +238,17 @@
             height: 16px;
         }
 
+        .listen-btn {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .listen-btn:hover {
+            background: var(--accent-primary);
+            color: #fff;
+        }
+
         .content {
             padding: 60px 0;
         }
@@ -770,6 +781,10 @@
             <p class="episode-subtitle">AI 浪潮正進入「硬體收割、軟體重估」的兩極化時代，台股與韓股靠半導體硬體噴到懷疑人生，美股軟體股則在「AI 替代恐慌」中跌到懷疑人生。</p>
 
             <div class="share-buttons">
+                <a href="https://soundcloud.com/l9j0totnyhgh/2026-2-25" class="share-btn listen-btn" target="_blank" rel="noopener">
+                    <i data-lucide="headphones"></i>
+                    收聽原節目
+                </a>
                 <a href="#" class="share-btn" onclick="navigator.share({title: document.title, url: window.location.href}); return false;">
                     <i data-lucide="share-2"></i>
                     分享

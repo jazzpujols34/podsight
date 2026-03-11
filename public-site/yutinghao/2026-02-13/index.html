@@ -238,6 +238,17 @@
             height: 16px;
         }
 
+        .listen-btn {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .listen-btn:hover {
+            background: var(--accent-primary);
+            color: #fff;
+        }
+
         .content {
             padding: 60px 0;
         }
@@ -770,6 +781,7 @@
             <p class="episode-subtitle">2026 年臺灣將迎來 AI 帶動的「第二次經濟奇蹟」，GDP 增速重回 80 年代巔峰，但社會將面臨顯著的財富分層，唯有擁抱 AI 生產力圈層才能避免被時代拋下。</p>
 
             <div class="share-buttons">
+                
                 <a href="#" class="share-btn" onclick="navigator.share({title: document.title, url: window.location.href}); return false;">
                     <i data-lucide="share-2"></i>
                     分享

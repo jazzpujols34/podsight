@@ -436,6 +436,14 @@ def main():
 
                 results['success'] += 1
                 print(f"  ✅ Done! ({len(transcript_text)} chars)", flush=True)
+
+                # Delete audio file after successful transcription to save disk space
+                try:
+                    audio_file.unlink()
+                    print(f"  🗑️ Deleted audio: {audio_file.name}", flush=True)
+                except OSError as del_err:
+                    print(f"  ⚠️ Could not delete audio: {del_err}", flush=True)
+
                 break  # Success, exit retry loop
 
             except Exception as e:

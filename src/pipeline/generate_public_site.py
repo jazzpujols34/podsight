@@ -837,6 +837,17 @@ def generate_episode_html(
             height: 16px;
         }}
 
+        .listen-btn {{
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }}
+
+        .listen-btn:hover {{
+            background: var(--accent-primary);
+            color: #fff;
+        }}
+
         .content {{
             padding: 60px 0;
         }}
@@ -1369,6 +1380,10 @@ def generate_episode_html(
             <p class="episode-subtitle">{html_escape(sections['tldr'][:200]) if sections['tldr'] else config['description']}</p>
 
             <div class="share-buttons">
+                {"" if not episode_info.get("link") else f'''<a href="{episode_info["link"]}" class="share-btn listen-btn" target="_blank" rel="noopener">
+                    <i data-lucide="headphones"></i>
+                    收聽原節目
+                </a>'''}
                 <a href="#" class="share-btn" onclick="navigator.share({{title: document.title, url: window.location.href}}); return false;">
                     <i data-lucide="share-2"></i>
                     分享
@@ -3073,7 +3088,8 @@ def html_escape(text: str) -> str:
 
 
 def load_episodes_data(podcast_id: str) -> dict:
-    """Load episodes.json and return a dict mapping episode_number to episode data."""
+    """Load episodes.json and return a dict mapping episode_number to episode data.
+    Also maps by title for podcasts without episode numbers (yutinghao)."""
     episodes_file = DATA_DIR / podcast_id / "episodes.json"
     if not episodes_file.exists():
         return {}
@@ -3081,8 +3097,14 @@ def load_episodes_data(podcast_id: str) -> dict:
     try:
         with open(episodes_file, "r", encoding="utf-8") as f:
             episodes = json.load(f)
-        # Map by episode number for quick lookup
-        return {ep.get("episode_number"): ep for ep in episodes if ep.get("episode_number")}
+        result = {}
+        for ep in episodes:
+            if ep.get("episode_number"):
+                result[ep["episode_number"]] = ep
+            # Also map by title for date-based lookups
+            if ep.get("title"):
+                result[ep["title"]] = ep
+        return result
     except Exception:
         return {}
 
@@ -3140,11 +3162,13 @@ def main():
             # Get original episode title from episodes.json
             title = None
             pub_date = None
+            episode_link = ""
             if podcast_id in ["gooaye", "zhaohua"]:
                 # Numbered episodes - look up by episode number
                 ep_num = int(episode_id) if episode_id.isdigit() else None
                 if ep_num and ep_num in episodes_data:
                     title = episodes_data[ep_num].get("title", "")
+                    episode_link = episodes_data[ep_num].get("link", "")
                     # Parse RFC 2822 date format to YYYY-MM-DD
                     raw_date = episodes_data[ep_num].get("published", "")
                     pub_date = parse_rfc_date(raw_date) or ""
@@ -3152,6 +3176,15 @@ def main():
                 # Date-based (yutinghao) - use filename title
                 title = get_episode_title(summary_file.name, podcast_id)
                 pub_date = episode_id  # Episode ID is the date
+                # Look up link by date prefix in RSS titles (e.g. "2026-01-06" -> "2026/1/6")
+                if episode_id:
+                    parts = episode_id.split("-")  # "2026-01-06" -> ["2026","01","06"]
+                    if len(parts) == 3:
+                        date_prefix = f"{parts[0]}/{int(parts[1])}/{int(parts[2])}"
+                        for key, ep_data in episodes_data.items():
+                            if isinstance(key, str) and key.startswith(date_prefix):
+                                episode_link = ep_data.get("link", "")
+                                break
 
             # Fallback to TLDR if no title found
             if not title and sections["tldr"]:
@@ -3168,6 +3201,7 @@ def main():
                 "date": episode_id if podcast_id == "yutinghao" else "",
                 "date_str": date_str,
                 "podcast_id": podcast_id,
+                "link": episode_link,
             }
             episodes.append(episode_info)
             episodes_with_sections.append((episode_info, sections, summary_file.name))

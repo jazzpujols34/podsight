@@ -238,6 +238,17 @@
             height: 16px;
         }
 
+        .listen-btn {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .listen-btn:hover {
+            background: var(--accent-primary);
+            color: #fff;
+        }
+
         .content {
             padding: 60px 0;
         }
@@ -770,6 +781,7 @@
             <p class="episode-subtitle">台股歷史性攻上三萬點大關，由「神山」台積電領軍噴發，市場呈現極端的「K型走勢」，資金高度集中於半導體、記憶體及 CES 展相關權值股。</p>
 
             <div class="share-buttons">
+                
                 <a href="#" class="share-btn" onclick="navigator.share({title: document.title, url: window.location.href}); return false;">
                     <i data-lucide="share-2"></i>
                     分享

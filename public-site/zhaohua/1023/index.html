@@ -238,6 +238,17 @@
             height: 16px;
         }
 
+        .listen-btn {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .listen-btn:hover {
+            background: var(--accent-primary);
+            color: #fff;
+        }
+
         .content {
             padding: 60px 0;
         }
@@ -770,6 +781,7 @@
             <p class="episode-subtitle">川普針對格林蘭事件的轉折性發言引發全球股市強彈，台股在AI、電力基礎設施及BBU族群百花齊放帶動下，衝上31,890點歷史新高。</p>
 
             <div class="share-buttons">
+                
                 <a href="#" class="share-btn" onclick="navigator.share({title: document.title, url: window.location.href}); return false;">
                     <i data-lucide="share-2"></i>
                     分享

@@ -238,6 +238,17 @@
             height: 16px;
         }
 
+        .listen-btn {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .listen-btn:hover {
+            background: var(--accent-primary);
+            color: #fff;
+        }
+
         .content {
             padding: 60px 0;
         }
@@ -770,6 +781,7 @@
             <p class="episode-subtitle">台股攻上三萬點新高，資金在川普政見與 AI 題材推動下，由半導體擴散至記憶體、低軌衛星及機器人，呈現百花齊放的「做夢行情」。</p>
 
             <div class="share-buttons">
+                
                 <a href="#" class="share-btn" onclick="navigator.share({title: document.title, url: window.location.href}); return false;">
                     <i data-lucide="share-2"></i>
                     分享

@@ -104,7 +104,16 @@ def main():
 
     # Create output directory
     podcast.audio_dir.mkdir(parents=True, exist_ok=True)
-    
+
+    # Skip episodes that already have transcripts (audio not needed)
+    pre_filter = len(episodes)
+    episodes = [
+        e for e in episodes
+        if not (podcast.transcript_dir / f"{sanitize_filename(e['title'], e.get('episode_number')).replace('.mp3', '')}.txt").exists()
+    ]
+    if pre_filter != len(episodes):
+        print(f"Skipped {pre_filter - len(episodes)} already-transcribed episodes")
+
     # Check how many already exist
     existing = sum(1 for e in episodes if (podcast.audio_dir / sanitize_filename(e['title'], e.get('episode_number'))).exists())
     print(f"Already downloaded: {existing}")

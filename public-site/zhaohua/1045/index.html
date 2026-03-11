@@ -238,6 +238,17 @@
             height: 16px;
         }
 
+        .listen-btn {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .listen-btn:hover {
+            background: var(--accent-primary);
+            color: #fff;
+        }
+
         .content {
             padding: 60px 0;
         }
@@ -770,6 +781,10 @@
             <p class="episode-subtitle">本集聚焦台股正式進入「兆元量能」新常態，並深度解析在 AI 巨頭震盪、財報空窗期結束之際，資金如何流向金融、散裝航運及具備技術護城河的封測與探針卡族群。</p>
 
             <div class="share-buttons">
+                <a href="https://player.soundon.fm/p/91be014b-9f55-4bf3-a910-b232eda82d11/episodes/883fc83c-43c5-467f-91ab-7e89522a3a84" class="share-btn listen-btn" target="_blank" rel="noopener">
+                    <i data-lucide="headphones"></i>
+                    收聽原節目
+                </a>
                 <a href="#" class="share-btn" onclick="navigator.share({title: document.title, url: window.location.href}); return false;">
                     <i data-lucide="share-2"></i>
                     分享

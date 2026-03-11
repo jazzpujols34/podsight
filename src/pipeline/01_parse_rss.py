@@ -118,6 +118,7 @@ def parse_rss_feed() -> list[dict]:
             'title': entry.get('title', ''),
             'episode_number': extract_episode_number(entry.get('title', '')),
             'published': entry.get('published', ''),
+            'link': entry.get('link', ''),
             'audio_url': audio_url,
             'audio_type': audio_type,
             'audio_length': audio_length,

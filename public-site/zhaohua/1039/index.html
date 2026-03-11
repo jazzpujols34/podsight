@@ -238,6 +238,17 @@
             height: 16px;
         }
 
+        .listen-btn {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .listen-btn:hover {
+            background: var(--accent-primary);
+            color: #fff;
+        }
+
         .content {
             padding: 60px 0;
         }
@@ -770,6 +781,10 @@
             <p class="episode-subtitle">存股教父股魚分享為女兒執行十年的「紅包存股計畫」，透過紀律化買入大盤市值型標的達成最高 300% 的報酬，並深度解析臺股槓桿型 ETF（正二）的長期持有優勢。</p>
 
             <div class="share-buttons">
+                <a href="https://player.soundon.fm/p/91be014b-9f55-4bf3-a910-b232eda82d11/episodes/0e0ee3a5-5d48-4a0a-95b7-fb95f6fcf703" class="share-btn listen-btn" target="_blank" rel="noopener">
+                    <i data-lucide="headphones"></i>
+                    收聽原節目
+                </a>
                 <a href="#" class="share-btn" onclick="navigator.share({title: document.title, url: window.location.href}); return false;">
                     <i data-lucide="share-2"></i>
                     分享
