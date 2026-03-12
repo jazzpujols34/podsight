@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://podsight.vercel.app/sitemap.xml

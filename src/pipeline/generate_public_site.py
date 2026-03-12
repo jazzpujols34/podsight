@@ -15,6 +15,7 @@ from typing import Optional, List, Dict, Tuple
 BASE_DIR = Path(__file__).parent.parent.parent
 DATA_DIR = BASE_DIR / "data"
 OUTPUT_DIR = BASE_DIR / "public-site"
+SITE_URL = "https://podsight.vercel.app"
 
 # Podcast configurations
 PODCASTS = {
@@ -636,6 +637,38 @@ def generate_episode_html(
 
     <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="/assets/PodSight-Logo-cropped.jpeg">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {{
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "{seo_title}",
+        "description": "{seo_desc}",
+        "datePublished": "{episode_info.get('date_str', '')}",
+        "author": {{
+            "@type": "Organization",
+            "name": "PodSight"
+        }},
+        "publisher": {{
+            "@type": "Organization",
+            "name": "PodSight",
+            "url": "{SITE_URL}"
+        }},
+        "mainEntityOfPage": {{
+            "@type": "WebPage",
+            "@id": "{SITE_URL}/{podcast_id}/{episode_id}/"
+        }},
+        "about": {{
+            "@type": "PodcastEpisode",
+            "name": "{html_escape(episode_info.get('title', display_id))}",
+            "partOfSeries": {{
+                "@type": "PodcastSeries",
+                "name": "{config['name']}"
+            }}
+        }}
+    }}
+    </script>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -3290,6 +3323,27 @@ def main():
     homepage_html = generate_homepage(podcast_counts, latest_episodes=latest_balanced[:6])
     (OUTPUT_DIR / "index.html").write_text(homepage_html, encoding="utf-8")
     print(f"\nGenerated homepage")
+
+    # Generate sitemap.xml
+    today = datetime.now().strftime("%Y-%m-%d")
+    sitemap_urls = [f'  <url><loc>{SITE_URL}/</loc><lastmod>{today}</lastmod><priority>1.0</priority></url>']
+    sitemap_urls.append(f'  <url><loc>{SITE_URL}/stocks/</loc><lastmod>{today}</lastmod><priority>0.7</priority></url>')
+    for podcast_id in PODCASTS:
+        sitemap_urls.append(f'  <url><loc>{SITE_URL}/{podcast_id}/</loc><lastmod>{today}</lastmod><priority>0.8</priority></url>')
+    for podcast_id, episodes_with_sections in all_podcast_episodes.items():
+        for episode_info, sections, filename in episodes_with_sections:
+            ep_id = episode_info["id"]
+            ep_date = episode_info.get("date_str", today) or today
+            sitemap_urls.append(f'  <url><loc>{SITE_URL}/{podcast_id}/{ep_id}/</loc><lastmod>{ep_date}</lastmod><priority>0.9</priority></url>')
+
+    sitemap_xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + '\n'.join(sitemap_urls) + '\n</urlset>'
+    (OUTPUT_DIR / "sitemap.xml").write_text(sitemap_xml, encoding="utf-8")
+    print(f"Generated sitemap.xml ({len(sitemap_urls)} URLs)")
+
+    # Generate robots.txt
+    robots_txt = f"User-agent: *\nAllow: /\n\nSitemap: {SITE_URL}/sitemap.xml\n"
+    (OUTPUT_DIR / "robots.txt").write_text(robots_txt, encoding="utf-8")
+    print("Generated robots.txt")
 
     print(f"\n{'='*50}")
     print(f"Total: {total_episodes} episode pages generated")
