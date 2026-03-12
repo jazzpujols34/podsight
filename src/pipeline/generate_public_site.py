@@ -614,17 +614,22 @@ def generate_episode_html(
         # Clean up gooaye titles like "EP638 | 🐈‍⬛"
         episode_title = episode_title.split("|")[0].strip()
 
+    # SEO: build search-friendly title and description
+    seo_name = config.get('host', config['short_name']) if podcast_id == "yutinghao" else config['short_name']
+    seo_title = f"{seo_name} {display_id} 重點整理｜AI 摘要 — PodSight"
+    seo_desc = html_escape(sections['tldr'][:150]) if sections['tldr'] else f"{config['name']} {display_id} AI 智慧摘要"
+
     html = f"""<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{display_id} - {config['short_name']} - PodSight</title>
-    <meta name="description" content="{config['name']} {display_id} AI 智慧摘要">
+    <title>{seo_title}</title>
+    <meta name="description" content="{seo_desc}">
 
     <!-- Open Graph -->
-    <meta property="og:title" content="{display_id} - {config['short_name']} - PodSight 聲見">
-    <meta property="og:description" content="{config['name']} {display_id} AI 智慧摘要">
+    <meta property="og:title" content="{seo_title}">
+    <meta property="og:description" content="{seo_desc}">
     <meta property="og:image" content="/assets/og-image.png">
     <meta property="og:type" content="article">
     <meta name="twitter:card" content="summary_large_image">
