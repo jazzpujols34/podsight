@@ -15,7 +15,7 @@ from typing import Optional, List, Dict, Tuple
 BASE_DIR = Path(__file__).parent.parent.parent
 DATA_DIR = BASE_DIR / "data"
 OUTPUT_DIR = BASE_DIR / "public-site"
-SITE_URL = "https://podsight.vercel.app"
+SITE_URL = "https://podsight.tw"
 
 # Podcast configurations
 PODCASTS = {

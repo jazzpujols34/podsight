@@ -22,7 +22,7 @@ class SummaryContent:
 
     def get_frontend_url(self) -> str:
         """Generate frontend URL for this episode."""
-        base = "https://podsight.vercel.app"
+        base = "https://podsight.tw"
         ep_id = self.episode_id
 
         if ep_id.startswith("EP"):

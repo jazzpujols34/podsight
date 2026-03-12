@@ -50,7 +50,7 @@ API keys are loaded from `.env` via python-dotenv:
 
 ## Deployment
 
-- **Site:** Vercel (auto-deploy on push) - https://podsight.vercel.app
+- **Site:** Vercel (auto-deploy on push) - https://podsight.tw
 - **Pipeline:** GitHub Actions (10 AM + 7 PM Taiwan daily)
 - **Telegram:** @podsight channel
 
@@ -222,7 +222,7 @@ The public site needs these for Google discoverability (target: 台灣 podcast l
 - **Meta descriptions** — Uses episode TLDR (first 150 chars), not generic text.
 
 ### Domain
-- **Current:** `podsight.vercel.app` (low domain authority)
+- **Current:** `podsight.tw` (low domain authority)
 - **Target:** `podsight.tw` (ccTLD signals Taiwan geo-targeting to Google)
 - When domain is set up, update `SITE_URL` in `generate_public_site.py`
 

@@ -4,7 +4,7 @@
 
 PodSight is a fully automated pipeline that transcribes, summarizes, and publishes Taiwan finance podcasts. New episodes are detected via RSS, transcribed with Whisper, summarized by Gemini AI, published to a beautiful static site, and pushed to Telegram — all running on GitHub Actions, twice daily, zero human intervention.
 
-**Live site:** [podsight.vercel.app](https://podsight.vercel.app)  |  **Telegram:** [@podsight](https://t.me/podsight)
+**Live site:** [podsight.tw](https://podsight.tw)  |  **Telegram:** [@podsight](https://t.me/podsight)
 
 <p align="center">
   <img src="docs/screenshots/front-1.png" alt="PodSight Landing Page" width="700">
@@ -67,9 +67,9 @@ A local admin dashboard for managing the pipeline, browsing episodes, editing su
 
 | Podcast | Host | Schedule | Episodes |
 |---------|------|----------|----------|
-| [股癌 Gooaye](https://podsight.vercel.app/gooaye/) | 謝孟恭 (MK) | Wed / Sat | 27+ summaries |
-| [游庭皓的財經皓角](https://podsight.vercel.app/yutinghao/) | 游庭皓 | Daily ~9 AM | 42+ summaries |
-| [兆華與股惑仔](https://podsight.vercel.app/zhaohua/) | 兆華 | Daily afternoon | 39+ summaries |
+| [股癌 Gooaye](https://podsight.tw/gooaye/) | 謝孟恭 (MK) | Wed / Sat | 27+ summaries |
+| [游庭皓的財經皓角](https://podsight.tw/yutinghao/) | 游庭皓 | Daily ~9 AM | 42+ summaries |
+| [兆華與股惑仔](https://podsight.tw/zhaohua/) | 兆華 | Daily afternoon | 39+ summaries |
 
 Adding a new podcast is a single entry in `podcasts.yaml` — no code changes needed.
 
