@@ -303,6 +303,10 @@ def parse_summary(content: str) -> dict:
         )
     if strategies_match:
         strategies_text = strategies_match.group(1)
+        # Strip 來賓資訊 bio block — only keep content after 操作心法 header
+        mindset_split = re.split(r"\*\*高手的操作心法[與和]?作法\*\*[：:\s]*", strategies_text)
+        if len(mindset_split) > 1:
+            strategies_text = mindset_split[-1]
         strategy_items = []
 
         # Format 1: Numbered list with nested bullets
@@ -326,10 +330,10 @@ def parse_summary(content: str) -> dict:
                     # No sub-items, just use content directly
                     strategy_items.append((title, content_text))
 
-        # Format 2: Bullet points with **title:** content
+        # Format 2: Bullet points with **title:** content or **title** — content
         if not strategy_items:
             strategy_items = re.findall(
-                r"\*\s*\*\*([^*]+)\*\*[：:]\s*(.+?)(?=\n\*\s*\*\*|\n---|\n###|$)",
+                r"\*\s*\*\*([^*]+)\*\*[：:\s]*[—\-]?\s*(.+?)(?=\n\*\s*\*\*|\n---|\n###|$)",
                 strategies_text,
                 re.DOTALL,
             )
@@ -394,16 +398,29 @@ def parse_summary(content: str) -> dict:
     if risks_match:
         risks_text = risks_match.group(1)
         # Parse risks - look for **title:** content or simple bullets
-        risk_items = re.findall(r"\*\s*\*\*([^*]+)\*\*[：:]\s*(.+?)(?=\n\*\s*\*\*|\n\n|$)", risks_text, re.DOTALL)
+        risk_items = re.findall(r"\*\s*\*\*([^*]+)\*\*[：:\s]*[—\-]?\s*(.+?)(?=\n\*\s*\*\*|\n\n|$)", risks_text, re.DOTALL)
         if risk_items:
             for title, content_text in risk_items:
                 full_text = f"{strip_markdown(title)}：{strip_markdown(content_text)}"
                 if full_text:
                     sections["risks"].append(full_text)
         else:
-            # Simple bullet format
-            risk_items = re.findall(r"[•\-\*]\s*(.+?)(?=\n[•\-\*]|\n\n|$)", risks_text, re.DOTALL)
-            sections["risks"] = [strip_markdown(r) for r in risk_items if r.strip() and len(r.strip()) > 10]
+            # Try numbered list format: 1. **Title**：content or 1. content
+            numbered_items = re.findall(r"\d+\.\s+\*\*([^*]+)\*\*[：:\s]*[—\-]?\s*(.+?)(?=\n\d+\.|\n\n|$)", risks_text, re.DOTALL)
+            if numbered_items:
+                for title, content_text in numbered_items:
+                    full_text = f"{strip_markdown(title)}：{strip_markdown(content_text)}"
+                    if full_text and len(full_text) > 10:
+                        sections["risks"].append(full_text)
+            else:
+                # Try numbered list without bold titles: 1. content
+                numbered_plain = re.findall(r"\d+\.\s+(.+?)(?=\n\d+\.|\n\n|$)", risks_text, re.DOTALL)
+                if numbered_plain:
+                    sections["risks"] = [strip_markdown(r) for r in numbered_plain if r.strip() and len(r.strip()) > 10]
+                else:
+                    # Simple bullet format
+                    bullet_items = re.findall(r"[•\-\*]\s*(.+?)(?=\n[•\-\*]|\n\n|$)", risks_text, re.DOTALL)
+                    sections["risks"] = [strip_markdown(r) for r in bullet_items if r.strip() and len(r.strip()) > 10]
 
     # Extract humor (冷笑話 / 幽默金句)
     humor_match = re.search(
@@ -550,7 +567,7 @@ def generate_episode_html(
 
     # Build topics HTML
     topics_html = ""
-    for i, topic in enumerate(sections["topics"][:5], 1):
+    for i, topic in enumerate(sections["topics"], 1):
         topics_html += f"""
                     <div class="topic-card">
                         <div class="topic-number">TOPIC {i:02d}</div>
@@ -561,7 +578,7 @@ def generate_episode_html(
     # Build strategies HTML
     strategies_html = ""
     icons = ["target", "layers", "shield", "eye", "percent"]
-    for i, strategy in enumerate(sections["strategies"][:5]):
+    for i, strategy in enumerate(sections["strategies"]):
         icon = icons[i % len(icons)]
         strategies_html += f"""
                     <div class="strategy-card">
@@ -573,7 +590,7 @@ def generate_episode_html(
 
     # Build stocks HTML (clickable links to stock search)
     stocks_html = ""
-    for stock in sections["stocks"][:12]:
+    for stock in sections["stocks"]:
         stock_query = html_escape(stock['symbol'].split('(')[0].strip())
         stocks_html += f"""
                     <a href="/stocks/?q={stock_query}" class="stock-tag">
@@ -583,7 +600,7 @@ def generate_episode_html(
 
     # Build quotes HTML
     quotes_html = ""
-    for quote in sections["quotes"][:5]:
+    for quote in sections["quotes"]:
         quotes_html += f"""
                     <div class="quote-card">
                         <span class="quote-icon"><i data-lucide="quote"></i></span>
@@ -592,7 +609,7 @@ def generate_episode_html(
 
     # Build risks HTML
     risks_html = ""
-    for risk in sections["risks"][:5]:
+    for risk in sections["risks"]:
         risks_html += f"""
                     <div class="risk-item">
                         <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
@@ -601,7 +618,7 @@ def generate_episode_html(
 
     # Build humor HTML
     humor_html = ""
-    for item in sections["humor"][:6]:
+    for item in sections["humor"]:
         context_html = f'<span class="humor-context">（{html_escape(item.get("context", ""))}）</span>' if item.get("context") else ""
         humor_html += f"""
                     <div class="humor-card">
