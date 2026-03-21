@@ -330,7 +330,18 @@ def parse_summary(content: str) -> dict:
                     # No sub-items, just use content directly
                     strategy_items.append((title, content_text))
 
-        # Format 2: Bullet points with **title:** content or **title** — content
+        # Format 2: Numbered list with same-line content (no nested bullets)
+        # 1. **Title:** Content on same line
+        if not strategy_items:
+            numbered_sameline = re.findall(
+                r"\d+\.\s+\*\*([^*]+)\*\*\s*(.+?)(?=\n\d+\.|\n---|\n###|$)",
+                strategies_text,
+                re.DOTALL,
+            )
+            if numbered_sameline:
+                strategy_items = numbered_sameline
+
+        # Format 3: Bullet points with **title:** content or **title** — content
         if not strategy_items:
             strategy_items = re.findall(
                 r"\*\s*\*\*([^*]+)\*\*[：:\s]*[—\-]?\s*(.+?)(?=\n\*\s*\*\*|\n---|\n###|$)",
@@ -340,7 +351,9 @@ def parse_summary(content: str) -> dict:
 
         if strategy_items:
             for title, content_text in strategy_items:
-                full_text = f"{strip_markdown(title)}：{strip_markdown(content_text)}"
+                clean_title = strip_markdown(title).rstrip("：: ")
+                clean_content = strip_markdown(content_text).lstrip("：: ")
+                full_text = f"{clean_title}：{clean_content}"
                 if full_text and len(full_text) > 10:
                     sections["strategies"].append(full_text)
         else:
@@ -401,7 +414,9 @@ def parse_summary(content: str) -> dict:
         risk_items = re.findall(r"\*\s*\*\*([^*]+)\*\*[：:\s]*[—\-]?\s*(.+?)(?=\n\*\s*\*\*|\n\n|$)", risks_text, re.DOTALL)
         if risk_items:
             for title, content_text in risk_items:
-                full_text = f"{strip_markdown(title)}：{strip_markdown(content_text)}"
+                clean_title = strip_markdown(title).rstrip("：: ")
+                clean_content = strip_markdown(content_text).lstrip("：: ")
+                full_text = f"{clean_title}：{clean_content}"
                 if full_text:
                     sections["risks"].append(full_text)
         else:
@@ -409,7 +424,9 @@ def parse_summary(content: str) -> dict:
             numbered_items = re.findall(r"\d+\.\s+\*\*([^*]+)\*\*[：:\s]*[—\-]?\s*(.+?)(?=\n\d+\.|\n\n|$)", risks_text, re.DOTALL)
             if numbered_items:
                 for title, content_text in numbered_items:
-                    full_text = f"{strip_markdown(title)}：{strip_markdown(content_text)}"
+                    clean_title = strip_markdown(title).rstrip("：: ")
+                    clean_content = strip_markdown(content_text).lstrip("：: ")
+                    full_text = f"{clean_title}：{clean_content}"
                     if full_text and len(full_text) > 10:
                         sections["risks"].append(full_text)
             else:
