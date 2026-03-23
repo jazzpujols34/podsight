@@ -1637,7 +1637,7 @@ def generate_listing_html(podcast_id: str, episodes: list) -> str:
 
     # Build episode list HTML
     episodes_html = ""
-    for ep in episodes[:50]:  # Limit to 50 most recent
+    for ep in episodes:  # Show all episodes
         ep_id = ep["id"]
         ep_title = ep.get("title", f"{config['episode_prefix']}{ep_id}")
         ep_preview = ep.get("preview", "AI 智慧摘要...")
