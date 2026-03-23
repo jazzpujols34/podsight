@@ -445,16 +445,24 @@ def parse_summary(content: str) -> dict:
     )
     if humor_match:
         humor_text = humor_match.group(1)
-        # Pre-process: merge orphan lines (non-bullet text) with preceding bullet.
-        # Many summaries have multi-line jokes or continuation text after a bullet.
+        # Pre-process: merge orphan lines and sub-bullets with preceding bullet.
+        # Handles: multi-line jokes, nested sub-bullets (*   *   ), dash bullets (- **Label:**)
         merged_lines = []
         for line in humor_text.split('\n'):
             stripped = line.strip()
             if not stripped or stripped.startswith('---'):
                 continue
-            if re.match(r'\*\s', stripped):
-                # New bullet item
+            # Top-level bullet: starts with * or - followed by space (not indented sub-bullet)
+            is_top_bullet = re.match(r'[*\-]\s', stripped) and not line.startswith('    ')
+            # Sub-bullet (indented): starts with spaces then * or -
+            is_sub_bullet = re.match(r'\s{2,}[*\-]\s', line)
+            if is_top_bullet:
+                # New top-level bullet item — normalize dash to asterisk
                 merged_lines.append(stripped)
+            elif is_sub_bullet and merged_lines:
+                # Nested sub-bullet — merge into parent (e.g. 歐印 series)
+                sub_text = re.sub(r'^[*\-]\s+', '', stripped)
+                merged_lines[-1] += ' ' + sub_text
             elif merged_lines:
                 # Continuation of previous bullet — append to it
                 merged_lines[-1] += ' ' + stripped
@@ -464,7 +472,7 @@ def parse_summary(content: str) -> dict:
 
         for bullet in merged_lines:
             # Remove leading bullet marker (*   or -   )
-            bullet = re.sub(r'^\*\s+', '', bullet).strip()
+            bullet = re.sub(r'^[*\-]\s+', '', bullet).strip()
             if not bullet:
                 continue
             # Skip standalone group headers like "**1. 職場語錄：**" with no content after
