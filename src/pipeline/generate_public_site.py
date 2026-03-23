@@ -445,25 +445,46 @@ def parse_summary(content: str) -> dict:
     )
     if humor_match:
         humor_text = humor_match.group(1)
-        # Extract all bold-labeled bullet items, then parse quotes from each
-        # Handles: **Label**：「Q」, **Label：**「Q」, **Label**：plain text
-        bullets = re.findall(
-            r"\*\s+\*\*([^*]+?)[：:]?\*\*[：:]?\s*(.+?)(?=\n\*\s+\*\*|\n---|$)",
-            humor_text, re.DOTALL
-        )
-        for label, content_text in bullets:
-            label = strip_markdown(label.rstrip("：:"))
-            content_text = content_text.strip()
-            # Use full content as the display text — extracting just the first「」quote
-            # loses the narrative setup that makes jokes comprehensible
-            clean_text = strip_markdown(content_text)
-            # Remove leading newlines and collapse multi-line into single paragraph
-            clean_text = re.sub(r'\n\s*', ' ', clean_text).strip()
-            item = {
-                "label": label,
-                "text": clean_text,
-            }
-            sections["humor"].append(item)
+        # Pre-process: merge orphan lines (non-bullet text) with preceding bullet.
+        # Many summaries have multi-line jokes or continuation text after a bullet.
+        merged_lines = []
+        for line in humor_text.split('\n'):
+            stripped = line.strip()
+            if not stripped or stripped.startswith('---'):
+                continue
+            if re.match(r'\*\s', stripped):
+                # New bullet item
+                merged_lines.append(stripped)
+            elif merged_lines:
+                # Continuation of previous bullet — append to it
+                merged_lines[-1] += ' ' + stripped
+            else:
+                # Orphan text before any bullet (e.g. standalone jokes)
+                merged_lines.append(stripped)
+
+        for bullet in merged_lines:
+            # Remove leading bullet marker (*   or -   )
+            bullet = re.sub(r'^\*\s+', '', bullet).strip()
+            if not bullet:
+                continue
+            # Skip standalone group headers like "**1. 職場語錄：**" with no content after
+            if re.match(r'\*\*\d+\.\s*[^*]+\*\*\s*$', bullet):
+                continue
+            # Check if it has a bold label: **Label**：content or **Label：** content
+            label_match = re.match(r'\*\*([^*]+?)[：:]?\*\*[：:]?\s*(.*)', bullet, re.DOTALL)
+            if label_match:
+                label = strip_markdown(label_match.group(1).rstrip("：:"))
+                content_text = label_match.group(2).strip()
+                clean_text = strip_markdown(content_text)
+                clean_text = re.sub(r'\s+', ' ', clean_text).strip()
+                if clean_text:
+                    sections["humor"].append({"label": label, "text": clean_text})
+            else:
+                # Unlabeled bullet — use full text
+                clean_text = strip_markdown(bullet)
+                clean_text = re.sub(r'\s+', ' ', clean_text).strip()
+                if clean_text and len(clean_text) > 5:
+                    sections["humor"].append({"label": "", "text": clean_text})
 
     # Extract conclusion (本集結論)
     conclusion_match = re.search(
@@ -635,9 +656,9 @@ def generate_episode_html(
     # Build humor HTML
     humor_html = ""
     for item in sections["humor"]:
+        label_html = f'\n                        <span class="humor-label">{html_escape(item["label"])}</span>' if item.get("label") else ""
         humor_html += f"""
-                    <div class="humor-card">
-                        <span class="humor-label">{html_escape(item['label'])}</span>
+                    <div class="humor-card">{label_html}
                         <p class="humor-quote">{html_escape(item['text'])}</p>
                     </div>"""
 
