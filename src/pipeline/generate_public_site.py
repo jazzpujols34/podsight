@@ -2760,7 +2760,7 @@ def generate_homepage(podcast_counts: dict, latest_episodes: List[dict] = None) 
                 AI-Powered Summaries
             </div>
             <h1 class="animate-in delay-2">
-                聽過，但<br><span class="gradient">忘記是哪一集？</span>
+                在某集 Podcast 上聽過，但<br><span class="gradient">想不起來是哪一集？</span>
             </h1>
             <p class="hero-subtitle animate-in delay-3">
                 全文逐字稿轉錄，AI 結構化整理。不加個人觀點，不做延伸解讀。<br>
@@ -2768,16 +2768,8 @@ def generate_homepage(podcast_counts: dict, latest_episodes: List[dict] = None) 
             </p>
         </section>
 
-        {"" if not latest_html else f'''
-        <section class="latest-section">
-            <div class="section-label animate-in delay-2">最新摘要</div>
-            <div class="latest-grid animate-in delay-3">{latest_html}
-            </div>
-        </section>
-        '''}
-
         <section class="how-section">
-            <div class="section-label animate-in delay-3">運作方式</div>
+            <div class="section-label animate-in delay-2">運作方式</div>
             <div class="how-grid animate-in delay-3">
                 <div class="how-card">
                     <div class="how-icon"><i data-lucide="file-audio"></i></div>
@@ -2796,6 +2788,14 @@ def generate_homepage(podcast_counts: dict, latest_episodes: List[dict] = None) 
                 </div>
             </div>
         </section>
+
+        {"" if not latest_html else f'''
+        <section class="latest-section">
+            <div class="section-label animate-in delay-2">最新摘要</div>
+            <div class="latest-grid animate-in delay-3">{latest_html}
+            </div>
+        </section>
+        '''}
 
         <section class="podcasts-section">
             <div class="section-label animate-in delay-3">收錄節目</div>
