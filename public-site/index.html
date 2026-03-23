@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PodSight 聲見 - AI Podcast Summaries</title>
-    <meta name="description" content="台灣財經 Podcast AI 智慧摘要 - 聽見弦外之音，看見核心觀點">
+    <meta name="description" content="台灣財經 Podcast 逐字稿摘要 — 回顧、搜尋、找到他在某集講過的那段">
 
     <!-- Open Graph -->
     <meta property="og:title" content="PodSight 聲見 - AI Podcast Summaries">
-    <meta property="og:description" content="台灣財經 Podcast AI 智慧摘要 - 聽見弦外之音，看見核心觀點">
+    <meta property="og:description" content="台灣財經 Podcast 逐字稿摘要 — 回顧、搜尋、找到他在某集講過的那段">
     <meta property="og:image" content="/assets/og-image.png">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
@@ -449,11 +449,56 @@
 
         .telegram-cta svg { width: 18px; height: 18px; }
 
+        .how-section {
+            padding: 0 0 80px;
+        }
+
+        .how-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .how-card {
+            padding: 28px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+        }
+
+        .how-icon {
+            width: 40px; height: 40px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .how-icon svg { width: 20px; height: 20px; }
+
+        .how-card h4 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .how-card p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
         @media (max-width: 768px) {
             .container { padding: 0 16px; }
             .hero { padding: 60px 0 80px; }
             .podcast-grid { grid-template-columns: 1fr; }
             .latest-grid { grid-template-columns: 1fr; }
+            .how-grid { grid-template-columns: 1fr; }
             .orb { opacity: 0.25; }
         }
     </style>
@@ -481,10 +526,11 @@
                 AI-Powered Summaries
             </div>
             <h1 class="animate-in delay-2">
-                聽不完？<br><span class="gradient">讓 AI 幫你抓重點</span>
+                聽過，但<br><span class="gradient">忘記是哪一集？</span>
             </h1>
             <p class="hero-subtitle animate-in delay-3">
-                台灣財經 Podcast 智慧摘要，快速掌握每集精華內容、投資觀點與市場分析。
+                全文逐字稿轉錄，AI 結構化整理。不加個人觀點，不做延伸解讀。<br>
+                回顧、搜尋、找到「他在某集講過的那段」。
             </p>
         </section>
 
@@ -544,6 +590,27 @@
         </section>
         
 
+        <section class="how-section">
+            <div class="section-label animate-in delay-3">運作方式</div>
+            <div class="how-grid animate-in delay-3">
+                <div class="how-card">
+                    <div class="how-icon"><i data-lucide="file-audio"></i></div>
+                    <h4>全文逐字稿轉錄</h4>
+                    <p>每集音檔完整轉錄，不截取、不省略，確保內容忠於原始節目。</p>
+                </div>
+                <div class="how-card">
+                    <div class="how-icon"><i data-lucide="layers"></i></div>
+                    <h4>AI 結構化整理</h4>
+                    <p>話題、提到的標的、觀點金句 — 只做整理，不加個人解讀。</p>
+                </div>
+                <div class="how-card">
+                    <div class="how-icon"><i data-lucide="search"></i></div>
+                    <h4>回顧與搜尋</h4>
+                    <p>聽了上百集，想找「他在某集講過的那段」？摘要讓你快速定位。</p>
+                </div>
+            </div>
+        </section>
+
         <section class="podcasts-section">
             <div class="section-label animate-in delay-3">收錄節目</div>
 
@@ -554,8 +621,8 @@
                             <i data-lucide="trending-up"></i>
                         </div>
                         <h3>股癌</h3>
-                        <p class="host">謝孟恭 Melody Hsieh</p>
-                        <p class="description">用輕鬆詼諧的方式，分享投資心法與市場觀察。</p>
+                        <p class="host">謝孟恭</p>
+                        <p class="description">台股投資心法、產業趨勢深度分析。每週三、六更新。</p>
                         <div class="stats">
                             <span class="stat">
                                 <i data-lucide="file-text"></i>
@@ -575,7 +642,7 @@
                         </div>
                         <h3>游庭皓的財經皓角</h3>
                         <p class="host">游庭皓</p>
-                        <p class="description">深入淺出的財經分析，帶你看懂市場邏輯。</p>
+                        <p class="description">每日早晨財經速解讀，總經、個股、冷笑話一次到位。</p>
                         <div class="stats">
                             <span class="stat">
                                 <i data-lucide="file-text"></i>
@@ -595,7 +662,7 @@
                         </div>
                         <h3>兆華與股惑仔</h3>
                         <p class="host">李兆華</p>
-                        <p class="description">專業與生活化角度，掌握台股脈動。</p>
+                        <p class="description">台股盤勢解析、技術面操作教學，每日下午更新。</p>
                         <div class="stats">
                             <span class="stat">
                                 <i data-lucide="file-text"></i>
@@ -616,7 +683,7 @@
                 訂閱 Telegram 頻道
             </a>
             <p class="footer-text" style="margin-top: 24px;">
-                摘要由 AI 自動生成，僅供參考 · PodSight
+                全文逐字稿轉錄，AI 結構化摘要，不加入個人觀點。內容僅供回顧參考，所有觀點歸屬原節目主持人。
             </p>
         </footer>
     </div>
