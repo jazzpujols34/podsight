@@ -22,6 +22,8 @@ load_dotenv(BASE_DIR / ".env")
 
 DATA_DIR = BASE_DIR / "data"
 PODCASTS = ["gooaye", "yutinghao", "zhaohua"]
+# Podcasts published to public site + Telegram (zhaohua removed per copyright request)
+PUBLIC_PODCASTS = ["gooaye", "yutinghao"]
 
 # Required environment variables
 REQUIRED_ENV = ["GROQ_API_KEY", "GEMINI_API_KEY"]
@@ -213,13 +215,13 @@ def process_podcast(podcast: str) -> dict:
     need_processing = get_episodes_needing_summary(podcast)
     if not need_processing:
         log(f"  No new episodes for {podcast}")
-        # Still check for unpublished episodes
-        unpublished = get_unpublished_episodes(podcast)
-        if unpublished:
-            log(f"  Found {len(unpublished)} unpublished episode(s)")
-            # Add to pending list (will be pushed after Vercel deploys)
-            for ep_id in sorted(unpublished)[-5:]:
-                stats["pending_telegram"].append({"podcast": podcast, "episode_id": ep_id})
+        # Still check for unpublished episodes (public podcasts only)
+        if podcast in PUBLIC_PODCASTS:
+            unpublished = get_unpublished_episodes(podcast)
+            if unpublished:
+                log(f"  Found {len(unpublished)} unpublished episode(s)")
+                for ep_id in sorted(unpublished)[-5:]:
+                    stats["pending_telegram"].append({"podcast": podcast, "episode_id": ep_id})
         return stats
 
     stats["new_episodes"] = len(need_processing)
@@ -264,18 +266,18 @@ def process_podcast(podcast: str) -> dict:
     if not run_script("05_generate_social.py", podcast):
         stats["errors"].append("Social draft generation failed")
 
-    # Collect episodes for Telegram (will be pushed after Vercel deploys)
-    if new_summaries:
-        log(f"  Queuing {len(new_summaries)} episode(s) for Telegram...")
-        for ep_id in sorted(new_summaries)[-5:]:  # Limit to 5 most recent
-            stats["pending_telegram"].append({"podcast": podcast, "episode_id": ep_id})
-    else:
-        # Check for any unpublished episodes
-        unpublished = get_unpublished_episodes(podcast)
-        if unpublished:
-            log(f"  Found {len(unpublished)} unpublished episode(s)")
-            for ep_id in sorted(unpublished)[-5:]:
+    # Collect episodes for Telegram (public podcasts only, pushed after Vercel deploys)
+    if podcast in PUBLIC_PODCASTS:
+        if new_summaries:
+            log(f"  Queuing {len(new_summaries)} episode(s) for Telegram...")
+            for ep_id in sorted(new_summaries)[-5:]:  # Limit to 5 most recent
                 stats["pending_telegram"].append({"podcast": podcast, "episode_id": ep_id})
+        else:
+            unpublished = get_unpublished_episodes(podcast)
+            if unpublished:
+                log(f"  Found {len(unpublished)} unpublished episode(s)")
+                for ep_id in sorted(unpublished)[-5:]:
+                    stats["pending_telegram"].append({"podcast": podcast, "episode_id": ep_id})
 
     return stats
 
