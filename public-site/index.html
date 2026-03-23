@@ -37,9 +37,6 @@
             --gooaye-gradient: linear-gradient(135deg, #1A6FAF 0%, #4DB8E8 50%, #F5A623 100%);
             --yutinghao-primary: #ffffff;
             --yutinghao-gradient: linear-gradient(135deg, #1A1A1A 0%, #3a3a3a 50%, #ffffff 100%);
-            --zhaohua-primary: #F4A97F;
-            --zhaohua-gradient: linear-gradient(135deg, #F4A97F 0%, #F5C842 50%, #FFCDB2 100%);
-
             --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -79,7 +76,7 @@
 
         .orb-2 {
             width: 500px; height: 500px;
-            background: var(--zhaohua-gradient);
+            background: var(--yutinghao-gradient);
             bottom: -150px; left: -150px;
             animation-delay: -7s;
         }
@@ -170,7 +167,7 @@
         }
 
         .hero h1 .gradient {
-            background: linear-gradient(135deg, var(--gooaye-primary), var(--zhaohua-primary), var(--yutinghao-primary));
+            background: linear-gradient(135deg, var(--gooaye-primary), var(--yutinghao-primary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -226,7 +223,7 @@
 
         .podcast-card.gooaye::before { background: linear-gradient(135deg, rgba(77,184,232,0.1), rgba(245,166,35,0.05)); }
         .podcast-card.yutinghao::before { background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(128,128,128,0.03)); }
-        .podcast-card.zhaohua::before { background: linear-gradient(135deg, rgba(244,169,127,0.1), rgba(245,200,66,0.05)); }
+
 
         .podcast-card:hover {
             transform: translateY(-8px);
@@ -249,7 +246,6 @@
 
         .podcast-card.gooaye .podcast-icon { background: var(--gooaye-gradient); }
         .podcast-card.yutinghao .podcast-icon { background: var(--yutinghao-gradient); }
-        .podcast-card.zhaohua .podcast-icon { background: var(--zhaohua-gradient); }
 
         .podcast-icon svg {
             width: 32px; height: 32px;
@@ -315,7 +311,6 @@
 
         .podcast-card.gooaye:hover .arrow { border-color: var(--gooaye-primary); color: var(--gooaye-primary); }
         .podcast-card.yutinghao:hover .arrow { border-color: var(--yutinghao-primary); color: var(--yutinghao-primary); }
-        .podcast-card.zhaohua:hover .arrow { border-color: var(--zhaohua-primary); color: var(--zhaohua-primary); }
 
         .arrow svg { width: 20px; height: 20px; }
 
@@ -575,14 +570,6 @@
                     <div class="latest-title">無處可躲 什麼都在跌 AI時代 亞洲能源 政策大轉彎 早晨財經速解讀 </div>
                     <div class="latest-preview">美股進入「股債金三殺」的全面撤離模式，地緣衝突迫使全球能源結構重組，台灣正式宣告重返核電以因應 AI 時代的電力需求。...</div>
                 </a>
-                <a href="/zhaohua/1061/" class="latest-card">
-                    <div class="latest-meta">
-                        <span class="latest-podcast">兆華</span>
-                        <span class="fresh-badge fresh-week">本週</span>
-                    </div>
-                    <div class="latest-title">EP1061｜戰爭亂到4月底？不讓自己被套牢，也不錯過小飆股的操作SOP！台股1700多檔股票，如何</div>
-                    <div class="latest-preview">面對地緣政治引發的市場震盪，投資人應利用技術分析「汰弱留強」，鎖定強勢產業題材或低檔高殖利率標的，並嚴守「回後買上漲」的操作紀律以避開套牢風險。...</div>
-                </a>
                 <a href="/gooaye/0645/" class="latest-card">
                     <div class="latest-meta">
                         <span class="latest-podcast">股癌</span>
@@ -599,13 +586,21 @@
                     <div class="latest-title">股債雙殺 黃金美債也跌 為何所有 資產都在跌 早晨財經速解讀 </div>
                     <div class="latest-preview">本集深度解析中東戰火引發的能源斷鏈風險、全球央行在停滯性通膨陰影下的政策分歧，以及台灣央行對房市管制「微調」背後的政治與經濟盤算。...</div>
                 </a>
-                <a href="/zhaohua/1060/" class="latest-card">
+                <a href="/gooaye/0644/" class="latest-card">
                     <div class="latest-meta">
-                        <span class="latest-podcast">兆華</span>
+                        <span class="latest-podcast">股癌</span>
+                        
+                    </div>
+                    <div class="latest-title">EP644 | 🦇</div>
+                    <div class="latest-preview">MK 強調在震盪盤中保持心態穩定與「汰弱留強」的重要性，並深入分析記憶體族群的輪動及美、台股軟硬體標的的預期落差。...</div>
+                </a>
+                <a href="/yutinghao/2026-03-19/" class="latest-card">
+                    <div class="latest-meta">
+                        <span class="latest-podcast">財經皓角</span>
                         <span class="fresh-badge fresh-week">本週</span>
                     </div>
-                    <div class="latest-title">EP1060｜還是得休息，熱門股熄火！大摩降評記憶體，股價和報價的拉鋸，誰贏？金居、富喬、萬潤出關，</div>
-                    <div class="latest-preview">台股大盤與櫃買指數同步震盪，體感溫度轉冷，投資人應嚴守「破五日線減碼」紀律，並採取「大水庫（市值型 ETF）配小水庫（個股）」的資金配置策略。...</div>
+                    <div class="latest-title">鮑爾尬川普 聯準會今年 還會降息嗎 早晨財經速解讀 </div>
+                    <div class="latest-preview">聯準會面對中東戰火與通膨黏性選擇「按兵不動」，市場進入「預判對方的預判」的博弈期，而 AI 記憶體需求則成為基本面的最強支撐。...</div>
                 </a>
             </div>
         </section>
@@ -655,25 +650,6 @@
                     </div>
                 </a>
 
-                <a href="/zhaohua/" class="podcast-card zhaohua animate-in delay-4">
-                    <div class="podcast-card-content">
-                        <div class="podcast-icon">
-                            <i data-lucide="mic"></i>
-                        </div>
-                        <h3>兆華與股惑仔</h3>
-                        <p class="host">李兆華</p>
-                        <p class="description">台股盤勢解析、技術面操作教學，每日下午更新。</p>
-                        <div class="stats">
-                            <span class="stat">
-                                <i data-lucide="file-text"></i>
-                                52 集摘要
-                            </span>
-                        </div>
-                    </div>
-                    <div class="arrow">
-                        <i data-lucide="arrow-right"></i>
-                    </div>
-                </a>
             </div>
         </section>
 

@@ -77,35 +77,6 @@ PODCASTS = {
             --accent-border: rgba(255, 255, 255, 0.2);
         """,
     },
-    "zhaohua": {
-        "name": "兆華與股惑仔",
-        "short_name": "兆華",
-        "host": "李兆華",
-        "description": "結合專業與生活化的角度，帶你掌握台股脈動與投資機會。",
-        "badge_text": "台股分析",
-        "badge_icon": "mic",
-        "episode_prefix": "EP",
-        "url_format": "number",  # /zhaohua/1010/
-        "theme": "warm",
-        "css_vars": """
-            --bg-primary: #1a1512;
-            --bg-secondary: #241d18;
-            --bg-card: rgba(244, 169, 127, 0.08);
-            --bg-card-hover: rgba(244, 169, 127, 0.12);
-            --border-subtle: rgba(244, 169, 127, 0.15);
-            --border-glow: rgba(245, 200, 66, 0.3);
-            --text-primary: #fff5f0;
-            --text-secondary: rgba(255, 245, 240, 0.75);
-            --text-muted: rgba(255, 245, 240, 0.5);
-            --accent-primary: #F4A97F;
-            --accent-secondary: #F5C842;
-            --accent-tertiary: #4A90D9;
-            --accent-glow: rgba(244, 169, 127, 0.4);
-            --accent-gradient: linear-gradient(135deg, #F4A97F 0%, #F5C842 50%, #FFCDB2 100%);
-            --accent-bg: rgba(244, 169, 127, 0.12);
-            --accent-border: rgba(244, 169, 127, 0.25);
-        """,
-    },
 }
 
 
@@ -2271,9 +2242,6 @@ def generate_homepage(podcast_counts: dict, latest_episodes: List[dict] = None) 
             --gooaye-gradient: linear-gradient(135deg, #1A6FAF 0%, #4DB8E8 50%, #F5A623 100%);
             --yutinghao-primary: #ffffff;
             --yutinghao-gradient: linear-gradient(135deg, #1A1A1A 0%, #3a3a3a 50%, #ffffff 100%);
-            --zhaohua-primary: #F4A97F;
-            --zhaohua-gradient: linear-gradient(135deg, #F4A97F 0%, #F5C842 50%, #FFCDB2 100%);
-
             --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
         }}
 
@@ -2313,7 +2281,7 @@ def generate_homepage(podcast_counts: dict, latest_episodes: List[dict] = None) 
 
         .orb-2 {{
             width: 500px; height: 500px;
-            background: var(--zhaohua-gradient);
+            background: var(--yutinghao-gradient);
             bottom: -150px; left: -150px;
             animation-delay: -7s;
         }}
@@ -2404,7 +2372,7 @@ def generate_homepage(podcast_counts: dict, latest_episodes: List[dict] = None) 
         }}
 
         .hero h1 .gradient {{
-            background: linear-gradient(135deg, var(--gooaye-primary), var(--zhaohua-primary), var(--yutinghao-primary));
+            background: linear-gradient(135deg, var(--gooaye-primary), var(--yutinghao-primary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -2460,7 +2428,7 @@ def generate_homepage(podcast_counts: dict, latest_episodes: List[dict] = None) 
 
         .podcast-card.gooaye::before {{ background: linear-gradient(135deg, rgba(77,184,232,0.1), rgba(245,166,35,0.05)); }}
         .podcast-card.yutinghao::before {{ background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(128,128,128,0.03)); }}
-        .podcast-card.zhaohua::before {{ background: linear-gradient(135deg, rgba(244,169,127,0.1), rgba(245,200,66,0.05)); }}
+
 
         .podcast-card:hover {{
             transform: translateY(-8px);
@@ -2483,7 +2451,6 @@ def generate_homepage(podcast_counts: dict, latest_episodes: List[dict] = None) 
 
         .podcast-card.gooaye .podcast-icon {{ background: var(--gooaye-gradient); }}
         .podcast-card.yutinghao .podcast-icon {{ background: var(--yutinghao-gradient); }}
-        .podcast-card.zhaohua .podcast-icon {{ background: var(--zhaohua-gradient); }}
 
         .podcast-icon svg {{
             width: 32px; height: 32px;
@@ -2549,7 +2516,6 @@ def generate_homepage(podcast_counts: dict, latest_episodes: List[dict] = None) 
 
         .podcast-card.gooaye:hover .arrow {{ border-color: var(--gooaye-primary); color: var(--gooaye-primary); }}
         .podcast-card.yutinghao:hover .arrow {{ border-color: var(--yutinghao-primary); color: var(--yutinghao-primary); }}
-        .podcast-card.zhaohua:hover .arrow {{ border-color: var(--zhaohua-primary); color: var(--zhaohua-primary); }}
 
         .arrow svg {{ width: 20px; height: 20px; }}
 
@@ -2841,25 +2807,6 @@ def generate_homepage(podcast_counts: dict, latest_episodes: List[dict] = None) 
                     </div>
                 </a>
 
-                <a href="/zhaohua/" class="podcast-card zhaohua animate-in delay-4">
-                    <div class="podcast-card-content">
-                        <div class="podcast-icon">
-                            <i data-lucide="mic"></i>
-                        </div>
-                        <h3>兆華與股惑仔</h3>
-                        <p class="host">李兆華</p>
-                        <p class="description">台股盤勢解析、技術面操作教學，每日下午更新。</p>
-                        <div class="stats">
-                            <span class="stat">
-                                <i data-lucide="file-text"></i>
-                                {podcast_counts.get('zhaohua', 0)} 集摘要
-                            </span>
-                        </div>
-                    </div>
-                    <div class="arrow">
-                        <i data-lucide="arrow-right"></i>
-                    </div>
-                </a>
             </div>
         </section>
 
@@ -3391,19 +3338,19 @@ def main():
         podcast_counts[podcast_id] = len(episodes)
         total_episodes += len(episodes)
 
-    # Build balanced "latest" feed - interleaved for grid: 股癌, YTH, 兆華, 股癌, YTH, 兆華
+    # Build balanced "latest" feed - interleaved for grid: 股癌, YTH, 股癌, YTH, 股癌, YTH
     latest_by_podcast = {}
-    for podcast_id in ["gooaye", "yutinghao", "zhaohua"]:
-        latest_by_podcast[podcast_id] = [ep for ep in all_episodes if ep.get("podcast_id") == podcast_id][:2]
+    for podcast_id in ["gooaye", "yutinghao"]:
+        latest_by_podcast[podcast_id] = [ep for ep in all_episodes if ep.get("podcast_id") == podcast_id][:3]
 
-    # Interleave: position 0,3 = gooaye, 1,4 = yth, 2,5 = zhaohua
+    # Interleave: alternating gooaye and yutinghao
     latest_balanced = [
         latest_by_podcast["gooaye"][0] if latest_by_podcast["gooaye"] else None,
         latest_by_podcast["yutinghao"][0] if latest_by_podcast["yutinghao"] else None,
-        latest_by_podcast["zhaohua"][0] if latest_by_podcast["zhaohua"] else None,
         latest_by_podcast["gooaye"][1] if len(latest_by_podcast["gooaye"]) > 1 else None,
         latest_by_podcast["yutinghao"][1] if len(latest_by_podcast["yutinghao"]) > 1 else None,
-        latest_by_podcast["zhaohua"][1] if len(latest_by_podcast["zhaohua"]) > 1 else None,
+        latest_by_podcast["gooaye"][2] if len(latest_by_podcast["gooaye"]) > 2 else None,
+        latest_by_podcast["yutinghao"][2] if len(latest_by_podcast["yutinghao"]) > 2 else None,
     ]
     latest_balanced = [ep for ep in latest_balanced if ep]  # Remove None entries
 
