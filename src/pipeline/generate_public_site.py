@@ -454,16 +454,15 @@ def parse_summary(content: str) -> dict:
         for label, content_text in bullets:
             label = strip_markdown(label.rstrip("：:"))
             content_text = content_text.strip()
-            # Try to extract quote in「」brackets
-            quote_match = re.search(r"[「「]([^」」]+)[」」]", content_text)
-            # Try to extract context in（）brackets
-            context_match = re.search(r"（([^）]+)）", content_text)
+            # Use full content as the display text — extracting just the first「」quote
+            # loses the narrative setup that makes jokes comprehensible
+            clean_text = strip_markdown(content_text)
+            # Remove leading newlines and collapse multi-line into single paragraph
+            clean_text = re.sub(r'\n\s*', ' ', clean_text).strip()
             item = {
                 "label": label,
-                "quote": strip_markdown(quote_match.group(1) if quote_match else content_text)
+                "text": clean_text,
             }
-            if context_match:
-                item["context"] = strip_markdown(context_match.group(1))
             sections["humor"].append(item)
 
     # Extract conclusion (本集結論)
@@ -636,11 +635,10 @@ def generate_episode_html(
     # Build humor HTML
     humor_html = ""
     for item in sections["humor"]:
-        context_html = f'<span class="humor-context">（{html_escape(item.get("context", ""))}）</span>' if item.get("context") else ""
         humor_html += f"""
                     <div class="humor-card">
                         <span class="humor-label">{html_escape(item['label'])}</span>
-                        <p class="humor-quote">「{html_escape(item['quote'])}」{context_html}</p>
+                        <p class="humor-quote">{html_escape(item['text'])}</p>
                     </div>"""
 
     # Episode title for display
