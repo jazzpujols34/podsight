@@ -1,8 +1,8 @@
 {
   "episode_id": "2026_1_12_一_台積電年底 能衝2000_美國就業 失去了方向感_川普2026選戰開打__早",
   "podcast": "yutinghao",
-  "created_at": "2026-02-24T22:18:21.303663",
-  "summary_hash": "4ab7ec4955cd",
+  "created_at": "2026-03-24T04:22:58.409646",
+  "summary_hash": "3e1d4daa4a10",
   "status": "pending",
   "platforms": {
     "twitter": {
@@ -35,7 +35,7 @@
     "instagram": {
       "status": "pending",
       "content_file": "instagram.json",
-      "image_file": "instagram_card.png",
+      "image_file": null,
       "published_at": null,
       "post_ids": [],
       "error": null,
