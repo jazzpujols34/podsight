@@ -542,6 +542,55 @@
             font-style: italic;
         }
 
+        .qa-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .qa-card {
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .qa-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-card-hover);
+        }
+
+        .qa-question {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--accent-secondary);
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .qa-answer {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        .qa-icon {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .qa-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
         .risk-list {
             display: flex;
             flex-direction: column;
@@ -848,22 +897,7 @@
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 01</div>
                         <div class="topic-title">中東斬首行動與權力真空</div>
-                        <div class="topic-content">針對美伊衝突升級，美軍採取了精準的斬首戰術，將伊朗多名核心領導層「團滅」。游庭皓分析，這種戰法雖然降低了平民傷亡，卻造成了極大的權力真空，導致伊朗內部可能陷入更混亂的派系內戰，使局勢短期內難以見到真正的退場機制。</div>
-                    </div>
-                    <div class="topic-card">
-                        <div class="topic-number">TOPIC 02</div>
-                        <div class="topic-title">市場影響</div>
-                        <div class="topic-content">增加了地緣政治的不確定性，導致全球航空業與觀光業受挫，資金短期流向現金。 2. 荷姆茲海峽封鎖與川普的「保險」大招 伊朗威脅封鎖全球 20% 石油運輸的荷姆茲海峽，導致保險公司不願承保，金融體系出現自我封鎖。川普隨即下令美國 DFC 提供政治風險保險，並派海軍護航，強行介入市場。</div>
-                    </div>
-                    <div class="topic-card">
-                        <div class="topic-number">TOPIC 03</div>
-                        <div class="topic-title">投資啟示</div>
-                        <div class="topic-content">只要油價能壓制在 75-80 美元以下，通膨就不會結構性復燃，股市短期見底的機會就大。 3. 傳統避險劇本的失效 過去「亂世買黃金、避險買美債」的邏輯正在崩潰。本集指出，當前市場出現「現金為王」的流動性擠兌，黃金、比特幣甚至美債都在同步下挫，顯示投資人正在賣出一切資產以補足保證金。</div>
-                    </div>
-                    <div class="topic-card">
-                        <div class="topic-number">TOPIC 04</div>
-                        <div class="topic-title">市場影響</div>
-                        <div class="topic-content">避險資產不再保險，資金聯動性增強，投資者需重新審視資產配置的有效性。</div>
+                        <div class="topic-content">針對美伊衝突升級，美軍採取了精準的斬首戰術，將伊朗多名核心領導層「團滅」。游庭皓分析，這種戰法雖然降低了平民傷亡，卻造成了極大的權力真空，導致伊朗內部可能陷入更混亂的派系內戰，使局勢短期內難以見到真正的退場機制。 市場影響： 增加了地緣政治的不確定性，導致全球航空業與觀光業受挫，資金短期流向現金。 2. 荷姆茲海峽封鎖與川普的「保險」大招 伊朗威脅封鎖全球 20% 石油運輸的荷姆茲海峽，導致保險公司不願承保，金融體系出現自我封鎖。川普隨即下令美國 DFC 提供政治風險保險，並派海軍護航，強行介入市場。 投資啟示： 只要油價能壓制在 75-80 美元以下，通膨就不會結構性復燃，股市短期見底的機會就大。 3. 傳統避險劇本的失效 過去「亂世買黃金、避險買美債」的邏輯正在崩潰。本集指出，當前市場出現「現金為王」的流動性擠兌，黃金、比特幣甚至美債都在同步下挫，顯示投資人正在賣出一切資產以補足保證金。 市場影響： 避險資產不再保險，資金聯動性增強，投資者需重新審視資產配置的有效性。</div>
                     </div>
                 </div>
             </section>
@@ -993,6 +1027,8 @@
                     </div>
                 </div>
             </section>
+            
+
             
 
             

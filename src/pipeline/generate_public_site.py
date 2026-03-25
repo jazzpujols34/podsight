@@ -201,6 +201,7 @@ def parse_summary(content: str) -> dict:
         "quotes": [],
         "risks": [],
         "humor": [],
+        "qa": [],
         "conclusion": "",
     }
 
@@ -208,6 +209,18 @@ def parse_summary(content: str) -> dict:
     tldr_match = re.search(r"###\s*\*?\*?一句話總結\*?\*?\s*\n+(.+?)(?=\n---|\n###|$)", content, re.DOTALL)
     if tldr_match:
         sections["tldr"] = strip_markdown(tldr_match.group(1))
+
+    # Fallback: **一句話總結** without ### prefix
+    if not sections["tldr"]:
+        tldr_match2 = re.search(r"\*\*一句話總結\*\*\s*\n+(.+?)(?=\n---|\n###|\n\*\*|$)", content, re.DOTALL)
+        if tldr_match2:
+            sections["tldr"] = strip_markdown(tldr_match2.group(1))
+
+    # Fallback: first non-empty line if no header found and content starts with text (not ### or **)
+    if not sections["tldr"]:
+        first_line = content.strip().split("\n")[0].strip()
+        if first_line and not first_line.startswith("#") and not first_line.startswith("**") and not first_line.startswith("這集") and not first_line.startswith("這是"):
+            sections["tldr"] = strip_markdown(first_line)
 
     # Extract topics (主要討論話題) - handle ### **Title** or ### Title formats
     topics_match = re.search(
@@ -235,7 +248,16 @@ def parse_summary(content: str) -> dict:
                 re.DOTALL,
             )
 
-        # Format 3: **話題名稱：XXX** with 詳細說明
+        # Format 3: **Title** on its own line, followed by content paragraph(s)
+        # Handles: **NVIDIA GTC 發表會**\nMK 觀察到...\n相關標的：...
+        if not topic_blocks:
+            topic_blocks = re.findall(
+                r"\*\*(?:\d+\.\s*)?([^*\n]+)\*\*\s*\n(.+?)(?=\n\*\*(?:\d+\.\s*)?[^*\n]+\*\*\s*\n|\n---|\n###|$)",
+                topics_text,
+                re.DOTALL,
+            )
+
+        # Format 4: **話題名稱：XXX** with 詳細說明 (legacy format)
         if not topic_blocks:
             topic_blocks = re.findall(
                 r"\*\*(?:話題名稱：)?([^*\n：:]+)[：:]?\*\*[：:\s]*\n?\s*(?:\*\s*\*\*詳細說明：?\*\*\s*)?(.+?)(?=\n\s*\*\s*\*\*[^詳相利]|\n\s*---|\n\s*###|$)",
@@ -465,6 +487,24 @@ def parse_summary(content: str) -> dict:
                 if clean_text and len(clean_text) > 5:
                     sections["humor"].append({"label": "", "text": clean_text})
 
+    # Extract QA (精選留言)
+    qa_match = re.search(
+        r"###\s*\*?\*?精選留言\*?\*?(?:（如有）)?\s*\n+(.+?)(?=\n---|\n###|$)", content, re.DOTALL
+    )
+    if qa_match:
+        qa_text = qa_match.group(1)
+        # Parse Q&A pairs: **聽眾問：** ... **MK 答：** ...
+        qa_pairs = re.findall(
+            r"\*\*聽眾問[：:]\*\*\s*(.+?)\s*\n\s*[-\*]?\s*\*\*MK\s*答[：:]\*\*\s*(.+?)(?=\n\s*[-\*]?\s*\*\*聽眾問|\n---|\n###|$)",
+            qa_text,
+            re.DOTALL,
+        )
+        for question, answer in qa_pairs:
+            q = strip_markdown(question).strip()
+            a = strip_markdown(answer).strip()
+            if q and a:
+                sections["qa"].append({"question": q, "answer": a})
+
     # Extract conclusion (本集結論)
     conclusion_match = re.search(
         r"\*\*本集結論[：:]\*\*\s*(.+?)(?=\n\n|$)", content, re.DOTALL
@@ -571,6 +611,8 @@ def generate_episode_html(
         toc_items.append(("quotes", "金句"))
     if sections["humor"]:
         toc_items.append(("humor", "幽默"))
+    if sections["qa"]:
+        toc_items.append(("qa", "留言"))
     if sections["risks"]:
         toc_items.append(("risks", "風險"))
     if sections["conclusion"]:
@@ -639,6 +681,15 @@ def generate_episode_html(
         humor_html += f"""
                     <div class="humor-card">{label_html}
                         <p class="humor-quote">{html_escape(item['text'])}</p>
+                    </div>"""
+
+    # Build QA HTML
+    qa_html = ""
+    for item in sections["qa"]:
+        qa_html += f"""
+                    <div class="qa-card">
+                        <div class="qa-question"><span class="qa-icon"><i data-lucide="message-circle-question"></i></span>{html_escape(item['question'])}</div>
+                        <div class="qa-answer"><span class="qa-icon"><i data-lucide="message-circle"></i></span>{html_escape(item['answer'])}</div>
                     </div>"""
 
     # Episode title for display
@@ -1179,6 +1230,55 @@ def generate_episode_html(
             font-style: italic;
         }}
 
+        .qa-list {{
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }}
+
+        .qa-card {{
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }}
+
+        .qa-card:hover {{
+            border-color: var(--accent-border);
+            background: var(--bg-card-hover);
+        }}
+
+        .qa-question {{
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--accent-secondary);
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }}
+
+        .qa-answer {{
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            line-height: 1.8;
+        }}
+
+        .qa-icon {{
+            flex-shrink: 0;
+            margin-top: 2px;
+        }}
+
+        .qa-icon svg {{
+            width: 16px;
+            height: 16px;
+        }}
+
         .risk-list {{
             display: flex;
             flex-direction: column;
@@ -1534,6 +1634,19 @@ def generate_episode_html(
                     <h2 class="section-title">冷笑話 / 幽默金句</h2>
                 </div>
                 <div class="humor-list">{humor_html}
+                </div>
+            </section>
+            '''}
+
+            {"" if not sections['qa'] else f'''
+            <section class="section" id="qa">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="message-circle-question"></i>
+                    </div>
+                    <h2 class="section-title">精選留言</h2>
+                </div>
+                <div class="qa-list">{qa_html}
                 </div>
             </section>
             '''}

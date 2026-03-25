@@ -542,6 +542,55 @@
             font-style: italic;
         }
 
+        .qa-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .qa-card {
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .qa-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-card-hover);
+        }
+
+        .qa-question {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--accent-secondary);
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .qa-answer {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        .qa-icon {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .qa-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
         .risk-list {
             display: flex;
             flex-direction: column;
@@ -848,22 +897,7 @@
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 01</div>
                         <div class="topic-title">中東斬首行動與通膨陰霾</div>
-                        <div class="topic-content">以色列針對伊朗決策核心進行打擊，雖推升油價挑戰 100 美元，但市場反應相對冷靜。游庭皓指出，目前市場正處於一種「壞消息很多卻未引爆崩盤」的別扭狀態，空頭回補反而成了股市的短期支撐，但真正的關鍵在於本週的「全球央行週」。</div>
-                    </div>
-                    <div class="topic-card">
-                        <div class="topic-number">TOPIC 02</div>
-                        <div class="topic-title">市場影響</div>
-                        <div class="topic-content">投資人轉而關注央行對能源通膨的表態，這將決定年底資產估值的走向。 2. 全球房地產的怪異悖論 本集詳細對比了各國房市：美國受高利率綑綁導致量縮價漲；南韓總統李在明帶頭賣房打炒房，房價卻因「全租房」槓桿停不下來；杜拜房市指數因戰爭預期連跌，但實體房價未鬆動；最奇特的是烏克兰，即便處於戰爭中，因難民遷入與軍人購屋需求，房價反而上漲。</div>
-                    </div>
-                    <div class="topic-card">
-                        <div class="topic-number">TOPIC 03</div>
-                        <div class="topic-title">投資啟示</div>
-                        <div class="topic-content">房價不完全取決於政策，更多取決於供給與需求的錯置。 3. 台灣房市的「氣氛」問題 台灣房市進入買方時代，329 檔期總銷金額年減 33%，創 2018 年以來最大跌幅。游庭皓認為台灣並不缺資金（M2 貨幣量仍高），而是央行第七波信用管制讓「氣氛」不對，導致投資與自住客轉為觀望。</div>
-                    </div>
-                    <div class="topic-card">
-                        <div class="topic-number">TOPIC 04</div>
-                        <div class="topic-title">市場影響</div>
-                        <div class="topic-content">建商開始減少供給（建造宅數下滑）以因應需求萎縮，試圖穩住房價。</div>
+                        <div class="topic-content">以色列針對伊朗決策核心進行打擊，雖推升油價挑戰 100 美元，但市場反應相對冷靜。游庭皓指出，目前市場正處於一種「壞消息很多卻未引爆崩盤」的別扭狀態，空頭回補反而成了股市的短期支撐，但真正的關鍵在於本週的「全球央行週」。 市場影響： 投資人轉而關注央行對能源通膨的表態，這將決定年底資產估值的走向。 2. 全球房地產的怪異悖論 本集詳細對比了各國房市：美國受高利率綑綁導致量縮價漲；南韓總統李在明帶頭賣房打炒房，房價卻因「全租房」槓桿停不下來；杜拜房市指數因戰爭預期連跌，但實體房價未鬆動；最奇特的是烏克兰，即便處於戰爭中，因難民遷入與軍人購屋需求，房價反而上漲。 投資啟示： 房價不完全取決於政策，更多取決於供給與需求的錯置。 3. 台灣房市的「氣氛」問題 台灣房市進入買方時代，329 檔期總銷金額年減 33%，創 2018 年以來最大跌幅。游庭皓認為台灣並不缺資金（M2 貨幣量仍高），而是央行第七波信用管制讓「氣氛」不對，導致投資與自住客轉為觀望。 市場影響： 建商開始減少供給（建造宅數下滑）以因應需求萎縮，試圖穩住房價。</div>
                     </div>
                 </div>
             </section>
@@ -981,6 +1015,8 @@
                     </div>
                 </div>
             </section>
+            
+
             
 
             

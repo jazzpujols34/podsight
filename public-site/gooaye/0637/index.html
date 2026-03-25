@@ -542,6 +542,55 @@
             font-style: italic;
         }
 
+        .qa-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .qa-card {
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .qa-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-card-hover);
+        }
+
+        .qa-question {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--accent-secondary);
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .qa-answer {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        .qa-icon {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .qa-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
         .risk-list {
             display: flex;
             flex-direction: column;
@@ -850,6 +899,21 @@
                         <div class="topic-title">美股軟體股的「殺過頭」邏輯謬誤</div>
                         <div class="topic-content">市場目前因 AI 可能取代 SaaS 的敘事而全面拋售軟體股。MK 認為市場反應過度（Overshoot），其推論鏈為：若軟體產業真的走向滅亡，作為全球最大「軟體稅」徵收者的 Apple (AAPL) 跌幅不應如此輕微。此外，Klarna 聲稱用 AI 取代 SaaS 提升獲利，但其股價同樣被提款，顯示市場目前是「無差別通殺」而非理性重估。MK 打算識別出被錯殺的標的，特別是那些財務數據已證明實質受惠，而非僅靠題材支撐的公司。</div>
                     </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 02</div>
+                        <div class="topic-title">資安產業在 AI Agent 時代的不可替代性</div>
+                        <div class="topic-content">市場認為 AI Agent 可以自動化完成任務，進而取代專業軟體。MK 提出反對觀點：資安防禦追求的是「100% 滴水不漏」與「法律上的可規則性（Liability）」。企業不敢將敏感資料交給開源或缺乏維護的 AI 工具，因為一旦出錯，企業需要的是一個可追責的專業對象。因此，資安龍頭在毛利不減反增的情況下被殺，是明顯的識別錯誤。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 03</div>
+                        <div class="topic-title">Apple 成為 AI Agent 贏家的隱性優勢</div>
+                        <div class="topic-content">市場普遍認為 Apple 在 AI 競賽中落後，但 MK 持相反意見。他認為 Apple Intelligence 雖然目前功能較基礎，但掌握了「硬體入口」與「去識別化的私有雲運算」。相比於讓 AI 爬蟲在網路上亂跑，消費者更傾向信任已綁定信用卡與個人隱私的手機系統。只要 Apple 最佳化自動化執行功能，其硬體優勢將使其成為最終的「任務中樞（Mission Control）」。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 04</div>
+                        <div class="topic-title">大型科技股的算力宣示與估值陷阱</div>
+                        <div class="topic-content">市場認為大型科技巨頭（Hyperscalers）過度支出，但 MK 認為 Microsoft (MSFT) 決定將算力留給自家 ASIC 使用是強力的競爭宣示。在估值上，MK 批評市場常犯的錯誤是：將營收年增率僅 10% 的公司（如 Salesforce）與營收增速變態增長的公司（如 Palantir）放在同樣的 PS Ratio 基準比較。他主張應使用 PEG 模型，優先選擇增長動能強勁的標的，而非僅僅是帳面上看起來「便宜」的股票。</div>
+                    </div>
                 </div>
             </section>
             
@@ -910,6 +974,8 @@
                     </div>
                 </div>
             </section>
+            
+
             
 
             

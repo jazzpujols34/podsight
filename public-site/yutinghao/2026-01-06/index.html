@@ -542,6 +542,55 @@
             font-style: italic;
         }
 
+        .qa-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .qa-card {
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .qa-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-card-hover);
+        }
+
+        .qa-question {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--accent-secondary);
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .qa-answer {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        .qa-icon {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .qa-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
         .risk-list {
             display: flex;
             flex-direction: column;
@@ -844,7 +893,7 @@
                 <div class="topic-list">
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 01</div>
-                        <div class="topic-title">台積電權重巨獸與內外資對作</div>
+                        <div class="topic-title">話題名稱：台積電權重巨獸與內外資對作</div>
                         <div class="topic-content">詳細說明： 台積電單日大漲 85 元，貢獻大盤逾六百點，市值已超越波克夏躍居全球第六。有趣的是，外資在匯市重貶之際持續調節台積電現貨，但內資主力、受險與散戶展現強大韌性，形成「土洋對坐」且內資完勝的局面。 市場影響： 台北股市已進入「台積電一個人的武林」，指數表現與台積電高度掛鉤，中小型股若無 AI 題材，表現相對疲軟。 話題名稱：AI 營收重塑台積電估值 詳細說明： 投行紛紛調升台積電目標價至 2400 元以上，主因是台積電已從「賣先進製程」進化到「被 AI 重塑」。預估 2027 年 AI 相關營收佔比將達 40%，且 2027 年 EPS 有望挑戰 100-120 元大關。 投資啟示： 投資人需關注 2026 年資本支出是否能維持高成長，以及終端應用（如機器人、自駕車）能否如期推出以支撐算力需求。 話題名稱：主動型 ETF 的「套娃」困局 詳細說明： 市場出現奇觀，主動型 ETF（如 00981A）因台積電持股達 10% 上限，為了追上大盤績效，竟然去買入被動型的 0050 與 0052。這導致了「ETF 無限迴圈」，主動基金經理人發現如果不買台積電，根本無法跑贏指數。 市場影響： 凸顯了當前選股難度極高，投資人可能面臨「繳了兩次管理費」卻只是在買大盤的窘境。</div>
                     </div>
                 </div>
@@ -971,6 +1020,8 @@
                     </div>
                 </div>
             </section>
+            
+
             
 
             

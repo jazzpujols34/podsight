@@ -542,6 +542,55 @@
             font-style: italic;
         }
 
+        .qa-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .qa-card {
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .qa-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-card-hover);
+        }
+
+        .qa-question {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--accent-secondary);
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .qa-answer {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        .qa-icon {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .qa-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
         .risk-list {
             display: flex;
             flex-direction: column;
@@ -848,22 +897,7 @@
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 01</div>
                         <div class="topic-title">AI 產業的軟硬體大脫鉤</div>
-                        <div class="topic-content">：市場正將 AI 科技股拆成兩條線。硬體股（晶片、記憶體、機房）持續享受企業資本開支的紅利；軟體股則面臨模型原廠（如 OpenAI）直接下場競爭或被替代的風險，導致估值被重新定價。</div>
-                    </div>
-                    <div class="topic-card">
-                        <div class="topic-number">TOPIC 02</div>
-                        <div class="topic-title">市場影響</div>
-                        <div class="topic-content">韓國三星、SK 海力士市值超越阿里與騰訊，反映資金正向「賣鏟子」的硬體端高度傾斜。 2. OpenAI 與馬斯克帝國的資本競賽 詳細說明：AI 比賽已從「模型能力」轉向「資金鏈」與「資料鏈」的整併戰。馬斯克透過將 SpaceX 與 xAI 捆綁，打造出 1.25 兆美元的私人企業帝國；反觀 OpenAI 則面臨人才出走、資料枯竭及與輝達關係生變的挑戰。</div>
-                    </div>
-                    <div class="topic-card">
-                        <div class="topic-number">TOPIC 03</div>
-                        <div class="topic-title">投資啟示</div>
-                        <div class="topic-content">AI 領先者的更替速度是以「月」為單位，目前的估值更多是建立在市場信仰與圈錢能力上。 3. 機器人元年：中國製造的全球滲透 詳細說明：人型機器人已正式進入實體工廠，德州儀器（TI）與空中巴士（Airbus）紛紛採用中國廠商（如優必選 UBTECH）的機器人協助生產。</div>
-                    </div>
-                    <div class="topic-card">
-                        <div class="topic-number">TOPIC 04</div>
-                        <div class="topic-title">市場影響</div>
-                        <div class="topic-content">AI 帶來的自動化正從白領工作擠壓到藍領製造，2024-2025 年將是機器人出貨量爆發的關鍵期。</div>
+                        <div class="topic-content">詳細說明：市場正將 AI 科技股拆成兩條線。硬體股（晶片、記憶體、機房）持續享受企業資本開支的紅利；軟體股則面臨模型原廠（如 OpenAI）直接下場競爭或被替代的風險，導致估值被重新定價。 市場影響：韓國三星、SK 海力士市值超越阿里與騰訊，反映資金正向「賣鏟子」的硬體端高度傾斜。 2. OpenAI 與馬斯克帝國的資本競賽 詳細說明：AI 比賽已從「模型能力」轉向「資金鏈」與「資料鏈」的整併戰。馬斯克透過將 SpaceX 與 xAI 捆綁，打造出 1.25 兆美元的私人企業帝國；反觀 OpenAI 則面臨人才出走、資料枯竭及與輝達關係生變的挑戰。 投資啟示：AI 領先者的更替速度是以「月」為單位，目前的估值更多是建立在市場信仰與圈錢能力上。 3. 機器人元年：中國製造的全球滲透 詳細說明：人型機器人已正式進入實體工廠，德州儀器（TI）與空中巴士（Airbus）紛紛採用中國廠商（如優必選 UBTECH）的機器人協助生產。 市場影響：AI 帶來的自動化正從白領工作擠壓到藍領製造，2024-2025 年將是機器人出貨量爆發的關鍵期。</div>
                     </div>
                 </div>
             </section>
@@ -985,6 +1019,8 @@
                     </div>
                 </div>
             </section>
+            
+
             
 
             

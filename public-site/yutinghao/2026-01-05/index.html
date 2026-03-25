@@ -542,6 +542,55 @@
             font-style: italic;
         }
 
+        .qa-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .qa-card {
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .qa-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-card-hover);
+        }
+
+        .qa-question {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--accent-secondary);
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .qa-answer {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        .qa-icon {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .qa-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
         .risk-list {
             display: flex;
             flex-direction: column;
@@ -844,7 +893,7 @@
                 <div class="topic-list">
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 01</div>
-                        <div class="topic-title">美軍閃電逮捕馬杜羅與「法律閉環」佈局</div>
+                        <div class="topic-title">話題名稱：美軍閃電逮捕馬杜羅與「法律閉環」佈局</div>
                         <div class="topic-content">詳細說明： 美軍動用超過 150 架戰機與電子戰手段，在短短幾小時內癱瘓委內瑞拉防禦系統並逮捕馬杜羅。此行動並非臨時起意，而是長達五年的法律佈局，美國司法部將馬杜羅定義為「跨國毒梟」而非國家元首，以此規避國際法對元首豁免權的限制，並引用「自衛權」進行跨境執法。 市場影響或投資啟示： 展現了美國強大的系統性優勢（ISR 情報監視、金融通訊交叉比對），確立了川普時代「先發制人」的強硬地緣政治風格。 話題名稱：委內瑞拉石油回歸與全球能源版圖重構 詳細說明： 委內瑞拉擁有超過 3,000 億桶的原油儲量（世界第一），但因技術落後與制裁導致產量低迷。川普明確表示美國大型油企將進場重整基礎設施，利用委國的超重油資源擴大全球供給。 市場影響或投資啟示： 短期雖有波動，但長期將導致原油供給過剩，進一步壓低全球油價。這對美國油商（如雪佛龍）是利多，但對原油價格則是沉重壓力。 話題名稱：「唐羅主義」（Tang-roe Doctrine）的興起 詳細說明： 這是門羅主義的 2.0 進化版，由唐納·川普（Donald Trump）主導。核心是不僅排除外部勢力（俄中）進入西半球，美國更有權直接介入「失敗國家」的治理，並將其資源（石油、礦產）視為行動成本的「戰利品」或補償。 市場影響或投資啟示： 拉丁美洲正在全面「右轉」，這將改變區域經貿規則，並切斷古巴等國長期依賴的廉價能源供應鏈。</div>
                     </div>
                 </div>
@@ -963,6 +1012,8 @@
                     </div>
                 </div>
             </section>
+            
+
             
 
             

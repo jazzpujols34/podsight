@@ -542,6 +542,55 @@
             font-style: italic;
         }
 
+        .qa-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .qa-card {
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .qa-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-card-hover);
+        }
+
+        .qa-question {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--accent-secondary);
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .qa-answer {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        .qa-icon {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .qa-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
         .risk-list {
             display: flex;
             flex-direction: column;
@@ -844,18 +893,8 @@
                 <div class="topic-list">
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 01</div>
-                        <div class="topic-title">市場影響</div>
-                        <div class="topic-content">美歐經濟高度互補（歐洲持有 8 兆美元美債與股票），全面開戰代價過高。關稅威脅解除後，市場不確定性降低，利多歐美貿易相關板塊。 2. 聯準會 (Fed) 主席人選爭奪戰 川普暗示將哈塞特留在白宮，使 Kevin Warsh (沃許) 成為下一任主席的最熱門人選。Warsh 雖具學術背景但立場偏鷹，這讓市場重新解讀 Fed 的獨立性與政治介入。</div>
-                    </div>
-                    <div class="topic-card">
-                        <div class="topic-number">TOPIC 02</div>
-                        <div class="topic-title">投資啟示</div>
-                        <div class="topic-content">鮑爾任期屆滿後的權力鬥爭將造成市場波動，投資者需關注 5 月份人選拍板後的利率預期調整。 3. AI 電力瓶頸與能源政策轉向 川普首次承認 AI 資料中心與製造業回流導致電價飆升，並宣佈將全力發展核能，同時抨擊風力發電。</div>
-                    </div>
-                    <div class="topic-card">
-                        <div class="topic-number">TOPIC 03</div>
-                        <div class="topic-title">市場影響</div>
-                        <div class="topic-content">美國核能股全面拉升。川普將放寬汽車燃油效率標準以利底特律車廠，並取消綠能補貼，與中國死守綠能產業鏈的戰略形成強烈對比。</div>
+                        <div class="topic-title">美歐關稅衝突正式翻頁：格陵蘭框架協議</div>
+                        <div class="topic-content">川普宣佈暫停對歐洲加徵關稅，主因是與北約及丹麥達成關於格陵蘭的軍事與礦產開發框架協議。 市場影響： 美歐經濟高度互補（歐洲持有 8 兆美元美債與股票），全面開戰代價過高。關稅威脅解除後，市場不確定性降低，利多歐美貿易相關板塊。 2. 聯準會 (Fed) 主席人選爭奪戰 川普暗示將哈塞特留在白宮，使 Kevin Warsh (沃許) 成為下一任主席的最熱門人選。Warsh 雖具學術背景但立場偏鷹，這讓市場重新解讀 Fed 的獨立性與政治介入。 投資啟示： 鮑爾任期屆滿後的權力鬥爭將造成市場波動，投資者需關注 5 月份人選拍板後的利率預期調整。 3. AI 電力瓶頸與能源政策轉向 川普首次承認 AI 資料中心與製造業回流導致電價飆升，並宣佈將全力發展核能，同時抨擊風力發電。 市場影響： 美國核能股全面拉升。川普將放寬汽車燃油效率標準以利底特律車廠，並取消綠能補貼，與中國死守綠能產業鏈的戰略形成強烈對比。</div>
                     </div>
                 </div>
             </section>
@@ -977,6 +1016,8 @@
                     </div>
                 </div>
             </section>
+            
+
             
 
             

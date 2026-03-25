@@ -542,6 +542,55 @@
             font-style: italic;
         }
 
+        .qa-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .qa-card {
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .qa-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-card-hover);
+        }
+
+        .qa-question {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--accent-secondary);
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .qa-answer {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        .qa-icon {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .qa-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
         .risk-list {
             display: flex;
             flex-direction: column;
@@ -850,6 +899,21 @@
                         <div class="topic-title">2024 年度回顧與心態轉折</div>
                         <div class="topic-content">MK 的觀點與推論：本以為 4 月崩盤後今年表現會很慘，但年底靠著 Tesla (TSLA) 與小鬼股組合醒來，最終績效略優於去年。MK 認為今年是「靠賽」也是感恩的一年，特別是軟體股（如 NET, PLTR）在年尾結算表現極佳。</div>
                     </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 02</div>
+                        <div class="topic-title">槓桿管理：從「緊俏」轉向「流動性備援」</div>
+                        <div class="topic-content">MK 的觀點與推論：4 月的崩盤（川普關稅言論引發台股連續跌停）是 MK 投資生涯的重大警訊。當時他發現即便維持率尚可，但「流動性擠壓」會導致想賣賣不掉、網銀轉帳限額等問題，差點嘎不過去。 市場認為：槓桿越高賺越快；MK 認為：槓桿必須降至 1.3-1.5 倍，且必須「最佳化分點資金分佈」，避免頭重腳輕導致緊急時刻無法救火。 具體行動：開通場外銀行與租賃公司的入金管道，確保極端狀況下能立刻調度資金補足維持率。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 03</div>
+                        <div class="topic-title">小鬼股策略的維度升級</div>
+                        <div class="topic-content">MK 的觀點與推論：過去 MK 專注於市值 50-70 億的台股小公司，但現在「拔掉限制器」。他意識到台股的中大型股在美股眼裡也只是小公司，因此開始納入市值百億甚至千億、但「不擁擠且 Roadmap 清楚」的標的（如七字頭的新貴股）。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 04</div>
+                        <div class="topic-title">對社會階層與「同溫層」的解讀</div>
+                        <div class="topic-content">MK 的觀點與推論：回應竹科媽媽入群標準與軍備競賽。MK 認為「門當戶對」是真的，因為生活水平匹配的人溝通最自然。他建議除非要改變現狀，否則待在同溫層最舒服，不需要為了別人的生活方式感到焦慮或去抨擊他人。</div>
+                    </div>
                 </div>
             </section>
             
@@ -953,6 +1017,8 @@
                     </div>
                 </div>
             </section>
+            
+
             
 
             

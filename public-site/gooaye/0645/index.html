@@ -542,6 +542,55 @@
             font-style: italic;
         }
 
+        .qa-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .qa-card {
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .qa-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-card-hover);
+        }
+
+        .qa-question {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--accent-secondary);
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .qa-answer {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        .qa-icon {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .qa-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
         .risk-list {
             display: flex;
             flex-direction: column;
@@ -850,6 +899,21 @@
                         <div class="topic-title">NVIDIA GTC 發表會與「Apple 化」現象</div>
                         <div class="topic-content">MK 觀察到 NVIDIA 的股價在 GTC 發表會後反應平淡，認為這標誌著 NVIDIA 進入了與 Apple 類似的階段：市場對其利多已有高度預期，發表會內容不再具備驚喜。MK 將 NVIDIA 定義為「AI Factory Total Solution Supplier」，而不僅是晶片供應商。針對市場擔憂三星（Samsung）搶下台積電(2330)訂單的說法，MK 認為這純屬危言聳聽，本質是產能供不應求下的「雙軌制」必然結果，且台積電目前的產能確實也給不出來。</div>
                     </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 02</div>
+                        <div class="topic-title">SRAM 題材的市場誤讀與「歪打正著」</div>
+                        <div class="topic-content">市場近期因 Groq 的 LPU 晶片而瘋狂炒作 SRAM 族群，但 MK 指出這是一個「美麗的誤會」。真正的 SRAM 是 On-chip Memory，直接由台積電(2330)或三星生產，並非市場炒作的那些標的。然而，MK 認為這類炒作可能「歪打正著」，因為如華邦電(2344)的 CUBE 或愛普*(6531)的 VHB (ZHBM) 雖然不是純 SRAM，但其 On-chip Memory Computing 的概念與 LPU 追求的低延遲效率一致，未來仍有機會因技術路徑接近而獲益。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 03</div>
+                        <div class="topic-title">ASIC 陣營的勢力消長與新進者</div>
+                        <div class="topic-content">MK 透露 ASIC 市場正發生變局：Meta 因模型效能問題出現砍單與調整；微軟(MSFT)的 Maia 晶片則面臨台積電 N2 產能取得困難的窘境。最重要的觀察點在於 Google，MK 提到 Google 除了現有的 Broadcom (AVGO) 與聯發科(2454)外，正計畫引入第三家 ASIC 設計夥伴（暗示為 M 開頭的公司），這將改變既有的供應鏈格局。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 04</div>
+                        <div class="topic-title">資訊優勢與「蹲點」的效率陷阱</div>
+                        <div class="topic-content">MK 反思自己錄製節目的初衷是為了獲得業內資訊優勢，但現在發現，即便提前知道漲價題材（如村田製作所 Murata 漲價），股價也不一定會隨即反應。市場認為「領先知道」就能賺錢，MK 則認為「過早進場蹲點」會導致資金效率極差。他現在傾向結合產業底蘊與技術面，在股價突破後才進場，因為「知道底子好」讓他即便在波動中被套牢也能安心加碼，而非盲目停損。</div>
+                    </div>
                 </div>
             </section>
             
@@ -914,6 +978,8 @@
                     </div>
                 </div>
             </section>
+            
+
             
 
             

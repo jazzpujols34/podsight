@@ -542,6 +542,55 @@
             font-style: italic;
         }
 
+        .qa-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .qa-card {
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .qa-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-card-hover);
+        }
+
+        .qa-question {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--accent-secondary);
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .qa-answer {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        .qa-icon {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .qa-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
         .risk-list {
             display: flex;
             flex-direction: column;
@@ -847,8 +896,23 @@
                 <div class="topic-list">
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 01</div>
-                        <div class="topic-title">MK 的觀點與推論</div>
-                        <div class="topic-content">市場常以「後照鏡開車」，認為過去拉回必買，未來也會一樣。MK 則強調「決策品質的重複性」，如果買入理由（如 A 題材）與最終上漲理由（如 B 題材）不同，即便賺錢也只是「賽到」，這是不良交易。真正的進步來自於即便賠錢，但推論邏輯正確且行為模式符合共識。</div>
+                        <div class="topic-title">操作邏輯：決策品質大於獲利結果</div>
+                        <div class="topic-content">MK 的觀點與推論：市場常以「後照鏡開車」，認為過去拉回必買，未來也會一樣。MK 則強調「決策品質的重複性」，如果買入理由（如 A 題材）與最終上漲理由（如 B 題材）不同，即便賺錢也只是「賽到」，這是不良交易。真正的進步來自於即便賠錢，但推論邏輯正確且行為模式符合共識。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 02</div>
+                        <div class="topic-title">ASML 財報解讀：利多出盡後的產能焦慮</div>
+                        <div class="topic-content">MK 的觀點與推論：ASML 展望開得極遠卻在財報後下跌，是典型的「Buy the rumor, sell the news」。市場共識認為台積電(2330)拉高資本支出已足夠，但 MK 觀察到 Microsoft 等客戶在電話會議中仍抱怨產能「遠遠不夠」。他判斷設備股目前動能已鈍化，操作應偏向「左側交易」而非追高，等待週期性回檔。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 03</div>
+                        <div class="topic-title">Tesla 停產 S/X：自駕奇點的預告</div>
+                        <div class="topic-content">MK 的觀點與推論：市場認為停產 Model S/X 是銷售衰退，但 MK 認為這反而是「全力作多」的訊號。他的推論鏈是：如果馬斯克真心相信自駕（Cybercab）即將到來，就沒必要維持過多傳統車型產線。敢於縮編車隊代表公司已看到 100% 無人監督自駕的明確路徑，這是一種轉型決心的展現。 市場認為：盯著交車資料看成長性。 MK 認為：交車資料無法支撐估值，唯有自駕與機器人（Optimus）才能 justify 目前股價，因此交車數據不重要，自駕進度才是核心。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 04</div>
+                        <div class="topic-title">機器人與低軌衛星：從想像力轉向實質訂單</div>
+                        <div class="topic-content">MK 的觀點與推論：過去 MK 認為機器人題材太遠，但這次 Tesla 宣稱將產能移往 Optimus 後，他正式將機器人納入「防守圈」觀察。台股目前機器人標的純度極低，多為視覺或鏡頭題材，實質營收難算。相較之下，低軌衛星族群有「龐大且明確的訂單」支撐，股價強勢且流動性佳，是目前最看好的實質獲利族群。</div>
                     </div>
                 </div>
             </section>
@@ -975,6 +1039,8 @@
                     </div>
                 </div>
             </section>
+            
+
             
 
             

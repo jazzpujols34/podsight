@@ -542,6 +542,55 @@
             font-style: italic;
         }
 
+        .qa-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .qa-card {
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .qa-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-card-hover);
+        }
+
+        .qa-question {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--accent-secondary);
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .qa-answer {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        .qa-icon {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .qa-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
         .risk-list {
             display: flex;
             flex-direction: column;
@@ -848,22 +897,7 @@
                     <div class="topic-card">
                         <div class="topic-number">TOPIC 01</div>
                         <div class="topic-title">軟體股的「末日審判」</div>
-                        <div class="topic-content">IBM、Oracle 及多家軟體 ETF 近期遭遇 2000 年以來最慘烈的賣壓。市場開始點名誰會被 AI 幫助、誰會被 AI 取代，尤其是寫程式、稅務規劃、檔案流程等傳統訂閱制軟體，正面臨 AI 代理人（AI Agents）繞過其護城河的威脅。</div>
-                    </div>
-                    <div class="topic-card">
-                        <div class="topic-number">TOPIC 02</div>
-                        <div class="topic-title">市場影響</div>
-                        <div class="topic-content">資金全面撤離估值過高的軟體股，轉向硬體基礎建設或觀望。 2. 科技巨頭的資本支出焦慮 詳細說明： 科技七雄（Mag 7）除了蘋果外，資本支出（CAPEX）呈爆發式增長，亞馬遜與 Google 投入均破千億美元。這導致原本用來拉抬股價的「股票回購」資金被挪用，且穆迪警告許多 AI 負債被藏在財報外的附註中（如 SPV 租賃協議）。</div>
-                    </div>
-                    <div class="topic-card">
-                        <div class="topic-number">TOPIC 03</div>
-                        <div class="topic-title">投資啟示</div>
-                        <div class="topic-content">AI 已從「成長天使」變成「估值殺手」，市場不再看故事，而是追問何時能看到現金流回報。 3. 中國 AI 的「雙超理論」與電力紅利 詳細說明： 中國企業（如字節跳動、阿里）不追求技術頂尖化，而是追求「實業化」與「成本極低化」。同時，全球 AI 發展正撞上電力與電網併網的物理天花板，中國在能源成本與基礎建設速度上具有獨特優勢。</div>
-                    </div>
-                    <div class="topic-card">
-                        <div class="topic-number">TOPIC 04</div>
-                        <div class="topic-title">市場影響</div>
-                        <div class="topic-content">資金開始流入純 AI 贏家，中國 AI 富豪呈現「技術型、低調、在地化」特徵，試圖避開美國制裁並快速商用。</div>
+                        <div class="topic-content">詳細說明： IBM、Oracle 及多家軟體 ETF 近期遭遇 2000 年以來最慘烈的賣壓。市場開始點名誰會被 AI 幫助、誰會被 AI 取代，尤其是寫程式、稅務規劃、檔案流程等傳統訂閱制軟體，正面臨 AI 代理人（AI Agents）繞過其護城河的威脅。 市場影響： 資金全面撤離估值過高的軟體股，轉向硬體基礎建設或觀望。 2. 科技巨頭的資本支出焦慮 詳細說明： 科技七雄（Mag 7）除了蘋果外，資本支出（CAPEX）呈爆發式增長，亞馬遜與 Google 投入均破千億美元。這導致原本用來拉抬股價的「股票回購」資金被挪用，且穆迪警告許多 AI 負債被藏在財報外的附註中（如 SPV 租賃協議）。 投資啟示： AI 已從「成長天使」變成「估值殺手」，市場不再看故事，而是追問何時能看到現金流回報。 3. 中國 AI 的「雙超理論」與電力紅利 詳細說明： 中國企業（如字節跳動、阿里）不追求技術頂尖化，而是追求「實業化」與「成本極低化」。同時，全球 AI 發展正撞上電力與電網併網的物理天花板，中國在能源成本與基礎建設速度上具有獨特優勢。 市場影響： 資金開始流入純 AI 贏家，中國 AI 富豪呈現「技術型、低調、在地化」特徵，試圖避開美國制裁並快速商用。</div>
                     </div>
                 </div>
             </section>
@@ -989,6 +1023,8 @@
                     </div>
                 </div>
             </section>
+            
+
             
 
             
