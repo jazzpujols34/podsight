@@ -499,11 +499,23 @@ def parse_summary(content: str) -> dict:
             qa_text,
             re.DOTALL,
         )
+        # Investment-related keywords to filter QA
+        investment_keywords = re.compile(
+            r"股|ETF|基金|標的|買|賣|進場|出場|部位|持股|操作|套牢|停損|加碼|減碼|"
+            r"漲|跌|毛利|營收|財報|產業|供應鏈|AI|半導體|記憶體|光通訊|CPO|"
+            r"估值|PE|本益比|殖利率|配息|槓桿|融資|水位|趨勢|技術面|基本面|"
+            r"市場|盤勢|指數|台積電|美光|NVIDIA|投資|報酬|績效|資金"
+        )
         for question, answer in qa_pairs:
             q = strip_markdown(question).strip()
             a = strip_markdown(answer).strip()
+            # Only include investment-related QA (combined Q+A must contain investment keywords)
+            # Require at least 2 keyword matches to avoid false positives from casual mentions
             if q and a:
-                sections["qa"].append({"question": q, "answer": a})
+                combined = q + " " + a
+                matches = investment_keywords.findall(combined)
+                if len(matches) >= 2:
+                    sections["qa"].append({"question": q, "answer": a})
 
     # Extract conclusion (本集結論)
     conclusion_match = re.search(
