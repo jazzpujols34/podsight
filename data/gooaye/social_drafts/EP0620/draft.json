@@ -1,8 +1,8 @@
 {
   "episode_id": "EP0620",
   "podcast": "gooaye",
-  "created_at": "2026-02-25T23:48:04.191249",
-  "summary_hash": "c6597f541138",
+  "created_at": "2026-03-25T11:41:49.504686",
+  "summary_hash": "0ac86c0be5bb",
   "status": "pending",
   "platforms": {
     "twitter": {
@@ -35,7 +35,7 @@
     "instagram": {
       "status": "pending",
       "content_file": "instagram.json",
-      "image_file": "instagram_card.png",
+      "image_file": null,
       "published_at": null,
       "post_ids": [],
       "error": null,

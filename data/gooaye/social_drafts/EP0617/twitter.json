@@ -1,18 +1,18 @@
 {
   "thread": [
     {
-      "text": "🎙️ Gooaye 股癌 EP0617 重點整理\n\n📝 本集探討了半導體封裝與材料的技術謠言澄清，並透過 Confluent 被 IBM 收購一事，分享軟體股配置與「長期持有」對改善生活品質的重要性。\n\n💡 本集亮點：\n• 相關標的\n• 相關標的\n• 相關標的\n\n👇 詳細內容請看回覆",
-      "char_count": 223,
+      "text": "🎙️ Gooaye 股癌 EP0617 重點整理\n\n📝 MK 認為當前市場情緒變化極快，投資者應從「追逐右上角」轉向「委縮流」操作，透過建立主題式小組合（如軟體、光通訊）並拉長持有時間，以應對基本面與謠言交織的波動。\n\n💡 本集亮點：\n• 封裝技術的市場誤解\n• MK 的觀點與推論\n• 相關標的\n\n👇 詳細內容請看回覆",
+      "char_count": 263,
       "is_main": true
     },
     {
-      "text": "💡 本集重點：\n\n• 相關標的： Intel (INTC)、台光電 (2383)、佳澤 (3533)\n• 相關標的： Marvell (MRVL)、Google (GOOGL)、聯發科 (2454)\n• 相關標的： IBM (IBM)、Confluent (CFLT)、Palantir (PLTR)、Cloudflare (NET)",
-      "char_count": 191,
+      "text": "💡 本集重點：\n\n• 封裝技術的市場誤解：EMIB 與 HBM 的關聯\n• MK 的觀點與推論：市場上有論點認為 Intel 的 EMIB 封裝無法使用 HBM，但 MK 指出這是資訊落差。根據 Intel 官網與產業實務，EMI...\n• 相關標的：Intel (INTC)\n• NVIDIA 供應鏈材料的「解凍」與路徑變更\n• MK 的觀點與推論：產業設計並非一成不變，曾被視為「冷凍」的 PTFE（聚四氟乙烯）材料近期有「解凍」跡象。原先市場預期 NVIDIA 下一代會採用臺光電...",
+      "char_count": 371,
       "is_main": false
     },
     {
-      "text": "💬 謝孟恭 (MK)金句：\n「股票最大的獲利都是爆（抱）出來的。」\n\n#股癌 #投資 #理財",
-      "char_count": 71,
+      "text": "💬 謝孟恭 (MK)金句：\n「基本面不會在短期內發生巨大改變，改變的通常是大家的人心。」\n\n#股癌 #投資 #理財",
+      "char_count": 94,
       "is_main": false
     }
   ],

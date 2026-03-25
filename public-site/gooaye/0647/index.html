@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>股癌 EP0647 重點整理｜AI 摘要 — PodSight</title>
+    <meta name="description" content="AI 已從「概念」轉向「實質生產力工具」，投資者應避開市場的「尬吹」噪音，轉向具備物理剛需的光通訊與 CPU 族群，並在區間震盪中執行精確的「汰弱留強」。">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="股癌 EP0647 重點整理｜AI 摘要 — PodSight">
+    <meta property="og:description" content="AI 已從「概念」轉向「實質生產力工具」，投資者應避開市場的「尬吹」噪音，轉向具備物理剛需的光通訊與 CPU 族群，並在區間震盪中執行精確的「汰弱留強」。">
+    <meta property="og:image" content="/assets/og-image.png">
+    <meta property="og:type" content="article">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="/assets/PodSight-Logo-cropped.jpeg">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "股癌 EP0647 重點整理｜AI 摘要 — PodSight",
+        "description": "AI 已從「概念」轉向「實質生產力工具」，投資者應避開市場的「尬吹」噪音，轉向具備物理剛需的光通訊與 CPU 族群，並在區間震盪中執行精確的「汰弱留強」。",
+        "datePublished": "2026-03-25",
+        "author": {
+            "@type": "Organization",
+            "name": "PodSight"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "PodSight",
+            "url": "https://podsight.tw"
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://podsight.tw/gooaye/0647/"
+        },
+        "about": {
+            "@type": "PodcastEpisode",
+            "name": "EP647 | 🍬",
+            "partOfSeries": {
+                "@type": "PodcastSeries",
+                "name": "股癌 Gooaye"
+            }
+        }
+    }
+    </script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <style>
+        :root {
+            
+            --bg-primary: #0a0f1a;
+            --bg-secondary: #111827;
+            --bg-card: rgba(26, 111, 175, 0.08);
+            --bg-card-hover: rgba(26, 111, 175, 0.12);
+            --border-subtle: rgba(77, 184, 232, 0.15);
+            --border-glow: rgba(77, 184, 232, 0.3);
+            --text-primary: #f0f9ff;
+            --text-secondary: rgba(240, 249, 255, 0.75);
+            --text-muted: rgba(240, 249, 255, 0.5);
+            --accent-primary: #4DB8E8;
+            --accent-secondary: #1A6FAF;
+            --accent-tertiary: #F5A623;
+            --accent-glow: rgba(77, 184, 232, 0.4);
+            --accent-gradient: linear-gradient(135deg, #1A6FAF 0%, #4DB8E8 50%, #F5A623 100%);
+            --accent-bg: rgba(77, 184, 232, 0.12);
+            --accent-border: rgba(77, 184, 232, 0.25);
+        
+            --glass-blur: 20px;
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.8;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--accent-gradient);
+            z-index: 1000;
+            transition: width 0.1s linear;
+        }
+
+        .bg-ambient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at top right, var(--accent-glow) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom left, rgba(255,255,255,0.02) 0%, transparent 50%);
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .nav {
+            padding: 24px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-back {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover {
+            color: var(--accent-primary);
+        }
+
+        .nav-back svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .nav-logo-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .nav-logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .nav-logo-text {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .episode-header {
+            padding: 40px 0 60px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .episode-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .episode-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            color: var(--accent-primary);
+        }
+
+        .episode-badge svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .episode-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .episode-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .episode-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .share-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .share-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .share-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .listen-btn {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .listen-btn:hover {
+            background: var(--accent-primary);
+            color: #fff;
+        }
+
+        .content {
+            padding: 60px 0;
+        }
+
+        .section {
+            margin-bottom: 56px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-primary);
+        }
+
+        .section-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .tldr-box {
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 48px;
+        }
+
+        .tldr-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--accent-primary);
+            margin-bottom: 12px;
+        }
+
+        .tldr-text {
+            font-size: 1.25rem;
+            font-weight: 500;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        .topic-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .topic-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.2s var(--transition-smooth);
+        }
+
+        .topic-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-card-hover);
+        }
+
+        .topic-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-secondary);
+            margin-bottom: 8px;
+        }
+
+        .topic-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .topic-content {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .strategy-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .strategy-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+
+        .strategy-card:hover {
+            border-color: var(--accent-border);
+        }
+
+        .strategy-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-bg);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-secondary);
+            flex-shrink: 0;
+        }
+
+        .strategy-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .strategy-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .stock-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .stock-tag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 18px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+
+        .stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .stock-symbol {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--accent-primary);
+        }
+
+        .stock-name {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .quote-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .quote-card {
+            position: relative;
+            padding: 24px 24px 24px 32px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-left: 3px solid var(--accent-primary);
+            border-radius: 0 12px 12px 0;
+        }
+
+        .quote-text {
+            font-size: 1.1rem;
+            font-style: italic;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .quote-icon {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            color: var(--accent-bg);
+        }
+
+        .quote-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .humor-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .humor-card {
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .humor-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-card-hover);
+        }
+
+        .humor-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-secondary);
+            background: var(--accent-bg);
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+
+        .humor-quote {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .humor-context {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .qa-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .qa-card {
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .qa-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-card-hover);
+        }
+
+        .qa-question {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--accent-secondary);
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .qa-answer {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        .qa-icon {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .qa-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .risk-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .risk-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 18px;
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 10px;
+        }
+
+        .risk-icon {
+            color: #ef4444;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .risk-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .risk-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .conclusion-box {
+            display: flex;
+            gap: 20px;
+            padding: 28px;
+            background: linear-gradient(135deg, var(--accent-bg) 0%, rgba(255,255,255,0.03) 100%);
+            border: 1px solid var(--accent-border);
+            border-radius: 16px;
+        }
+
+        .conclusion-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-primary);
+            flex-shrink: 0;
+        }
+
+        .conclusion-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .conclusion-content {
+            flex: 1;
+        }
+
+        .conclusion-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--accent-primary);
+            margin-bottom: 8px;
+        }
+
+        .conclusion-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .footer {
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .footer-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .footer-text a {
+            color: var(--accent-primary);
+            text-decoration: none;
+        }
+
+        /* Episode Navigation */
+        .episode-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .ep-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .ep-nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .ep-nav-prev { justify-content: flex-start; }
+        .ep-nav-next { justify-content: flex-end; text-align: right; }
+
+        .ep-nav-btn svg { width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0; }
+        .ep-nav-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .ep-nav-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+        .ep-nav-disabled { visibility: hidden; }
+
+        .ep-nav-prev .ep-nav-label,
+        .ep-nav-prev .ep-nav-title { display: block; }
+        .ep-nav-next .ep-nav-label,
+        .ep-nav-next .ep-nav-title { display: block; }
+
+        /* Table of Contents */
+        .toc {
+            position: fixed;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .toc-link {
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .toc-link:hover,
+        .toc-link.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        /* Clickable stock tags */
+        .stock-tag {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a.stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .toc { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .episode-nav { flex-direction: column; }
+            .ep-nav-btn { max-width: 100%; }
+            .ep-nav-next { flex-direction: row-reverse; text-align: left; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.6s var(--transition-smooth) forwards;
+        }
+
+        .section {
+            opacity: 0;
+            animation: fadeInUp 0.6s var(--transition-smooth) forwards;
+        }
+
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.15s; }
+        .section:nth-child(3) { animation-delay: 0.2s; }
+        .section:nth-child(4) { animation-delay: 0.25s; }
+        .section:nth-child(5) { animation-delay: 0.3s; }
+        .section:nth-child(6) { animation-delay: 0.35s; }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .episode-header {
+                padding: 24px 0 40px;
+            }
+
+            .share-buttons {
+                flex-wrap: wrap;
+            }
+
+            .stock-grid {
+                gap: 8px;
+            }
+
+            .stock-tag {
+                padding: 10px 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="bg-ambient"></div>
+
+    <div class="container">
+        <nav class="nav animate-in">
+            <a href="/gooaye/" class="nav-back">
+                <i data-lucide="arrow-left"></i>
+                返回列表
+            </a>
+            <a href="/" class="nav-logo">
+                <div class="nav-logo-icon">
+                    <img src="/assets/PodSight-Logo-cropped.jpeg" alt="PodSight">
+                </div>
+                <span class="nav-logo-text">PodSight 聲見</span>
+            </a>
+        </nav>
+
+        <header class="episode-header animate-in">
+            <div class="episode-meta">
+                <span class="episode-badge">
+                    <i data-lucide="trending-up"></i>
+                    股癌 Gooaye
+                </span>
+                <span class="episode-date"></span>
+            </div>
+            <h1>EP647 | 🍬</h1>
+            <p class="episode-subtitle">AI 已從「概念」轉向「實質生產力工具」，投資者應避開市場的「尬吹」噪音，轉向具備物理剛需的光通訊與 CPU 族群，並在區間震盪中執行精確的「汰弱留強」。</p>
+
+            <div class="share-buttons">
+                <a href="https://player.soundon.fm/p/954689a5-3096-43a4-a80b-7810b219cef3/episodes/959ffd48-b40a-4709-aad8-239f62ccddee" class="share-btn listen-btn" target="_blank" rel="noopener">
+                    <i data-lucide="headphones"></i>
+                    收聽原節目
+                </a>
+                <a href="#" class="share-btn" onclick="navigator.share({title: document.title, url: window.location.href}); return false;">
+                    <i data-lucide="share-2"></i>
+                    分享
+                </a>
+                <a href="https://t.me/share/url?url=${encodeURIComponent(window.location.href)}" class="share-btn" target="_blank">
+                    <i data-lucide="send"></i>
+                    Telegram
+                </a>
+            </div>
+        </header>
+
+        <main class="content">
+            
+            <div class="tldr-box animate-in" id="tldr">
+                <div class="tldr-label">一句話總結</div>
+                <div class="tldr-text">AI 已從「概念」轉向「實質生產力工具」，投資者應避開市場的「尬吹」噪音，轉向具備物理剛需的光通訊與 CPU 族群，並在區間震盪中執行精確的「汰弱留強」。</div>
+            </div>
+            
+
+            
+            <section class="section" id="topics">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="message-square"></i>
+                    </div>
+                    <h2 class="section-title">主要討論話題</h2>
+                </div>
+                <div class="topic-list">
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 01</div>
+                        <div class="topic-title">1. AI 應用的實戰真相：工具強弱不敵盤勢走向</div>
+                        <div class="topic-content">MK 的觀點與推論：MK 強烈反感網路上的「AI 末日論 (Doomsday Porn)」或誇大的「尬吹文」。他認為 AI 對生產力的提升是漸進式的（類似當年電腦取代打字機），而非一夕顛覆。他以自身「雙棲」經驗指出：同樣的 AI 分析工具（如 Perplexity、Agentic AI），用在台股時讓他「如虎添翼」是因為台股盤勢強；但用在美股時，若盤勢殺爛，再強的工具也無法產生績效。 市場共識 vs MK 觀點：市場認為擁有強大 AI 策略就能獲得超額報酬（Alpha），MK 認為當每個人都擁有 AI 這項「熱兵器」時，Alpha 會被抹平，競爭回歸到「誰能把工具用得更好」。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 02</div>
+                        <div class="topic-title">2. SORA 喊停背後的商業邏輯：成本與機會成本的權衡</div>
+                        <div class="topic-content">MK 的觀點與推論：OpenAI 暫停 SORA 的開發，並非 AI 技術遇到瓶頸，而是「資源配置」問題。影片生成（文生影）的成本極高（Token 消耗大、需大量人工後製、良率低），且面臨嚴重的版權法律風險。相較之下，Anthropic (Claude) 的效率工具與 Coding 生成更具直接變現能力。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 03</div>
+                        <div class="topic-title">3. 馬斯克 TerraFab 的野心：垂直整合的對沖投資學</div>
+                        <div class="topic-content">MK 的觀點與推論：馬斯克宣稱要自建 1TW 產能的 TerraFab 並非真的「缺產能」，核心原因是「嫌台積電貴」。馬斯克想在半導體領域複製電動車的「垂直一條龍」模式，甚至想顛覆傳統晶圓廠（Fab）的物理限制（如宣稱要在廠內抽雪茄）。MK 認為短期內這只是「畫夢」，因為半導體良率對微塵的控制是物理剛性。 MK 的打算：身為 Tesla (TSLA) 股東，他對這種瘋狂燒錢感到害怕；但身為設備商股東，他看好這帶來的巨大商機。他建議投資者若要對沖 Tesla 的不確定性，應布局美股或韓股的廠務與設備商（因馬斯克與三星合作緊密）。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 04</div>
+                        <div class="topic-title">4. 產業新題材：光通訊 (CPO) 與 CPU 推論應用</div>
+                        <div class="topic-content">MK 的觀點與推論：市場資金正從傳統 AI 伺服器外溢至「光通訊」與「CPU 推論應用」。MK 觀察到美股資金已大量往光通訊靠攏，而 CPU 在 AI 推論端的表現也開始受到關注，甚至出現產能卡住的跡象（如 AMD 已開始包產線）。</div>
+                    </div>
+                </div>
+            </section>
+            
+
+            
+            <section class="section" id="strategies">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h2 class="section-title">操作心法與建議</h2>
+                </div>
+                <div class="strategy-list">
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="strategy-text">汰弱留強的具體執行：在區間震盪盤中，MK 不做個股的高出低進，而是執行「品種轉換」。若盤勢回檔後反彈，「沒有站回原本價位」的股票視為弱勢，直接砍掉；將資金轉入正在創高或有新題材（如光通訊）的強勢股。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="layers"></i>
+                        </div>
+                        <div class="strategy-text">區間盤的補貨策略：目前定調為「中東局勢影響的區間盤」。操作上：出現大根黑 K、市場恐慌逃命時小量補貨；當盤勢彈上來大家瘋狂搶購時，卸貨（減碼）降低部位。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="shield"></i>
+                        </div>
+                        <div class="strategy-text">處置股（關緊閉）的操作思維：MK 不會因為股票進入處置而賣出。相反地，由於處置股流動性極低，當處置期間出現「非理性重殺」時，他會視為超跌機會，反向站在買方接貨。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="eye"></i>
+                        </div>
+                        <div class="strategy-text">投資組合配置：目前部位高度集中在「光通訊」與「廠務設備」相關標的。他自嘲最近「舒服到覺得股票好簡單」，但也提醒這可能是 Flag，需保持警戒。</div>
+                    </div>
+                </div>
+            </section>
+            
+
+            
+            <section class="section" id="stocks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="bar-chart-2"></i>
+                    </div>
+                    <h2 class="section-title">提到的股票 / ETF</h2>
+                </div>
+                <div class="stock-grid">
+                    <a href="/stocks/?q=Tesla" class="stock-tag">
+                        <span class="stock-symbol">Tesla (TSLA)</span>
+                        <span class="stock-name">馬斯克的 TerraFab 計劃對其財務產生不確定性</span>
+                    </a>
+                    <a href="/stocks/?q=AMD" class="stock-tag">
+                        <span class="stock-symbol">AMD (AMD)</span>
+                        <span class="stock-name">觀察到其包下產線</span>
+                    </a>
+                    <a href="/stocks/?q=Cloudflare" class="stock-tag">
+                        <span class="stock-symbol">Cloudflare (NET)</span>
+                        <span class="stock-name">MK 認為是 AI Agent 的核心受惠股</span>
+                    </a>
+                    <a href="/stocks/?q=Palantir" class="stock-tag">
+                        <span class="stock-symbol">Palantir (PLTR)</span>
+                        <span class="stock-name">在 To B 與政府標案應用極強</span>
+                    </a>
+                    <a href="/stocks/?q=台積電" class="stock-tag">
+                        <span class="stock-symbol">台積電 (2330)</span>
+                        <span class="stock-name">馬斯克因價格問題想避開的對象</span>
+                    </a>
+                    <a href="/stocks/?q=三星" class="stock-tag">
+                        <span class="stock-symbol">三星 (Samsung)</span>
+                        <span class="stock-name">馬斯克 TerraFab 的潛在合作夥伴</span>
+                    </a>
+                    <a href="/stocks/?q=台通" class="stock-tag">
+                        <span class="stock-symbol">台通 (2485)</span>
+                        <span class="stock-name">QA 提到的標的（與 KOK 玩笑話相關）</span>
+                    </a>
+                </div>
+            </section>
+            
+
+            
+            <section class="section" id="quotes">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="quote"></i>
+                    </div>
+                    <h2 class="section-title">金句摘錄</h2>
+                </div>
+                <div class="quote-list">
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">AI 並沒有這麼快可以顛覆人類社會，絕大多數的東西都是漸進式的轉變。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">有問題的不是槍，是有問題的是想要拿槍去開別人的人（指 AI 工具的使用）。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">馬斯克想在 Fab 裡面抽雪茄、吃漢堡？短期內我看不到任何可能性，奈米等級的東西，一粒沙子進去就像一座山卡在上面，良率直接報銷。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">當你爸媽走掉，代表你就是下一個 Next on the line（直面死亡）。</p>
+                    </div>
+                </div>
+            </section>
+            
+
+            
+
+            
+            <section class="section" id="qa">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="message-circle-question"></i>
+                    </div>
+                    <h2 class="section-title">精選留言</h2>
+                </div>
+                <div class="qa-list">
+                    <div class="qa-card">
+                        <div class="qa-question"><span class="qa-icon"><i data-lucide="message-circle-question"></i></span>關於電力、散熱、傳輸、CPU、細光子跟 AI Agent 這三塊要怎麼布局？</div>
+                        <div class="qa-answer"><span class="qa-icon"><i data-lucide="message-circle"></i></span>電力、散熱、傳輸已經是「老梗」，大家都知道買什麼。他個人目前偏好 CPU 相關設備與建廠（廠務）相關標的。至於 AI Agent，他推薦美股的 Cloudflare (NET) 和 Palantir (PLTR)。雖然這兩支股票用 PE 估值會覺得貴到買不下去，但他在 B 端應用的領先地位明確，買了就放著等。</div>
+                    </div>
+                    <div class="qa-card">
+                        <div class="qa-question"><span class="qa-icon"><i data-lucide="message-circle-question"></i></span>關於加減碼時機與驗證看錯的方法？</div>
+                        <div class="qa-answer"><span class="qa-icon"><i data-lucide="message-circle"></i></span>建議觀察趨勢，最簡單的方法是看均線（MA20、MA60）是否往右上角走。若買到盤整的股票會覺得自己在追漲殺跌，那是標的選擇問題。關於「看錯」，MK 認為只要「營收與獲利成長性」沒看錯，輸掉機率就低，只是效率（等待時間）的問題。如果追求效率，就去買成交額前十名的強勢股，但風險也較高。</div>
+                    </div>
+                </div>
+            </section>
+            
+
+            
+            <section class="section" id="risks">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="alert-triangle"></i>
+                    </div>
+                    <h2 class="section-title">風險提醒</h2>
+                </div>
+                <div class="risk-list">
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">馬斯克概念股的財務風險：TerraFab 是幾百億美金等級的投資，短期內不會有收益，股東需面臨長期的財務壓力與不確定性。</span>
+                    </div>
+                    <div class="risk-item">
+                        <span class="risk-icon"><i data-lucide="alert-circle"></i></span>
+                        <span class="risk-text">美股形態偏弱：美股整體形態仍在盤底，雖然有反彈但趨勢尚未扭轉，相較之下亞股（台股）目前較好操作。</span>
+                    </div>
+                </div>
+            </section>
+            
+
+            
+            <nav class="episode-nav"><div class="ep-nav-btn ep-nav-disabled"></div><a href="/gooaye/0646/" class="ep-nav-btn ep-nav-next">
+                <span class="ep-nav-label">下一集</span>
+                <span class="ep-nav-title">EP646 | 🦙</span>
+                <i data-lucide="chevron-right"></i>
+            </a></nav>
+        </main>
+
+        <footer class="footer">
+            <p class="footer-text">
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
+            </p>
+        </footer>
+    </div>
+
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#strategies" class="toc-link" data-section="strategies">心法</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a><a href="#qa" class="toc-link" data-section="qa">留言</a><a href="#risks" class="toc-link" data-section="risks">風險</a></nav>
+
+    <script>
+        lucide.createIcons();
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (scrollTop / docHeight) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+
+            // TOC active state
+            const sections = document.querySelectorAll('.section[id], .tldr-box[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (scrollTop >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

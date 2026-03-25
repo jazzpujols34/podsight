@@ -1,19 +1,19 @@
 {
-  "caption": "🎙️ EP0617 股癌 Gooaye\n\n📝 本集探討了半導體封裝與材料的技術謠言澄清，並透過 Confluent 被 IBM 收購一事，分享軟體股配置與「長期持有」對改善生活品質的重要性。\n\n💡 本集重點：\n• 相關標的： Intel (INTC)、台光電 (2383)、佳澤 (3533)\n• 相關標的： Marvell (MRVL)、Google (GOOGL)、聯發科 (2454)\n• 相關標的： IBM (IBM)、Confluent (CFLT)、Palantir (PLTR)、Cloudflare (NET)\n\n💬「股票最大的獲利都是爆（抱）出來的。」\n— 謝孟恭 (MK)\n\n🎧 完整內容請收聽 Podcast\n\n#股癌 #gooaye #投資 #理財 #股票 #podcast #投資筆記 #財經 #台股 #美股 #ETF",
-  "char_count": 372,
+  "caption": "🎙️ EP0617 股癌 Gooaye\n\n📝 MK 認為當前市場情緒變化極快，投資者應從「追逐右上角」轉向「委縮流」操作，透過建立主題式小組合（如軟體、光通訊）並拉長持有時間，以應對基本面與謠言交織的波動。\n\n💡 本集重點：\n• 封裝技術的市場誤解：EMIB 與 HBM 的關聯\n• MK 的觀點與推論：市場上有論點認為 Intel 的 EMIB 封裝無法使用 HBM，但 MK 指出這是資訊落差\n• 相關標的：Intel (INTC)\n• NVIDIA 供應鏈材料的「解凍」與路徑變更\n\n💬「基本面不會在短期內發生巨大改變，改變的通常是大家的人心。」\n— 謝孟恭 (MK)\n\n🎧 完整內容請收聽 Podcast\n\n#股癌 #gooaye #投資 #理財 #股票 #podcast #投資筆記 #財經 #台股 #美股 #ETF",
+  "char_count": 363,
   "image_config": {
     "background": "#1a1a2e",
     "accent_color": "#f59e0b",
     "title": "EP0617",
     "subtitle": "股癌 Gooaye",
-    "one_liner": "本集探討了半導體封裝與材料的技術謠言澄清，並透過 Confluent 被 IBM 收購一事，分享軟體股配置與「長期持有」",
+    "one_liner": "MK 認為當前市場情緒變化極快，投資者應從「追逐右上角」轉向「委縮流」操作，透過建立主題式小組合（如軟體、光通訊）並拉長",
     "body_points": [
-      "相關標的： Intel (INTC)、台光電 (238...",
-      "相關標的： Marvell (MRVL)、Google...",
-      "相關標的： IBM (IBM)、Confluent (..."
+      "封裝技術的市場誤解：EMIB 與 HBM 的關聯",
+      "MK 的觀點與推論：市場上有論點認為 Intel 的 ...",
+      "相關標的：Intel (INTC)"
     ],
     "tickers": [],
-    "quote": "股票最大的獲利都是爆（抱）出來的。",
+    "quote": "基本面不會在短期內發生巨大改變，改變的通常是大家的人心。",
     "host": "謝孟恭 (MK)"
   },
   "hashtags": [
