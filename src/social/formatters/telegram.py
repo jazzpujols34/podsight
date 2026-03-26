@@ -142,28 +142,70 @@ class TelegramFormatter(BaseFormatter):
 
         section = match.group(1)
 
-        # Parse jokes - each starts with * ** title **: and content follows
-        current_joke = []
+        # Parse jokes - each starts with a top-level item (bullet or numbered)
+        # containing a bold title like **【賓利車與淹水】**
+        current_title = ""
+        current_parts = {}  # key: 情節/笑點/寓意, value: text
+
+        def _flush_joke():
+            if not current_title:
+                return
+            # Build joke text: title + story + punchline
+            parts = []
+            parts.append(f"【{current_title}】")
+            story = current_parts.get("情節", "")
+            punchline = current_parts.get("笑點", "")
+            # For short jokes without sub-structure, use any available text
+            if not story and not punchline:
+                # Grab first non-empty part
+                for v in current_parts.values():
+                    if v:
+                        parts.append(v)
+                        break
+            else:
+                if story:
+                    parts.append(story)
+                if punchline:
+                    parts.append(punchline)
+            if len(parts) > 1:
+                jokes.append(" ".join(parts))
+
         for line in section.split('\n'):
             stripped = line.strip()
             if not stripped:
                 continue
 
-            # New joke header
-            if re.match(r'^[-*]\s+\*\*', stripped):
-                if current_joke:
-                    jokes.append(' '.join(current_joke))
-                # Extract title and start content
-                title_match = re.search(r'\*\*(.+?)[：:]\*\*', stripped)
-                if title_match:
-                    current_joke = [f"【{title_match.group(1)}】"]
-                else:
-                    current_joke = []
-            elif current_joke and stripped.startswith('「'):
-                # Content line
-                current_joke.append(stripped.strip('「」'))
+            # Top-level joke header: bullet or numbered, with bold title
+            is_top = (
+                re.match(r'^[-*]\s+\*\*', stripped) or
+                re.match(r'^\d+\.\s+\*\*', stripped)
+            ) and not line.startswith('    ')
 
-        if current_joke:
-            jokes.append(' '.join(current_joke))
+            if is_top:
+                _flush_joke()
+                # Extract title from bold markers like **【賓利車與淹水】**
+                title_match = re.search(r'\*\*[【\[]?(.+?)[】\]]?\*\*', stripped)
+                current_title = title_match.group(1).rstrip("：:") if title_match else ""
+                current_parts = {}
+                continue
 
+            # Sub-bullet with label: *   **情節：** content
+            sub_match = re.match(r'^[-*]\s+\*\*(.+?)[：:]\*\*\s*(.*)', stripped)
+            if sub_match and current_title:
+                label = sub_match.group(1).strip()
+                content = sub_match.group(2).strip()
+                # Strip inner bold markers from content
+                content = re.sub(r'\*\*(.+?)\*\*', r'\1', content)
+                current_parts[label] = content
+                continue
+
+            # Unlabeled sub-bullet content
+            if current_title and stripped.startswith(('*', '-')):
+                content = re.sub(r'^[-*]\s+', '', stripped)
+                content = re.sub(r'\*\*(.+?)\*\*', r'\1', content)
+                if content:
+                    current_parts.setdefault("_other", "")
+                    current_parts["_other"] += " " + content
+
+        _flush_joke()
         return jokes
