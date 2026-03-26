@@ -445,8 +445,8 @@ def parse_summary(content: str) -> dict:
             stripped = line.strip()
             if not stripped or stripped.startswith('---'):
                 continue
-            # Top-level bullet: starts with * or - followed by space (not indented sub-bullet)
-            is_top_bullet = re.match(r'[*\-]\s', stripped) and not line.startswith('    ')
+            # Top-level bullet: starts with * or - followed by space, or numbered list (1. 2. etc.)
+            is_top_bullet = (re.match(r'[*\-]\s', stripped) or re.match(r'\d+\.\s', stripped)) and not line.startswith('    ')
             # Sub-bullet (indented): starts with spaces then * or -
             is_sub_bullet = re.match(r'\s{2,}[*\-]\s', line)
             if is_top_bullet:
@@ -464,8 +464,8 @@ def parse_summary(content: str) -> dict:
                 merged_lines.append(stripped)
 
         for bullet in merged_lines:
-            # Remove leading bullet marker (*   or -   )
-            bullet = re.sub(r'^[*\-]\s+', '', bullet).strip()
+            # Remove leading bullet marker (*   or -   ) or numbered list (1.  )
+            bullet = re.sub(r'^(?:[*\-]\s+|\d+\.\s+)', '', bullet).strip()
             if not bullet:
                 continue
             # Skip standalone group headers like "**1. 職場語錄：**" with no content after
@@ -690,9 +690,30 @@ def generate_episode_html(
     humor_html = ""
     for item in sections["humor"]:
         label_html = f'\n                        <span class="humor-label">{html_escape(item["label"])}</span>' if item.get("label") else ""
-        humor_html += f"""
+        text = item['text']
+        # Split structured jokes on 笑點/寓意 labels to render as context lines
+        parts = re.split(r'\s*(笑點[：:]\s*|寓意[：:]\s*)', text)
+        if len(parts) > 1:
+            # First part is the story (may contain 背景/情節 labels — strip them for cleaner display)
+            story = parts[0].strip()
+            # Remove 背景：... 情節： prefix to keep just the story
+            story = re.sub(r'^背景[：:]\s*.*?\s*情節[：:]\s*', '', story)
+            story_html = f'\n                        <p class="humor-quote">{html_escape(story)}</p>'
+            context_html = ""
+            i = 1
+            while i < len(parts) - 1:
+                prefix = parts[i].strip().rstrip("：: ")
+                body = parts[i + 1].strip() if i + 1 < len(parts) else ""
+                if body:
+                    context_html += f'\n                        <span class="humor-context">{html_escape(prefix)}：{html_escape(body)}</span>'
+                i += 2
+            humor_html += f"""
+                    <div class="humor-card">{label_html}{story_html}{context_html}
+                    </div>"""
+        else:
+            humor_html += f"""
                     <div class="humor-card">{label_html}
-                        <p class="humor-quote">{html_escape(item['text'])}</p>
+                        <p class="humor-quote">{html_escape(text)}</p>
                     </div>"""
 
     # Build QA HTML
