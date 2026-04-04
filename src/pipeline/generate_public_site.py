@@ -631,9 +631,12 @@ def generate_episode_html(
         toc_items.append(("conclusion", "結論"))
 
     toc_html = ""
+    mobile_toc_html = ""
     if len(toc_items) > 2:
         toc_links = "".join([f'<a href="#{id}" class="toc-link" data-section="{id}">{label}</a>' for id, label in toc_items])
         toc_html = f'''<nav class="toc">{toc_links}</nav>'''
+        mobile_toc_links = "".join([f'<a href="#{id}" class="mobile-toc-link" data-section="{id}">{label}</a>' for id, label in toc_items])
+        mobile_toc_html = f'''<nav class="mobile-toc" id="mobileToc">{mobile_toc_links}</nav>'''
 
     # Build topics HTML
     topics_html = ""
@@ -745,9 +748,11 @@ def generate_episode_html(
     <meta name="description" content="{seo_desc}">
 
     <!-- Open Graph -->
+    <link rel="canonical" href="{SITE_URL}/{podcast_id}/{episode_id}/">
+    <meta property="og:url" content="{SITE_URL}/{podcast_id}/{episode_id}/">
     <meta property="og:title" content="{seo_title}">
     <meta property="og:description" content="{seo_desc}">
-    <meta property="og:image" content="/assets/og-image.png">
+    <meta property="og:image" content="{SITE_URL}/assets/og-image.png">
     <meta property="og:type" content="article">
     <meta name="twitter:card" content="summary_large_image">
 
@@ -792,7 +797,7 @@ def generate_episode_html(
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 
     <style>
         :root {{
@@ -1497,6 +1502,59 @@ def generate_episode_html(
             .toc {{ display: none; }}
         }}
 
+        /* Mobile sticky bottom TOC - visible only when desktop TOC is hidden */
+        .mobile-toc {{
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(10, 10, 15, 0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid var(--border-subtle);
+            padding: 10px 12px;
+            overflow-x: auto;
+            white-space: nowrap;
+            gap: 6px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }}
+
+        .mobile-toc::-webkit-scrollbar {{
+            display: none;
+        }}
+
+        .mobile-toc-link {{
+            display: inline-block;
+            padding: 6px 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }}
+
+        .mobile-toc-link.active {{
+            background: var(--accent-bg);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }}
+
+        @media (max-width: 1200px) {{
+            .mobile-toc {{
+                display: flex;
+            }}
+            /* Add bottom padding so content isn't hidden behind mobile TOC */
+            body {{
+                padding-bottom: 56px;
+            }}
+        }}
+
         @media (max-width: 768px) {{
             .episode-nav {{ flex-direction: column; }}
             .ep-nav-btn {{ max-width: 100%; }}
@@ -1721,6 +1779,7 @@ def generate_episode_html(
     </div>
 
     {toc_html}
+    {mobile_toc_html}
 
     <script>
         lucide.createIcons();
@@ -1747,6 +1806,17 @@ def generate_episode_html(
                 link.classList.remove('active');
                 if (link.getAttribute('data-section') === currentSection) {{
                     link.classList.add('active');
+                }}
+            }});
+
+            // Mobile TOC active state
+            const mobileTocLinks = document.querySelectorAll('.mobile-toc-link');
+            mobileTocLinks.forEach(link => {{
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {{
+                    link.classList.add('active');
+                    // Scroll active link into view in the mobile TOC
+                    link.scrollIntoView({{ behavior: 'smooth', inline: 'center', block: 'nearest' }});
                 }}
             }});
         }});
@@ -1799,13 +1869,15 @@ def generate_listing_html(podcast_id: str, episodes: list) -> str:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{config['name']} - PodSight</title>
-    <meta name="description" content="{config['name']} AI 智慧摘要">
+    <title>{config['name']} Podcast 完整逐字稿與 AI 分析 — {len(episodes)}+ 集｜PodSight</title>
+    <meta name="description" content="{config['name']} Podcast 完整逐字稿與 AI 結構化摘要 — {len(episodes)}+ 集，涵蓋投資策略、市場觀察、個股分析｜PodSight">
 
-    <!-- Open Graph -->
-    <meta property="og:title" content="{config['name']} - PodSight 聲見">
-    <meta property="og:description" content="{config['name']} AI 智慧摘要">
-    <meta property="og:image" content="/assets/og-image.png">
+    <!-- Canonical & Open Graph -->
+    <link rel="canonical" href="{SITE_URL}/{podcast_id}/">
+    <meta property="og:url" content="{SITE_URL}/{podcast_id}/">
+    <meta property="og:title" content="{config['name']} Podcast 完整逐字稿與 AI 分析 — PodSight 聲見">
+    <meta property="og:description" content="{config['name']} Podcast 完整逐字稿與 AI 結構化摘要 — {len(episodes)}+ 集，涵蓋投資策略、市場觀察、個股分析">
+    <meta property="og:image" content="{SITE_URL}/assets/og-image.png">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
 
@@ -1816,7 +1888,7 @@ def generate_listing_html(podcast_id: str, episodes: list) -> str:
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 
     <style>
         :root {{
@@ -2357,10 +2429,12 @@ def generate_homepage(podcast_counts: dict, latest_episodes: List[dict] = None) 
     <title>PodSight 聲見 - AI Podcast Summaries</title>
     <meta name="description" content="台灣財經 Podcast 逐字稿摘要 — 回顧、搜尋、找到他在某集講過的那段">
 
-    <!-- Open Graph -->
+    <!-- Canonical & Open Graph -->
+    <link rel="canonical" href="{SITE_URL}/">
+    <meta property="og:url" content="{SITE_URL}/">
     <meta property="og:title" content="PodSight 聲見 - AI Podcast Summaries">
     <meta property="og:description" content="台灣財經 Podcast 逐字稿摘要 — 回顧、搜尋、找到他在某集講過的那段">
-    <meta property="og:image" content="/assets/og-image.png">
+    <meta property="og:image" content="{SITE_URL}/assets/og-image.png">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
 
@@ -2371,7 +2445,7 @@ def generate_homepage(podcast_counts: dict, latest_episodes: List[dict] = None) 
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 
     <style>
         :root {{
@@ -2826,7 +2900,7 @@ def generate_homepage(podcast_counts: dict, latest_episodes: List[dict] = None) 
 
         .how-icon svg {{ width: 20px; height: 20px; }}
 
-        .how-card h4 {{
+        .how-card h2 {{
             font-family: 'Outfit', sans-serif;
             font-size: 1rem;
             font-weight: 600;
@@ -2885,17 +2959,17 @@ def generate_homepage(podcast_counts: dict, latest_episodes: List[dict] = None) 
             <div class="how-grid animate-in delay-3">
                 <div class="how-card">
                     <div class="how-icon"><i data-lucide="file-audio"></i></div>
-                    <h4>全文逐字稿轉錄</h4>
+                    <h2>全文逐字稿轉錄</h2>
                     <p>每集音檔完整轉錄，不截取、不省略，確保內容忠於原始節目。</p>
                 </div>
                 <div class="how-card">
                     <div class="how-icon"><i data-lucide="layers"></i></div>
-                    <h4>AI 結構化整理</h4>
+                    <h2>AI 結構化整理</h2>
                     <p>話題、提到的標的、觀點金句 — 只做整理，不加個人解讀。</p>
                 </div>
                 <div class="how-card">
                     <div class="how-icon"><i data-lucide="search"></i></div>
-                    <h4>回顧與搜尋</h4>
+                    <h2>回顧與搜尋</h2>
                     <p>聽了上百集，想找「他在某集講過的那段」？摘要讓你快速定位。</p>
                 </div>
             </div>
@@ -3018,13 +3092,21 @@ def generate_stock_search_page(stock_index: Dict[str, List[dict]]) -> str:
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>股票搜尋 - PodSight</title>
-    <meta name="description" content="搜尋 Podcast 中提到的股票">
+    <meta name="description" content="搜尋台灣財經 Podcast 中提到的股票與 ETF — 跨節目標的追蹤｜PodSight">
+
+    <link rel="canonical" href="{SITE_URL}/stocks/">
+    <meta property="og:url" content="{SITE_URL}/stocks/">
+    <meta property="og:title" content="股票搜尋 - PodSight 聲見">
+    <meta property="og:description" content="搜尋台灣財經 Podcast 中提到的股票與 ETF — 跨節目標的追蹤">
+    <meta property="og:image" content="{SITE_URL}/assets/og-image.png">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
 
     <link rel="icon" type="image/jpeg" href="/assets/PodSight-Logo-cropped.jpeg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 
     <style>
         :root {{

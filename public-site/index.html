@@ -6,10 +6,12 @@
     <title>PodSight 聲見 - AI Podcast Summaries</title>
     <meta name="description" content="台灣財經 Podcast 逐字稿摘要 — 回顧、搜尋、找到他在某集講過的那段">
 
-    <!-- Open Graph -->
+    <!-- Canonical & Open Graph -->
+    <link rel="canonical" href="https://podsight.tw/">
+    <meta property="og:url" content="https://podsight.tw/">
     <meta property="og:title" content="PodSight 聲見 - AI Podcast Summaries">
     <meta property="og:description" content="台灣財經 Podcast 逐字稿摘要 — 回顧、搜尋、找到他在某集講過的那段">
-    <meta property="og:image" content="/assets/og-image.png">
+    <meta property="og:image" content="https://podsight.tw/assets/og-image.png">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
 
@@ -20,7 +22,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 
     <style>
         :root {
@@ -475,7 +477,7 @@
 
         .how-icon svg { width: 20px; height: 20px; }
 
-        .how-card h4 {
+        .how-card h2 {
             font-family: 'Outfit', sans-serif;
             font-size: 1rem;
             font-weight: 600;
@@ -534,17 +536,17 @@
             <div class="how-grid animate-in delay-3">
                 <div class="how-card">
                     <div class="how-icon"><i data-lucide="file-audio"></i></div>
-                    <h4>全文逐字稿轉錄</h4>
+                    <h2>全文逐字稿轉錄</h2>
                     <p>每集音檔完整轉錄，不截取、不省略，確保內容忠於原始節目。</p>
                 </div>
                 <div class="how-card">
                     <div class="how-icon"><i data-lucide="layers"></i></div>
-                    <h4>AI 結構化整理</h4>
+                    <h2>AI 結構化整理</h2>
                     <p>話題、提到的標的、觀點金句 — 只做整理，不加個人解讀。</p>
                 </div>
                 <div class="how-card">
                     <div class="how-icon"><i data-lucide="search"></i></div>
-                    <h4>回顧與搜尋</h4>
+                    <h2>回顧與搜尋</h2>
                     <p>聽了上百集，想找「他在某集講過的那段」？摘要讓你快速定位。</p>
                 </div>
             </div>

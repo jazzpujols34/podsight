@@ -7,9 +7,11 @@
     <meta name="description" content="當前市場處於「極窄且瘋狂」的行情，MK 主張以「空杯心態」應對題材輪動，並在台積電(2330)法說會前夕採取降低部位集中度、優先出清「僅靠形態買入」標的的防禦性策略。">
 
     <!-- Open Graph -->
+    <link rel="canonical" href="https://podsight.tw/gooaye/0627/">
+    <meta property="og:url" content="https://podsight.tw/gooaye/0627/">
     <meta property="og:title" content="股癌 EP0627 重點整理｜AI 摘要 — PodSight">
     <meta property="og:description" content="當前市場處於「極窄且瘋狂」的行情，MK 主張以「空杯心態」應對題材輪動，並在台積電(2330)法說會前夕採取降低部位集中度、優先出清「僅靠形態買入」標的的防禦性策略。">
-    <meta property="og:image" content="/assets/og-image.png">
+    <meta property="og:image" content="https://podsight.tw/assets/og-image.png">
     <meta property="og:type" content="article">
     <meta name="twitter:card" content="summary_large_image">
 
@@ -54,7 +56,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 
     <style>
         :root {
@@ -772,6 +774,59 @@
             transform: translateY(-2px);
         }
 
+        
+        /* Mobile sticky bottom TOC */
+        .mobile-toc {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(10, 10, 15, 0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid var(--border-subtle);
+            padding: 10px 12px;
+            overflow-x: auto;
+            white-space: nowrap;
+            gap: 6px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .mobile-toc::-webkit-scrollbar {
+            display: none;
+        }
+
+        .mobile-toc-link {
+            display: inline-block;
+            padding: 6px 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .mobile-toc-link.active {
+            background: var(--accent-bg);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        @media (max-width: 1200px) {
+            .mobile-toc {
+                display: flex;
+            }
+            body {
+                padding-bottom: 56px;
+            }
+        }
+
         @media (max-width: 1200px) {
             .toc { display: none; }
         }
@@ -1081,6 +1136,7 @@
     </div>
 
     <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#strategies" class="toc-link" data-section="strategies">心法</a><a href="#stocks" class="toc-link" data-section="stocks">股票</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a><a href="#qa" class="toc-link" data-section="qa">留言</a><a href="#risks" class="toc-link" data-section="risks">風險</a></nav>
+    <nav class="mobile-toc" id="mobileToc"><a href="#tldr" class="mobile-toc-link" data-section="tldr">摘要</a><a href="#topics" class="mobile-toc-link" data-section="topics">話題</a><a href="#strategies" class="mobile-toc-link" data-section="strategies">心法</a><a href="#stocks" class="mobile-toc-link" data-section="stocks">股票</a><a href="#quotes" class="mobile-toc-link" data-section="quotes">金句</a><a href="#qa" class="mobile-toc-link" data-section="qa">留言</a><a href="#risks" class="mobile-toc-link" data-section="risks">風險</a></nav>
 
     <script>
         lucide.createIcons();
