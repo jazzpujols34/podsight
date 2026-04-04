@@ -774,8 +774,11 @@
             transform: translateY(-2px);
         }
 
-        
-        /* Mobile sticky bottom TOC */
+        @media (max-width: 1200px) {
+            .toc { display: none; }
+        }
+
+        /* Mobile sticky bottom TOC - visible only when desktop TOC is hidden */
         .mobile-toc {
             display: none;
             position: fixed;
@@ -822,13 +825,10 @@
             .mobile-toc {
                 display: flex;
             }
+            /* Add bottom padding so content isn't hidden behind mobile TOC */
             body {
                 padding-bottom: 56px;
             }
-        }
-
-        @media (max-width: 1200px) {
-            .toc { display: none; }
         }
 
         @media (max-width: 768px) {
@@ -1128,6 +1128,17 @@
                 link.classList.remove('active');
                 if (link.getAttribute('data-section') === currentSection) {
                     link.classList.add('active');
+                }
+            });
+
+            // Mobile TOC active state
+            const mobileTocLinks = document.querySelectorAll('.mobile-toc-link');
+            mobileTocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                    // Scroll active link into view in the mobile TOC
+                    link.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
                 }
             });
         });
