@@ -1890,6 +1890,22 @@ def generate_listing_html(podcast_id: str, episodes: list) -> str:
 
     <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 
+    <script type="application/ld+json">
+    {{
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": "{config['name']} Podcast 完整逐字稿與 AI 分析",
+        "description": "{config['name']} Podcast 完整逐字稿與 AI 結構化摘要 — {len(episodes)}+ 集，涵蓋投資策略、市場觀察、個股分析",
+        "url": "{SITE_URL}/{podcast_id}/",
+        "numberOfItems": {len(episodes)},
+        "isPartOf": {{
+            "@type": "WebSite",
+            "name": "PodSight",
+            "url": "{SITE_URL}"
+        }}
+    }}
+    </script>
+
     <style>
         :root {{
             {config['css_vars']}
@@ -2247,6 +2263,73 @@ def generate_listing_html(podcast_id: str, episodes: list) -> str:
                 transform: translateY(-50%);
             }}
         }}
+
+        /* Skeleton loading */
+        @keyframes shimmer {{
+            0% {{ background-position: -400px 0; }}
+            100% {{ background-position: 400px 0; }}
+        }}
+
+        .skeleton-container {{
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }}
+
+        .skeleton-card {{
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px 24px;
+            border-radius: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+        }}
+
+        .skeleton-badge {{
+            width: 60px;
+            height: 24px;
+            border-radius: 6px;
+            background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-card-hover) 50%, var(--bg-card) 75%);
+            background-size: 800px 100%;
+            animation: shimmer 1.5s infinite linear;
+            flex-shrink: 0;
+        }}
+
+        .skeleton-content {{
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }}
+
+        .skeleton-title {{
+            height: 18px;
+            width: 70%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-card-hover) 50%, var(--bg-card) 75%);
+            background-size: 800px 100%;
+            animation: shimmer 1.5s infinite linear;
+        }}
+
+        .skeleton-text {{
+            height: 14px;
+            width: 90%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-card-hover) 50%, var(--bg-card) 75%);
+            background-size: 800px 100%;
+            animation: shimmer 1.5s infinite linear;
+        }}
+
+        body:not(.loaded) .episode-list,
+        body:not(.loaded) .episode-count,
+        body:not(.loaded) .pagination {{
+            display: none;
+        }}
+
+        body.loaded .skeleton-container {{
+            display: none;
+        }}
     </style>
 </head>
 <body>
@@ -2283,6 +2366,16 @@ def generate_listing_html(podcast_id: str, episodes: list) -> str:
             </div>
         </div>
 
+        <noscript><style>.skeleton-container {{ display: none !important; }} .episode-list, .episode-count, .pagination {{ display: revert !important; }}</style></noscript>
+
+        <div class="skeleton-container" aria-hidden="true">
+            <div class="skeleton-card"><div class="skeleton-badge"></div><div class="skeleton-content"><div class="skeleton-title"></div><div class="skeleton-text"></div></div></div>
+            <div class="skeleton-card"><div class="skeleton-badge"></div><div class="skeleton-content"><div class="skeleton-title"></div><div class="skeleton-text"></div></div></div>
+            <div class="skeleton-card"><div class="skeleton-badge"></div><div class="skeleton-content"><div class="skeleton-title"></div><div class="skeleton-text"></div></div></div>
+            <div class="skeleton-card"><div class="skeleton-badge"></div><div class="skeleton-content"><div class="skeleton-title"></div><div class="skeleton-text"></div></div></div>
+            <div class="skeleton-card"><div class="skeleton-badge"></div><div class="skeleton-content"><div class="skeleton-title"></div><div class="skeleton-text"></div></div></div>
+        </div>
+
         <div class="episode-count">
             共 <strong>{len(episodes)}</strong> 集摘要
         </div>
@@ -2300,6 +2393,7 @@ def generate_listing_html(podcast_id: str, episodes: list) -> str:
     </div>
 
     <script>
+        document.body.classList.add('loaded');
         lucide.createIcons();
 
         const ITEMS_PER_PAGE = 10;
@@ -2446,6 +2540,21 @@ def generate_homepage(podcast_counts: dict, latest_episodes: List[dict] = None) 
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+
+    <script type="application/ld+json">
+    {{
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "PodSight",
+        "url": "{SITE_URL}",
+        "description": "台灣財經 Podcast 逐字稿摘要 — 回顧、搜尋、找到他在某集講過的那段",
+        "potentialAction": {{
+            "@type": "SearchAction",
+            "target": "{SITE_URL}/stocks/?q={{search_term_string}}",
+            "query-input": "required name=search_term_string"
+        }}
+    }}
+    </script>
 
     <style>
         :root {{
@@ -3108,6 +3217,21 @@ def generate_stock_search_page(stock_index: Dict[str, List[dict]]) -> str:
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 
+    <script type="application/ld+json">
+    {{
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "股票搜尋 - PodSight",
+        "description": "搜尋台灣財經 Podcast 中提到的股票與 ETF — 跨節目標的追蹤",
+        "url": "{SITE_URL}/stocks/",
+        "isPartOf": {{
+            "@type": "WebSite",
+            "name": "PodSight",
+            "url": "{SITE_URL}"
+        }}
+    }}
+    </script>
+
     <style>
         :root {{
             --bg-primary: #050508;
@@ -3415,6 +3539,116 @@ def generate_stock_search_page(stock_index: Dict[str, List[dict]]) -> str:
     return html
 
 
+def generate_404_page() -> str:
+    """Generate a branded 404 error page."""
+    return f'''<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 — 找不到這個頁面｜PodSight</title>
+    <meta name="description" content="找不到您要的頁面，回到 PodSight 首頁繼續瀏覽 Podcast 摘要">
+    <link rel="icon" type="image/jpeg" href="/assets/PodSight-Logo-cropped.jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+        body {{
+            font-family: 'Noto Sans TC', 'Outfit', sans-serif;
+            background: #050508;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 24px;
+        }}
+        .error-container {{
+            max-width: 480px;
+        }}
+        .error-code {{
+            font-family: 'Outfit', sans-serif;
+            font-size: 6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1A6FAF 0%, #4DB8E8 50%, #F5A623 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 16px;
+        }}
+        h1 {{
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }}
+        .error-message {{
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }}
+        .error-links {{
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+        }}
+        .error-links a {{
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }}
+        .error-links a.primary {{
+            background: rgba(77, 184, 232, 0.15);
+            border: 1px solid rgba(77, 184, 232, 0.3);
+            color: #4DB8E8;
+        }}
+        .error-links a.primary:hover {{
+            background: rgba(77, 184, 232, 0.25);
+            border-color: #4DB8E8;
+        }}
+        .error-links a.secondary {{
+            color: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }}
+        .error-links a.secondary:hover {{
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.3);
+        }}
+        .podcast-links {{
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }}
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-code">404</div>
+        <h1>找不到這個頁面</h1>
+        <p class="error-message">您要找的頁面可能已移除、更名，或暫時無法使用。</p>
+        <div class="error-links">
+            <a href="/" class="primary">回到首頁</a>
+            <div class="podcast-links">
+                <a href="/gooaye/" class="secondary">股癌摘要</a>
+                <a href="/yutinghao/" class="secondary">財經皓角摘要</a>
+                <a href="/stocks/" class="secondary">股票搜尋</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>'''
+
+
 def html_escape(text: str) -> str:
     """Escape HTML special characters."""
     if not text:
@@ -3642,6 +3876,11 @@ def main():
     sitemap_xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + '\n'.join(sitemap_urls) + '\n</urlset>'
     (OUTPUT_DIR / "sitemap.xml").write_text(sitemap_xml, encoding="utf-8")
     print(f"Generated sitemap.xml ({len(sitemap_urls)} URLs)")
+
+    # Generate 404 page
+    error_html = generate_404_page()
+    (OUTPUT_DIR / "404.html").write_text(error_html, encoding="utf-8")
+    print("Generated 404.html")
 
     # Generate robots.txt
     robots_txt = f"User-agent: *\nAllow: /\n\nSitemap: {SITE_URL}/sitemap.xml\n"

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 — 找不到這個頁面｜PodSight</title>
+    <meta name="description" content="找不到您要的頁面，回到 PodSight 首頁繼續瀏覽 Podcast 摘要">
+    <link rel="icon" type="image/jpeg" href="/assets/PodSight-Logo-cropped.jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Noto Sans TC', 'Outfit', sans-serif;
+            background: #050508;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 24px;
+        }
+        .error-container { max-width: 480px; }
+        .error-code {
+            font-family: 'Outfit', sans-serif;
+            font-size: 6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1A6FAF 0%, #4DB8E8 50%, #F5A623 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 16px;
+        }
+        h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 12px; }
+        .error-message {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+        .error-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+        }
+        .error-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+        .error-links a.primary {
+            background: rgba(77, 184, 232, 0.15);
+            border: 1px solid rgba(77, 184, 232, 0.3);
+            color: #4DB8E8;
+        }
+        .error-links a.primary:hover {
+            background: rgba(77, 184, 232, 0.25);
+            border-color: #4DB8E8;
+        }
+        .error-links a.secondary {
+            color: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .error-links a.secondary:hover {
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .podcast-links {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-code">404</div>
+        <h1>找不到這個頁面</h1>
+        <p class="error-message">您要找的頁面可能已移除、更名，或暫時無法使用。</p>
+        <div class="error-links">
+            <a href="/" class="primary">回到首頁</a>
+            <div class="podcast-links">
+                <a href="/gooaye/" class="secondary">股癌摘要</a>
+                <a href="/yutinghao/" class="secondary">財經皓角摘要</a>
+                <a href="/stocks/" class="secondary">股票搜尋</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
