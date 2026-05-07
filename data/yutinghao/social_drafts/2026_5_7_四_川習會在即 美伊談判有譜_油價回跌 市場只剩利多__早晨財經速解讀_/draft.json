@@ -1,0 +1,54 @@
+{
+  "episode_id": "2026_5_7_四_川習會在即 美伊談判有譜_油價回跌 市場只剩利多__早晨財經速解讀_",
+  "podcast": "yutinghao",
+  "created_at": "2026-05-07T05:33:38.046483",
+  "summary_hash": "669d95380ac1",
+  "status": "pending",
+  "platforms": {
+    "twitter": {
+      "status": "pending",
+      "content_file": "twitter.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    },
+    "threads": {
+      "status": "pending",
+      "content_file": "threads.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    },
+    "line": {
+      "status": "pending",
+      "content_file": "line.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    },
+    "instagram": {
+      "status": "pending",
+      "content_file": "instagram.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    },
+    "telegram": {
+      "status": "pending",
+      "content_file": "telegram.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    }
+  }
+}
