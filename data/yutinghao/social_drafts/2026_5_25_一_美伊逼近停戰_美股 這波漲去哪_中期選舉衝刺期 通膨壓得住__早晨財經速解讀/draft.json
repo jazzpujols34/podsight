@@ -1,0 +1,54 @@
+{
+  "episode_id": "2026_5_25_一_美伊逼近停戰_美股 這波漲去哪_中期選舉衝刺期 通膨壓得住__早晨財經速解讀",
+  "podcast": "yutinghao",
+  "created_at": "2026-05-25T06:28:58.980448",
+  "summary_hash": "114c4764a9ce",
+  "status": "pending",
+  "platforms": {
+    "twitter": {
+      "status": "pending",
+      "content_file": "twitter.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    },
+    "threads": {
+      "status": "pending",
+      "content_file": "threads.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    },
+    "line": {
+      "status": "pending",
+      "content_file": "line.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    },
+    "instagram": {
+      "status": "pending",
+      "content_file": "instagram.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    },
+    "telegram": {
+      "status": "pending",
+      "content_file": "telegram.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    }
+  }
+}
