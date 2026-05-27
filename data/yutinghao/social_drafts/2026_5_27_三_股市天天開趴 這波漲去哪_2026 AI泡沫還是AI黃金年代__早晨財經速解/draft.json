@@ -1,0 +1,54 @@
+{
+  "episode_id": "2026_5_27_三_股市天天開趴 這波漲去哪_2026 AI泡沫還是AI黃金年代__早晨財經速解",
+  "podcast": "yutinghao",
+  "created_at": "2026-05-27T06:23:03.668732",
+  "summary_hash": "1d530c4a7676",
+  "status": "pending",
+  "platforms": {
+    "twitter": {
+      "status": "pending",
+      "content_file": "twitter.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    },
+    "threads": {
+      "status": "pending",
+      "content_file": "threads.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    },
+    "line": {
+      "status": "pending",
+      "content_file": "line.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    },
+    "instagram": {
+      "status": "pending",
+      "content_file": "instagram.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    },
+    "telegram": {
+      "status": "pending",
+      "content_file": "telegram.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    }
+  }
+}
