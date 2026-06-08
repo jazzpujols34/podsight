@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://podsight.tw/</loc><lastmod>2026-06-06</lastmod><priority>1.0</priority></url>
-  <url><loc>https://podsight.tw/stocks/</loc><lastmod>2026-06-06</lastmod><priority>0.7</priority></url>
-  <url><loc>https://podsight.tw/gooaye/</loc><lastmod>2026-06-06</lastmod><priority>0.8</priority></url>
-  <url><loc>https://podsight.tw/yutinghao/</loc><lastmod>2026-06-06</lastmod><priority>0.8</priority></url>
+  <url><loc>https://podsight.tw/</loc><lastmod>2026-06-08</lastmod><priority>1.0</priority></url>
+  <url><loc>https://podsight.tw/stocks/</loc><lastmod>2026-06-08</lastmod><priority>0.7</priority></url>
+  <url><loc>https://podsight.tw/gooaye/</loc><lastmod>2026-06-08</lastmod><priority>0.8</priority></url>
+  <url><loc>https://podsight.tw/yutinghao/</loc><lastmod>2026-06-08</lastmod><priority>0.8</priority></url>
   <url><loc>https://podsight.tw/gooaye/0668/</loc><lastmod>2026-06-06</lastmod><priority>0.9</priority></url>
   <url><loc>https://podsight.tw/gooaye/0667/</loc><lastmod>2026-06-03</lastmod><priority>0.9</priority></url>
   <url><loc>https://podsight.tw/gooaye/0666/</loc><lastmod>2026-05-30</lastmod><priority>0.9</priority></url>
@@ -58,6 +58,7 @@
   <url><loc>https://podsight.tw/gooaye/0617/</loc><lastmod>2025-12-10</lastmod><priority>0.9</priority></url>
   <url><loc>https://podsight.tw/gooaye/0616/</loc><lastmod>2025-12-06</lastmod><priority>0.9</priority></url>
   <url><loc>https://podsight.tw/gooaye/0615/</loc><lastmod>2025-12-03</lastmod><priority>0.9</priority></url>
+  <url><loc>https://podsight.tw/yutinghao/2026-06-08/</loc><lastmod>2026-06-08</lastmod><priority>0.9</priority></url>
   <url><loc>https://podsight.tw/yutinghao/2026-06-05/</loc><lastmod>2026-06-05</lastmod><priority>0.9</priority></url>
   <url><loc>https://podsight.tw/yutinghao/2026-06-04/</loc><lastmod>2026-06-04</lastmod><priority>0.9</priority></url>
   <url><loc>https://podsight.tw/yutinghao/2026-06-03/</loc><lastmod>2026-06-03</lastmod><priority>0.9</priority></url>
