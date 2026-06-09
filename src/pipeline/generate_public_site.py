@@ -89,7 +89,7 @@ def parse_rfc_date(date_str: str) -> Optional[str]:
         from email.utils import parsedate_to_datetime
         dt = parsedate_to_datetime(date_str)
         return dt.strftime("%Y-%m-%d")
-    except:
+    except (TypeError, ValueError):
         return None
 
 
@@ -115,7 +115,7 @@ def get_freshness_label(date_str: str) -> Tuple[str, str]:
             return "本週", "fresh-week"
         else:
             return None, None
-    except:
+    except (TypeError, ValueError):
         return None, None
 
 

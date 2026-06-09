@@ -1119,7 +1119,7 @@ async def reset_pipeline():
     if pipeline_state["process"]:
         try:
             pipeline_state["process"].kill()
-        except:
+        except (ProcessLookupError, OSError):
             pass
 
     pipeline_state = {
