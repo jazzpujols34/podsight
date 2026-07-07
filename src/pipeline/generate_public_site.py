@@ -2537,9 +2537,10 @@ def generate_homepage(podcast_counts: dict, latest_episodes: List[dict] = None) 
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
 
-    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
 
     <script type="application/ld+json">
     {{
@@ -2860,13 +2861,14 @@ def generate_homepage(podcast_counts: dict, latest_episodes: List[dict] = None) 
         }}
 
         @keyframes fadeInUp {{
-            from {{ opacity: 0; transform: translateY(30px); }}
-            to {{ opacity: 1; transform: translateY(0); }}
+            from {{ transform: translateY(24px); }}
+            to {{ transform: translateY(0); }}
         }}
 
+        /* transform-only reveal: opacity stays 1 so content is always an LCP candidate
+           (opacity:0 entrance animations disqualify elements from LCP -> NO_LCP) */
         .animate-in {{
-            animation: fadeInUp 0.8s var(--transition-smooth) forwards;
-            opacity: 0;
+            animation: fadeInUp 0.8s var(--transition-smooth) both;
         }}
 
         .delay-1 {{ animation-delay: 0.1s; }}
@@ -3151,7 +3153,10 @@ def generate_homepage(podcast_counts: dict, latest_episodes: List[dict] = None) 
     </div>
 
     <script>
-        lucide.createIcons();
+        // lucide loads deferred; DOMContentLoaded fires after deferred scripts execute
+        window.addEventListener('DOMContentLoaded', function () {{
+            if (window.lucide) lucide.createIcons();
+        }});
     </script>
 </body>
 </html>"""
