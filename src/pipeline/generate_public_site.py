@@ -794,10 +794,11 @@ def generate_episode_html(
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
 
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
 
     <style>
         :root {{
@@ -1563,22 +1564,20 @@ def generate_episode_html(
 
         @keyframes fadeInUp {{
             from {{
-                opacity: 0;
                 transform: translateY(20px);
             }}
             to {{
-                opacity: 1;
                 transform: translateY(0);
             }}
         }}
 
+        /* transform-only reveal: opacity stays 1 so content is LCP-eligible (avoids NO_LCP) */
         .animate-in {{
-            animation: fadeInUp 0.6s var(--transition-smooth) forwards;
+            animation: fadeInUp 0.6s var(--transition-smooth) both;
         }}
 
         .section {{
-            opacity: 0;
-            animation: fadeInUp 0.6s var(--transition-smooth) forwards;
+            animation: fadeInUp 0.6s var(--transition-smooth) both;
         }}
 
         .section:nth-child(1) {{ animation-delay: 0.1s; }}
@@ -1782,7 +1781,9 @@ def generate_episode_html(
     {mobile_toc_html}
 
     <script>
-        lucide.createIcons();
+        window.addEventListener('DOMContentLoaded', function () {{
+            if (window.lucide) lucide.createIcons();
+        }});
 
         window.addEventListener('scroll', () => {{
             const scrollTop = window.scrollY;
@@ -1886,9 +1887,10 @@ def generate_listing_html(podcast_id: str, episodes: list) -> str:
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
 
-    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
 
     <script type="application/ld+json">
     {{
@@ -2121,12 +2123,12 @@ def generate_listing_html(podcast_id: str, episodes: list) -> str:
 
         .fresh-yesterday {{
             background: rgba(59, 130, 246, 0.2);
-            color: #3b82f6;
+            color: #60a5fa;
         }}
 
         .fresh-week {{
             background: rgba(168, 85, 247, 0.15);
-            color: #a855f7;
+            color: #c084fc;
         }}
 
         .episode-content {{ flex: 1; min-width: 0; }}
@@ -2178,15 +2180,15 @@ def generate_listing_html(podcast_id: str, episodes: list) -> str:
         .footer-text a {{ color: var(--text-secondary); text-decoration: none; }}
 
         @keyframes fadeIn {{
-            from {{ opacity: 0; }}
-            to {{ opacity: 1; }}
+            from {{ transform: translateY(12px); }}
+            to {{ transform: translateY(0); }}
         }}
 
-        .animate-in {{ animation: fadeIn 0.6s var(--transition-smooth) forwards; }}
+        /* transform-only reveal: opacity stays 1 so content is LCP-eligible (avoids NO_LCP) */
+        .animate-in {{ animation: fadeIn 0.6s var(--transition-smooth) both; }}
 
         .episode-card {{
-            animation: fadeIn 0.4s var(--transition-smooth) forwards;
-            opacity: 0;
+            animation: fadeIn 0.4s var(--transition-smooth) both;
         }}
 
         .episode-card:nth-child(1) {{ animation-delay: 0.05s; }}
@@ -2394,7 +2396,9 @@ def generate_listing_html(podcast_id: str, episodes: list) -> str:
 
     <script>
         document.body.classList.add('loaded');
-        lucide.createIcons();
+        window.addEventListener('DOMContentLoaded', function () {{
+            if (window.lucide) lucide.createIcons();
+        }});
 
         const ITEMS_PER_PAGE = 10;
         let currentPage = 1;
@@ -2566,7 +2570,7 @@ def generate_homepage(podcast_counts: dict, latest_episodes: List[dict] = None) 
             --border-subtle: rgba(255, 255, 255, 0.08);
             --text-primary: #ffffff;
             --text-secondary: rgba(255, 255, 255, 0.7);
-            --text-muted: rgba(255, 255, 255, 0.4);
+            --text-muted: rgba(255, 255, 255, 0.6);
 
             --gooaye-primary: #4DB8E8;
             --gooaye-gradient: linear-gradient(135deg, #1A6FAF 0%, #4DB8E8 50%, #F5A623 100%);
@@ -2948,12 +2952,12 @@ def generate_homepage(podcast_counts: dict, latest_episodes: List[dict] = None) 
 
         .fresh-yesterday {{
             background: rgba(59, 130, 246, 0.2);
-            color: #3b82f6;
+            color: #60a5fa;
         }}
 
         .fresh-week {{
             background: rgba(168, 85, 247, 0.15);
-            color: #a855f7;
+            color: #c084fc;
         }}
 
         /* Telegram CTA */
@@ -3051,6 +3055,7 @@ def generate_homepage(podcast_counts: dict, latest_episodes: List[dict] = None) 
             </div>
         </nav>
 
+        <main>
         <section class="hero">
             <div class="hero-badge animate-in delay-1">
                 <i data-lucide="sparkles"></i>
@@ -3140,6 +3145,7 @@ def generate_homepage(podcast_counts: dict, latest_episodes: List[dict] = None) 
 
             </div>
         </section>
+        </main>
 
         <footer class="footer">
             <a href="https://t.me/podsight" target="_blank" class="telegram-cta">
@@ -3219,8 +3225,9 @@ def generate_stock_search_page(stock_index: Dict[str, List[dict]]) -> str:
     <link rel="icon" type="image/jpeg" href="/assets/PodSight-Logo-cropped.jpeg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
 
     <script type="application/ld+json">
     {{
@@ -3504,7 +3511,9 @@ def generate_stock_search_page(stock_index: Dict[str, List[dict]]) -> str:
     </div>
 
     <script>
-        lucide.createIcons();
+        window.addEventListener('DOMContentLoaded', function () {{
+            if (window.lucide) lucide.createIcons();
+        }});
 
         const searchInput = document.getElementById('stockSearch');
         const stockItems = document.querySelectorAll('.stock-index-item');

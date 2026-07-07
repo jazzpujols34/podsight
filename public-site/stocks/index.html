@@ -17,8 +17,9 @@
     <link rel="icon" type="image/jpeg" href="/assets/PodSight-Logo-cropped.jpeg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
 
     <script type="application/ld+json">
     {
@@ -4306,7 +4307,9 @@
     </div>
 
     <script>
-        lucide.createIcons();
+        window.addEventListener('DOMContentLoaded', function () {
+            if (window.lucide) lucide.createIcons();
+        });
 
         const searchInput = document.getElementById('stockSearch');
         const stockItems = document.querySelectorAll('.stock-index-item');

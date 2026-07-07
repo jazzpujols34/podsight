@@ -53,10 +53,11 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
 
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
 
     <style>
         :root {
@@ -839,22 +840,20 @@
 
         @keyframes fadeInUp {
             from {
-                opacity: 0;
                 transform: translateY(20px);
             }
             to {
-                opacity: 1;
                 transform: translateY(0);
             }
         }
 
+        /* transform-only reveal: opacity stays 1 so content is LCP-eligible (avoids NO_LCP) */
         .animate-in {
-            animation: fadeInUp 0.6s var(--transition-smooth) forwards;
+            animation: fadeInUp 0.6s var(--transition-smooth) both;
         }
 
         .section {
-            opacity: 0;
-            animation: fadeInUp 0.6s var(--transition-smooth) forwards;
+            animation: fadeInUp 0.6s var(--transition-smooth) both;
         }
 
         .section:nth-child(1) { animation-delay: 0.1s; }
@@ -1119,7 +1118,9 @@
     <nav class="mobile-toc" id="mobileToc"><a href="#tldr" class="mobile-toc-link" data-section="tldr">摘要</a><a href="#topics" class="mobile-toc-link" data-section="topics">話題</a><a href="#strategies" class="mobile-toc-link" data-section="strategies">心法</a><a href="#stocks" class="mobile-toc-link" data-section="stocks">股票</a><a href="#quotes" class="mobile-toc-link" data-section="quotes">金句</a><a href="#humor" class="mobile-toc-link" data-section="humor">幽默</a></nav>
 
     <script>
-        lucide.createIcons();
+        window.addEventListener('DOMContentLoaded', function () {
+            if (window.lucide) lucide.createIcons();
+        });
 
         window.addEventListener('scroll', () => {
             const scrollTop = window.scrollY;
