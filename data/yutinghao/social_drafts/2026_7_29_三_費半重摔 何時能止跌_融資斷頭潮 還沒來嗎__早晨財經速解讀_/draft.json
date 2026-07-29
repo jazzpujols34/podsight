@@ -1,0 +1,54 @@
+{
+  "episode_id": "2026_7_29_三_費半重摔 何時能止跌_融資斷頭潮 還沒來嗎__早晨財經速解讀_",
+  "podcast": "yutinghao",
+  "created_at": "2026-07-29T05:23:06.834827",
+  "summary_hash": "39d60c3f4394",
+  "status": "pending",
+  "platforms": {
+    "twitter": {
+      "status": "pending",
+      "content_file": "twitter.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    },
+    "threads": {
+      "status": "pending",
+      "content_file": "threads.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    },
+    "line": {
+      "status": "pending",
+      "content_file": "line.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    },
+    "instagram": {
+      "status": "pending",
+      "content_file": "instagram.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    },
+    "telegram": {
+      "status": "pending",
+      "content_file": "telegram.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    }
+  }
+}
