@@ -88,46 +88,102 @@ class TelegramFormatter(BaseFormatter):
 
         return message
 
-    def _extract_main_topics(self, text: str) -> list[str]:
-        """Extract only main topic headers, not sub-bullets."""
-        topics = []
-        in_topics_section = False
-        # Skip these sub-header patterns
-        skip_patterns = ['詳細說明', '市場影響', '投資啟示', '市場背景', '相關標的', '說明']
+    # Structural sub-headers — safe to match as substrings because no real topic
+    # name contains them.
+    _TOPIC_SKIP_SUBSTRINGS = [
+        '詳細說明', '市場影響', '投資啟示', '市場背景', '相關標的', '說明',
+    ]
+    # `話題名稱：` is a LABEL, not a topic — but the two shows use it differently:
+    #   yutinghao: `- **話題名稱：台積電權重巨獸與內外資對作**`  (real name follows)
+    #   gooaye:    `*   **話題名稱：** ...`                      (name is outside the bold)
+    # So strip the prefix rather than skipping the line; an empty remainder is
+    # then dropped by the falsy-name check at each call site.
+    _TOPIC_LABEL_PREFIX = re.compile(r'^話題名稱\s*[：:]\s*')
+    # Generic in-body labels that leaked into gooaye previews (e.g. `**MK 的觀點：** ...`).
+    # Matched EXACTLY against the name's pre-colon head, so a legitimate topic like
+    # 「殺人心盤的操作邏輯」 is never dropped for merely containing 「操作邏輯」.
+    _TOPIC_SKIP_EXACT = {
+        'MK 的觀點', 'MK 的推論', 'MK 的觀點與推論', 'MK 認為', '市場認為',
+        '操作邏輯', '具體觀察', 'MK 的具體觀察', '個人案例',
+    }
 
+    def _is_generic_label(self, name: str) -> bool:
+        """True if `name` is a sub-header/label rather than a real topic name."""
+        if any(kw in name for kw in self._TOPIC_SKIP_SUBSTRINGS):
+            return True
+        head = re.split(r'[：:]', name, maxsplit=1)[0].strip()
+        return head in self._TOPIC_SKIP_EXACT
+
+    @staticmethod
+    def _get_topics_section(text: str) -> str:
+        """Return the raw text of the 主要討論話題 section only."""
+        lines = []
+        in_section = False
         for line in text.split('\n'):
             stripped = line.strip()
-
-            # Start of topics section
             if '主要討論話題' in stripped:
-                in_topics_section = True
+                in_section = True
                 continue
-
-            # End of topics section (next ### header or ---)
-            if in_topics_section and (stripped.startswith('###') or stripped.startswith('---')):
+            if in_section and (stripped.startswith('###') or stripped.startswith('---')):
                 break
+            if in_section:
+                lines.append(line)
+        return '\n'.join(lines)
 
-            # Main topic patterns:
-            # 1. Bullet: * **Topic** or - **Topic**
-            # 2. Numbered: 1. **Topic** or 1.  **Topic**
+    def _clean_topic_name(self, name: str) -> str:
+        """Strip a leading ordinal (`1. ` / `1、`), a `話題名稱：` label prefix, and
+        any trailing colon."""
+        name = name.strip()
+        name = re.sub(r'^\d+\s*[.、）)]\s*', '', name)  # "1. " / "1、" / "1)"
+        name = self._TOPIC_LABEL_PREFIX.sub('', name)
+        return name.rstrip('：:').strip()
+
+    def _extract_main_topics(self, text: str) -> list[str]:
+        """Extract the main topic headers from 主要討論話題, ignoring sub-bullets.
+
+        Two heading styles appear across podcasts:
+          - Numbered-bold (gooaye):          **1. Topic Name**
+          - Bullet-bold (yutinghao/zhaohua): *   **Topic Name**  /  1. **Topic Name**
+
+        Numbered-bold headings take priority: when present, flush-left sub-bullets
+        like `*   **話題名稱：** ...` are never scraped as topics. Older gooaye
+        episodes and the daily shows fall back to the bullet-bold style.
+        """
+        section = self._get_topics_section(text)
+        if not section:
+            return []
+
+        # Tier 1 — numbered-bold headings: **1. Topic Name**
+        numbered = []
+        for line in section.split('\n'):
+            match = re.match(r'^\*\*\s*\d+\s*[.、]\s*(.+?)\*\*\s*$', line.strip())
+            if not match:
+                continue
+            name = self._clean_topic_name(match.group(1))
+            if name and not self._is_generic_label(name):
+                numbered.append(name)
+        if numbered:
+            return numbered
+
+        # Tier 2 — bullet-bold / number-dot-bold headings (yutinghao, zhaohua, older gooaye)
+        topics = []
+        for line in section.split('\n'):
+            stripped = line.strip()
             is_main_topic = (
                 re.match(r'^[-*]\s+\*\*', stripped) or  # * **Topic**
                 re.match(r'^\d+\.\s+\*\*', stripped)     # 1. **Topic**
             )
-
-            if in_topics_section and is_main_topic:
-                # Check if this line is NOT indented in the original
-                if line.startswith('    ') or line.startswith('\t'):
-                    continue  # Skip indented sub-bullets
-
-                # Extract the bold topic name
-                match = re.search(r'\*\*(.+?)\*\*', stripped)
-                if match:
-                    topic_name = match.group(1).rstrip('：:')
-                    # Skip sub-header patterns
-                    if any(skip in topic_name for skip in skip_patterns):
-                        continue
-                    topics.append(topic_name)
+            if not is_main_topic:
+                continue
+            # Skip indented sub-bullets
+            if line.startswith('    ') or line.startswith('\t'):
+                continue
+            match = re.search(r'\*\*(.+?)\*\*', stripped)
+            if not match:
+                continue
+            topic_name = self._clean_topic_name(match.group(1))
+            if topic_name and not self._is_generic_label(topic_name):
+                topics.append(topic_name)
 
         return topics
 
