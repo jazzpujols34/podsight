@@ -43,7 +43,7 @@ podcast.summary_dir.mkdir(parents=True, exist_ok=True)
 DEFAULT_PROVIDER = os.environ.get('SUMMARY_PROVIDER') or "gemini"
 DEFAULT_ANTHROPIC_MODEL = "claude-sonnet-4-20250514"
 DEFAULT_OPENAI_MODEL = "gpt-4o"
-DEFAULT_GEMINI_MODEL = "gemini-3-flash-preview"
+DEFAULT_GEMINI_MODEL = "gemini-flash-lite-latest"
 
 def get_summary_prompt(transcript: str, episode_number: int | None = None) -> str:
     """Generate podcast-specific summary prompt.
