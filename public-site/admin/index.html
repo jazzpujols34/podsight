@@ -1,0 +1,2172 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>兆華與股惑仔 Podcast 完整逐字稿與 AI 分析 — 153+ 集｜PodSight</title>
+    <meta name="description" content="兆華與股惑仔 Podcast 完整逐字稿與 AI 結構化摘要 — 153+ 集，涵蓋投資策略、市場觀察、個股分析｜PodSight">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Canonical & Open Graph -->
+    <link rel="canonical" href="https://podsight.tw/admin/">
+    <meta property="og:url" content="https://podsight.tw/admin/">
+    <meta property="og:title" content="兆華與股惑仔 Podcast 完整逐字稿與 AI 分析 — PodSight 聲見">
+    <meta property="og:description" content="兆華與股惑仔 Podcast 完整逐字稿與 AI 結構化摘要 — 153+ 集，涵蓋投資策略、市場觀察、個股分析">
+    <meta property="og:image" content="https://podsight.tw/assets/og-image.png">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="/assets/PodSight-Logo-cropped.jpeg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
+
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": "兆華與股惑仔 Podcast 完整逐字稿與 AI 分析",
+        "description": "兆華與股惑仔 Podcast 完整逐字稿與 AI 結構化摘要 — 153+ 集，涵蓋投資策略、市場觀察、個股分析",
+        "url": "https://podsight.tw/admin/",
+        "numberOfItems": 153,
+        "isPartOf": {
+            "@type": "WebSite",
+            "name": "PodSight",
+            "url": "https://podsight.tw"
+        }
+    }
+    </script>
+
+    <style>
+        :root {
+            
+            --bg-primary: #14100a;
+            --bg-secondary: #1f1810;
+            --bg-card: rgba(191, 138, 46, 0.08);
+            --bg-card-hover: rgba(191, 138, 46, 0.12);
+            --border-subtle: rgba(232, 178, 77, 0.15);
+            --border-glow: rgba(232, 178, 77, 0.3);
+            --text-primary: #fff9f0;
+            --text-secondary: rgba(255, 249, 240, 0.75);
+            --text-muted: rgba(255, 249, 240, 0.5);
+            --accent-primary: #E8B24D;
+            --accent-secondary: #BF8A2E;
+            --accent-tertiary: #7FB069;
+            --accent-glow: rgba(232, 178, 77, 0.4);
+            --accent-gradient: linear-gradient(135deg, #BF8A2E 0%, #E8B24D 50%, #7FB069 100%);
+            --accent-bg: rgba(232, 178, 77, 0.12);
+            --accent-border: rgba(232, 178, 77, 0.25);
+        
+            --glass-blur: 20px;
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Noto Sans TC', 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .bg-ambient {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at top right, var(--accent-glow) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom left, rgba(255,255,255,0.02) 0%, transparent 50%);
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .nav {
+            padding: 24px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-back {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover { color: var(--text-primary); }
+        .nav-back svg { width: 18px; height: 18px; }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .nav-logo-icon {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .nav-logo-icon img { width: 100%; height: 100%; object-fit: cover; }
+        .nav-logo-text { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 600; }
+
+        .podcast-header {
+            text-align: center;
+            padding: 60px 0 80px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .podcast-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid var(--accent-border);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .podcast-badge svg { width: 16px; height: 16px; }
+
+        .podcast-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .podcast-header .host {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .podcast-header .description {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .controls { padding: 32px 0; }
+
+        .search-box {
+            position: relative;
+            max-width: 400px;
+        }
+
+        .search-box svg {
+            position: absolute;
+            left: 16px; top: 50%;
+            transform: translateY(-50%);
+            width: 18px; height: 18px;
+            color: var(--text-muted);
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .search-box input::placeholder { color: var(--text-muted); }
+        .search-box input:focus { outline: none; border-color: var(--accent-primary); }
+
+        .episode-count {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .episode-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            background: var(--border-subtle);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 80px;
+        }
+
+        .episode-card {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding: 24px;
+            background: var(--bg-secondary);
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s var(--transition-smooth);
+        }
+
+        .episode-card:hover { background: var(--bg-card-hover); }
+
+        .episode-date-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: var(--accent-bg);
+            padding: 10px 14px;
+            border-radius: 6px;
+            min-width: 80px;
+            text-align: center;
+            border: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .fresh-badge {
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .fresh-today {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+
+        .fresh-yesterday {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+        }
+
+        .fresh-week {
+            background: rgba(168, 85, 247, 0.15);
+            color: #c084fc;
+        }
+
+        .episode-content { flex: 1; min-width: 0; }
+
+        .episode-title {
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+
+        .episode-preview {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .episode-arrow {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            opacity: 0;
+            transform: translateX(-8px);
+            transition: all 0.2s var(--transition-smooth);
+        }
+
+        .episode-card:hover .episode-arrow {
+            opacity: 1;
+            transform: translateX(0);
+            color: var(--text-primary);
+            border-color: var(--accent-primary);
+        }
+
+        .episode-arrow svg { width: 16px; height: 16px; }
+
+        .footer {
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .footer-text { font-size: 0.85rem; color: var(--text-muted); }
+        .footer-text a { color: var(--text-secondary); text-decoration: none; }
+
+        @keyframes fadeIn {
+            from { transform: translateY(12px); }
+            to { transform: translateY(0); }
+        }
+
+        /* transform-only reveal: opacity stays 1 so content is LCP-eligible (avoids NO_LCP) */
+        .animate-in { animation: fadeIn 0.6s var(--transition-smooth) both; }
+
+        .episode-card {
+            animation: fadeIn 0.4s var(--transition-smooth) both;
+        }
+
+        .episode-card:nth-child(1) { animation-delay: 0.05s; }
+        .episode-card:nth-child(2) { animation-delay: 0.1s; }
+        .episode-card:nth-child(3) { animation-delay: 0.15s; }
+        .episode-card:nth-child(4) { animation-delay: 0.2s; }
+        .episode-card:nth-child(5) { animation-delay: 0.25s; }
+        .episode-card:nth-child(n+6) { animation-delay: 0.3s; }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin: 32px 0;
+            flex-wrap: wrap;
+        }
+
+        .pagination button {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: var(--bg-card-hover);
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .pagination button.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: var(--bg-primary);
+            font-weight: 600;
+        }
+
+        .pagination button svg { width: 16px; height: 16px; }
+
+        .page-info {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            padding: 0 12px;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 16px; }
+            .podcast-header { padding: 40px 0 60px; }
+            .episode-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+                position: relative;
+            }
+            .episode-arrow {
+                opacity: 1;
+                transform: translateX(0);
+                position: absolute;
+                right: 24px; top: 50%;
+                transform: translateY(-50%);
+            }
+        }
+
+        /* Skeleton loading */
+        @keyframes shimmer {
+            0% { background-position: -400px 0; }
+            100% { background-position: 400px 0; }
+        }
+
+        .skeleton-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .skeleton-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px 24px;
+            border-radius: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .skeleton-badge {
+            width: 60px;
+            height: 24px;
+            border-radius: 6px;
+            background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-card-hover) 50%, var(--bg-card) 75%);
+            background-size: 800px 100%;
+            animation: shimmer 1.5s infinite linear;
+            flex-shrink: 0;
+        }
+
+        .skeleton-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .skeleton-title {
+            height: 18px;
+            width: 70%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-card-hover) 50%, var(--bg-card) 75%);
+            background-size: 800px 100%;
+            animation: shimmer 1.5s infinite linear;
+        }
+
+        .skeleton-text {
+            height: 14px;
+            width: 90%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-card-hover) 50%, var(--bg-card) 75%);
+            background-size: 800px 100%;
+            animation: shimmer 1.5s infinite linear;
+        }
+
+        body:not(.loaded) .episode-list,
+        body:not(.loaded) .episode-count,
+        body:not(.loaded) .pagination {
+            display: none;
+        }
+
+        body.loaded .skeleton-container {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-ambient"></div>
+
+    <div class="container">
+        <nav class="nav animate-in">
+            <a href="/" class="nav-back">
+                <i data-lucide="arrow-left"></i>
+                返回首頁
+            </a>
+            <a href="/" class="nav-logo">
+                <div class="nav-logo-icon">
+                    <img src="/assets/PodSight-Logo-cropped.jpeg" alt="PodSight">
+                </div>
+                <span class="nav-logo-text">PodSight 聲見</span>
+            </a>
+        </nav>
+
+        <header class="podcast-header animate-in">
+            <div class="podcast-badge">
+                <i data-lucide="mic"></i>
+                產業對談
+            </div>
+            <h1>兆華與股惑仔</h1>
+            <p class="host">主持人：兆華</p>
+            <p class="description">資深市場老手與來賓對談，從產業現況聊到操作實務。</p>
+        </header>
+
+        <div class="controls">
+            <div class="search-box">
+                <i data-lucide="search"></i>
+                <input type="text" placeholder="搜尋集數..." id="searchInput">
+            </div>
+        </div>
+
+        <noscript><style>.skeleton-container { display: none !important; } .episode-list, .episode-count, .pagination { display: revert !important; }</style></noscript>
+
+        <div class="skeleton-container" aria-hidden="true">
+            <div class="skeleton-card"><div class="skeleton-badge"></div><div class="skeleton-content"><div class="skeleton-title"></div><div class="skeleton-text"></div></div></div>
+            <div class="skeleton-card"><div class="skeleton-badge"></div><div class="skeleton-content"><div class="skeleton-title"></div><div class="skeleton-text"></div></div></div>
+            <div class="skeleton-card"><div class="skeleton-badge"></div><div class="skeleton-content"><div class="skeleton-title"></div><div class="skeleton-text"></div></div></div>
+            <div class="skeleton-card"><div class="skeleton-badge"></div><div class="skeleton-content"><div class="skeleton-title"></div><div class="skeleton-text"></div></div></div>
+            <div class="skeleton-card"><div class="skeleton-badge"></div><div class="skeleton-content"><div class="skeleton-title"></div><div class="skeleton-text"></div></div></div>
+        </div>
+
+        <div class="episode-count">
+            共 <strong>153</strong> 集摘要
+        </div>
+
+        <div class="episode-list" id="episodeList">
+            <a href="/admin/1162/" class="episode-card">
+                <span class="episode-date-badge">EP1162<span class="fresh-badge fresh-yesterday">昨天</span></span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1162｜股災創傷症候群！之前獲利吐光很痛，反彈到46000點又不敢買？看懂K棒不用摸頭猜底，歷史會重演，現在勝率反而高？ft.朱家泓.林穎</div>
+                    <div class="episode-preview">本集節目邀請技術分析專家朱家泓與林穎，解析大盤歷經劇烈震盪與斷頭潮後的技術面訊號，並教導投資人如何透過K線與趨勢轉折在反彈中精準選股與控管資金。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1161/" class="episode-card">
+                <span class="episode-date-badge">EP1161<span class="fresh-badge fresh-week">本週</span></span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1161｜外資回補、投信觀望，反彈6千點市場情緒沒恢復，好處是有標準！繼續漲價南亞、台光電近前高，怕跌價群聯不振？ft.操盤手 黃豐凱</div>
+                    <div class="episode-preview">...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1160/" class="episode-card">
+                <span class="episode-date-badge">EP1160<span class="fresh-badge fresh-week">本週</span></span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1160｜CPI降低升息疑慮，好財報有好反應，華碩、廣達一線軍歸隊，漲價升級中小股續航，明年是否「再度發育」？ft.選股教練 陳唯泰</div>
+                    <div class="episode-preview">台股在基本面穩健與利多消息帶動下溫和反彈，市場逐漸回歸理性，投資人應利用財報與營收數據重新評估個股價值，布局展望樂觀的 AI 供應鏈與權值股。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1159/" class="episode-card">
+                <span class="episode-date-badge">EP1159<span class="fresh-badge fresh-week">本週</span></span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1159｜美超微、流明財報依舊好，晚上CPI是反彈考驗站？載板、矽晶圓、記憶體、被動選秀，誰是狀元籤？ft.型男股神 陳威良</div>
+                    <div class="episode-preview">台股進入反彈溫水區，投資人應運用「選秀理論」觀察聰明錢流向，優先選擇率先站回均線的強勢標的，並透過分批操作與深入研究來優化解套策略。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1158/" class="episode-card">
+                <span class="episode-date-badge">EP1158<span class="fresh-badge fresh-week">本週</span></span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1158｜7月營收年增47%！簡易判斷術，超過均值、位階低不怕！低於均值、反彈近高小心！被動、CPO、PCB算哪一種？ft.AI達人 蔡明翰</div>
+                    <div class="episode-preview">台股 7 月營收展現極強的基本面韌性，儘管短線面臨 NVIDIA 晶片出貨時程的疑慮與籌碼整理，投資人應透過拉長時間軸與分散族群配置來應對市場波動。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1157/" class="episode-card">
+                <span class="episode-date-badge">EP1157<span class="fresh-badge fresh-week">本週</span></span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1157｜漲回45000點但意猶未盡？股價跌50%，要漲100%才回得來！別管多空交戰、彈完沒，趁盤轉穩，快把配置做起來！ft.題材獵人 林漢偉</div>
+                    <div class="episode-preview">本集探討台股在強彈後進入「有差別反彈」階段，建議投資人透過 AI 龍頭股與主動型配置（如 00980A）來應對市場波動，並掌握回血行情。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1156/" class="episode-card">
+                <span class="episode-date-badge">EP1156</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1156｜7月營收、半年報密集出爐，好成績卻跌，短線大戶趁機離場？川湖是AI的信任感！觀察投信順向股，回檔接就不怕？ft.操盤手 黃豐凱</div>
+                    <div class="episode-preview">台股反彈進入休息整理期，市場焦點由「跌深反彈」轉向「半年報與 7 月營收」的基本面檢視，投資人應留意大盤回測支撐（打第二隻腳）的風險。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1155/" class="episode-card">
+                <span class="episode-date-badge">EP1155</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1155｜看似不漲，其實輪到補漲？散熱、BBU、記憶體模組、鋼鐵、汽零件，誰能迎來認真的波段？先選龍頭+型態好的意義？ft.選股教練 陳唯泰</div>
+                    <div class="episode-preview">本集討論大盤反彈後的類股輪動格局，資金由 AI 核心擴散至記憶體模組、矽光子及鋼鐵、汽車零組件等低位階傳產族群。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1154/" class="episode-card">
+                <span class="episode-date-badge">EP1154</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1154｜連續反彈上月線了，判斷彈幅滿足，還是續抱？琉明光學的背書價值，AMD和環球晶財報後跌，市場期待仍是高標！ft.型男股神 陳威良</div>
+                    <div class="episode-preview">台股大反彈後，投資人應結合基本面選股以掌握長線波段，並運用技術面紀律避開重大損失，同時密切觀察矽光子與記憶體族群作為市場信心與底盤的指標。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1153/" class="episode-card">
+                <span class="episode-date-badge">EP1153</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1153｜亞馬遜股價創新高的投資啟示？訂單都在等台灣，市場的情緒平復中，Q3漲價趨緩已反應？受傷的信心和部位如何重建？ft.AI達人 蔡明翰</div>
+                    <div class="episode-preview">台股經歷漲多修正與去槓桿壓力，雖然股價短期因情緒劇烈波動，但 AI 產業基本面與四大雲端業者（CSP）的資本支出動能未變，投資人應以營收數字為準進行汰弱留強。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1152/" class="episode-card">
+                <span class="episode-date-badge">EP1152</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1152｜亞股我最強，利多會反應，危機解除了嗎？美伊、南韓、日幣一起看，被個股嚇破膽又捨不得放，如何重新調整？ft,題材獵人 林漢偉</div>
+                    <div class="episode-preview">本集探討台股大跌後的反彈選股策略，強調透過「強於大盤」的指標篩選標的，並建議投資人利用「黃金三角」配置法來應對市場波動與心理壓力。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1151/" class="episode-card">
+                <span class="episode-date-badge">EP1151</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1151｜史上最大漲點3281點，台積電漲停，堆積的利多，一口氣奉還！不急著當1日英雄，股價跌回合理本益比，慢慢挑！ft.操盤手 黃豐凱</div>
+                    <div class="episode-preview">台股迎來史上最大漲點反彈，融資去化初步完成，市場最壞情況已過，投資人應回歸基本面，鎖定財報績優股進行下半年的重新布局。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1150/" class="episode-card">
+                <span class="episode-date-badge">EP1150</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1150｜市場的理性與不理性？好財報照跌，但資金買單部份股票？融資退、政府護，反攻條件還不夠，可以觀察的事情變很多！ft.選股教練 陳唯泰</div>
+                    <div class="episode-preview">在七月市場劇烈去槓桿與「利空過度反應」的環境下，投資人應放棄摸底心態，改以觀察逆勢抗跌標的並嚴守紀律，確保能長久活在市場中。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1149/" class="episode-card">
+                <span class="episode-date-badge">EP1149</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1149｜測試4萬大關，獲利都吐光的一天？大盤融資維持率再降，整理股票，更整理心情！財報都超好，為何只反應利空？ft.型男股神 陳威良</div>
+                    <div class="episode-preview">本集深入剖析台股萬點大關保衛戰背後的「去槓桿」壓力，強調在基本面未變、情緒與籌碼混亂的股災中，投資人應先處理心情、去槓桿騰出現金，並冷靜等待落底訊號。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1148/" class="episode-card">
+                <span class="episode-date-badge">EP1148</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1148｜恐懼又來，升息、輝達幫忙舉債、中國生產DUV，形成股市向下螺旋的原因？怕就等等，不想賣，先確定自己凹單的條件？ft.題材獵人 林漢偉</div>
+                    <div class="episode-preview">台股遭遇史上罕見的兩千點大跌，主因在於 AI 泡沫疑慮、輝達（NVIDIA）信用風險升溫及韓國去槓桿政策引發的連鎖反應，操作上應以「減壓」與「汰弱留強」為首要任務。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1147/" class="episode-card">
+                <span class="episode-date-badge">EP1147</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1147｜算窒息量嗎？信昌電急拉，大戶今日尾盤敲單的邏輯？被動元件曙光，CPO、老AI先跌先止跌，設備內外資都升評？ft.冠軍操盤手 楊雲翔</div>
+                    <div class="episode-preview">台股出現底部窒息量並上演 600 點大逆轉，高手趁勢進場搶跌深反彈，鎖定被動元件與低本益比的老 AI 族群。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1146/" class="episode-card">
+                <span class="episode-date-badge">EP1146</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1146｜韓國殺招提早上路，油價又破百，要等利空測試跌不動！載板、CCL、矽晶圓看遠都很美，看近會被洗，拉長戰線能收成？ft.操盤手 黃豐凱</div>
+                    <div class="episode-preview">台股遭遇千點大跌與韓國去槓桿利空夾擊，凱哥建議投資人保持「遠視眼」看好明年 AI 趨勢，趁利空測試底部的兩週內分批佈局低位階標的。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1145/" class="episode-card">
+                <span class="episode-date-badge">EP1145</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1145｜受傷沉澱中，google自由現金流轉負，AI賺多花更多、零組件漲價受壓？資本支出慢發酵，靜待股價和基本面平衡點！ft.選股教練 陳唯泰</div>
+                    <div class="episode-preview">市場進入大震盪後的修復期，獲利空間縮小，投資人應靜待本益比修正並觀察主力重新布局的績優標的，切勿盲目追高。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1144/" class="episode-card">
+                <span class="episode-date-badge">EP1144</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1144｜大跌、大漲之後，外資對被動元件、ABF、CCL、成熟製程產業看法有任何改變嗎？目標價空間更大，買賣的抉擇？ft.外資捕手 不魯</div>
+                    <div class="episode-preview">本集解析台股大跌後的反彈應對策略，分析外資如何利用 2028 年估值法看好 ABF 與成熟製程，並建議透過 ETF 降低個股操作的心理壓力。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1143/" class="episode-card">
+                <span class="episode-date-badge">EP1143</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1143｜史上最大漲點，是人道走廊還是止穩？想撿東西怎麼選，散熱、CCL反攻有意義，主被動科技ETF不輸個股？ft.題材獵人 林漢偉</div>
+                    <div class="episode-preview">台股迎來史詩級反彈，投資人應利用斐波那契回撤位階檢視持股，並透過高研發強度的科技 ETF（如 00935）布局具備技術護城河的 AI 長線標的。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1142/" class="episode-card">
+                <span class="episode-date-badge">EP1142</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1142｜怕砍在阿呆谷，又怕回吐更多，減壓怎麼做？主動ETF也跌，有比個股好嗎？被動元件陷入斷頭危機，止跌訊號？ft.型男股神 陳威良</div>
+                    <div class="episode-preview">面對台股去槓桿引發的非理性下殺，投資人應透過資產配置降低體感風險，並採取「不看成本、只看後市」的太弱留強策略，保留現金以應對盤勢反轉。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1141/" class="episode-card">
+                <span class="episode-date-badge">EP1141</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1141｜韓國沒開市，換台股去槓桿？史上最大跌點破季線，融資冷靜一下比較好！多數熱門股都逆風，想賺大的還是賺穩的？ft.雷老闆</div>
+                    <div class="episode-preview">台股遭遇史上最大跌點，兆華與雷老板深度解析台積電法說後市場的去槓桿壓力、融資斷頭風險，以及在極端恐慌下如何維持投資紀律與產業信心。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1140/" class="episode-card">
+                <span class="episode-date-badge">EP1140</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1140｜台積電法說不買單？漲價、缺料從優點變成殺手，PCB、記憶體中小熱門股陷入苦戰，大洗刷過程，應該接住誰？ft.AI達人蔡明翰.PCB女王廖婉婷</div>
+                    <div class="episode-preview">本集深入拆解台積電(2330)法說會後的市場反應，並針對 AI 產業鏈（PCB、散熱、記憶體）的雜音進行釐清，強調目前市場波動主因是「漲多修正」而非基本面反轉。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1139/" class="episode-card">
+                <span class="episode-date-badge">EP1139</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1139｜CPI降溫，韓國救市，把千點還給台股，記憶體、載板回血，設備、封測為台積電法說暖身！塑化、散裝能關愛？ft.選股教練 陳唯泰</div>
+                    <div class="episode-preview">台股經歷千點修正後迎來強勁反彈，選股教練陳唯泰建議投資人關注營收大幅成長但股價修正至季線、半年線的「黃金右下角」標的，並留意具備抗通膨與集團資源優勢的轉型股。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1138/" class="episode-card">
+                <span class="episode-date-badge">EP1138</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1138｜2個月白做工？盤中留下影線V轉，去槓桿危機過了嗎？強勢矽晶圓、軍工，弱勢被動、CPO，怎麼選？ft.紀緯明 小明同學</div>
+                    <div class="episode-preview">面對台股盤中千點大震盪，投資人應透過「殺估值、殺營收、殺邏輯」三層次篩選標的，並嚴格執行去槓桿與停損紀律，靜待 7 月下旬美股財報與台積電法說帶來的暴力反彈。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1137/" class="episode-card">
+                <span class="episode-date-badge">EP1137</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1137｜漲千點氣勢被韓股拖累，基本面和政策緊縮面的戰爭！台積電營收創高，殺中小帳面獲利回吐，放慢一點接，沒損失？ft.題材獵人 林漢偉</div>
+                    <div class="episode-preview">面對台股慣性改變與國際盤勢動盪，投資人應放慢腳步、縮減戰線，鎖定 AI 長線趨勢不變的「落難龍頭股」或透過主動式 ETF 進行配置。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1136/" class="episode-card">
+                <span class="episode-date-badge">EP1136</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1136｜美伊不停火、楊總裁喊話，AI評價未失控，槓桿已過熱？漲價、訂單滿載不變，但慣性改變，台積電法說會後再表態？ft.型男股神 陳威良</div>
+                    <div class="episode-preview">在 AI 長線趨勢未變但短線估值過高且槓桿過重的背景下，投資人應透過「位階」尋找落後補漲標的，並嚴格執行去槓桿以應對第三季的震盪壓力。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1135/" class="episode-card">
+                <span class="episode-date-badge">EP1135</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1135｜低量磨人盤，錢快加完了？拉高耐性，熱門股來到關鍵支撐，風險報酬比好抓？要等AI復甦，還是找生技和軍工避險？ft.冠軍操盤手 楊雲翔</div>
+                    <div class="episode-preview">在台股成交量能腰斬、市場信心不足的震盪期，投資人應透過防禦性資產避險，並鎖定「低位階、營收創高、回測季線」的標的進行反彈操作。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1134/" class="episode-card">
+                <span class="episode-date-badge">EP1134</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1134｜鬼故事繼續，哪一條該怕？三星Q2獲利成長19倍，卻引發韓股大跌？熱門股全軍覆沒，6月營收出爐，檢驗該買該賣！ft.AI達人 蔡明翰</div>
+                    <div class="episode-preview">台股千點重挫主因韓股拖累與人踩人賣壓，投資人應回歸「營收均值」檢視持股，AI 趨勢未變，績優股應趁震盪分批佈局。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1133/" class="episode-card">
+                <span class="episode-date-badge">EP1133</span>
+                <div class="episode-content">
+                    <div class="episode-title">EP1133｜洗籌碼時間，研調機構說輝達機櫃延後出，真假判斷？CCL、載板、被動被殺，勇敢接誰？籌碼躲在功率和軍工，要追嗎？ft.題材獵人 林漢偉</div>
+                    <div class="episode-preview">本集探討 SemiAnalysis 負面報告對 PCB 及載板族群的衝擊，並建議投資人在盤勢觀望期，應透過營收檢視與產業信仰進行「汰弱留強」或「低位蹲點」。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1132/" class="episode-card">
+                <span class="episode-date-badge">EP1132</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股展現強大韌性並收長下影線，在大盤與櫃買月線同步轉強的背景下，台積電法說會前市場維持多頭架構，投資</div>
+                    <div class="episode-preview">台股展現強大韌性並收長下影線，在大盤與櫃買月線同步轉強的背景下，台積電法說會前市場維持多頭架構，投資人應聚焦具產能擴充優勢與營收實質支撐的族群。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1131/" class="episode-card">
+                <span class="episode-date-badge">EP1131</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股進入第三季「開高走低」的季節性慣性，7 月法說行情雖樂觀，但投資人需進行壓力測試，預防 8、9 </div>
+                    <div class="episode-preview">台股進入第三季「開高走低」的季節性慣性，7 月法說行情雖樂觀，但投資人需進行壓力測試，預防 8、9 月可能的震盪與去槓桿風險。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1130/" class="episode-card">
+                <span class="episode-date-badge">EP1130</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股下半年由台積電領軍開出千點大漲紅盤，投資者應鎖定具實質訂單能見度的細晶圓與廠務設備族群，並避開籌</div>
+                    <div class="episode-preview">台股下半年由台積電領軍開出千點大漲紅盤，投資者應鎖定具實質訂單能見度的細晶圓與廠務設備族群，並避開籌碼凌亂且純屬題材想像的弱勢標的。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1129/" class="episode-card">
+                <span class="episode-date-badge">EP1129</span>
+                <div class="episode-content">
+                    <div class="episode-title">盤勢呈現跌破月線後縮量反彈的「複製貼上」格局，投資人應建立正確的進出場紀律並避免 FOMO，將交易視</div>
+                    <div class="episode-preview">盤勢呈現跌破月線後縮量反彈的「複製貼上」格局，投資人應建立正確的進出場紀律並避免 FOMO，將交易視為一種需反覆練習的「技藝」。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1128/" class="episode-card">
+                <span class="episode-date-badge">EP1128</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股面臨高位回檔與資金收縮壓力，投資人應透過「減壓操作」與「汰弱留強」，鎖定具業績支撐的 AI 產業</div>
+                    <div class="episode-preview">台股面臨高位回檔與資金收縮壓力，投資人應透過「減壓操作」與「汰弱留強」，鎖定具業績支撐的 AI 產業瓶頸族群（記憶體、電力、設備）及龍頭標的。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1127/" class="episode-card">
+                <span class="episode-date-badge">EP1127</span>
+                <div class="episode-content">
+                    <div class="episode-title">本集探討台股遭遇史上第三大跌點的背後原因，包含全球資金收縮、融資限縮及消費力衰退疑慮，並建議投資人於</div>
+                    <div class="episode-preview">本集探討台股遭遇史上第三大跌點的背後原因，包含全球資金收縮、融資限縮及消費力衰退疑慮，並建議投資人於修正期關注台積電設備鏈與具備漲價題材的非 AI 族群。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1126/" class="episode-card">
+                <span class="episode-date-badge">EP1126</span>
+                <div class="episode-content">
+                    <div class="episode-title">在美光財報利多與台積電基本面強勁的支撐下，面對市場劇烈震盪與匯率波動，應採「看高做低」策略，並靈活運</div>
+                    <div class="episode-preview">在美光財報利多與台積電基本面強勁的支撐下，面對市場劇烈震盪與匯率波動，應採「看高做低」策略，並靈活運用避險工具應對系統性風險。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1125/" class="episode-card">
+                <span class="episode-date-badge">EP1125</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股雖經歷千點震盪，但主要受大型權值股拖累與短期利空傳聞影響，市場基本面未變，投資人應關注 IC 設</div>
+                    <div class="episode-preview">台股雖經歷千點震盪，但主要受大型權值股拖累與短期利空傳聞影響，市場基本面未變，投資人應關注 IC 設計、被動元件與轉型 AI 的傳統產業，並透過合理配置參與「科技通膨」紅利。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1124/" class="episode-card">
+                <span class="episode-date-badge">EP1124</span>
+                <div class="episode-content">
+                    <div class="episode-title">面對大盤帶量回檔，投資人應無視短線技術面恐慌，堅定佈局 2027 年 AI 長線趨勢，並根據「有數字</div>
+                    <div class="episode-preview">面對大盤帶量回檔，投資人應無視短線技術面恐慌，堅定佈局 2027 年 AI 長線趨勢，並根據「有數字的成長股」與「無數字的勢頭股」採取截然不同的進出場策略。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1123/" class="episode-card">
+                <span class="episode-date-badge">EP1123</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股攻上歷史新高逼近五萬點大關，市場無視聯準會鷹派指引，資金在 AI 龍頭股、集團作帳股與低位階價值</div>
+                    <div class="episode-preview">台股攻上歷史新高逼近五萬點大關，市場無視聯準會鷹派指引，資金在 AI 龍頭股、集團作帳股與低位階價值股間展開良性輪動。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1122/" class="episode-card">
+                <span class="episode-date-badge">EP1122</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股無視 FED 鷹派訊號創下歷史新高，資金由 AI 核心擴散至被動元件、功率元件及封測族群，多頭架</div>
+                    <div class="episode-preview">台股無視 FED 鷹派訊號創下歷史新高，資金由 AI 核心擴散至被動元件、功率元件及封測族群，多頭架構明確，建議投資人維持持股並聚焦第三季接棒題材。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1121/" class="episode-card">
+                <span class="episode-date-badge">EP1121</span>
+                <div class="episode-content">
+                    <div class="episode-title">本集探討台股在 AI 浪潮帶動下的「評價重估（Re-rating）」，說明為何高本益比並不代表貴，並</div>
+                    <div class="episode-preview">本集探討台股在 AI 浪潮帶動下的「評價重估（Re-rating）」，說明為何高本益比並不代表貴，並詳解主動型基金（特別是基富通 TISA 級別）在當前盤勢下優於 ETF 的績效表現。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1120/" class="episode-card">
+                <span class="episode-date-badge">EP1120</span>
+                <div class="episode-content">
+                    <div class="episode-title">市場雜音消除後應回歸基本面，AI 趨勢仍處於早期階段，投資人應以「報酬最適化」取代「最大化」，並善用</div>
+                    <div class="episode-preview">市場雜音消除後應回歸基本面，AI 趨勢仍處於早期階段，投資人應以「報酬最適化」取代「最大化」，並善用 AI 工具破除市場謠言。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1119/" class="episode-card">
+                <span class="episode-date-badge">EP1119</span>
+                <div class="episode-content">
+                    <div class="episode-title">中東和平協議曙光與油價回落緩解通膨疑慮，市場重回多頭軌道，應關注具備國際連動性的漲價族群及 Spac</div>
+                    <div class="episode-preview">中東和平協議曙光與油價回落緩解通膨疑慮，市場重回多頭軌道，應關注具備國際連動性的漲價族群及 SpaceX 帶動的太空算力新題材。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1118/" class="episode-card">
+                <span class="episode-date-badge">EP1118</span>
+                <div class="episode-content">
+                    <div class="episode-title">本週市場歷經劇烈震盪，雷老板強調此為「多頭過熱」與「季線乖離」的正常修正而非轉空，投資人應維持 5-</div>
+                    <div class="episode-preview">本週市場歷經劇烈震盪，雷老板強調此為「多頭過熱」與「季線乖離」的正常修正而非轉空，投資人應維持 5-7 成水位，看好 AI 紅利將帶領台股長期邁向五萬點。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1117/" class="episode-card">
+                <span class="episode-date-badge">EP1117</span>
+                <div class="episode-content">
+                    <div class="episode-title">本集討論台股高低價差 1400 點的劇烈 V 轉震盪，分析融資洗盤進度、下週總經風險（日央、聯準會）</div>
+                    <div class="episode-preview">本集討論台股高低價差 1400 點的劇烈 V 轉震盪，分析融資洗盤進度、下週總經風險（日央、聯準會），並分享在極端波動中「減壓操作」的實戰心法。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1116/" class="episode-card">
+                <span class="episode-date-badge">EP1116</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股回測並跌破月線，市場進入高檔震盪與籌碼清洗期，投資人應建立「微破大支撐與大破小支撐」的應對紀律，</div>
+                    <div class="episode-preview">台股回測並跌破月線，市場進入高檔震盪與籌碼清洗期，投資人應建立「微破大支撐與大破小支撐」的應對紀律，並關注資金轉向營建與高股息標的的趨勢。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1115/" class="episode-card">
+                <span class="episode-date-badge">EP1115</span>
+                <div class="episode-content">
+                    <div class="episode-title">面對市場非理性的劇烈震盪，應回歸基本面「對答案」，在 AI 趨勢未變且升息疑慮尚早的背景下，大跌反而</div>
+                    <div class="episode-preview">面對市場非理性的劇烈震盪，應回歸基本面「對答案」，在 AI 趨勢未變且升息疑慮尚早的背景下，大跌反而是分批佈局名門正派 AI 股的良機。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1114/" class="episode-card">
+                <span class="episode-date-badge">EP1114</span>
+                <div class="episode-content">
+                    <div class="episode-title">面對台指期夜盤因流動性枯竭導致的史詩級跌點，投資人應保持冷靜，秉持「跌時重質」原則，鎖定具備實質營收</div>
+                    <div class="episode-preview">面對台指期夜盤因流動性枯竭導致的史詩級跌點，投資人應保持冷靜，秉持「跌時重質」原則，鎖定具備實質營收支撐的 AI 核心標的進行分批布局。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1113/" class="episode-card">
+                <span class="episode-date-badge">EP1113</span>
+                <div class="episode-content">
+                    <div class="episode-title">面對台股衝上 46,000 點後的劇烈震盪與記憶體降規疑慮，黃豐凱強調多頭趨勢尚未終結，應鎖定第三季</div>
+                    <div class="episode-preview">面對台股衝上 46,000 點後的劇烈震盪與記憶體降規疑慮，黃豐凱強調多頭趨勢尚未終結，應鎖定第三季具放量潛力的 CPO、機器人及電源供應族群。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1112/" class="episode-card">
+                <span class="episode-date-badge">EP1112</span>
+                <div class="episode-content">
+                    <div class="episode-title">面對市場量縮回檔與降息預期降溫，投資人應篩選「基本面厚度」高的標的，並透過抽回本金的停利策略來平衡人</div>
+                    <div class="episode-preview">面對市場量縮回檔與降息預期降溫，投資人應篩選「基本面厚度」高的標的，並透過抽回本金的停利策略來平衡人性焦慮與投資收益。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1111/" class="episode-card">
+                <span class="episode-date-badge">EP1111</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股上演千點漲勢站上四萬六千點新高，朱家泓老師強調目前技術面尚未出現反轉訊號，投資人應順勢而為，並透</div>
+                    <div class="episode-preview">台股上演千點漲勢站上四萬六千點新高，朱家泓老師強調目前技術面尚未出現反轉訊號，投資人應順勢而為，並透過嚴格紀律與資金控管來守住獲利。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1110/" class="episode-card">
+                <span class="episode-date-badge">EP1110</span>
+                <div class="episode-content">
+                    <div class="episode-title">黃仁勳旋風帶動大型 AI 權值股（老 AI）強勢補漲，市場呈現資金由中小型股轉向大型股的換手震盪，投</div>
+                    <div class="episode-preview">黃仁勳旋風帶動大型 AI 權值股（老 AI）強勢補漲，市場呈現資金由中小型股轉向大型股的換手震盪，投資者應建立核心大部位並以長線視野應對波動。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1109/" class="episode-card">
+                <span class="episode-date-badge">EP1109</span>
+                <div class="episode-content">
+                    <div class="episode-title">黃仁勳演講點燃「老 AI」族群與邊緣 AI 題材，投資人應在享受資金輪動紅利的同時，建立個人進出場邏</div>
+                    <div class="episode-preview">黃仁勳演講點燃「老 AI」族群與邊緣 AI 題材，投資人應在享受資金輪動紅利的同時，建立個人進出場邏輯以應對高檔震盪。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1108/" class="episode-card">
+                <span class="episode-date-badge">EP1108</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股在老 AI 權值股（鴻海、廣達、緯創）集體漲停與美股戴爾（Dell）財報利多帶動下，噴發千點行情</div>
+                    <div class="episode-preview">台股在老 AI 權值股（鴻海、廣達、緯創）集體漲停與美股戴爾（Dell）財報利多帶動下，噴發千點行情，宣告 AI 多頭趨勢由中小型股重回名門正派權值股。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1107/" class="episode-card">
+                <span class="episode-date-badge">EP1107</span>
+                <div class="episode-content">
+                    <div class="episode-title">面對台股爆量震盪的「資金推擠盤」，投資人應嚴守紀律並區分題材熱度，在保有本業底氣的同時，透過多空循環</div>
+                    <div class="episode-preview">面對台股爆量震盪的「資金推擠盤」，投資人應嚴守紀律並區分題材熱度，在保有本業底氣的同時，透過多空循環累積實戰經驗。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1106/" class="episode-card">
+                <span class="episode-date-badge">EP1106</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股衝破四萬點後出現天量洗刷，投資人應保持 7-8 成持股水位，並透過觀察資金流向與「回後買上漲」策</div>
+                    <div class="episode-preview">台股衝破四萬點後出現天量洗刷，投資人應保持 7-8 成持股水位，並透過觀察資金流向與「回後買上漲」策略，在過熱的行情中守住利潤。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1105/" class="episode-card">
+                <span class="episode-date-badge">EP1105</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股進入高位震盪，投資人應無視短期地緣政治利多出盡，將核心持股靠攏 AI 趨勢，並以「放大總資產」而</div>
+                    <div class="episode-preview">台股進入高位震盪，投資人應無視短期地緣政治利多出盡，將核心持股靠攏 AI 趨勢，並以「放大總資產」而非「追求單一獲利率」作為操作主軸。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1104/" class="episode-card">
+                <span class="episode-date-badge">EP1104</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股隨輝達財報與 Computex 展前夕噴發，在百花齊放的過熱行情中，投資人應透過「研發強度」篩選</div>
+                    <div class="episode-preview">台股隨輝達財報與 Computex 展前夕噴發，在百花齊放的過熱行情中，投資人應透過「研發強度」篩選標的，並利用主被動 ETF 配置來應對高檔震盪。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1103/" class="episode-card">
+                <span class="episode-date-badge">EP1103</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股首度站穩 42,000 點收盤新高，在 AI 三巨頭（Google、NVIDIA、AMD）利多接</div>
+                    <div class="episode-preview">台股首度站穩 42,000 點收盤新高，在 AI 三巨頭（Google、NVIDIA、AMD）利多接力下，市場聚焦先進封裝國家隊與「右下角」個股的跌深反彈策略。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1102/" class="episode-card">
+                <span class="episode-date-badge">EP1102</span>
+                <div class="episode-content">
+                    <div class="episode-title">輝達亮眼財報揭示 AI 需求轉向「主權國家與企業」的新結構，化解市場對雲端大廠支出見頂的疑慮，帶動台</div>
+                    <div class="episode-preview">輝達亮眼財報揭示 AI 需求轉向「主權國家與企業」的新結構，化解市場對雲端大廠支出見頂的疑慮，帶動台股報復性反彈。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1101/" class="episode-card">
+                <span class="episode-date-badge">EP1101</span>
+                <div class="episode-content">
+                    <div class="episode-title">本集邀請「外資捕手」布魯分享如何透過全球「金流」（成交金額排行）洞察 AI 紅利流向，並深入解析聯發</div>
+                    <div class="episode-preview">本集邀請「外資捕手」布魯分享如何透過全球「金流」（成交金額排行）洞察 AI 紅利流向，並深入解析聯發科、成熟製程及被動元件的投資邏輯與操作心法。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1100/" class="episode-card">
+                <span class="episode-date-badge">EP1100</span>
+                <div class="episode-content">
+                    <div class="episode-title">面對台股從四萬二千點回檔的恐慌，應以「基本面」為信仰，區分核心與波動資產，並在利率走向模糊的混沌期保</div>
+                    <div class="episode-preview">面對台股從四萬二千點回檔的恐慌，應以「基本面」為信仰，區分核心與波動資產，並在利率走向模糊的混沌期保持操作彈性。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1099/" class="episode-card">
+                <span class="episode-date-badge">EP1099</span>
+                <div class="episode-content">
+                    <div class="episode-title">面對台股千點震盪與資金輪動，投資人應淡化指數恐慌，利用拉回機會分批佈局具備核心競爭力的 AI 供應鏈</div>
+                    <div class="episode-preview">面對台股千點震盪與資金輪動，投資人應淡化指數恐慌，利用拉回機會分批佈局具備核心競爭力的 AI 供應鏈、機器人族群及下半年具潛力的 AI 眼鏡題材。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1098/" class="episode-card">
+                <span class="episode-date-badge">EP1098</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股與韓股創高後出現劇烈震盪與「利多實現」的獲利了結賣壓，資金開始由高位階 AI 股轉向低位階的機器</div>
+                    <div class="episode-preview">台股與韓股創高後出現劇烈震盪與「利多實現」的獲利了結賣壓，資金開始由高位階 AI 股轉向低位階的機器人、被動元件及落後補漲標的。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1097/" class="episode-card">
+                <span class="episode-date-badge">EP1097</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股進入高位階輪動盤，資金鎖定低位階且受惠 AI 規格升級的補漲族群（記憶體、被動元件），投資者應嚴</div>
+                    <div class="episode-preview">台股進入高位階輪動盤，資金鎖定低位階且受惠 AI 規格升級的補漲族群（記憶體、被動元件），投資者應嚴控槓桿並關注具備「實質轉型」的龍頭標的。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1096/" class="episode-card">
+                <span class="episode-date-badge">EP1096</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股在通膨數據與地緣風險中展現強大抗性，市場資金正從漲多標的轉向具備「想像溢價」的轉型題材（如面板轉</div>
+                    <div class="episode-preview">台股在通膨數據與地緣風險中展現強大抗性，市場資金正從漲多標的轉向具備「想像溢價」的轉型題材（如面板轉封測）及新切入 AI 供應鏈的低位階個股。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1095/" class="episode-card">
+                <span class="episode-date-badge">EP1095</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股多頭格局在產業健康輪動與 AI 強勁需求下持續推進，即便面臨 Intel 競爭疑慮與短線過熱，在</div>
+                    <div class="episode-preview">台股多頭格局在產業健康輪動與 AI 強勁需求下持續推進，即便面臨 Intel 競爭疑慮與短線過熱，在台積電(2330)評價合理的前提下，投資人應維持偏多思維並注意 ETF 溢價風險。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1094/" class="episode-card">
+                <span class="episode-date-badge">EP1094</span>
+                <div class="episode-content">
+                    <div class="episode-title">台積電利空回檔應視為反市場操作的低接良機，市場資金轉向評價重估的記憶體族群及具備 AI 題材的電力與</div>
+                    <div class="episode-preview">台積電利空回檔應視為反市場操作的低接良機，市場資金轉向評價重估的記憶體族群及具備 AI 題材的電力與低軌衛星標的。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1093/" class="episode-card">
+                <span class="episode-date-badge">EP1093</span>
+                <div class="episode-content">
+                    <div class="episode-title">大盤攻上四萬二後出現高檔洗刷，資金在 AI 領頭羊與低基期族群間快速輪動，投資人應關注產業實質進展並</div>
+                    <div class="episode-preview">大盤攻上四萬二後出現高檔洗刷，資金在 AI 領頭羊與低基期族群間快速輪動，投資人應關注產業實質進展並留意第三季潛在的修正風險。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1092/" class="episode-card">
+                <span class="episode-date-badge">EP1092</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股在 AI 紅利帶動下強勢站上 42,000 點，市場呈現健康輪動，投資人應關注高位階標的的回檔風</div>
+                    <div class="episode-preview">台股在 AI 紅利帶動下強勢站上 42,000 點，市場呈現健康輪動，投資人應關注高位階標的的回檔風險，並留意低位階全值股的補漲機會。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1091/" class="episode-card">
+                <span class="episode-date-badge">EP1091</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股爆量震盪反映 AI 產業典範轉移的焦慮與期待，操作應鎖定具備寡占地位的「ABCD」族群，並需警惕</div>
+                    <div class="episode-preview">台股爆量震盪反映 AI 產業典範轉移的焦慮與期待，操作應鎖定具備寡占地位的「ABCD」族群，並需警惕散熱族群因技術規格改變帶來的短期衝擊。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1090/" class="episode-card">
+                <span class="episode-date-badge">EP1090</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股無視地緣政治風險展現極強韌性，在 AI 歷史性榮景下，投資人應透過市值型 ETF 或分批布局確保</div>
+                    <div class="episode-preview">台股無視地緣政治風險展現極強韌性，在 AI 歷史性榮景下，投資人應透過市值型 ETF 或分批布局確保「不脫隊」，而非死守不漲的弱勢股。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1089/" class="episode-card">
+                <span class="episode-date-badge">EP1089</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股創下史上單日最大漲點站上四萬大關，在市場極度 FOMO 的氛圍下，投資人應緊盯國際指標股動向，順</div>
+                    <div class="episode-preview">台股創下史上單日最大漲點站上四萬大關，在市場極度 FOMO 的氛圍下，投資人應緊盯國際指標股動向，順勢操作但不預設高點，並適度透過資金平移控管風險。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1088/" class="episode-card">
+                <span class="episode-date-badge">EP1088</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股歷經驚奇四月後，五月展望持穩，投資人應趁台積電回檔佈局，並關注機器人、封測與低軌衛星等具備趨勢的</div>
+                    <div class="episode-preview">台股歷經驚奇四月後，五月展望持穩，投資人應趁台積電回檔佈局，並關注機器人、封測與低軌衛星等具備趨勢的新主流。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1087/" class="episode-card">
+                <span class="episode-date-badge">EP1087</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股在摸到四萬點大關後出現劇烈震盪，AI 長線趨勢雖未改變，但短線乖離過大，投資人應關注 CPO、記</div>
+                    <div class="episode-preview">台股在摸到四萬點大關後出現劇烈震盪，AI 長線趨勢雖未改變，但短線乖離過大，投資人應關注 CPO、記憶體等族群的報價與籌碼變化，並理解主動式 ETF 對市場的實質影響。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1086/" class="episode-card">
+                <span class="episode-date-badge">EP1086</span>
+                <div class="episode-content">
+                    <div class="episode-title">在台股邁入四萬點的大股票時代，投資者應建立長線核心資產以應對黑天鵝風險，並可利用財報預期進行短線套利</div>
+                    <div class="episode-preview">在台股邁入四萬點的大股票時代，投資者應建立長線核心資產以應對黑天鵝風險，並可利用財報預期進行短線套利以增加投資樂趣。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1085/" class="episode-card">
+                <span class="episode-date-badge">EP1085</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股站上 4 萬點之際，金管會放寬持股上限引發資金向大型權值股靠攏，投資人應警惕高位階中小型股的排擠</div>
+                    <div class="episode-preview">台股站上 4 萬點之際，金管會放寬持股上限引發資金向大型權值股靠攏，投資人應警惕高位階中小型股的排擠效應，並關注低位階記憶體族群的轉強機會。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1084/" class="episode-card">
+                <span class="episode-date-badge">EP1084</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股受惠台積電技術論壇與金管會放寬持股上限政策，指數大漲千點再創新高，但投資人應留意「拉大出小」的體</div>
+                    <div class="episode-preview">台股受惠台積電技術論壇與金管會放寬持股上限政策，指數大漲千點再創新高，但投資人應留意「拉大出小」的體感差異與投信調節個股的風險。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1083/" class="episode-card">
+                <span class="episode-date-badge">EP1083</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股雖面臨歷史天量與劇烈震盪，但受惠 AI 帶動企業獲利實質上修，產業多頭格局未變，應聚焦 PCB </div>
+                    <div class="episode-preview">台股雖面臨歷史天量與劇烈震盪，但受惠 AI 帶動企業獲利實質上修，產業多頭格局未變，應聚焦 PCB 與載板族群的漲價補漲行情。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1082/" class="episode-card">
+                <span class="episode-date-badge">EP1082</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股基本面獲利上修與主動式 ETF 資金湧動，形成「不會跌的病」復發，投資人應順勢而為，利用「防禦+</div>
+                    <div class="episode-preview">台股基本面獲利上修與主動式 ETF 資金湧動，形成「不會跌的病」復發，投資人應順勢而為，利用「防禦+攻擊」的配置參與 AI 與半導體行情。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1081/" class="episode-card">
+                <span class="episode-date-badge">EP1081</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股站上三萬八千點歷史新高，資金由台積電轉向聯發科(2454)領軍的 IC 設計與 AI 供應鏈，強</div>
+                    <div class="episode-preview">台股站上三萬八千點歷史新高，資金由台積電轉向聯發科(2454)領軍的 IC 設計與 AI 供應鏈，強調「認知到哪賺到哪」並應避開月線下彎標的。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1080/" class="episode-card">
+                <span class="episode-date-badge">EP1080</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股中小型股與矽光子族群全面噴發，投資者應透過配置防禦與攻擊型標的，並利用主動式 ETF 參與行情，</div>
+                    <div class="episode-preview">台股中小型股與矽光子族群全面噴發，投資者應透過配置防禦與攻擊型標的，並利用主動式 ETF 參與行情，同時嚴控資金水位以應對市場投機熱度。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1079/" class="episode-card">
+                <span class="episode-date-badge">EP1079</span>
+                <div class="episode-content">
+                    <div class="episode-title">台積電法說後權值股壓回，資金溢出至中小型股與落後補漲族群，帶動櫃買指數創高，市場呈現「大盤跌、個股噴</div>
+                    <div class="episode-preview">台積電法說後權值股壓回，資金溢出至中小型股與落後補漲族群，帶動櫃買指數創高，市場呈現「大盤跌、個股噴」的百花齊放格局。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1078/" class="episode-card">
+                <span class="episode-date-badge">EP1078</span>
+                <div class="episode-content">
+                    <div class="episode-title">本集剖析台積電法說會「符合預期但驚喜不足」後的市場盤整期，強調 AI 趨勢未變，投資人應建立正確的進</div>
+                    <div class="episode-preview">本集剖析台積電法說會「符合預期但驚喜不足」後的市場盤整期，強調 AI 趨勢未變，投資人應建立正確的進出場邏輯，利用震盪期分批布局。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1077/" class="episode-card">
+                <span class="episode-date-badge">EP1077</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股站上 37,000 點歷史新高，資金由 AI 主軸擴散至 PCB 及被動元件，投資人應界定操作風</div>
+                    <div class="episode-preview">台股站上 37,000 點歷史新高，資金由 AI 主軸擴散至 PCB 及被動元件，投資人應界定操作風格，以中長線趨勢對抗「賣飛」焦慮。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1076/" class="episode-card">
+                <span class="episode-date-badge">EP1076</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股站上 36,000 點歷史新高，由 AI 權值股領軍且基本面強勁，陳唯泰建議關注高階產品趨勢與投</div>
+                    <div class="episode-preview">台股站上 36,000 點歷史新高，由 AI 權值股領軍且基本面強勁，陳唯泰建議關注高階產品趨勢與投信籌碼的效率操作。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1075/" class="episode-card">
+                <span class="episode-date-badge">EP1075</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股無視地緣政治利空，資金由權值股轉向具備漲價題材與 AI 應用支撐的中小型股，被動元件與封測成為盤</div>
+                    <div class="episode-preview">台股無視地緣政治利空，資金由權值股轉向具備漲價題材與 AI 應用支撐的中小型股，被動元件與封測成為盤面新焦點。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1074/" class="episode-card">
+                <span class="episode-date-badge">EP1074</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股隨台積電強勁營收重返榮耀，陳唯泰解析大戶布局之拐點，強調投資應回歸基本面並嚴守「停損停利」與「持</div>
+                    <div class="episode-preview">台股隨台積電強勁營收重返榮耀，陳唯泰解析大戶布局之拐點，強調投資應回歸基本面並嚴守「停損停利」與「持股比例」兩大紀律。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1073/" class="episode-card">
+                <span class="episode-date-badge">EP1073</span>
+                <div class="episode-content">
+                    <div class="episode-title">本集探討台股主動式 ETF 績效大爆發的現象，分析 AI 設備與矽光子等熱門族群，並分享如何透過 e</div>
+                    <div class="episode-preview">本集探討台股主動式 ETF 績效大爆發的現象，分析 AI 設備與矽光子等熱門族群，並分享如何透過 e 化工具重整投資心態與領取股東會權益。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1072/" class="episode-card">
+                <span class="episode-date-badge">EP1072</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股迎來史上第二大漲點，在中東局勢緩解與 AI 產業長線成長的大前提下，投資人應把握「融資大減」後的</div>
+                    <div class="episode-preview">台股迎來史上第二大漲點，在中東局勢緩解與 AI 產業長線成長的大前提下，投資人應把握「融資大減」後的布局機會，並善用主動式 ETF 參與超越大盤的漲勢。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1071/" class="episode-card">
+                <span class="episode-date-badge">EP1071</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股在清明連假後展現「強中強」的華山之巔氣勢，雖因地緣政治不確定性導致量能萎縮，但資金高度集中於 A</div>
+                    <div class="episode-preview">台股在清明連假後展現「強中強」的華山之巔氣勢，雖因地緣政治不確定性導致量能萎縮，但資金高度集中於 AI 相關強勢族群，操作應秉持「看高買低」與「汰弱留強」原則。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1070/" class="episode-card">
+                <span class="episode-date-badge">EP1070</span>
+                <div class="episode-content">
+                    <div class="episode-title">市場受川普演說及中東局勢影響回檔震盪，投資人應避開大盤紛擾，關注櫃買指數（OTC）及 AI 擴散題材</div>
+                    <div class="episode-preview">市場受川普演說及中東局勢影響回檔震盪，投資人應避開大盤紛擾，關注櫃買指數（OTC）及 AI 擴散題材（矽光子、探針卡、低軌衛星）中月線向上的強勢標的。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1069/" class="episode-card">
+                <span class="episode-date-badge">EP1069</span>
+                <div class="episode-content">
+                    <div class="episode-title">在川普言論引發的地緣政治動盪與市場極度恐懼中，應以歷史大數據為依歸，透過市值型與主動式 ETF 在低</div>
+                    <div class="episode-preview">在川普言論引發的地緣政治動盪與市場極度恐懼中，應以歷史大數據為依歸，透過市值型與主動式 ETF 在低位階累積部位，並鎖定 AI 核心趨勢。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1068/" class="episode-card">
+                <span class="episode-date-badge">EP1068</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股九個月來首度跌破季線，面對美伊戰爭引發的油價通膨疑慮，投資人應嚴控資金比重，利用修正期汰弱留強，</div>
+                    <div class="episode-preview">台股九個月來首度跌破季線，面對美伊戰爭引發的油價通膨疑慮，投資人應嚴控資金比重，利用修正期汰弱留強，尋找具備下檔保護的抗跌標的。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1067/" class="episode-card">
+                <span class="episode-date-badge">EP1067</span>
+                <div class="episode-content">
+                    <div class="episode-title">面對中東戰爭引發的市場恐慌與油價壓力，投資人應採取分批佈局策略，關注跌深反彈的記憶體族群，以及具備長</div>
+                    <div class="episode-preview">面對中東戰爭引發的市場恐慌與油價壓力，投資人應採取分批佈局策略，關注跌深反彈的記憶體族群，以及具備長線成長動能的低軌衛星與矽光子題材。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1066/" class="episode-card">
+                <span class="episode-date-badge">EP1066</span>
+                <div class="episode-content">
+                    <div class="episode-title">在戰事陰霾與高檔震盪中，投資人應去槓桿並收斂持股至五六成，採取「看高買低」策略，耐性等待大盤回測季線</div>
+                    <div class="episode-preview">在戰事陰霾與高檔震盪中，投資人應去槓桿並收斂持股至五六成，採取「看高買低」策略，耐性等待大盤回測季線後的佈局時機。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1065/" class="episode-card">
+                <span class="episode-date-badge">EP1065</span>
+                <div class="episode-content">
+                    <div class="episode-title">地緣政治衝突引發通膨與資金緊縮疑慮，導致台股衝高回落，但在 AI 驅動下，PCB 光模塊與高階載板（</div>
+                    <div class="episode-preview">地緣政治衝突引發通膨與資金緊縮疑慮，導致台股衝高回落，但在 AI 驅動下，PCB 光模塊與高階載板（Rubin 平台）仍是具備長期爆發力的核心題材。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1064/" class="episode-card">
+                <span class="episode-date-badge">EP1064</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股隨美伊和談契機大漲千點，市場重回景氣向上軌道，應鎖定半導體設備（CoWoS/SOIC）與 CPO</div>
+                    <div class="episode-preview">台股隨美伊和談契機大漲千點，市場重回景氣向上軌道，應鎖定半導體設備（CoWoS/SOIC）與 CPO 族群作為操作主軸。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1063/" class="episode-card">
+                <span class="episode-date-badge">EP1063</span>
+                <div class="episode-content">
+                    <div class="episode-title">本集解析川普美伊停火烏龍事件對市場的衝擊，並教導投資人如何在縮量盤整中觀察投信佈局動向，建立系統化的</div>
+                    <div class="episode-preview">本集解析川普美伊停火烏龍事件對市場的衝擊，並教導投資人如何在縮量盤整中觀察投信佈局動向，建立系統化的進出邏輯。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1062/" class="episode-card">
+                <span class="episode-date-badge">EP1062</span>
+                <div class="episode-content">
+                    <div class="episode-title">面對美伊戰爭引發的通膨疑慮與台股劇烈修正，投資者應透過「低檔自動加碼」與「定期定額」策略，利用系統紀</div>
+                    <div class="episode-preview">面對美伊戰爭引發的通膨疑慮與台股劇烈修正，投資者應透過「低檔自動加碼」與「定期定額」策略，利用系統紀律克服人性恐懼。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1061/" class="episode-card">
+                <span class="episode-date-badge">EP1061</span>
+                <div class="episode-content">
+                    <div class="episode-title">面對地緣政治引發的市場震盪，投資人應利用技術分析「汰弱留強」，鎖定強勢產業題材或低檔高殖利率標的，並</div>
+                    <div class="episode-preview">面對地緣政治引發的市場震盪，投資人應利用技術分析「汰弱留強」，鎖定強勢產業題材或低檔高殖利率標的，並嚴守「回後買上漲」的操作紀律以避開套牢風險。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1060/" class="episode-card">
+                <span class="episode-date-badge">EP1060</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股大盤與櫃買指數同步震盪，體感溫度轉冷，投資人應嚴守「破五日線減碼」紀律，並採取「大水庫（市值型 </div>
+                    <div class="episode-preview">台股大盤與櫃買指數同步震盪，體感溫度轉冷，投資人應嚴守「破五日線減碼」紀律，並採取「大水庫（市值型 ETF）配小水庫（個股）」的資金配置策略。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1059/" class="episode-card">
+                <span class="episode-date-badge">EP1059</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股呈現「權值弱、中小強」的極端格局，投資人應警惕高位階風險，並透過「長線佈局弱勢權值、短線順勢中小</div>
+                    <div class="episode-preview">台股呈現「權值弱、中小強」的極端格局，投資人應警惕高位階風險，並透過「長線佈局弱勢權值、短線順勢中小型基優股」的策略應對地緣政治引發的震盪。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1058/" class="episode-card">
+                <span class="episode-date-badge">EP1058</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股無視地緣政治強勢反攻，AI 算力需求引爆「先進封裝外溢」效應與「光銅並進」趨勢，投資者應汰弱留強</div>
+                    <div class="episode-preview">台股無視地緣政治強勢反攻，AI 算力需求引爆「先進封裝外溢」效應與「光銅並進」趨勢，投資者應汰弱留強，配置具 EPS 支撐的實質受惠股。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1057/" class="episode-card">
+                <span class="episode-date-badge">EP1057</span>
+                <div class="episode-content">
+                    <div class="episode-title">輝達 GTC 大會確立 AI 長線趨勢，帶動散熱、記憶體及 IC 通路族群百花齊放，投資人應透過資產</div>
+                    <div class="episode-preview">輝達 GTC 大會確立 AI 長線趨勢，帶動散熱、記憶體及 IC 通路族群百花齊放，投資人應透過資產配置與汰弱留強來應對市場波動。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1056/" class="episode-card">
+                <span class="episode-date-badge">EP1056</span>
+                <div class="episode-content">
+                    <div class="episode-title">面對中東地緣政治利空，台股展現極強韌性，資金由大型權值股轉向中小型題材股（AI 設備、矽光子、記憶體</div>
+                    <div class="episode-preview">面對中東地緣政治利空，台股展現極強韌性，資金由大型權值股轉向中小型題材股（AI 設備、矽光子、記憶體），投資人應關注毛利成長的「真 AI」標的並汰弱留強。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1055/" class="episode-card">
+                <span class="episode-date-badge">EP1055</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股展現全球最強韌性，雖受地緣政治與油價通膨壓力干擾，但 AI 核心產業（ABF、細光子、PCB設備</div>
+                    <div class="episode-preview">台股展現全球最強韌性，雖受地緣政治與油價通膨壓力干擾，但 AI 核心產業（ABF、細光子、PCB設備）動能強勁，應汰弱留強鎖定強勢股。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1054/" class="episode-card">
+                <span class="episode-date-badge">EP1054</span>
+                <div class="episode-content">
+                    <div class="episode-title">面對美伊戰爭引發的市場震盪，應理性判斷其嚴重性低於過往金融危機，透過「建立聚寶盆」熟悉標的，並克服人</div>
+                    <div class="episode-preview">面對美伊戰爭引發的市場震盪，應理性判斷其嚴重性低於過往金融危機，透過「建立聚寶盆」熟悉標的，並克服人性弱點進行戰略性停損與加碼。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1053/" class="episode-card">
+                <span class="episode-date-badge">EP1053</span>
+                <div class="episode-content">
+                    <div class="episode-title">本集核心在於：面對地緣政治引發的非經濟因素暴跌，投資者應冷靜佈局，並透過高含積量或主動型 ETF 參</div>
+                    <div class="episode-preview">本集核心在於：面對地緣政治引發的非經濟因素暴跌，投資者應冷靜佈局，並透過高含積量或主動型 ETF 參與反彈，看好細光子、PCB 與記憶體族群。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1052/" class="episode-card">
+                <span class="episode-date-badge">EP1052</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股歷經恐慌性下殺後出現強勁反彈，目前處於尋找「第一隻腳」的震盪築底期，投資人應聚焦 2 月營收強韌</div>
+                    <div class="episode-preview">台股歷經恐慌性下殺後出現強勁反彈，目前處於尋找「第一隻腳」的震盪築底期，投資人應聚焦 2 月營收強韌且技術面領先大盤表態的標的。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1051/" class="episode-card">
+                <span class="episode-date-badge">EP1051</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股遭遇歷史級大跌，主因美伊戰爭引發油價飆升與通膨疑慮，高手建議透過分批布局台積電(2330)及嚴格</div>
+                    <div class="episode-preview">台股遭遇歷史級大跌，主因美伊戰爭引發油價飆升與通膨疑慮，高手建議透過分批布局台積電(2330)及嚴格執行避險紀律來因應系統性風險。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1050/" class="episode-card">
+                <span class="episode-date-badge">EP1050</span>
+                <div class="episode-content">
+                    <div class="episode-title">在本集節目中，兆華與來賓艾綸深入探討大盤劇烈震盪下的技術面防線，並介紹如何透過主動式債券 ETF（如</div>
+                    <div class="episode-preview">在本集節目中，兆華與來賓艾綸深入探討大盤劇烈震盪下的技術面防線，並介紹如何透過主動式債券 ETF（如 00983D）在波動市場中建立穩健的現金流防禦塔。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1049/" class="episode-card">
+                <span class="episode-date-badge">EP1049</span>
+                <div class="episode-content">
+                    <div class="episode-title">面對地緣政治與乖離修正引發的千點劇烈波動，投資人應克服人性「大跌大買」，並優先佈局基本面最紮實、解套</div>
+                    <div class="episode-preview">面對地緣政治與乖離修正引發的千點劇烈波動，投資人應克服人性「大跌大買」，並優先佈局基本面最紮實、解套速度最快的 AI 載板與美股七巨頭。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1048/" class="episode-card">
+                <span class="episode-date-badge">EP1048</span>
+                <div class="episode-content">
+                    <div class="episode-title">面對美伊戰爭爆發引發的台股 1500 點歷史級崩跌，投資者應控管槓桿風險，並在指數回測月線與季線之際</div>
+                    <div class="episode-preview">面對美伊戰爭爆發引發的台股 1500 點歷史級崩跌，投資者應控管槓桿風險，並在指數回測月線與季線之際，分批布局基本面強勁的 AI 主流股與市值型/主動型 ETF。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1047/" class="episode-card">
+                <span class="episode-date-badge">EP1047</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股因正乖離過大（17%）及中東戰事升溫引發千點大修正，但在 AI 基建趨勢未變下，拉回月線至季線將</div>
+                    <div class="episode-preview">台股因正乖離過大（17%）及中東戰事升溫引發千點大修正，但在 AI 基建趨勢未變下，拉回月線至季線將是載板與 CCL 龍頭股的長線布局良機。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1046/" class="episode-card">
+                <span class="episode-date-badge">EP1046</span>
+                <div class="episode-content">
+                    <div class="episode-title">地緣政治動盪引發台股開盤重挫後強勢回升，市場呈現「利空不跌」的韌性，資金高度集中於矽光子、低軌衛星及</div>
+                    <div class="episode-preview">地緣政治動盪引發台股開盤重挫後強勢回升，市場呈現「利空不跌」的韌性，資金高度集中於矽光子、低軌衛星及半導體設備等核心題材。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1045/" class="episode-card">
+                <span class="episode-date-badge">EP1045</span>
+                <div class="episode-content">
+                    <div class="episode-title">本集聚焦台股正式進入「兆元量能」新常態，並深度解析在 AI 巨頭震盪、財報空窗期結束之際，資金如何流</div>
+                    <div class="episode-preview">本集聚焦台股正式進入「兆元量能」新常態，並深度解析在 AI 巨頭震盪、財報空窗期結束之際，資金如何流向金融、散裝航運及具備技術護城河的封測與探針卡族群。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1044/" class="episode-card">
+                <span class="episode-date-badge">EP1044</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股馬年開春強勢站上 35,000 點大關，在 AI 硬體需求實質支撐下，資金由美轉亞，投資人應透過</div>
+                    <div class="episode-preview">台股馬年開春強勢站上 35,000 點大關，在 AI 硬體需求實質支撐下，資金由美轉亞，投資人應透過「資產配置」與「順勢而為」參與這場史無前例的大多頭。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1043/" class="episode-card">
+                <span class="episode-date-badge">EP1043</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股在全球資金流向新興市場與 AI 產業高速成長的驅動下，與美股呈現脫鉤強勢，投資人應鎖定「AI 純</div>
+                    <div class="episode-preview">台股在全球資金流向新興市場與 AI 產業高速成長的驅動下，與美股呈現脫鉤強勢，投資人應鎖定「AI 純度高」的 PCB 與載板族群，並留意三月下旬後的季節性降溫。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1042/" class="episode-card">
+                <span class="episode-date-badge">EP1042</span>
+                <div class="episode-content">
+                    <div class="episode-title">2026 年馬年開紅盤台股站上三萬四千點，資金呈現「大盤穩、櫃買強」的輪動態勢，投資人應聚焦具實質 </div>
+                    <div class="episode-preview">2026 年馬年開紅盤台股站上三萬四千點，資金呈現「大盤穩、櫃買強」的輪動態勢，投資人應聚焦具實質 AI 基本面的 ABF 載板與被動元件，並留意川普關稅與記憶體規格轉換的變數。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1041/" class="episode-card">
+                <span class="episode-date-badge">EP1041</span>
+                <div class="episode-content">
+                    <div class="episode-title">本集透過國家級操盤手凱哥的職涯轉折，揭示了深度產業研究、價值投資的心理修煉，以及如何透過「教人釣魚」</div>
+                    <div class="episode-preview">本集透過國家級操盤手凱哥的職涯轉折，揭示了深度產業研究、價值投資的心理修煉，以及如何透過「教人釣魚」的心態在充滿寶藏的股市中穩健獲利。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1040/" class="episode-card">
+                <span class="episode-date-badge">EP1040</span>
+                <div class="episode-content">
+                    <div class="episode-title">人生與投資成功的核心在於「對未來有看法」，並堅持以「企業獲利成長」為唯一準則的長線投資策略。</div>
+                    <div class="episode-preview">人生與投資成功的核心在於「對未來有看法」，並堅持以「企業獲利成長」為唯一準則的長線投資策略。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1039/" class="episode-card">
+                <span class="episode-date-badge">EP1039</span>
+                <div class="episode-content">
+                    <div class="episode-title">存股教父股魚分享為女兒執行十年的「紅包存股計畫」，透過紀律化買入大盤市值型標的達成最高 300% 的</div>
+                    <div class="episode-preview">存股教父股魚分享為女兒執行十年的「紅包存股計畫」，透過紀律化買入大盤市值型標的達成最高 300% 的報酬，並深度解析臺股槓桿型 ETF（正二）的長期持有優勢。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1038/" class="episode-card">
+                <span class="episode-date-badge">EP1038</span>
+                <div class="episode-content">
+                    <div class="episode-title">本集由主持人兆華與分析師艾綸（Alan）深入對談，揭露投顧產業的職涯抉擇內幕，並強調投資應如同選職，</div>
+                    <div class="episode-preview">本集由主持人兆華與分析師艾綸（Alan）深入對談，揭露投顧產業的職涯抉擇內幕，並強調投資應如同選職，需順應熱門產業趨勢並透過長期佈局累積複利。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1037/" class="episode-card">
+                <span class="episode-date-badge">EP1037</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股蛇年以 33,707 點歷史新高強勢封關，AI 依舊是 2026 馬年的核心主軸，投資者應透過資</div>
+                    <div class="episode-preview">台股蛇年以 33,707 點歷史新高強勢封關，AI 依舊是 2026 馬年的核心主軸，投資者應透過資產配置與產業輪動參與大多頭行情。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1036/" class="episode-card">
+                <span class="episode-date-badge">EP1036</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股在封關前夕由台積電領軍噴發 668 點創歷史新高，國家級操盤手凱哥建議持股至少五成，並鎖定 CP</div>
+                    <div class="episode-preview">台股在封關前夕由台積電領軍噴發 668 點創歷史新高，國家級操盤手凱哥建議持股至少五成，並鎖定 CPO、探針卡及特化等具備明確轉機與成長動能的族群。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1035/" class="episode-card">
+                <span class="episode-date-badge">EP1035</span>
+                <div class="episode-content">
+                    <div class="episode-title">面對農曆年前封關行情，投資人應把握川普激勵與 AI 資本支出利多，運用「看高做低」策略並搭配 ETF</div>
+                    <div class="episode-preview">面對農曆年前封關行情，投資人應把握川普激勵與 AI 資本支出利多，運用「看高做低」策略並搭配 ETF 配置，實現主動報股過年的目標。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1034/" class="episode-card">
+                <span class="episode-date-badge">EP1034</span>
+                <div class="episode-content">
+                    <div class="episode-title">面對美股科技巨頭資本支出引發的市場恐慌與台股封關前的賣壓，投資人應透過產業長期趨勢（如 ABF 載板</div>
+                    <div class="episode-preview">面對美股科技巨頭資本支出引發的市場恐慌與台股封關前的賣壓，投資人應透過產業長期趨勢（如 ABF 載板）與主動式 ETF 配置，在震盪中尋找布局良機。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1033/" class="episode-card">
+                <span class="episode-date-badge">EP1033</span>
+                <div class="episode-content">
+                    <div class="episode-title">本集聚焦於美股科技股財報後的震盪與台股封關前的配置策略，強調在市場高檔時應區分「正規軍」與「投機股」</div>
+                    <div class="episode-preview">本集聚焦於美股科技股財報後的震盪與台股封關前的配置策略，強調在市場高檔時應區分「正規軍」與「投機股」，並解析主動式 ETF 的操作邏輯。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1032/" class="episode-card">
+                <span class="episode-date-badge">EP1032</span>
+                <div class="episode-content">
+                    <div class="episode-title">本集聚焦於農曆年前封關的操作節奏，透過「三大族群分類法」剖析 AI 長線成長、題材轉機與記憶體波動的</div>
+                    <div class="episode-preview">本集聚焦於農曆年前封關的操作節奏，透過「三大族群分類法」剖析 AI 長線成長、題材轉機與記憶體波動的操作邏輯，並強調紀律與無痛換股的重要性。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1031/" class="episode-card">
+                <span class="episode-date-badge">EP1031</span>
+                <div class="episode-content">
+                    <div class="episode-title">本集聚焦於農曆年前的封關操作策略，透過觀察融資減肥與族群強弱換股，並解析記憶體、老 AI 及被動元件</div>
+                    <div class="episode-preview">本集聚焦於農曆年前的封關操作策略，透過觀察融資減肥與族群強弱換股，並解析記憶體、老 AI 及被動元件的長線配置邏輯。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1030/" class="episode-card">
+                <span class="episode-date-badge">EP1030</span>
+                <div class="episode-content">
+                    <div class="episode-title">本集探討在全球原物料暴跌、聯準會人事變動及 AI 資金鏈疑慮引發的市場大回檔中，投資人應如何透過產業</div>
+                    <div class="episode-preview">本集探討在全球原物料暴跌、聯準會人事變動及 AI 資金鏈疑慮引發的市場大回檔中，投資人應如何透過產業趨勢（如載板規格升級）與資產配置來應對恐慌。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1029/" class="episode-card">
+                <span class="episode-date-badge">EP1029</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股隨美股財報利空回檔，投資人應警惕農曆年前丙種資金撤退，操作上宜「微調部位而不加碼」，聚焦 ABF</div>
+                    <div class="episode-preview">台股隨美股財報利空回檔，投資人應警惕農曆年前丙種資金撤退，操作上宜「微調部位而不加碼」，聚焦 ABF 載板元年與低估值測試介面標的。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1028/" class="episode-card">
+                <span class="episode-date-badge">EP1028</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股爆出 1.16 兆歷史天量，市場進入「不講理」的資金與題材博弈期，投資人應在瘋狂漲勢中透過資產配</div>
+                    <div class="episode-preview">台股爆出 1.16 兆歷史天量，市場進入「不講理」的資金與題材博弈期，投資人應在瘋狂漲勢中透過資產配置與節奏控管來應對高檔震盪。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1027/" class="episode-card">
+                <span class="episode-date-badge">EP1027</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股衝向 33,000 點歷史高位，在資金盤推升評價（Re-rating）的狂熱下，投資人應回歸產業</div>
+                    <div class="episode-preview">台股衝向 33,000 點歷史高位，在資金盤推升評價（Re-rating）的狂熱下，投資人應回歸產業趨勢並透過資產配置（如 ETF）來平衡風險與收益。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1026/" class="episode-card">
+                <span class="episode-date-badge">EP1026</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股在壽險資金回補與 AI 題材助攻下衝破 32,000 點大關，面對川普關稅威脅市場已顯麻痺，高手</div>
+                    <div class="episode-preview">台股在壽險資金回補與 AI 題材助攻下衝破 32,000 點大關，面對川普關稅威脅市場已顯麻痺，高手建議採取「順勢而為、不預設高點」的積極策略。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1025/" class="episode-card">
+                <span class="episode-date-badge">EP1025</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股指數突破 32,000 點創歷史新高，市場雖現「全民瘋股」熱潮，但從融資市值比觀察尚未過熱，投資</div>
+                    <div class="episode-preview">台股指數突破 32,000 點創歷史新高，市場雖現「全民瘋股」熱潮，但從融資市值比觀察尚未過熱，投資人應順勢而為並善用基金質押等靈活工具。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1024/" class="episode-card">
+                <span class="episode-date-badge">EP1024</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股在元月噴發摸到三萬二千點大關，由 SpaceX 即將 IPO 帶動的「低軌衛星」與「AI 擴散效</div>
+                    <div class="episode-preview">台股在元月噴發摸到三萬二千點大關，由 SpaceX 即將 IPO 帶動的「低軌衛星」與「AI 擴散效應」成為盤面核心，高手建議順勢而為，並以「大量支撐位」作為不預設高點的防守準則。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1023/" class="episode-card">
+                <span class="episode-date-badge">EP1023</span>
+                <div class="episode-content">
+                    <div class="episode-title">川普針對格林蘭事件的轉折性發言引發全球股市強彈，台股在AI、電力基礎設施及BBU族群百花齊放帶動下，</div>
+                    <div class="episode-preview">川普針對格林蘭事件的轉折性發言引發全球股市強彈，台股在AI、電力基礎設施及BBU族群百花齊放帶動下，衝上31,890點歷史新高。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1022/" class="episode-card">
+                <span class="episode-date-badge">EP1022</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股大跌 513 點宣告「不會跌的病」痊癒，市場進入「凌晨一點的賭場」階段，投資人應把握低位階補漲與</div>
+                    <div class="episode-preview">台股大跌 513 點宣告「不會跌的病」痊癒，市場進入「凌晨一點的賭場」階段，投資人應把握低位階補漲與政策題材，並在農曆年前適時獲利了結。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1021/" class="episode-card">
+                <span class="episode-date-badge">EP1021</span>
+                <div class="episode-content">
+                    <div class="episode-title">本集核心在於探討 2026 年「價值股翻身」的投資主軸，並透過 1 月份的市場表現預測全年縮影，同時</div>
+                    <div class="episode-preview">本集核心在於探討 2026 年「價值股翻身」的投資主軸，並透過 1 月份的市場表現預測全年縮影，同時警示投資人應關注融資過高與熱門股回檔的風險訊號。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1020/" class="episode-card">
+                <span class="episode-date-badge">EP1020</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股無視川普加徵關稅利空，在大戶融資與散戶 FOMO 情緒推升下，指數直逼 32,000 點歷史新高</div>
+                    <div class="episode-preview">台股無視川普加徵關稅利空，在大戶融資與散戶 FOMO 情緒推升下，指數直逼 32,000 點歷史新高，市場資金由老 AI 族群轉向記憶體與低位階中低價股。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1019/" class="episode-card">
+                <span class="episode-date-badge">EP1019</span>
+                <div class="episode-content">
+                    <div class="episode-title">台積電法說會釋出極佳展望帶動大盤暴漲近 600 點，市場焦點從半導體外溢至重電、記憶體及載板族群，專</div>
+                    <div class="episode-preview">台積電法說會釋出極佳展望帶動大盤暴漲近 600 點，市場焦點從半導體外溢至重電、記憶體及載板族群，專家建議採取「擇優而抱」與「ETF 配置」策略應對 32,000 點行情。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1018/" class="episode-card">
+                <span class="episode-date-badge">EP1018</span>
+                <div class="episode-content">
+                    <div class="episode-title">台積電法說會交出毛利率與資本支出雙爆表的「不可思議」成績單，確立 AI 長線成長趨勢，但在股價與過熱</div>
+                    <div class="episode-preview">台積電法說會交出毛利率與資本支出雙爆表的「不可思議」成績單，確立 AI 長線成長趨勢，但在股價與過熱氛圍下，高手建議採取「拉回佈局、不追高」的穩健策略。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1017/" class="episode-card">
+                <span class="episode-date-badge">EP1017</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股挑戰三萬一千點大關，市場呈現「擦鞋童效應」的集體狂熱，投資人應在台積電法說會前關注中小型股動能，</div>
+                    <div class="episode-preview">台股挑戰三萬一千點大關，市場呈現「擦鞋童效應」的集體狂熱，投資人應在台積電法說會前關注中小型股動能，並嚴守停損以應對高位階波動。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1016/" class="episode-card">
+                <span class="episode-date-badge">EP1016</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股站上三萬點大關之際，國安基金高割離席，市場焦點轉向「2026 AI 外溢效應」與低位階轉機股的操</div>
+                    <div class="episode-preview">台股站上三萬點大關之際，國安基金高割離席，市場焦點轉向「2026 AI 外溢效應」與低位階轉機股的操作契機。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1015/" class="episode-card">
+                <span class="episode-date-badge">EP1015</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股攻上三萬點新高，資金在川普政見與 AI 題材推動下，由半導體擴散至記憶體、低軌衛星及機器人，呈現</div>
+                    <div class="episode-preview">台股攻上三萬點新高，資金在川普政見與 AI 題材推動下，由半導體擴散至記憶體、低軌衛星及機器人，呈現百花齊放的「做夢行情」。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1014/" class="episode-card">
+                <span class="episode-date-badge">EP1014</span>
+                <div class="episode-content">
+                    <div class="episode-title">本集聚焦於記憶體族群因處置降溫引發的資金大挪移，並深度解析台積電法說會前的資本支出預期，以及散熱、機</div>
+                    <div class="episode-preview">本集聚焦於記憶體族群因處置降溫引發的資金大挪移，並深度解析台積電法說會前的資本支出預期，以及散熱、機器人、軍工與重電等接棒族群的操作策略。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1013/" class="episode-card">
+                <span class="episode-date-badge">EP1013</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股站上三萬點大關後爆出史上天量，資金由高價 AI 股轉向低價同板股與位階較低的正規軍（如面板、成熟</div>
+                    <div class="episode-preview">台股站上三萬點大關後爆出史上天量，資金由高價 AI 股轉向低價同板股與位階較低的正規軍（如面板、成熟製程、生技），投資人應關注產業轉型實質進度而非盲目追逐題材小作文。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1012/" class="episode-card">
+                <span class="episode-date-badge">EP1012</span>
+                <div class="episode-content">
+                    <div class="episode-title">本集解析台股創下歷史天量的背後真相，並由 PCB 女王廖婉婷深度駁斥 AI 供應鏈降規謠言，指引投資</div>
+                    <div class="episode-preview">本集解析台股創下歷史天量的背後真相，並由 PCB 女王廖婉婷深度駁斥 AI 供應鏈降規謠言，指引投資人如何在「小作文」亂飛與高檔震盪中尋找真正具備基面支撐的買點。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1011/" class="episode-card">
+                <span class="episode-date-badge">EP1011</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股站穩三萬點大關，冠軍操盤手雲翔哥分享如何透過「看高做低」與「順勢交易」策略，在權值股領漲的 K </div>
+                    <div class="episode-preview">台股站穩三萬點大關，冠軍操盤手雲翔哥分享如何透過「看高做低」與「順勢交易」策略，在權值股領漲的 K 型行情中精準佈局補漲標的。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+            <a href="/admin/1010/" class="episode-card">
+                <span class="episode-date-badge">EP1010</span>
+                <div class="episode-content">
+                    <div class="episode-title">台股歷史性攻上三萬點大關，由「神山」台積電領軍噴發，市場呈現極端的「K型走勢」，資金高度集中於半導體</div>
+                    <div class="episode-preview">台股歷史性攻上三萬點大關，由「神山」台積電領軍噴發，市場呈現極端的「K型走勢」，資金高度集中於半導體、記憶體及 CES 展相關權值股。...</div>
+                </div>
+                <div class="episode-arrow">
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+        </div>
+
+        <div class="pagination" id="pagination"></div>
+
+        <footer class="footer">
+            <p class="footer-text">
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        document.body.classList.add('loaded');
+        window.addEventListener('DOMContentLoaded', function () {
+            if (window.lucide) lucide.createIcons();
+        });
+
+        const ITEMS_PER_PAGE = 10;
+        let currentPage = 1;
+        let filteredCards = [];
+
+        const searchInput = document.getElementById('searchInput');
+        const episodeCards = Array.from(document.querySelectorAll('.episode-card'));
+        const paginationContainer = document.getElementById('pagination');
+
+        function getFilteredCards() {
+            const query = searchInput.value.toLowerCase();
+            return episodeCards.filter(card => card.textContent.toLowerCase().includes(query));
+        }
+
+        function renderPagination() {
+            filteredCards = getFilteredCards();
+            const totalPages = Math.ceil(filteredCards.length / ITEMS_PER_PAGE);
+
+            if (currentPage > totalPages) currentPage = Math.max(1, totalPages);
+
+            // Hide all cards first
+            episodeCards.forEach(card => card.style.display = 'none');
+
+            // Show only current page cards
+            const start = (currentPage - 1) * ITEMS_PER_PAGE;
+            const end = start + ITEMS_PER_PAGE;
+            filteredCards.slice(start, end).forEach((card, i) => {
+                card.style.display = 'flex';
+                card.style.animationDelay = `${i * 0.05}s`;
+            });
+
+            // Build pagination HTML
+            if (totalPages <= 1) {
+                paginationContainer.innerHTML = '';
+                return;
+            }
+
+            let html = `
+                <button onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+                    上一頁
+                </button>
+            `;
+
+            // Page numbers
+            const maxVisible = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+            if (endPage - startPage < maxVisible - 1) startPage = Math.max(1, endPage - maxVisible + 1);
+
+            if (startPage > 1) {
+                html += `<button onclick="goToPage(1)">1</button>`;
+                if (startPage > 2) html += `<span class="page-info">...</span>`;
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button onclick="goToPage(${i})" class="${i === currentPage ? 'active' : ''}">${i}</button>`;
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) html += `<span class="page-info">...</span>`;
+                html += `<button onclick="goToPage(${totalPages})">${totalPages}</button>`;
+            }
+
+            html += `
+                <button onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                    下一頁
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
+            `;
+
+            paginationContainer.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            renderPagination();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        searchInput.addEventListener('input', () => {
+            currentPage = 1;
+            renderPagination();
+        });
+
+        // Initial render
+        renderPagination();
+    </script>
+</body>
+</html>

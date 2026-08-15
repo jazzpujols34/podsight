@@ -39,8 +39,8 @@
       "destination": "/yutinghao/:episode/index.html"
     },
     {
-      "source": "/zhaohua/:episode",
-      "destination": "/zhaohua/:episode/index.html"
+      "source": "/admin/:episode",
+      "destination": "/admin/:episode/index.html"
     }
   ]
 }

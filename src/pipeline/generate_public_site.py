@@ -77,7 +77,58 @@ PODCASTS = {
             --accent-border: rgba(255, 255, 255, 0.2);
         """,
     },
+    "zhaohua": {
+        "name": "兆華與股惑仔",
+        "short_name": "兆華",
+        "host": "兆華",
+        "description": "資深市場老手與來賓對談，從產業現況聊到操作實務。",
+        "badge_text": "產業對談",
+        "badge_icon": "mic",
+        "episode_prefix": "EP",
+        "url_format": "number",  # /admin/1162/
+        "theme": "amber",
+        # Served from /admin/ instead of /zhaohua/ so the private archive lives
+        # in one namespace and no URL advertises the show. /admin/ is the hub
+        # listing every episode - that is the only link worth bookmarking.
+        "route": "admin",
+        # Gated: Basic Auth at the edge (public-site/middleware.js), excluded
+        # from sitemap, Disallow in robots.txt, noindex on every page.
+        "gated": True,
+        "css_vars": """
+            --bg-primary: #14100a;
+            --bg-secondary: #1f1810;
+            --bg-card: rgba(191, 138, 46, 0.08);
+            --bg-card-hover: rgba(191, 138, 46, 0.12);
+            --border-subtle: rgba(232, 178, 77, 0.15);
+            --border-glow: rgba(232, 178, 77, 0.3);
+            --text-primary: #fff9f0;
+            --text-secondary: rgba(255, 249, 240, 0.75);
+            --text-muted: rgba(255, 249, 240, 0.5);
+            --accent-primary: #E8B24D;
+            --accent-secondary: #BF8A2E;
+            --accent-tertiary: #7FB069;
+            --accent-glow: rgba(232, 178, 77, 0.4);
+            --accent-gradient: linear-gradient(135deg, #BF8A2E 0%, #E8B24D 50%, #7FB069 100%);
+            --accent-bg: rgba(232, 178, 77, 0.12);
+            --accent-border: rgba(232, 178, 77, 0.25);
+        """,
+    },
 }
+
+
+def route_for(podcast_id: str) -> str:
+    """URL segment for a podcast. Defaults to its id; gated shows override it.
+
+    Use for URLs and output paths ONLY - data lookups still key on podcast_id.
+    """
+    return PODCASTS.get(podcast_id, {}).get("route", podcast_id)
+
+
+def robots_meta_for(podcast_id: str) -> str:
+    """noindex tag for gated podcasts. Belt and braces behind the edge auth."""
+    if PODCASTS.get(podcast_id, {}).get("gated"):
+        return '\n    <meta name="robots" content="noindex, nofollow">'
+    return ""
 
 
 def parse_rfc_date(date_str: str) -> Optional[str]:
@@ -588,7 +639,7 @@ def generate_episode_html(
         if prev_episode:
             prev_id = prev_episode["id"]
             prev_title = prev_episode.get("title", f"{config['episode_prefix']}{prev_id}")[:30]
-            prev_btn = f'''<a href="/{podcast_id}/{prev_id}/" class="ep-nav-btn ep-nav-prev">
+            prev_btn = f'''<a href="/{route_for(podcast_id)}/{prev_id}/" class="ep-nav-btn ep-nav-prev">
                 <i data-lucide="chevron-left"></i>
                 <span class="ep-nav-label">上一集</span>
                 <span class="ep-nav-title">{html_escape(prev_title)}</span>
@@ -599,7 +650,7 @@ def generate_episode_html(
         if next_episode:
             next_id = next_episode["id"]
             next_title = next_episode.get("title", f"{config['episode_prefix']}{next_id}")[:30]
-            next_btn = f'''<a href="/{podcast_id}/{next_id}/" class="ep-nav-btn ep-nav-next">
+            next_btn = f'''<a href="/{route_for(podcast_id)}/{next_id}/" class="ep-nav-btn ep-nav-next">
                 <span class="ep-nav-label">下一集</span>
                 <span class="ep-nav-title">{html_escape(next_title)}</span>
                 <i data-lucide="chevron-right"></i>
@@ -745,11 +796,11 @@ def generate_episode_html(
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{seo_title}</title>
-    <meta name="description" content="{seo_desc}">
+    <meta name="description" content="{seo_desc}">{robots_meta_for(podcast_id)}
 
     <!-- Open Graph -->
-    <link rel="canonical" href="{SITE_URL}/{podcast_id}/{episode_id}/">
-    <meta property="og:url" content="{SITE_URL}/{podcast_id}/{episode_id}/">
+    <link rel="canonical" href="{SITE_URL}/{route_for(podcast_id)}/{episode_id}/">
+    <meta property="og:url" content="{SITE_URL}/{route_for(podcast_id)}/{episode_id}/">
     <meta property="og:title" content="{seo_title}">
     <meta property="og:description" content="{seo_desc}">
     <meta property="og:image" content="{SITE_URL}/assets/og-image.png">
@@ -778,7 +829,7 @@ def generate_episode_html(
         }},
         "mainEntityOfPage": {{
             "@type": "WebPage",
-            "@id": "{SITE_URL}/{podcast_id}/{episode_id}/"
+            "@id": "{SITE_URL}/{route_for(podcast_id)}/{episode_id}/"
         }},
         "about": {{
             "@type": "PodcastEpisode",
@@ -1616,7 +1667,7 @@ def generate_episode_html(
 
     <div class="container">
         <nav class="nav animate-in">
-            <a href="/{podcast_id}/" class="nav-back">
+            <a href="/{route_for(podcast_id)}/" class="nav-back">
                 <i data-lucide="arrow-left"></i>
                 返回列表
             </a>
@@ -1854,7 +1905,7 @@ def generate_listing_html(podcast_id: str, episodes: list) -> str:
         truncated_title = ep_title[:100] if len(ep_title) <= 100 else ep_title[:97] + "..."
 
         episodes_html += f"""
-            <a href="/{podcast_id}/{ep_id}/" class="episode-card">
+            <a href="/{route_for(podcast_id)}/{ep_id}/" class="episode-card">
                 <span class="episode-date-badge">{date_display}{fresh_badge}</span>
                 <div class="episode-content">
                     <div class="episode-title">{html_escape(truncated_title)}</div>
@@ -1871,11 +1922,11 @@ def generate_listing_html(podcast_id: str, episodes: list) -> str:
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{config['name']} Podcast 完整逐字稿與 AI 分析 — {len(episodes)}+ 集｜PodSight</title>
-    <meta name="description" content="{config['name']} Podcast 完整逐字稿與 AI 結構化摘要 — {len(episodes)}+ 集，涵蓋投資策略、市場觀察、個股分析｜PodSight">
+    <meta name="description" content="{config['name']} Podcast 完整逐字稿與 AI 結構化摘要 — {len(episodes)}+ 集，涵蓋投資策略、市場觀察、個股分析｜PodSight">{robots_meta_for(podcast_id)}
 
     <!-- Canonical & Open Graph -->
-    <link rel="canonical" href="{SITE_URL}/{podcast_id}/">
-    <meta property="og:url" content="{SITE_URL}/{podcast_id}/">
+    <link rel="canonical" href="{SITE_URL}/{route_for(podcast_id)}/">
+    <meta property="og:url" content="{SITE_URL}/{route_for(podcast_id)}/">
     <meta property="og:title" content="{config['name']} Podcast 完整逐字稿與 AI 分析 — PodSight 聲見">
     <meta property="og:description" content="{config['name']} Podcast 完整逐字稿與 AI 結構化摘要 — {len(episodes)}+ 集，涵蓋投資策略、市場觀察、個股分析">
     <meta property="og:image" content="{SITE_URL}/assets/og-image.png">
@@ -1898,7 +1949,7 @@ def generate_listing_html(podcast_id: str, episodes: list) -> str:
         "@type": "CollectionPage",
         "name": "{config['name']} Podcast 完整逐字稿與 AI 分析",
         "description": "{config['name']} Podcast 完整逐字稿與 AI 結構化摘要 — {len(episodes)}+ 集，涵蓋投資策略、市場觀察、個股分析",
-        "url": "{SITE_URL}/{podcast_id}/",
+        "url": "{SITE_URL}/{route_for(podcast_id)}/",
         "numberOfItems": {len(episodes)},
         "isPartOf": {{
             "@type": "WebSite",
@@ -2510,7 +2561,7 @@ def generate_homepage(podcast_counts: dict, latest_episodes: List[dict] = None) 
             fresh_badge = f'<span class="fresh-badge {fresh_class}">{fresh_label}</span>' if fresh_label else ""
 
             latest_html += f'''
-                <a href="/{podcast_id}/{ep_id}/" class="latest-card">
+                <a href="/{route_for(podcast_id)}/{ep_id}/" class="latest-card">
                     <div class="latest-meta">
                         <span class="latest-podcast">{podcast_name}</span>
                         {fresh_badge}
@@ -3197,7 +3248,7 @@ def generate_stock_search_page(stock_index: Dict[str, List[dict]]) -> str:
             ep_id = ep["id"]
             ep_title = ep.get("title", "")[:40]
             stocks_html += f'''
-                    <a href="/{podcast_id}/{ep_id}/" class="stock-episode-link">{html_escape(ep_title)}</a>'''
+                    <a href="/{route_for(podcast_id)}/{ep_id}/" class="stock-episode-link">{html_escape(ep_title)}</a>'''
 
         if ep_count > 5:
             stocks_html += f'<span class="stock-more">+{ep_count - 5} 更多</span>'
@@ -3798,8 +3849,11 @@ def main():
             # Add to all_episodes for "latest" feed
             all_episodes.append(episode_info)
 
-            # Build stock index
+            # Build stock index. /stocks/ is public and un-gated, so a gated
+            # podcast must not surface episode links or badges there.
             for stock in sections.get("stocks", []):
+                if config.get("gated"):
+                    break
                 stock_name = stock.get("symbol", "").split("(")[0].strip()
                 if stock_name:
                     if stock_name not in stock_index:
@@ -3849,14 +3903,14 @@ def main():
             )
 
             # Write episode page
-            episode_dir = OUTPUT_DIR / podcast_id / episode_id
+            episode_dir = OUTPUT_DIR / route_for(podcast_id) / episode_id
             episode_dir.mkdir(parents=True, exist_ok=True)
             (episode_dir / "index.html").write_text(episode_html, encoding="utf-8")
 
         # Generate listing page
         if episodes:
             listing_html = generate_listing_html(podcast_id, episodes)
-            listing_dir = OUTPUT_DIR / podcast_id
+            listing_dir = OUTPUT_DIR / route_for(podcast_id)
             listing_dir.mkdir(parents=True, exist_ok=True)
             (listing_dir / "index.html").write_text(listing_html, encoding="utf-8")
 
@@ -3880,12 +3934,16 @@ def main():
     sitemap_urls = [f'  <url><loc>{SITE_URL}/</loc><lastmod>{today}</lastmod><priority>1.0</priority></url>']
     sitemap_urls.append(f'  <url><loc>{SITE_URL}/stocks/</loc><lastmod>{today}</lastmod><priority>0.7</priority></url>')
     for podcast_id in PODCASTS:
-        sitemap_urls.append(f'  <url><loc>{SITE_URL}/{podcast_id}/</loc><lastmod>{today}</lastmod><priority>0.8</priority></url>')
+        if PODCASTS[podcast_id].get("gated"):
+            continue  # gated podcasts stay out of the sitemap entirely
+        sitemap_urls.append(f'  <url><loc>{SITE_URL}/{route_for(podcast_id)}/</loc><lastmod>{today}</lastmod><priority>0.8</priority></url>')
     for podcast_id, episodes_with_sections in all_podcast_episodes.items():
+        if PODCASTS.get(podcast_id, {}).get("gated"):
+            continue
         for episode_info, sections, filename in episodes_with_sections:
             ep_id = episode_info["id"]
             ep_date = episode_info.get("date_str", today) or today
-            sitemap_urls.append(f'  <url><loc>{SITE_URL}/{podcast_id}/{ep_id}/</loc><lastmod>{ep_date}</lastmod><priority>0.9</priority></url>')
+            sitemap_urls.append(f'  <url><loc>{SITE_URL}/{route_for(podcast_id)}/{ep_id}/</loc><lastmod>{ep_date}</lastmod><priority>0.9</priority></url>')
 
     sitemap_xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + '\n'.join(sitemap_urls) + '\n</urlset>'
     (OUTPUT_DIR / "sitemap.xml").write_text(sitemap_xml, encoding="utf-8")
@@ -3897,7 +3955,16 @@ def main():
     print("Generated 404.html")
 
     # Generate robots.txt
-    robots_txt = f"User-agent: *\nAllow: /\n\nSitemap: {SITE_URL}/sitemap.xml\n"
+    # Keep this even though the edge auth already 401s crawlers. It is the
+    # fallback if the middleware ever fails to run: without it, a misconfigured
+    # deploy would serve the whole archive to Google.
+    disallow = "".join(
+        f"Disallow: /{route_for(pid)}/\n"
+        for pid, cfg in PODCASTS.items() if cfg.get("gated")
+    )
+    robots_txt = (
+        f"User-agent: *\nAllow: /\n{disallow}\nSitemap: {SITE_URL}/sitemap.xml\n"
+    )
     (OUTPUT_DIR / "robots.txt").write_text(robots_txt, encoding="utf-8")
     print("Generated robots.txt")
 
