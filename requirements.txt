@@ -1,4 +1,7 @@
 # Core dependencies
+# opencc: Simplified -> Traditional. Missing here until 2026-08 meant CI
+# silently shipped Simplified-Chinese transcripts. Keep it pinned in.
+opencc-python-reimplemented>=0.1.7
 requests>=2.28.0
 feedparser>=6.0.0
 tqdm>=4.64.0

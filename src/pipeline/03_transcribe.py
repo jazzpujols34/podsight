@@ -40,7 +40,8 @@ GROQ_MAX_RETRIES = 5  # More retries for rate limits
 from src.config import (
     get_podcast_config, get_episode_number_from_filename,
     WHISPER_MODEL, WHISPER_LANGUAGE, WHISPER_DEVICE,
-    TIMESTAMP_FORMAT, WHISPER_PROVIDER
+    TIMESTAMP_FORMAT, WHISPER_PROVIDER,
+    WHISPER_VOCAB_PROMPT, normalize_transcript_text, apply_term_corrections
 )
 
 # Get podcast config (from env or default)
@@ -54,14 +55,25 @@ def format_timestamp(seconds: float) -> str:
     return f"[{minutes:02d}:{secs:02d}]"
 
 
-def convert_to_traditional(text: str) -> str:
-    """Convert Simplified Chinese to Traditional Chinese (Taiwan)."""
+_OPENCC_WARNED = False
+
+
+def clean_segment_text(text: str) -> str:
+    """Normalize one Whisper segment: Traditional Chinese, then term fixes."""
+    global _OPENCC_WARNED
     try:
-        from opencc import OpenCC
-        cc = OpenCC('s2twp')  # Simplified to Traditional (Taiwan with phrases)
-        return cc.convert(text)
+        return normalize_transcript_text(text)
     except ImportError:
-        return text  # Return as-is if opencc not installed
+        # Silently swallowing this shipped EP0685-0687 in Simplified Chinese to
+        # a Taiwan-targeted site. Don't fail the run, but never fail quietly.
+        if not _OPENCC_WARNED:
+            print(
+                "  WARNING: opencc not installed - transcript stays in Simplified "
+                "Chinese. Fix: pip install opencc-python-reimplemented",
+                file=sys.stderr,
+            )
+            _OPENCC_WARNED = True
+        return apply_term_corrections(text)
 
 
 def compress_audio_for_upload(audio_path: Path, max_size_mb: int = 24) -> Path:
@@ -139,6 +151,9 @@ def transcribe_with_groq(audio_path: Path) -> list[dict]:
                 "language": WHISPER_LANGUAGE,
                 "response_format": "verbose_json",
                 "temperature": 0,
+                # Biases decoding toward domain jargon. Partial fix only -
+                # apply_term_corrections() is what guarantees the result.
+                "prompt": WHISPER_VOCAB_PROMPT,
             }
             headers = {
                 "Authorization": f"Bearer {api_key}",
@@ -155,24 +170,21 @@ def transcribe_with_groq(audio_path: Path) -> list[dict]:
         if is_compressed and compressed_path.exists():
             compressed_path.unlink()
 
-    # Parse segments from response and convert to Traditional Chinese
+    # Parse segments. Normalization happens centrally in main().
     segments = []
     for seg in result.get("segments", []):
-        text = seg.get('text', '').strip()
-        text = convert_to_traditional(text)  # Convert to Traditional Chinese
         segments.append({
             'start': seg.get('start', 0),
             'end': seg.get('end', 0),
-            'text': text
+            'text': seg.get('text', '').strip()
         })
 
     # If no segments, create one from full text
     if not segments and result.get("text"):
-        text = convert_to_traditional(result.get('text', '').strip())
         segments.append({
             'start': 0,
             'end': result.get('duration', 0),
-            'text': text
+            'text': result.get('text', '').strip()
         })
 
     return segments
@@ -238,6 +250,7 @@ def transcribe_with_openai_api(audio_path: Path) -> list[dict]:
                 file=audio_file,
                 language=WHISPER_LANGUAGE,
                 response_format="verbose_json",
+                prompt=WHISPER_VOCAB_PROMPT,
                 timestamp_granularities=["segment"]
             )
     finally:
@@ -424,6 +437,11 @@ def main():
                 print(f"  🎙️ Processing audio...", flush=True)
                 # Transcribe
                 segments = transcribe_fn(audio_file)
+
+                # Normalize here, not per provider - .txt and .json stay in sync
+                # and every provider gets Traditional Chinese + term fixes.
+                for seg in segments:
+                    seg['text'] = clean_segment_text(seg['text'])
 
                 # Save SpotScribe-style text
                 transcript_text = format_transcript(segments, style='spotscribe')

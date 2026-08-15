@@ -292,3 +292,42 @@ The public site needs these for Google discoverability (target: 台灣 podcast l
 - **Root cause:** Each script defined its own version instead of importing from config.py
 - **Fix:** Centralize shared utilities in `src/config.py`. Import, don't duplicate.
 - **Date:** 2026-03-04
+
+### Rule 11: A Missing Optional Dependency Must Never Fail Silently
+- **Trigger:** EP0685-0687 shipped ~98% Simplified Chinese to a Taiwan-targeted site
+- **Root cause:** `opencc` was never in `requirements.txt`, so CI never installed it, and
+  `convert_to_traditional()` swallowed the `ImportError` and returned the input unchanged.
+  Locally it was installed, so the bug was invisible during development.
+- **Fix:** `opencc-python-reimplemented` pinned in requirements.txt; the fallback now prints a
+  loud WARNING to stderr. Same family as Rule 5 - never fail quietly.
+- **Date:** 2026-08-15
+
+### Rule 12: Convert Simplified->Traditional Per Segment, and Only When It IS Simplified
+- **Trigger:** A blind `OpenCC('s2twp')` pass corrupted correct Traditional text (峇里島 -> 峇裡島)
+  and never converged - re-running kept mutating the same files.
+- **Root cause (two bugs):**
+  1. Simplified merged 里/裡/裏 into 里, so EVERY OpenCC `s2*` config rewrites 里 -> 裡. Running it
+     over already-Traditional text corrupts place names.
+  2. The backfill normalized each `.txt` as ONE string. Any full episode contains some
+     Traditional-only character, so the gate saw "not Simplified" and converted nothing - while
+     the `.json` path (per segment) converted correctly. The two files silently diverged.
+- **Fix:** `looks_simplified()` gates conversion on zero Traditional-only characters, and both
+  paths run **per segment / per line**. Under-converting is recoverable; corrupting is not.
+  Mixed-script lines (measured 0.15-1.9%) are deliberately left alone.
+- **Gotcha:** term corrections can inject Traditional characters into a Simplified line, which then
+  permanently blocks that line from converting. Always convert BEFORE correcting, and never re-run a
+  backfill whose earlier pass used different logic - restore from git first.
+- **Date:** 2026-08-15
+
+### Rule 13: Give Enumerated Content a Slot in the Output Schema
+- **Trigger:** EP0688's densest 3 minutes (NVIDIA 800V three-stage roadmap + per-stage component
+  names) never reached the summary.
+- **Root cause:** Two prompt-level causes. The "extract MK's unique judgment, not industry
+  background" rule reads a component list as industry background and suppresses it. And the topic
+  template had **no field to put a list in** - telling the model "preserve lists" without a slot
+  in the schema did not work (verified: exhortation alone failed, adding the field fixed it).
+- **Fix:** `custom_prompt.txt` has a `MK 點名的清單` field on every topic plus an explicit carve-out
+  from the anti-科普 rule, and the word budget relaxes to 1,600 字 when a list appears.
+- **Verify after any prompt change:** regenerate a list-heavy episode (EP0688) AND a list-free one
+  (EP0687) - the field must appear in the first and stay absent in the second.
+- **Date:** 2026-08-15
