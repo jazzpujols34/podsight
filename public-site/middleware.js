@@ -6,13 +6,17 @@
 // Crawlers get 401 here and never reach the HTML at all.
 //
 // Setup: set ZHAOHUA_PASSWORD in the Vercel project's Environment Variables,
-// then redeploy. Any username works; only the password is checked.
+// then redeploy. Both the username and the password must match.
 
 export const config = {
   matcher: ['/admin', '/admin/:path*'],
 }
 
 const REALM = 'PodSight archive'
+
+// Not a secret - the password is what protects the archive. Kept in code so
+// there is one less environment variable to keep in sync.
+const USERNAME = 'jazz'
 
 function unauthorized(message) {
   return new Response(message, {
@@ -51,8 +55,14 @@ export default function middleware(request) {
       return unauthorized('Malformed credentials.')
     }
     const separator = decoded.indexOf(':')
-    if (separator !== -1 && matches(decoded.slice(separator + 1), expected)) {
-      return // continue to the static page
+    if (separator !== -1) {
+      // Compare both before combining, so the reply time does not reveal
+      // which half was wrong.
+      const userOk = matches(decoded.slice(0, separator), USERNAME)
+      const passOk = matches(decoded.slice(separator + 1), expected)
+      if (userOk && passOk) {
+        return // continue to the static page
+      }
     }
   }
 
