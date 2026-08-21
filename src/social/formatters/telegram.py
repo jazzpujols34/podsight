@@ -124,7 +124,12 @@ class TelegramFormatter(BaseFormatter):
             if '主要討論話題' in stripped:
                 in_section = True
                 continue
-            if in_section and (stripped.startswith('###') or stripped.startswith('---')):
+            # NOTE: '####' also startswith('###'), so a naive check ends the
+            # section at its first sub-heading. Summaries that title their
+            # topics with '#### N. Name' then yielded zero topics and the
+            # Telegram post shipped with no 主要討論話題 block at all.
+            is_new_section = stripped.startswith('###') and not stripped.startswith('####')
+            if in_section and (is_new_section or stripped.startswith('---')):
                 break
             if in_section:
                 lines.append(line)
@@ -152,6 +157,20 @@ class TelegramFormatter(BaseFormatter):
         section = self._get_topics_section(text)
         if not section:
             return []
+
+        # Tier 0 — markdown sub-headings: "#### 1. Topic Name" or "#### Topic
+        # Name". Checked first because #### is unambiguous. The number is
+        # optional: zhaohua/gooaye emit un-numbered ones (EP1165, EP0688).
+        heading_topics = []
+        for line in section.split('\n'):
+            match = re.match(r'^####\s*(?:\d+\s*[.、]\s*)?(.+?)\s*$', line.strip())
+            if not match:
+                continue
+            name = self._clean_topic_name(match.group(1))
+            if name and not self._is_generic_label(name):
+                heading_topics.append(name)
+        if heading_topics:
+            return heading_topics
 
         # Tier 1 — numbered-bold headings: **1. Topic Name**
         numbered = []

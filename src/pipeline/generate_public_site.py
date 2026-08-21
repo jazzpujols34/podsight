@@ -304,7 +304,7 @@ def parse_summary(content: str) -> dict:
         # Format 4 picked up "**詳細說明**" as that topic's TITLE. Live pages
         # showed one topic called 詳細說明 while the summary held three.
         h4_topics = re.findall(
-            r"^####\s*\d+[.、]?\s*(.+?)\s*\n(.+?)(?=\n####|\n---|\n###|\Z)",
+            r"^####\s*(?:\d+\s*[.、]\s*)?(.+?)\s*\n(.+?)(?=\n####|\n---|\n###|\Z)",
             topics_text,
             re.DOTALL | re.MULTILINE,
         )

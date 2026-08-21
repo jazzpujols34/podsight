@@ -114,6 +114,64 @@ class ExtractMainTopicsTest(unittest.TestCase):
         self.assertEqual(self.extract("### 一句話總結\n沒有話題區塊。\n"), [])
 
 
+class MarkdownHeadingTopicsTest(unittest.TestCase):
+    """"#### Topic Name" headings — the third style, added 2026-08-21.
+
+    Summaries began titling topics with markdown sub-headings instead of bold
+    text. Two things broke at once: _get_topics_section ended the section at the
+    first "####" (because "####".startswith("###")), and no tier recognised the
+    heading. Ten episodes — including 2026-08-21, whose Telegram post went out
+    with no 主要討論話題 block at all — extracted zero topics.
+    """
+
+    def setUp(self):
+        self.fmt = TelegramFormatter()
+
+    NUMBERED = """### 主要討論話題
+
+#### 1. 美國債務危機與「勒索式」寬鬆
+- **詳細說明**：美國國債突破 40 兆美元。
+- **市場影響與投資啟示**：投資人要求更高的風險補償。
+
+#### 2. AI 時代的政治悖論與民意反彈
+- **詳細說明**：多數美國民眾對資料中心擴建存有疑慮。
+
+---
+
+### 財經觀點與分析
+- 之後的段落不該被當成話題。
+"""
+
+    UNNUMBERED = """### 主要討論話題
+
+#### 美國高利率與科技巨頭舉債疑慮
+- **詳細說明**：公債殖利率攀升對舉債擴張形成壓力。
+
+#### 盤面主流與低本益比 IC 設計抗跌表現
+- **詳細說明**：資金轉向低本益比族群。
+"""
+
+    def test_numbered_headings_all_extracted(self):
+        got = self.fmt._extract_main_topics(self.NUMBERED)
+        self.assertEqual(len(got), 2, got)
+        self.assertTrue(got[0].startswith("美國債務危機"), got)
+
+    def test_field_labels_are_not_topics(self):
+        got = self.fmt._extract_main_topics(self.NUMBERED)
+        self.assertNotIn("詳細說明", got)
+        self.assertNotIn("市場影響與投資啟示", got)
+
+    def test_section_ends_at_the_next_real_heading(self):
+        got = self.fmt._extract_main_topics(self.NUMBERED)
+        self.assertFalse(any("財經觀點" in g for g in got), got)
+
+    def test_unnumbered_headings_extracted(self):
+        """zhaohua/gooaye emit '#### Name' with no number."""
+        got = self.fmt._extract_main_topics(self.UNNUMBERED)
+        self.assertEqual(len(got), 2, got)
+        self.assertTrue(got[1].startswith("盤面主流"), got)
+
+
 class CorpusGuardTest(unittest.TestCase):
     """Every real summary on disk must yield at least one topic.
 
