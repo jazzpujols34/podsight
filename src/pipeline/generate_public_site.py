@@ -290,16 +290,31 @@ def parse_summary(content: str) -> dict:
 
     # Extract topics (主要討論話題) - handle ### **Title** or ### Title formats
     topics_match = re.search(
-        r"###\s*\*?\*?主要討論話題\*?\*?\s*\n+(.+?)(?=\n---|\n###)", content, re.DOTALL
+        r"###\s*\*?\*?主要討論話題\*?\*?\s*\n+(.+?)(?=\n---|\n###(?!#))", content, re.DOTALL
     )
     if topics_match:
         topics_text = topics_match.group(1)
         topic_blocks = []
 
+        # Format 0: "#### 1. Title" sub-headings, each followed by
+        # "- **詳細說明**：..." / "- **市場影響與投資啟示**：..." bullets.
+        # Checked first because #### is unambiguous. Before this existed the
+        # section regex above stopped at the first #### (its lookahead treated
+        # "####" as a new "###" section), so only topic 1 survived — and then
+        # Format 4 picked up "**詳細說明**" as that topic's TITLE. Live pages
+        # showed one topic called 詳細說明 while the summary held three.
+        h4_topics = re.findall(
+            r"^####\s*\d+[.、]?\s*(.+?)\s*\n(.+?)(?=\n####|\n---|\n###|\Z)",
+            topics_text,
+            re.DOTALL | re.MULTILINE,
+        )
+        if h4_topics:
+            topic_blocks.extend(h4_topics)
+
         # Format 1: *   **Title**\n    Content (bullet with bold title, content until next topic)
         # This handles: *   **台日美股表現兩極化**\n    台股與日股...
-        bullet_topics = re.findall(
-            r"\*\s+\*\*([^*\n]+)\*\*\s*\n([\s\S]+?)(?=\n\*\s+\*\*|\n---|\n###|$)",
+        bullet_topics = [] if topic_blocks else re.findall(
+            r"[-*]\s+\*\*([^*\n]+)\*\*\s*\n([\s\S]+?)(?=\n[-*]\s+\*\*|\n---|\n###|$)",
             topics_text,
         )
         if bullet_topics:
@@ -342,23 +357,23 @@ def parse_summary(content: str) -> dict:
 
     # Extract strategies (操作心法) - handle multiple section names
     strategies_match = re.search(
-        r"###\s*\*?\*?(?:MK\s*的\s*)?操作心法[與和]?作法?\*?\*?\s*\n+(.+?)(?=\n---|\n###)",
+        r"###\s*\*?\*?(?:MK\s*的\s*)?操作心法[與和]?作法?\*?\*?\s*\n+(.+?)(?=\n---|\n###(?!#))",
         content,
         re.DOTALL,
     )
     if not strategies_match:
         strategies_match = re.search(
-            r"###\s*\*?\*?(?:兆華的)?操作建議\*?\*?\s*\n+(.+?)(?=\n---|\n###)", content, re.DOTALL
+            r"###\s*\*?\*?(?:兆華的)?操作建議\*?\*?\s*\n+(.+?)(?=\n---|\n###(?!#))", content, re.DOTALL
         )
     if not strategies_match:
         # Try zhaohua format: 本集來賓與高手觀點
         strategies_match = re.search(
-            r"###\s*\*?\*?本集來賓與高手觀點\*?\*?\s*\n+(.+?)(?=\n---|\n###)", content, re.DOTALL
+            r"###\s*\*?\*?本集來賓與高手觀點\*?\*?\s*\n+(.+?)(?=\n---|\n###(?!#))", content, re.DOTALL
         )
     if not strategies_match:
         # Try yutinghao format: 財經觀點與分析
         strategies_match = re.search(
-            r"###\s*\*?\*?財經觀點與分析\*?\*?\s*\n+(.+?)(?=\n---|\n###)", content, re.DOTALL
+            r"###\s*\*?\*?財經觀點與分析\*?\*?\s*\n+(.+?)(?=\n---|\n###(?!#))", content, re.DOTALL
         )
     if strategies_match:
         strategies_text = strategies_match.group(1)
@@ -422,7 +437,7 @@ def parse_summary(content: str) -> dict:
 
     # Extract stocks (提到的股票) - handle ### **Title** or ### Title formats
     stocks_match = re.search(
-        r"###\s*\*?\*?提到的股票.*?\*?\*?\s*\n+(.+?)(?=\n---|\n###)", content, re.DOTALL
+        r"###\s*\*?\*?提到的股票.*?\*?\*?\s*\n+(.+?)(?=\n---|\n###(?!#))", content, re.DOTALL
     )
     if stocks_match:
         stocks_text = stocks_match.group(1)
