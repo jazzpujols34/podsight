@@ -8,6 +8,7 @@ Telegram push is handled separately by push_telegram_batch.py (after Vercel depl
 import os
 import sys
 import json
+import re
 import subprocess
 from pathlib import Path
 from datetime import datetime
@@ -113,12 +114,27 @@ def get_episodes_from_rss(podcast: str) -> set:
             eps.add(f"EP{ep_num:04d}")
         elif podcast == "yutinghao" and title:
             # yutinghao: extract date from title like "2026/3/2(一)中東大戰..."
-            match = re.match(r"(\d{4})/(\d{1,2})/(\d{1,2})", title)
+            match = re.match(r"(\d{4})/(\d{1,2})/(\d{1,2})", strip_feed_junk_prefix(title))
             if match:
                 year, month, day = match.groups()
                 # Format to match summary filename prefix: 2026_3_2_
                 eps.add(f"{year}_{month}_{day}_")
     return eps
+
+
+# Some feed items arrive with the publisher's own file-naming prefix glued to the
+# front of the title: "2026-08-20 08-31-2026/8/20(四)貝森特護盤!..." (their
+# SoundCloud filename). Every date matcher below is anchored with re.match, so
+# that prefix silently blanks the episode date — on 2026-08-21 it left
+# podsight.tw/yutinghao/2026-08-20/ ungenerated (404) and aborted the Telegram
+# push. Strip the prefix rather than switching to re.search, so a date that
+# appears LATER inside a real title can never be mistaken for the episode date.
+_FEED_JUNK_PREFIX = re.compile(r"^\d{4}-\d{2}-\d{2}[ _]\d{2}-\d{2}-")
+
+
+def strip_feed_junk_prefix(text: str) -> str:
+    """Drop a publisher file-naming prefix from a title/filename, if present."""
+    return _FEED_JUNK_PREFIX.sub("", text or "")
 
 
 def get_episodes_needing_summary(podcast: str) -> set:

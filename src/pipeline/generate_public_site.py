@@ -170,6 +170,21 @@ def get_freshness_label(date_str: str) -> Tuple[str, str]:
         return None, None
 
 
+# Some feed items arrive with the publisher's own file-naming prefix glued to the
+# front of the title: "2026-08-20 08-31-2026/8/20(四)貝森特護盤!..." (their
+# SoundCloud filename). Every date matcher below is anchored with re.match, so
+# that prefix silently blanks the episode date — on 2026-08-21 it left
+# podsight.tw/yutinghao/2026-08-20/ ungenerated (404) and aborted the Telegram
+# push. Strip the prefix rather than switching to re.search, so a date that
+# appears LATER inside a real title can never be mistaken for the episode date.
+_FEED_JUNK_PREFIX = re.compile(r"^\d{4}-\d{2}-\d{2}[ _]\d{2}-\d{2}-")
+
+
+def strip_feed_junk_prefix(text: str) -> str:
+    """Drop a publisher file-naming prefix from a title/filename, if present."""
+    return _FEED_JUNK_PREFIX.sub("", text or "")
+
+
 def extract_episode_date(episode_id: str, podcast_id: str, filename: str = "") -> Optional[str]:
     """Extract or estimate episode date in YYYY-MM-DD format."""
     if podcast_id == "yutinghao":
@@ -179,7 +194,7 @@ def extract_episode_date(episode_id: str, podcast_id: str, filename: str = "") -
     # For numbered podcasts, try to get from filename or estimate
     # We'll use file modification time as fallback
     if filename:
-        match = re.match(r"(\d{4})_(\d{1,2})_(\d{1,2})_", filename)
+        match = re.match(r"(\d{4})_(\d{1,2})_(\d{1,2})_", strip_feed_junk_prefix(filename))
         if match:
             year, month, day = match.groups()
             return f"{year}-{int(month):02d}-{int(day):02d}"
@@ -207,7 +222,7 @@ def get_sort_key(filename: str, podcast_id: str):
 
     # For date-based podcasts (yutinghao), parse the date
     # Format: 2026_2_24_二_... or _市場觀察_...
-    match = re.match(r"(\d{4})_(\d{1,2})_(\d{1,2})_", name)
+    match = re.match(r"(\d{4})_(\d{1,2})_(\d{1,2})_", strip_feed_junk_prefix(name))
     if match:
         year, month, day = int(match.group(1)), int(match.group(2)), int(match.group(3))
         return (0, year, month, day)
@@ -582,7 +597,7 @@ def get_episode_id(filename: str, podcast: str) -> str:
     """Extract episode ID from filename."""
     if podcast == "yutinghao":
         # Format: 2026_1_30_五_微軟暴跌...
-        match = re.match(r"(\d{4})_(\d{1,2})_(\d{1,2})_", filename)
+        match = re.match(r"(\d{4})_(\d{1,2})_(\d{1,2})_", strip_feed_junk_prefix(filename))
         if match:
             year, month, day = match.groups()
             return f"{year}-{int(month):02d}-{int(day):02d}"
