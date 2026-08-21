@@ -84,10 +84,6 @@ def test_h4_topic_body_survives():
 def test_a_following_h3_section_still_parses():
     """The lookahead fix must not swallow the next real ### section.
 
-    NOTE: the fixture keeps a trailing "---" because every section regex here
-    ends at (?=\n---|\n###(?!#)) with no end-of-string alternative, so a file's
-    LAST section parses as empty. Pre-existing, unrelated to this fix, and left
-    alone deliberately — worth its own change.
     """
     assert parse_summary(H4)["strategies"]
 
@@ -96,3 +92,42 @@ def test_dash_bullets_are_split_into_separate_topics():
     topics = parse_summary(DASH)["topics"]
     assert len(topics) == 3, f"expected 3 topics, got {[t['title'] for t in topics]}"
     assert topics[2]["title"].startswith("台灣 AI 出口暴賺")
+
+
+# --- lookahead robustness --------------------------------------------------
+# Both cases below are LATENT: replaying all 392 summaries in the repo showed
+# zero change from these fixes. They are kept because the 12 section regexes
+# previously disagreed with each other — half lacked the end-of-string branch,
+# the other half lacked the "don't stop at ####" guard — and either gap silently
+# blanks a section the day a summary happens to hit it.
+
+NO_TRAILING_DELIMITER = """### 主要討論話題
+
+- **甲話題**
+  甲的內容說明，長度需要超過二十個字元才會被收錄進來。
+
+---
+
+### 財經觀點與分析
+- **最後一段**：這一段後面沒有 --- 也沒有下一個 ###，是檔案的結尾。"""
+
+H4_INSIDE_A_TAIL_SECTION = """### 主要討論話題
+
+- **甲話題**
+  甲的內容說明，長度需要超過二十個字元才會被收錄進來。
+
+---
+
+### 冷笑話 / 幽默金句
+
+#### 補充
+- 這則笑話放在一個 #### 子標題底下，不該讓整段消失。
+"""
+
+
+def test_final_section_without_a_trailing_delimiter_still_parses():
+    assert parse_summary(NO_TRAILING_DELIMITER)["strategies"]
+
+
+def test_h4_subheading_does_not_blank_a_tail_section():
+    assert parse_summary(H4_INSIDE_A_TAIL_SECTION)["humor"]

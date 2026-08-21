@@ -272,7 +272,7 @@ def parse_summary(content: str) -> dict:
     }
 
     # Extract TLDR (一句話總結) - handle ### **Title** or ### Title formats
-    tldr_match = re.search(r"###\s*\*?\*?一句話總結\*?\*?\s*\n+(.+?)(?=\n---|\n###|$)", content, re.DOTALL)
+    tldr_match = re.search(r"###\s*\*?\*?一句話總結\*?\*?\s*\n+(.+?)(?=\n---|\n###(?!#)|$)", content, re.DOTALL)
     if tldr_match:
         sections["tldr"] = strip_markdown(tldr_match.group(1))
 
@@ -290,7 +290,7 @@ def parse_summary(content: str) -> dict:
 
     # Extract topics (主要討論話題) - handle ### **Title** or ### Title formats
     topics_match = re.search(
-        r"###\s*\*?\*?主要討論話題\*?\*?\s*\n+(.+?)(?=\n---|\n###(?!#))", content, re.DOTALL
+        r"###\s*\*?\*?主要討論話題\*?\*?\s*\n+(.+?)(?=\n---|\n###(?!#)|$)", content, re.DOTALL
     )
     if topics_match:
         topics_text = topics_match.group(1)
@@ -357,23 +357,23 @@ def parse_summary(content: str) -> dict:
 
     # Extract strategies (操作心法) - handle multiple section names
     strategies_match = re.search(
-        r"###\s*\*?\*?(?:MK\s*的\s*)?操作心法[與和]?作法?\*?\*?\s*\n+(.+?)(?=\n---|\n###(?!#))",
+        r"###\s*\*?\*?(?:MK\s*的\s*)?操作心法[與和]?作法?\*?\*?\s*\n+(.+?)(?=\n---|\n###(?!#)|$)",
         content,
         re.DOTALL,
     )
     if not strategies_match:
         strategies_match = re.search(
-            r"###\s*\*?\*?(?:兆華的)?操作建議\*?\*?\s*\n+(.+?)(?=\n---|\n###(?!#))", content, re.DOTALL
+            r"###\s*\*?\*?(?:兆華的)?操作建議\*?\*?\s*\n+(.+?)(?=\n---|\n###(?!#)|$)", content, re.DOTALL
         )
     if not strategies_match:
         # Try zhaohua format: 本集來賓與高手觀點
         strategies_match = re.search(
-            r"###\s*\*?\*?本集來賓與高手觀點\*?\*?\s*\n+(.+?)(?=\n---|\n###(?!#))", content, re.DOTALL
+            r"###\s*\*?\*?本集來賓與高手觀點\*?\*?\s*\n+(.+?)(?=\n---|\n###(?!#)|$)", content, re.DOTALL
         )
     if not strategies_match:
         # Try yutinghao format: 財經觀點與分析
         strategies_match = re.search(
-            r"###\s*\*?\*?財經觀點與分析\*?\*?\s*\n+(.+?)(?=\n---|\n###(?!#))", content, re.DOTALL
+            r"###\s*\*?\*?財經觀點與分析\*?\*?\s*\n+(.+?)(?=\n---|\n###(?!#)|$)", content, re.DOTALL
         )
     if strategies_match:
         strategies_text = strategies_match.group(1)
@@ -437,7 +437,7 @@ def parse_summary(content: str) -> dict:
 
     # Extract stocks (提到的股票) - handle ### **Title** or ### Title formats
     stocks_match = re.search(
-        r"###\s*\*?\*?提到的股票.*?\*?\*?\s*\n+(.+?)(?=\n---|\n###(?!#))", content, re.DOTALL
+        r"###\s*\*?\*?提到的股票.*?\*?\*?\s*\n+(.+?)(?=\n---|\n###(?!#)|$)", content, re.DOTALL
     )
     if stocks_match:
         stocks_text = stocks_match.group(1)
@@ -456,7 +456,7 @@ def parse_summary(content: str) -> dict:
 
     # Extract quotes (金句) - handle ### **Title** or ### Title formats and 觀點金句
     quotes_match = re.search(
-        r"###\s*\*?\*?(?:謝孟恭|兆華)?.*?(?:的\s*)?(?:觀點[或與]?)?金句.*?\*?\*?\s*\n+(.+?)(?=\n---|\n###|$)",
+        r"###\s*\*?\*?(?:謝孟恭|兆華)?.*?(?:的\s*)?(?:觀點[或與]?)?金句.*?\*?\*?\s*\n+(.+?)(?=\n---|\n###(?!#)|$)",
         content,
         re.DOTALL,
     )
@@ -478,10 +478,10 @@ def parse_summary(content: str) -> dict:
                 sections["quotes"] = [strip_markdown(q) for q in quote_items if len(q.strip()) > 10]
 
     # Extract risks (風險提醒) or 市場展望與操作建議 - handle ### **Title** or ### Title formats
-    risks_match = re.search(r"###\s*\*?\*?風險提醒\*?\*?\s*\n+(.+?)(?=\n---|\n###|$)", content, re.DOTALL)
+    risks_match = re.search(r"###\s*\*?\*?風險提醒\*?\*?\s*\n+(.+?)(?=\n---|\n###(?!#)|$)", content, re.DOTALL)
     if not risks_match:
         # Try zhaohua format: 市場展望與操作建議
-        risks_match = re.search(r"###\s*\*?\*?市場展望與操作建議\*?\*?\s*\n+(.+?)(?=\n---|\n###|$)", content, re.DOTALL)
+        risks_match = re.search(r"###\s*\*?\*?市場展望與操作建議\*?\*?\s*\n+(.+?)(?=\n---|\n###(?!#)|$)", content, re.DOTALL)
     if risks_match:
         risks_text = risks_match.group(1)
         # Parse risks - look for **title:** content or simple bullets
@@ -515,7 +515,7 @@ def parse_summary(content: str) -> dict:
 
     # Extract humor (冷笑話 / 幽默金句)
     humor_match = re.search(
-        r"###\s*\*?\*?冷笑話\s*[/／]\s*幽默金句\*?\*?\s*\n+(.+?)(?=\n---|\n###|$)", content, re.DOTALL
+        r"###\s*\*?\*?冷笑話\s*[/／]\s*幽默金句\*?\*?\s*\n+(.+?)(?=\n---|\n###(?!#)|$)", content, re.DOTALL
     )
     if humor_match:
         humor_text = humor_match.group(1)
@@ -570,7 +570,7 @@ def parse_summary(content: str) -> dict:
 
     # Extract QA (精選留言)
     qa_match = re.search(
-        r"###\s*\*?\*?精選留言\*?\*?(?:（如有）)?\s*\n+(.+?)(?=\n---|\n###|$)", content, re.DOTALL
+        r"###\s*\*?\*?精選留言\*?\*?(?:（如有）)?\s*\n+(.+?)(?=\n---|\n###(?!#)|$)", content, re.DOTALL
     )
     if qa_match:
         qa_text = qa_match.group(1)
