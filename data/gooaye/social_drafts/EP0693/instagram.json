@@ -1,0 +1,32 @@
+{
+  "caption": "🎙️ EP0693 股癌 Gooaye\n\n📝 聯發科獲得輝達與 Google 的策略性大額投資是重大產業訊號，本質是 NVIDIA 透過生態系綁裝、跨足 XPU 與 NVHBM 來分食 ASIC 市場，市場雖常因新題材過度恐慌，但長遠來看 AI 餅越做越大，大盤與相關供應鏈在經歷震盪後仍具備向上的爆發力。\n\n💡 本集重點：\n• 話題名稱：聯發科獲得輝達與 Google 策略投資的解讀與推演\n• MK 的觀點與推論：\n• 輝達首度投資台灣上市公司，以發行 35 億美元 ECB（可轉債）的形式參與，絕大多數份額由輝達拿下，Google 也參與其中\n• 市場認為「聯發科幫 Google 設計 TPU (如 V8T、Humufish 等 Roadmap)，代表 ASIC 將威脅 GPGPU（輝達的核心地盤）」，但 MK 認為輝達聰明之處在於：就算客戶要自己開發 XPU，輝達也不會硬擋，而是透過提供周邊的 Total Solution（如 NVL72、MGX ETL Racks、InfiniBand、Spectrum 網通等），讓客人的 XPU 依然必須跟輝達的生態系深度綁定，藉此在對手的地盤上「吃肉喝湯」\n\n💬「人生是沒有後悔藥或水晶球的，就算你可能有買到這些東西，不可能買多，那就是配置的其中一環。」\n— 謝孟恭 (MK)\n\n🎧 完整內容請收聽 Podcast\n\n#股癌 #gooaye #投資 #理財 #股票 #podcast #投資筆記 #財經 #台股 #美股 #ETF",
+  "char_count": 642,
+  "image_config": {
+    "background": "#1a1a2e",
+    "accent_color": "#f59e0b",
+    "title": "EP0693",
+    "subtitle": "股癌 Gooaye",
+    "one_liner": "聯發科獲得輝達與 Google 的策略性大額投資是重大產業訊號，本質是 NVIDIA 透過生態系綁裝、跨足 XPU 與 ",
+    "body_points": [
+      "話題名稱：聯發科獲得輝達與 Google 策略投資的解...",
+      "MK 的觀點與推論：",
+      "輝達首度投資台灣上市公司"
+    ],
+    "tickers": [],
+    "quote": "人生是沒有後悔藥或水晶球的，就算你可能有買到這些東西，不可能買多，那就是配置的其中一環。",
+    "host": "謝孟恭 (MK)"
+  },
+  "hashtags": [
+    "#股癌",
+    "#gooaye",
+    "#投資",
+    "#理財",
+    "#股票",
+    "#podcast",
+    "#投資筆記",
+    "#財經",
+    "#台股",
+    "#美股",
+    "#ETF"
+  ]
+}
