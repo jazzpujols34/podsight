@@ -41,7 +41,7 @@ podcast.summary_dir.mkdir(parents=True, exist_ok=True)
 
 # Default settings (env var overrides)
 DEFAULT_PROVIDER = os.environ.get('SUMMARY_PROVIDER') or "gemini"
-DEFAULT_ANTHROPIC_MODEL = "claude-sonnet-4-20250514"
+DEFAULT_ANTHROPIC_MODEL = "claude-opus-5"
 DEFAULT_OPENAI_MODEL = "gpt-4o"
 DEFAULT_GEMINI_MODEL = "gemini-flash-lite-latest"
 
