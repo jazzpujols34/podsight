@@ -27,6 +27,7 @@ cd public-site && python3 -m http.server 3500
 PODCAST=yutinghao ./venv/bin/python src/pipeline/03_transcribe.py
 PODCAST=yutinghao ./venv/bin/python src/pipeline/04_summarize.py
 PODCAST=yutinghao ./venv/bin/python src/pipeline/05_generate_social.py
+PODCAST=yutinghao ./venv/bin/python src/pipeline/06_index_jev.py  # optional: Jev company/topic/view search index
 
 # Regenerate site
 ./venv/bin/python src/pipeline/generate_public_site.py
@@ -39,6 +40,7 @@ API keys are loaded from `.env` via python-dotenv:
 - `GEMINI_API_KEY` - Summarization (required)
 - `TELEGRAM_BOT_TOKEN` - Channel posting (required for TG push)
 - `TELEGRAM_CHAT_ID` - Target channel (required for TG push)
+- `TYPESAFE_API_KEY` - Jev company/topic/view indexing (optional; step 6 skips with a WARNING if unset)
 
 ## Podcasts
 
@@ -67,10 +69,12 @@ gooaye_pipeline/
 │   │   ├── 03_transcribe.py       # Step 3: Audio → text (Groq Whisper)
 │   │   ├── 04_summarize.py        # Step 4: Transcript → summary (Gemini)
 │   │   ├── 05_generate_social.py  # Step 5: Summary → social drafts
+│   │   ├── 06_index_jev.py        # Step 6 (optional): Jev company/topic/view index → data/{podcast}/index/*.json
+│   │   ├── jev_index.py           # Jev indexing library (windowing, request building, network)
 │   │   ├── auto_pipeline.py       # Orchestrator: runs all steps for all podcasts
 │   │   ├── generate_public_site.py # Static HTML site generator
 │   │   ├── push_telegram_batch.py # Telegram push (runs after Vercel deploy)
-│   │   └── search.py              # CLI search tool for transcripts/summaries
+│   │   └── search.py              # CLI search tool for transcripts/summaries (+ Jev company/topic tags)
 │   └── social/
 │       ├── draft.py               # Draft storage model (SocialDraft, DraftManager)
 │       ├── image_generator.py     # Instagram card image generation (Pillow)
@@ -97,6 +101,7 @@ gooaye_pipeline/
 │   │   ├── audio/                 # .mp3 files (gitignored)
 │   │   ├── transcripts/           # .txt files (git tracked)
 │   │   ├── summaries/             # _summary.txt files (git tracked)
+│   │   ├── index/                 # {episode_id}.json Jev company/topic/view index (optional, git tracked)
 │   │   └── social_drafts/
 │   │       ├── {episode_id}/      # Per-episode draft folder
 │   │       │   ├── draft.json     # Draft metadata
@@ -120,7 +125,8 @@ auto_pipeline.py (orchestrator)
 │   ├── 02_download_audio.py     → audio/*.mp3
 │   ├── 03_transcribe.py         → transcripts/*.txt (Groq Whisper)
 │   ├── 04_summarize.py          → summaries/*_summary.txt (Gemini)
-│   └── 05_generate_social.py    → social_drafts/*/telegram.json
+│   ├── 05_generate_social.py    → social_drafts/*/telegram.json
+│   └── 06_index_jev.py          → index/*.json (optional; WARNING + skip if TYPESAFE_API_KEY unset)
 ├── generate_public_site.py      → public-site/**/*.html
 └── Save .pending_telegram.json  → queued for push after deploy
 ```
@@ -143,7 +149,7 @@ Phase 2: Telegram (after Vercel is live)
   6. Git commit .telegram_published tracking
 ```
 
-**Secrets required:** `GROQ_API_KEY`, `GEMINI_API_KEY`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`
+**Secrets required:** `GROQ_API_KEY`, `GEMINI_API_KEY`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `TYPESAFE_API_KEY` (optional)
 
 ## Key Conventions
 
@@ -331,3 +337,12 @@ The public site needs these for Google discoverability (target: 台灣 podcast l
 - **Verify after any prompt change:** regenerate a list-heavy episode (EP0688) AND a list-free one
   (EP0687) - the field must appear in the first and stay absent in the second.
 - **Date:** 2026-08-15
+
+### Rule 14: Jev Index = One Window Per Request
+- **Trigger:** An offline eval spike compared chunk sizes for the TypeSafe Jev company/view
+  questions over 60s transcript windows.
+- **Root cause:** Batching 20 windows into one keyed request (`windows.w1`...`windows.w20`)
+  collapsed every answer to `none`, regardless of the window's actual content.
+- **Fix:** `06_index_jev.py` / `src/pipeline/jev_index.py` always sends ONE window per request
+  (unkeyed `window.text` state), never batched. Concurrency (6 workers) makes up the throughput.
+- **Date:** 2026-09-22

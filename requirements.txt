@@ -7,6 +7,10 @@ feedparser>=6.0.0
 tqdm>=4.64.0
 pyyaml>=6.0
 python-dotenv>=1.0.0
+# certifi: CA bundle for the Jev index step's urllib HTTPS calls. Already a
+# transitive dep of requests, but pinned directly since jev_index.py imports
+# it itself (python.org framework builds ship no system CA bundle).
+certifi>=2024.2.2
 
 # Whisper options (install one)
 # Option 1: faster-whisper (recommended - 4x faster)

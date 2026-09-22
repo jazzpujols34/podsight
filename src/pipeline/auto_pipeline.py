@@ -282,6 +282,13 @@ def process_podcast(podcast: str) -> dict:
     if not run_script("05_generate_social.py", podcast):
         stats["errors"].append("Social draft generation failed")
 
+    # Step 6 (optional): Jev index. Always exits 0 (missing key or a failed
+    # episode just logs a WARNING) - guarded here too, but must never abort
+    # the chain either way.
+    log(f"  Step 6: Jev index (optional)...")
+    if not run_script("06_index_jev.py", podcast):
+        stats["errors"].append("Jev index failed")
+
     # Collect episodes for Telegram (public podcasts only, pushed after Vercel deploys)
     if podcast in PUBLIC_PODCASTS:
         if new_summaries:

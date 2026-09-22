@@ -32,6 +32,7 @@ from src.config import get_podcast_config, get_episode_number_from_filename, par
 _default = get_podcast_config()
 TRANSCRIPT_DIR = _default.transcript_dir
 SUMMARY_DIR = _default.summary_dir
+INDEX_DIR = _default.data_dir / "index"
 
 # ANSI colors for terminal output
 HIGHLIGHT_START = "\033[1;33m"  # Bold yellow
@@ -46,6 +47,8 @@ class SearchResult:
     text: str
     matched_text: str
     source: str  # "transcript" or "summary"
+    company: str | None = None  # from the Jev index, if one exists for this episode
+    topic: str | None = None
 
 
 def parse_timestamp(line: str) -> str:
@@ -54,11 +57,45 @@ def parse_timestamp(line: str) -> str:
     return match.group(1) if match else ""
 
 
+def _timestamp_to_seconds(timestamp: str) -> int | None:
+    """'MM:SS' -> total seconds, or None if not parseable."""
+    parts = timestamp.split(":")
+    if len(parts) != 2:
+        return None
+    try:
+        minutes, seconds = int(parts[0]), int(parts[1])
+    except ValueError:
+        return None
+    return minutes * 60 + seconds
+
+
+def load_index(episode_id: str) -> dict | None:
+    """Read data/{podcast}/index/{episode_id}.json, or None if missing/unreadable."""
+    index_path = INDEX_DIR / f"{episode_id}.json"
+    if not index_path.exists():
+        return None
+    try:
+        return json.loads(index_path.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+
+
+def find_window(index_data: dict, seconds: int) -> dict | None:
+    """The window whose [start, end) contains `seconds`, or None."""
+    for window in index_data.get("windows", []):
+        if window["start"] <= seconds < window["end"]:
+            return window
+    return None
+
+
 def search_file(
     file_path: Path,
     query: str,
     source: str,
-    case_sensitive: bool = False
+    case_sensitive: bool = False,
+    index_cache: dict | None = None,
+    company_filter: str | None = None,
+    topic_filter: str | None = None,
 ) -> Generator[SearchResult, None, None]:
     """Search a single file for the query string."""
     ep_num = get_episode_number_from_filename(file_path.name)
@@ -72,6 +109,7 @@ def search_file(
 
     flags = 0 if case_sensitive else re.IGNORECASE
     pattern = re.compile(re.escape(query), flags)
+    episode_id = f"EP{ep_num:04d}"
 
     for line_num, line in enumerate(content.split('\n'), 1):
         if pattern.search(line):
@@ -81,13 +119,36 @@ def search_file(
             match = pattern.search(line)
             matched_text = match.group(0) if match else query
 
+            company, topic = None, None
+            if source == "transcript" and timestamp:
+                if index_cache is not None:
+                    if episode_id not in index_cache:
+                        index_cache[episode_id] = load_index(episode_id)
+                    index_data = index_cache[episode_id]
+                else:
+                    index_data = load_index(episode_id)
+                if index_data:
+                    seconds = _timestamp_to_seconds(timestamp)
+                    if seconds is not None:
+                        window = find_window(index_data, seconds)
+                        if window:
+                            company = window.get("company")
+                            topic = window.get("topic")
+
+            if company_filter is not None and (company or "").lower() != company_filter.lower():
+                continue
+            if topic_filter is not None and topic_filter.lower() not in (topic or "").lower():
+                continue
+
             yield SearchResult(
                 episode_number=ep_num,
                 timestamp=timestamp,
                 line_number=line_num,
                 text=line.strip(),
                 matched_text=matched_text,
-                source=source
+                source=source,
+                company=company,
+                topic=topic,
             )
 
 
@@ -97,10 +158,13 @@ def search_transcripts(
     ep_end: int | None = None,
     search_summaries: bool = False,
     limit: int = 20,
-    case_sensitive: bool = False
+    case_sensitive: bool = False,
+    company: str | None = None,
+    topic: str | None = None,
 ) -> list[SearchResult]:
     """Search all transcripts (or summaries) for the query."""
     results = []
+    index_cache: dict = {}
 
     # Determine which directory to search
     if search_summaries:
@@ -126,7 +190,10 @@ def search_transcripts(
         if ep_end and ep_num > ep_end:
             continue
 
-        for result in search_file(file_path, query, source, case_sensitive):
+        for result in search_file(
+            file_path, query, source, case_sensitive,
+            index_cache=index_cache, company_filter=company, topic_filter=topic,
+        ):
             results.append(result)
             if len(results) >= limit:
                 return results
@@ -170,7 +237,15 @@ def format_results_text(results: list[SearchResult], query: str, use_color: bool
             prefix = f"  (line {r.line_number})"
 
         highlighted = highlight_match(r.text, r.matched_text, use_color)
-        lines.append(f"{prefix} {highlighted}")
+        line = f"{prefix} {highlighted}"
+        if r.company or r.topic:
+            tags = []
+            if r.company:
+                tags.append(f"company: {r.company}")
+            if r.topic:
+                tags.append(f"topic: {r.topic}")
+            line += f"  ({', '.join(tags)})"
+        lines.append(line)
 
     return "\n".join(lines)
 
@@ -183,7 +258,9 @@ def format_results_json(results: list[SearchResult]) -> str:
             "timestamp": r.timestamp,
             "line": r.line_number,
             "text": r.text,
-            "source": r.source
+            "source": r.source,
+            "company": r.company,
+            "topic": r.topic,
         }
         for r in results
     ]
@@ -216,6 +293,10 @@ Examples:
                         help="Case-sensitive search")
     parser.add_argument('--no-color', action='store_true',
                         help="Disable colored output")
+    parser.add_argument('--company', type=str, default=None,
+                        help="Filter to windows tagged with this company (from the Jev index)")
+    parser.add_argument('--topic', type=str, default=None,
+                        help="Filter to windows whose topic contains this text (from the Jev index)")
     args = parser.parse_args()
 
     # Parse episode range
@@ -233,7 +314,9 @@ Examples:
         ep_end=ep_end,
         search_summaries=args.summary,
         limit=args.limit,
-        case_sensitive=args.case_sensitive
+        case_sensitive=args.case_sensitive,
+        company=args.company,
+        topic=args.topic,
     )
 
     # Output results
