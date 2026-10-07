@@ -131,3 +131,43 @@ def test_final_section_without_a_trailing_delimiter_still_parses():
 
 def test_h4_subheading_does_not_blank_a_tail_section():
     assert parse_summary(H4_INSIDE_A_TAIL_SECTION)["humor"]
+
+
+# --- plain (non-bold) bullet titles ----------------------------------------
+# EP0694 ("- Title") and EP0701 ("*   Title") wrote topic titles without bold.
+# EP0694 rendered two wrong cards; EP0701 rendered its sub-bullet labels
+# ("MK 的觀點與推論") as the topic titles.
+
+PLAIN_DASH = """### 主要討論話題
+
+- 初級市場的 AI 內容通膨與信用時代
+  - MK 的觀點與推論：市場認為內容會通膨，但 MK 認為認真打磨的內容反而更值錢，信用比以前更重要。
+  - 相關標的：Rubinite
+
+- 台灣資本市場的實力與國際化迷思
+  - MK 的觀點與推論：真正的國際化是台灣資本工廠到各地設廠，現在是海外創辦人來找台灣資金。
+
+### MK 的操作心法與作法
+- 動能交易：不該被當成話題。
+"""
+
+PLAIN_STAR = """### 主要討論話題
+
+*   第三季行情檢討與盤勢觀察
+    *   **MK 的觀點與推論**：7 月中台股遭遇數年來最猛崩殺，部位回檔三成，九月已收復失土。
+    *   相關標的：Broadcom
+
+*   AI 在 IC 設計的新應用
+    *   **MK 的觀點與推論**：小型 IC 設計集體表態，因為大廠搶產能，訂單外溢到中小公司。
+"""
+
+
+def test_plain_dash_bullets_become_topic_titles():
+    titles = [t["title"] for t in parse_summary(PLAIN_DASH)["topics"]]
+    assert titles == ["初級市場的 AI 內容通膨與信用時代", "台灣資本市場的實力與國際化迷思"]
+
+
+def test_plain_star_bullets_use_top_level_title_not_nested_label():
+    topics = parse_summary(PLAIN_STAR)["topics"]
+    assert [t["title"] for t in topics] == ["第三季行情檢討與盤勢觀察", "AI 在 IC 設計的新應用"]
+    assert "崩殺" in topics[0]["content"]

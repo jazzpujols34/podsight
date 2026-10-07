@@ -203,6 +203,19 @@ class TelegramFormatter(BaseFormatter):
             topic_name = self._clean_topic_name(match.group(1))
             if topic_name and not self._is_generic_label(topic_name):
                 topics.append(topic_name)
+        if topics:
+            return topics
+
+        # Tier 3 — plain (non-bold) flush-left bullets: "- Topic" / "*   Topic".
+        # Last resort (EP0694, EP0701): bold labels sit indented underneath, so
+        # only unindented, unbolded bullets count as titles.
+        for line in section.split('\n'):
+            match = re.match(r'^[-*]\s+(?!\*\*)(\S.*?)\s*$', line)
+            if not match:
+                continue
+            topic_name = self._clean_topic_name(match.group(1))
+            if topic_name and not self._is_generic_label(topic_name):
+                topics.append(topic_name)
 
         return topics
 

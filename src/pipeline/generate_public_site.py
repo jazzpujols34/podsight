@@ -311,6 +311,21 @@ def parse_summary(content: str) -> dict:
         if h4_topics:
             topic_blocks.extend(h4_topics)
 
+        # Format 0b: plain (non-bold) flush-left bullets as titles, with the
+        # body indented underneath (EP0694 "- Title", EP0701 "*   Title").
+        # Only when no flush-left bold bullet or numbered-bold title exists, so
+        # every other format keeps its existing parse.
+        if not topic_blocks and not re.search(
+            r"^(?:[-*]\s+\*\*|\*\*\s*\d+\s*[.、])", topics_text, re.MULTILINE
+        ):
+            topic_blocks.extend(
+                re.findall(
+                    r"^[-*]\s+(?!\*\*)(\S[^\n]*?)\s*\n((?:[ \t]+[^\n]*\n?|\n(?=[ \t]))+)",
+                    topics_text,
+                    re.MULTILINE,
+                )
+            )
+
         # Format 1: *   **Title**\n    Content (bullet with bold title, content until next topic)
         # This handles: *   **台日美股表現兩極化**\n    台股與日股...
         bullet_topics = [] if topic_blocks else re.findall(

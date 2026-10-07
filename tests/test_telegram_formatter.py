@@ -172,6 +172,51 @@ class MarkdownHeadingTopicsTest(unittest.TestCase):
         self.assertTrue(got[1].startswith("盤面主流"), got)
 
 
+class PlainBulletTopicsTest(unittest.TestCase):
+    """Topic titles written as plain bullets (no bold), with the bold labels
+    indented underneath. EP0694 used `- Topic`, EP0701 used `*   Topic`; both
+    extracted zero topics because every tier needed a bold top-level title.
+    """
+
+    DASH = """### 主要討論話題
+
+- 初級市場的 AI 內容通膨與信用時代
+  - MK 的觀點與推論：內容通膨不會讓好內容不值錢。
+  - 相關標的：Rubinite
+
+- 台灣資本市場的實力與國際化迷思
+  - MK 的觀點與推論：真正的國際化是資本工廠到各地設廠。
+
+### MK 的操作心法與作法
+- 動能交易與部位管理策略：不該被當成話題。
+"""
+
+    STAR = """### 主要討論話題
+
+*   第三季行情檢討與盤勢觀察
+    *   **MK 的觀點與推論**：7 月中台股遭遇崩殺。
+    *   **MK 點名的清單**：
+        *   第一波起來的主流：光通、衛星
+    *   相關標的：Broadcom
+
+*   AI 在 IC 設計的新應用
+    *   **MK 的觀點與推論**：小 IC 集體表態。
+"""
+
+    def setUp(self):
+        self.fmt = TelegramFormatter()
+
+    def test_dash_plain_bullets(self):
+        got = self.fmt._extract_main_topics(self.DASH)
+        self.assertEqual(
+            got, ["初級市場的 AI 內容通膨與信用時代", "台灣資本市場的實力與國際化迷思"]
+        )
+
+    def test_star_plain_bullets_ignore_nested_bold_labels(self):
+        got = self.fmt._extract_main_topics(self.STAR)
+        self.assertEqual(got, ["第三季行情檢討與盤勢觀察", "AI 在 IC 設計的新應用"])
+
+
 class CorpusGuardTest(unittest.TestCase):
     """Every real summary on disk must yield at least one topic.
 
