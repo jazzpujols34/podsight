@@ -22,7 +22,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from src.pipeline import jev_index as jix  # noqa: E402
 import src.config as config  # noqa: E402
 
-VENV_PYTHON = PROJECT_ROOT / "venv" / "bin" / "python"
+VENV_PYTHON = Path(sys.executable)  # the interpreter running pytest: venv locally, setup-python in CI
 STEP_SCRIPT = PROJECT_ROOT / "src" / "pipeline" / "06_index_jev.py"
 
 
