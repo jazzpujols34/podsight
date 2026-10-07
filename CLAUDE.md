@@ -346,3 +346,13 @@ The public site needs these for Google discoverability (target: 台灣 podcast l
 - **Fix:** `06_index_jev.py` / `src/pipeline/jev_index.py` always sends ONE window per request
   (unkeyed `window.text` state), never batched. Concurrency (6 workers) makes up the throughput.
 - **Date:** 2026-09-22
+
+### Rule 15: The Test Suite Must Run in CI, Including After Pipeline Commits
+- **Trigger:** `test_no_episode_extracts_zero_topics` was red on main for weeks (EP0694/EP0701 used
+  plain-bullet topic titles), and EP0694/0696/0701 public pages showed wrong or missing topics.
+- **Root cause:** No workflow ran pytest. Auto Pipeline commits with `GITHUB_TOKEN`, and those pushes
+  never trigger other workflows, so even a push-triggered test job would miss new summaries.
+- **Fix:** `.github/workflows/tests.yml` runs on push, PR, and on a schedule ~2h after each
+  pipeline cron, so the corpus guard re-checks every new summary. A red scheduled run = a new
+  summary format the parsers don't handle; fix the parser, never allowlist the episode.
+- **Date:** 2026-10-07
