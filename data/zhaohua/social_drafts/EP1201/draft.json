@@ -1,0 +1,54 @@
+{
+  "episode_id": "EP1201",
+  "podcast": "zhaohua",
+  "created_at": "2026-10-13T09:02:27.168773",
+  "summary_hash": "e5dd85bd7b4d",
+  "status": "pending",
+  "platforms": {
+    "twitter": {
+      "status": "pending",
+      "content_file": "twitter.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    },
+    "threads": {
+      "status": "pending",
+      "content_file": "threads.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    },
+    "line": {
+      "status": "pending",
+      "content_file": "line.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    },
+    "instagram": {
+      "status": "pending",
+      "content_file": "instagram.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    },
+    "telegram": {
+      "status": "pending",
+      "content_file": "telegram.json",
+      "image_file": null,
+      "published_at": null,
+      "post_ids": [],
+      "error": null,
+      "url": null
+    }
+  }
+}
