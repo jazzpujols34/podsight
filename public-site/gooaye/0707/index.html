@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>股癌 EP0707 重點整理｜AI 摘要 — PodSight</title>
+    <meta name="description" content="MK 認為儘管目前基本面（如算力、載板需求）依然強勁，但盤面資金輪轉與籌碼不安定感浮現，使他採取調節部位的保守姿態，核心邏輯是「資金去哪裡比基本面好壞更重要」。">
+
+    <!-- Open Graph -->
+    <link rel="canonical" href="https://podsight.tw/gooaye/0707/">
+    <meta property="og:url" content="https://podsight.tw/gooaye/0707/">
+    <meta property="og:title" content="股癌 EP0707 重點整理｜AI 摘要 — PodSight">
+    <meta property="og:description" content="MK 認為儘管目前基本面（如算力、載板需求）依然強勁，但盤面資金輪轉與籌碼不安定感浮現，使他採取調節部位的保守姿態，核心邏輯是「資金去哪裡比基本面好壞更重要」。">
+    <meta property="og:image" content="https://podsight.tw/assets/og-image.png">
+    <meta property="og:type" content="article">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="/assets/PodSight-Logo-cropped.jpeg">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "股癌 EP0707 重點整理｜AI 摘要 — PodSight",
+        "description": "MK 認為儘管目前基本面（如算力、載板需求）依然強勁，但盤面資金輪轉與籌碼不安定感浮現，使他採取調節部位的保守姿態，核心邏輯是「資金去哪裡比基本面好壞更重要」。",
+        "datePublished": "2026-10-21",
+        "author": {
+            "@type": "Organization",
+            "name": "PodSight"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "PodSight",
+            "url": "https://podsight.tw"
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://podsight.tw/gooaye/0707/"
+        },
+        "about": {
+            "@type": "PodcastEpisode",
+            "name": "EP707 | 🦋",
+            "partOfSeries": {
+                "@type": "PodcastSeries",
+                "name": "股癌 Gooaye"
+            }
+        }
+    }
+    </script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
+
+    <style>
+        :root {
+            
+            --bg-primary: #0a0f1a;
+            --bg-secondary: #111827;
+            --bg-card: rgba(26, 111, 175, 0.08);
+            --bg-card-hover: rgba(26, 111, 175, 0.12);
+            --border-subtle: rgba(77, 184, 232, 0.15);
+            --border-glow: rgba(77, 184, 232, 0.3);
+            --text-primary: #f0f9ff;
+            --text-secondary: rgba(240, 249, 255, 0.75);
+            --text-muted: rgba(240, 249, 255, 0.5);
+            --accent-primary: #4DB8E8;
+            --accent-secondary: #1A6FAF;
+            --accent-tertiary: #F5A623;
+            --accent-glow: rgba(77, 184, 232, 0.4);
+            --accent-gradient: linear-gradient(135deg, #1A6FAF 0%, #4DB8E8 50%, #F5A623 100%);
+            --accent-bg: rgba(77, 184, 232, 0.12);
+            --accent-border: rgba(77, 184, 232, 0.25);
+        
+            --glass-blur: 20px;
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.8;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--accent-gradient);
+            z-index: 1000;
+            transition: width 0.1s linear;
+        }
+
+        .bg-ambient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at top right, var(--accent-glow) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom left, rgba(255,255,255,0.02) 0%, transparent 50%);
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .nav {
+            padding: 24px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-back {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover {
+            color: var(--accent-primary);
+        }
+
+        .nav-back svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .nav-logo-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .nav-logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .nav-logo-text {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .episode-header {
+            padding: 40px 0 60px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .episode-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .episode-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            color: var(--accent-primary);
+        }
+
+        .episode-badge svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .episode-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .episode-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .episode-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .share-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .share-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .share-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .listen-btn {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .listen-btn:hover {
+            background: var(--accent-primary);
+            color: #fff;
+        }
+
+        .content {
+            padding: 60px 0;
+        }
+
+        .section {
+            margin-bottom: 56px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-primary);
+        }
+
+        .section-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .tldr-box {
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 48px;
+        }
+
+        .tldr-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--accent-primary);
+            margin-bottom: 12px;
+        }
+
+        .tldr-text {
+            font-size: 1.25rem;
+            font-weight: 500;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        .topic-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .topic-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.2s var(--transition-smooth);
+        }
+
+        .topic-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-card-hover);
+        }
+
+        .topic-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-secondary);
+            margin-bottom: 8px;
+        }
+
+        .topic-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .topic-content {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .strategy-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .strategy-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+
+        .strategy-card:hover {
+            border-color: var(--accent-border);
+        }
+
+        .strategy-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-bg);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-secondary);
+            flex-shrink: 0;
+        }
+
+        .strategy-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .strategy-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .stock-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .stock-tag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 18px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+
+        .stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .stock-symbol {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--accent-primary);
+        }
+
+        .stock-name {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .quote-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .quote-card {
+            position: relative;
+            padding: 24px 24px 24px 32px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-left: 3px solid var(--accent-primary);
+            border-radius: 0 12px 12px 0;
+        }
+
+        .quote-text {
+            font-size: 1.1rem;
+            font-style: italic;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .quote-icon {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            color: var(--accent-bg);
+        }
+
+        .quote-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .humor-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .humor-card {
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .humor-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-card-hover);
+        }
+
+        .humor-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-secondary);
+            background: var(--accent-bg);
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+
+        .humor-quote {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .humor-context {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .qa-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .qa-card {
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .qa-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-card-hover);
+        }
+
+        .qa-question {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--accent-secondary);
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .qa-answer {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        .qa-icon {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .qa-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .risk-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .risk-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 18px;
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 10px;
+        }
+
+        .risk-icon {
+            color: #ef4444;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .risk-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .risk-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .conclusion-box {
+            display: flex;
+            gap: 20px;
+            padding: 28px;
+            background: linear-gradient(135deg, var(--accent-bg) 0%, rgba(255,255,255,0.03) 100%);
+            border: 1px solid var(--accent-border);
+            border-radius: 16px;
+        }
+
+        .conclusion-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-primary);
+            flex-shrink: 0;
+        }
+
+        .conclusion-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .conclusion-content {
+            flex: 1;
+        }
+
+        .conclusion-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--accent-primary);
+            margin-bottom: 8px;
+        }
+
+        .conclusion-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .footer {
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .footer-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .footer-text a {
+            color: var(--accent-primary);
+            text-decoration: none;
+        }
+
+        /* Episode Navigation */
+        .episode-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .ep-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .ep-nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .ep-nav-prev { justify-content: flex-start; }
+        .ep-nav-next { justify-content: flex-end; text-align: right; }
+
+        .ep-nav-btn svg { width: 20px; height: 20px; color: var(--text-muted); flex-shrink: 0; }
+        .ep-nav-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .ep-nav-title { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+        .ep-nav-disabled { visibility: hidden; }
+
+        .ep-nav-prev .ep-nav-label,
+        .ep-nav-prev .ep-nav-title { display: block; }
+        .ep-nav-next .ep-nav-label,
+        .ep-nav-next .ep-nav-title { display: block; }
+
+        /* Table of Contents */
+        .toc {
+            position: fixed;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .toc-link {
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .toc-link:hover,
+        .toc-link.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        /* Clickable stock tags */
+        .stock-tag {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a.stock-tag:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .toc { display: none; }
+        }
+
+        /* Mobile sticky bottom TOC - visible only when desktop TOC is hidden */
+        .mobile-toc {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(10, 10, 15, 0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid var(--border-subtle);
+            padding: 10px 12px;
+            overflow-x: auto;
+            white-space: nowrap;
+            gap: 6px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .mobile-toc::-webkit-scrollbar {
+            display: none;
+        }
+
+        .mobile-toc-link {
+            display: inline-block;
+            padding: 6px 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .mobile-toc-link.active {
+            background: var(--accent-bg);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        @media (max-width: 1200px) {
+            .mobile-toc {
+                display: flex;
+            }
+            /* Add bottom padding so content isn't hidden behind mobile TOC */
+            body {
+                padding-bottom: 56px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .episode-nav { flex-direction: column; }
+            .ep-nav-btn { max-width: 100%; }
+            .ep-nav-next { flex-direction: row-reverse; text-align: left; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                transform: translateY(20px);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        /* transform-only reveal: opacity stays 1 so content is LCP-eligible (avoids NO_LCP) */
+        .animate-in {
+            animation: fadeInUp 0.6s var(--transition-smooth) both;
+        }
+
+        .section {
+            animation: fadeInUp 0.6s var(--transition-smooth) both;
+        }
+
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.15s; }
+        .section:nth-child(3) { animation-delay: 0.2s; }
+        .section:nth-child(4) { animation-delay: 0.25s; }
+        .section:nth-child(5) { animation-delay: 0.3s; }
+        .section:nth-child(6) { animation-delay: 0.35s; }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .episode-header {
+                padding: 24px 0 40px;
+            }
+
+            .share-buttons {
+                flex-wrap: wrap;
+            }
+
+            .stock-grid {
+                gap: 8px;
+            }
+
+            .stock-tag {
+                padding: 10px 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="bg-ambient"></div>
+
+    <div class="container">
+        <nav class="nav animate-in">
+            <a href="/gooaye/" class="nav-back">
+                <i data-lucide="arrow-left"></i>
+                返回列表
+            </a>
+            <a href="/" class="nav-logo">
+                <div class="nav-logo-icon">
+                    <img src="/assets/PodSight-Logo-cropped.jpeg" alt="PodSight">
+                </div>
+                <span class="nav-logo-text">PodSight 聲見</span>
+            </a>
+        </nav>
+
+        <header class="episode-header animate-in">
+            <div class="episode-meta">
+                <span class="episode-badge">
+                    <i data-lucide="trending-up"></i>
+                    股癌 Gooaye
+                </span>
+                <span class="episode-date"></span>
+            </div>
+            <h1>EP707 | 🦋</h1>
+            <p class="episode-subtitle">MK 認為儘管目前基本面（如算力、載板需求）依然強勁，但盤面資金輪轉與籌碼不安定感浮現，使他採取調節部位的保守姿態，核心邏輯是「資金去哪裡比基本面好壞更重要」。</p>
+
+            <div class="share-buttons">
+                <a href="https://player.soundon.fm/p/954689a5-3096-43a4-a80b-7810b219cef3/episodes/9e8ff549-d6ec-4abd-a7d2-e2a65c44fac0" class="share-btn listen-btn" target="_blank" rel="noopener">
+                    <i data-lucide="headphones"></i>
+                    收聽原節目
+                </a>
+                <a href="#" class="share-btn" onclick="navigator.share({title: document.title, url: window.location.href}); return false;">
+                    <i data-lucide="share-2"></i>
+                    分享
+                </a>
+                <a href="https://t.me/share/url?url=${encodeURIComponent(window.location.href)}" class="share-btn" target="_blank">
+                    <i data-lucide="send"></i>
+                    Telegram
+                </a>
+            </div>
+        </header>
+
+        <main class="content">
+            
+            <div class="tldr-box animate-in" id="tldr">
+                <div class="tldr-label">一句話總結</div>
+                <div class="tldr-text">MK 認為儘管目前基本面（如算力、載板需求）依然強勁，但盤面資金輪轉與籌碼不安定感浮現，使他採取調節部位的保守姿態，核心邏輯是「資金去哪裡比基本面好壞更重要」。</div>
+            </div>
+            
+
+            
+            <section class="section" id="topics">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="message-square"></i>
+                    </div>
+                    <h2 class="section-title">主要討論話題</h2>
+                </div>
+                <div class="topic-list">
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 01</div>
+                        <div class="topic-title">算力需求與 SpaceX 財報的象徵意義</div>
+                        <div class="topic-content">MK 的觀點與推論：SpaceX 公布了優於市場預期的超級強勁財報，馬斯克在電話會議中打破了市場對算力的擔憂。馬斯克明確指出不要簽長約、要簽短約，因為算力價格持續上漲，明年甚至有機會 6 個月回本，這直接破解了算力融資成本高達 10% 會導致泡泡破裂的疑慮。 MK 跟市場共識的不同：市場擔心算力成本過高、融資利率飆高會引發泡沫，甚至看見長約以為是好現象；但 MK 認為「簽長約反而是快到頂的訊號」，馬斯克堅持短約且 6 個月回本，顯示算力需求依然無比強勁，基本面完全沒有問題。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 02</div>
+                        <div class="topic-title">記憶體市場的新動向</div>
+                        <div class="topic-content">MK 的觀點與推論：海外調研顯示，Agentic AI 時代對存儲（NAND）的需求 EB 數出現微幅下修，雖然供需失衡（供應跟不上）仍在，但漲價動能很難再有暴增，可能會維持在 flat 或微震狀態。這有可能是過去 OVershoot 的自我校正回歸。 MK 的操作解讀：即使背後原因不明，當手頭上能做的東西變少、盤面開始轉弱時，他就必須提高警覺進行資金調節。</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 03</div>
+                        <div class="topic-title">載板、Cleanroom 與擴產潮的資金排擠效應</div>
+                        <div class="topic-content">MK 的觀點與推論：TPCA 展會與業內回報皆顯示載板極度缺乏，2027 至 2028 年將有巨大擴產潮，但台股相關供應鏈股價卻出現破底或不動的情況。主因不是基本面不好，而是台股基本面好的公司太多、資金有限，導致資金高度集中在少數領先族群，其他好公司因排擠效應而動不了。此外，建廠的核心瓶頸在於無塵室（Cleanroom）的開出速度，有 Cleanroom 才能進設備。 MK 點名的清單（載板良率與改善方式）： Intel eMIP / eMIP-T 世代的載板良率問題：Trendforce 爆出 Ibidden 良率 50-60%、欣興(3037) 20-30%，業內知情朋友透露實際數字更低 改善良率的兩種做法： 第一種：把工程師操到爆掉（不人道但有效） 第二種：盡快蓋出新廠房、增加產能來補足良率不足的缺口</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-number">TOPIC 04</div>
+                        <div class="topic-title">盤面氛圍與保守調節策略</div>
+                        <div class="topic-content">MK 的觀點與推論：雖然總體基本面很好，但盤面開始出現一些詭譎感與不穩定徵兆（例如開始有人在社群上罵基本面很好的股票是垃圾，代表追在山頂的散戶心態崩潰）。MK 強調自己並非看空，部位依然很大，但基於肌肉記憶與資金輪轉的需求，他會把長不動、卡住的股票減碼調節，換到表現較好的新一輪題材。</div>
+                    </div>
+                </div>
+            </section>
+            
+
+            
+            <section class="section" id="strategies">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h2 class="section-title">操作心法與建議</h2>
+                </div>
+                <div class="strategy-list">
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <div class="strategy-text">部位調整與換股邏輯：當發現盤面氣氛轉弱、部分持股「長不動」時，不需過問原因（因為理由通常事後才知道），直接進行減碼調節。將資金從卡住的標的轉移到跑第一棒的新題材上。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="layers"></i>
+                        </div>
+                        <div class="strategy-text">拒絕追低與左側抄底：純粹透過技術指標抓連續跌停的個股，如果不清楚公司 Roadmap，絕對不要輕易進去攤平抄底（例如連續 4 根跌停），極容易變成全額交割或直接爆掉。只有在對公司掌握度極高、知道是盤面恐慌而非基本面出問題時，才有機會在第一根跌停去敲開它。</div>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="strategy-icon">
+                            <i data-lucide="shield"></i>
+                        </div>
+                        <div class="strategy-text">買便宜 vs. 買強勢：當同族群有便宜與貴的標的時，肌肉記憶告訴他應該買「型態較好、比較貴」的強勢股，因為強勢股會更強，而非盲目買便宜貨。</div>
+                    </div>
+                </div>
+            </section>
+            
+
+            
+
+            
+            <section class="section" id="quotes">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i data-lucide="quote"></i>
+                    </div>
+                    <h2 class="section-title">金句摘錄</h2>
+                </div>
+                <div class="quote-list">
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">當你注意到開始在簽長約的時候，一般來說就是有機會快要到頭了。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">錢去哪裡還是比較重要。台股裡面基本面好的公司太多了，營收年增沒有 50% 以上不要出來講話，但也因為大家都很好，資金有限，有些東西就是不會上。</p>
+                    </div>
+                    <div class="quote-card">
+                        <span class="quote-icon"><i data-lucide="quote"></i></span>
+                        <p class="quote-text">錢賺再多，你沒有好身體去支持、去跟家人共同享受這一切，賺起來也沒有什麼意義。30 幾歲的人要 flex、要 show off、要 chill，應該是你的身體狀態。</p>
+                    </div>
+                </div>
+            </section>
+            
+
+            
+
+            
+
+            
+
+            
+            <nav class="episode-nav"><div class="ep-nav-btn ep-nav-disabled"></div><a href="/gooaye/0706/" class="ep-nav-btn ep-nav-next">
+                <span class="ep-nav-label">下一集</span>
+                <span class="ep-nav-title">EP706 | 👑</span>
+                <i data-lucide="chevron-right"></i>
+            </a></nav>
+        </main>
+
+        <footer class="footer">
+            <p class="footer-text">
+                摘要由 AI 自動生成，僅供參考 · <a href="/">PodSight</a> · <a href="https://t.me/podsight" target="_blank">Telegram</a>
+            </p>
+        </footer>
+    </div>
+
+    <nav class="toc"><a href="#tldr" class="toc-link" data-section="tldr">摘要</a><a href="#topics" class="toc-link" data-section="topics">話題</a><a href="#strategies" class="toc-link" data-section="strategies">心法</a><a href="#quotes" class="toc-link" data-section="quotes">金句</a></nav>
+    <nav class="mobile-toc" id="mobileToc"><a href="#tldr" class="mobile-toc-link" data-section="tldr">摘要</a><a href="#topics" class="mobile-toc-link" data-section="topics">話題</a><a href="#strategies" class="mobile-toc-link" data-section="strategies">心法</a><a href="#quotes" class="mobile-toc-link" data-section="quotes">金句</a></nav>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', function () {
+            if (window.lucide) lucide.createIcons();
+        });
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (scrollTop / docHeight) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+
+            // TOC active state
+            const sections = document.querySelectorAll('.section[id], .tldr-box[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (scrollTop >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Mobile TOC active state
+            const mobileTocLinks = document.querySelectorAll('.mobile-toc-link');
+            mobileTocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                    // Scroll active link into view in the mobile TOC
+                    link.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
