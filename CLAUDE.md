@@ -228,9 +228,7 @@ The public site needs these for Google discoverability (target: 台灣 podcast l
 - **Meta descriptions** — Uses episode TLDR (first 150 chars), not generic text.
 
 ### Domain
-- **Current:** `podsight.tw` (low domain authority)
-- **Target:** `podsight.tw` (ccTLD signals Taiwan geo-targeting to Google)
-- When domain is set up, update `SITE_URL` in `generate_public_site.py`
+- `podsight.tw` (ccTLD signals Taiwan geo-targeting to Google); `SITE_URL` lives in `generate_public_site.py`
 
 ### Our SEO Edge
 - **Speed**: Summaries publish within hours of episode air (Vocus writers take days)
