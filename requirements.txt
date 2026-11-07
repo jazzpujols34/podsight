@@ -22,7 +22,7 @@ faster-whisper>=0.10.0
 # AI Summarization (install one or both)
 anthropic>=0.18.0
 openai>=1.12.0
-google-genai>=1.0.0  # Gemini SDK
+google-genai>=1.0.0,<3  # Gemini SDK; 3.0 defaults to the v1 API, where -latest aliases 404
 
 # HTTP API Server
 fastapi>=0.109.0
