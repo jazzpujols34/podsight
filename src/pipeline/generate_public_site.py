@@ -124,6 +124,20 @@ def route_for(podcast_id: str) -> str:
     return PODCASTS.get(podcast_id, {}).get("route", podcast_id)
 
 
+# Cloudflare Web Analytics (no cookies). The token is public: it ships in every page.
+CF_ANALYTICS = (
+    "<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' "
+    "data-cf-beacon='{\"token\": \"a0e14e16dd9046ad9baee0ba1f920b53\"}'></script>\n"
+)
+
+
+def analytics_for(podcast_id: Optional[str] = None) -> str:
+    """Visitor counter for the page head. Gated shows are private, so they are not counted."""
+    if podcast_id and PODCASTS.get(podcast_id, {}).get("gated"):
+        return ""
+    return CF_ANALYTICS
+
+
 def robots_meta_for(podcast_id: str) -> str:
     """noindex tag for gated podcasts. Belt and braces behind the edge auth."""
     if PODCASTS.get(podcast_id, {}).get("gated"):
@@ -1705,7 +1719,7 @@ def generate_episode_html(
             }}
         }}
     </style>
-</head>
+{analytics_for(podcast_id)}</head>
 <body>
     <div class="progress-bar" id="progressBar"></div>
     <div class="bg-ambient"></div>
@@ -2429,7 +2443,7 @@ def generate_listing_html(podcast_id: str, episodes: list) -> str:
             display: none;
         }}
     </style>
-</head>
+{analytics_for(podcast_id)}</head>
 <body>
     <div class="bg-ambient"></div>
 
@@ -3133,7 +3147,7 @@ def generate_homepage(podcast_counts: dict, latest_episodes: List[dict] = None) 
             .orb {{ opacity: 0.25; }}
         }}
     </style>
-</head>
+{analytics_for()}</head>
 <body>
     <div class="bg-ambient">
         <div class="orb orb-1"></div>
@@ -3562,7 +3576,7 @@ def generate_stock_search_page(stock_index: Dict[str, List[dict]]) -> str:
             .page-header h1 {{ font-size: 2rem; }}
         }}
     </style>
-</head>
+{analytics_for()}</head>
 <body>
     <div class="container">
         <nav class="nav">
@@ -3740,7 +3754,7 @@ def generate_404_page() -> str:
             justify-content: center;
         }}
     </style>
-</head>
+{analytics_for()}</head>
 <body>
     <div class="error-container">
         <div class="error-code">404</div>
