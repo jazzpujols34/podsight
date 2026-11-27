@@ -28,8 +28,3 @@ google-genai>=1.0.0,<3  # Gemini SDK; 3.0 defaults to the v1 API, where -latest 
 fastapi>=0.109.0
 uvicorn>=0.27.0
 pydantic>=2.5.0
-aiofiles>=23.0.0
-
-# GCP deployment
-google-cloud-storage>=2.10.0
-google-cloud-speech>=2.20.0
